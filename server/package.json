@@ -9,7 +9,7 @@
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watchAll"
   },
   "repository": {
     "type": "git",

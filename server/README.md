@@ -31,7 +31,3 @@ starts the test suite to watch for changes in the src/ directory.
 ```
 $ docker exec -it verity-server /bin/bash
 ```
-#### start the test suite
-```
-$ npm run test:watch
-```
