@@ -1,4 +1,4 @@
-# Verity-SDK
+# Verity-SDK-Typescript
 Web client application that demonstrates some indy-agent functionality including pack/unpack and key handling
 
 ## Setup environment
