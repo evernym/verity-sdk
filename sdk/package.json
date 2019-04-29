@@ -1,6 +1,6 @@
 {
-  "name": "verity-2.0-client-poc",
-  "maintainer": "Joe Genereux josephgenereuxmail@gmail.com",
+  "name": "verity-sdk",
+  "maintainer": "Evernym <dev@evernym.com>",
   "description": "Web client application that demonstrates some indy-agent functionality including pack/unpack",
   "version": "1.0.0",
   "private": false,
