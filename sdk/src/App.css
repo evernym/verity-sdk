@@ -1,0 +1,59 @@
+.ant-layout-sider-children .ant-menu-item {
+  padding-left: 0 !important;
+}
+
+.steps-content {
+  margin-top: 16px;
+  border: 1px dashed #e9e9e9;
+  border-radius: 6px;
+  background-color: #eceef3;
+  /* min-height: 300px; */
+  text-align: center;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.dynamic-delete-button {
+  cursor: pointer;
+  position: relative;
+  top: 4px;
+  font-size: 24px;
+  color: #999;
+  transition: all 0.3s;
+}
+.dynamic-delete-button:hover {
+  color: #777;
+}
+.ant-table-wrapper {
+  background: white;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background: #212427;
+  margin: '10px';
+  color: white;
+}
+.ant-menu-item-selected > a,
+.ant-menu-item-selected > a:hover {
+  color: white !important;
+}
+
+.csv-input {
+  border-radius: 5px;
+  /* margin-right: 10px; */
+  height: 40px;
+  padding: 5px;
+}
+
+.csv-reader-input {
+  background: green;
+}
+.ant-list {
+  /* background-color: white;
+  border-radius: 8px;
+  box-shadow: 2px 2px 4px #ccc;
+  padding: 24px;
+  min-height: 1100px; */
+}

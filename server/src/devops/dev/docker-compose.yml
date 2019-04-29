@@ -1,0 +1,18 @@
+version: '3.5'
+
+services:
+
+  verity-server:
+    container_name: verity-server
+    build:
+      context: .
+      dockerfile: verity-server.dockerfile
+      network: host
+    command: nodemon ./build/src/app.js
+    volumes:
+      - '.:/usr/src/verity-server'
+    working_dir: /usr/src/verity-server
+    ports:
+      - '8080:8080'
+    environment:
+      - NODE_ENV=development
