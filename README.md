@@ -10,6 +10,6 @@ encryption, key management (unless they want to), and the necessary communicatio
 ## Setup
 
 This project is broken up into two major portions: the sdk, and the server. The server is a MOCK verity-2.0 backend to simply test and build out the 
-verity-sdk proof of concept. It is not intended to replace the verity appication currently under development. 
+verity-sdk. It is not intended to replace the verity appication currently under development. 
 
 In order to set up the application cd into both the server and the sdk and follow the readme for set up in both directories.

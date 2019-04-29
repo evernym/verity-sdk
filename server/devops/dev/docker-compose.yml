@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: verity-server.dockerfile
       network: host
-    command: nodemon ./build/src/app.js
+    command: sh -c "npm config set strict-ssl=false && npm install --verbose && nodemon ./build/src/app.js"
     volumes:
       - '.:/usr/src/verity-server'
     working_dir: /usr/src/verity-server

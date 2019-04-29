@@ -8,16 +8,6 @@ RUN mkdir -p /usr/local/share/ca-certificates
 RUN curl -k https://repo.corp.evernym.com/ca.crt | tee /usr/local/share/ca-certificates/Evernym_Root_CA.crt
 RUN update-ca-certificates
 
-# Add Node Debian Repo
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-
-# Install packages
-RUN apt-get update -y && apt-get install -y \
-    fakeroot \
-    jq \
-    devscripts \
-    debhelper
-
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && apt-get install -y nodejs
 RUN npm i -g npm@latest
 
@@ -48,18 +38,21 @@ RUN apt-get update -y && apt-get install -y gcc \
   git \
   htop \
   nano \
-  vim
+  vim \
+  fakeroot \
+  jq \
+  devscripts \
+  debhelper
 
 # install certificates for evernym
 RUN mkdir -p /usr/local/share/ca-certificates
 RUN curl -k https://repo.corp.evernym.com/ca.crt | tee /usr/local/share/ca-certificates/Evernym_Root_CA.crt
-RUN update-ca-certificates
 RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
 RUN echo 'deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main' | tee /etc/apt/sources.list.d/agency-dev_repo.corp.evernym.com.list
-
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88
 RUN add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial master"
 RUN add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable"
+RUN update-ca-certificates
 
 RUN mkdir -p /var/lib/verity-server/
 RUN mkdir -p /etc/verity-server/
