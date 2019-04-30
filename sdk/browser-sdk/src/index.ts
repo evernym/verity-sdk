@@ -1,5 +1,5 @@
-import Axios from 'axios'
 import { PackUnpack } from 'pack-unpack'
+import * as Axios from 'axios'
 import { KeyManager } from './key-management'
 import { Enroll, ICredField } from './protocols/enroll'
 
@@ -19,7 +19,7 @@ export class VeritySDK {
      * @param url url of the verity backend
      */
     constructor(url: string) {
-        this.APK = new Uint8Array()
+        this.APK = new Uint8Array(1)
         this.url = url
     }
 
@@ -44,7 +44,7 @@ export class VeritySDK {
          */
         const keyPair = this.keyManager.getPublicKeyTransport()
         if (keyPair) {
-            const keys = await Axios.post(`${this.url}handshake`, keyPair)
+            const keys = await Axios.default.post(`${this.url}handshake`, keyPair)
             this.APK = Uint8Array.from(keys.data)
         }
     }
@@ -80,10 +80,3 @@ export class VeritySDK {
         }
     }
 }
-
-/**
- * Purpose of the verity sdk:
- * 1) to handle encryption for the end user
- * 2) to handle key management for the end user? Maybe this is not its purpose
- * 3) to handle agent messages and know how to respond to them?
- */

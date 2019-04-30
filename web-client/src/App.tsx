@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { VeritySDK } from './verity-sdk'
+import { VeritySDK } from 'verity-browser-sdk'
 
 /**
  * Verity-SDK enroll usage demo.

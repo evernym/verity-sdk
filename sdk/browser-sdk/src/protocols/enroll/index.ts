@@ -1,8 +1,8 @@
-import Axios from 'axios'
 import { KeyPair } from 'libsodium-wrappers'
 import { PackUnpack } from 'pack-unpack'
-import uuid from 'uuid'
+import * as uuid from 'uuid'
 import { makeid } from '../../utils/common.ts'
+import Axios from 'axios';
 
 export type CB = (data: any) => void
 
