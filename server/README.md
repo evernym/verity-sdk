@@ -18,16 +18,9 @@ $ npm run build:watch
 ### Start the docker daemeon
 Prepare docker files
 ```
-$ ./devops/dev/prepare.sh
+$ ./devops/dev/prepare-dev-environment.sh
 ```
 start docker
 ```
 $ docker-compose up --build
-```
-### start the test suite insider docker container
-starts the test suite to watch for changes in the src/ directory. 
-
-#### launch bash from inside the docker container
-```
-$ docker exec -it verity-server /bin/bash
 ```
