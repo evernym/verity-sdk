@@ -1,8 +1,8 @@
-import * as _sodium from 'libsodium-wrappers'
+import { KeyPair, KeyType } from 'libsodium-wrappers'
 import { PackUnpack } from 'pack-unpack'
 
 export interface IJSONKeyPair {
-    keyType: _sodium.KeyType,
+    keyType: KeyType,
     privateKey: number[],
     publicKey: number[],
 }
@@ -12,36 +12,43 @@ const KeyConstants = {
     personalKeyPair: 'PERSONAL_KEY_PAIR',
 }
 
-/**
- *
- * Generates keys using pack/unpack gen key
- * Supports storing keys
- * Supports retrieving keys in both JSON (transport format) and Sodium keypair format for pack/unpack
- * Supports clearing keys
- * Supports rotating keys
- * class currently only supports storage of ONE KEY AT A TIME
- */
 export class KeyManager {
 
     /**
-     * Generates a libsodium keypair
+     * The Ready property will resolve when the KeyManager object instance is ready for use
      */
-    public async generateKeyPairAndStore() {
-        const paup = new PackUnpack()
-        const keys = await paup.generateKeyPair()
-        localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(this.parseKeysForJSON(keys)))
+    public readonly Ready: Promise<undefined>
+    private PackUnpack!: PackUnpack
+
+    /**
+     *
+     * Creates a new KeyManager object. The returned object contains a .Ready property:
+     * a promise that must be resolved before the KeyManager object can be used.
+     */
+    constructor() {
+        this.Ready = new Promise(async (res, rej) => {
+            try {
+                this.PackUnpack = new PackUnpack()
+                await this.PackUnpack.setup()
+                res()
+            } catch (e) {
+                rej(e)
+            }
+        })
     }
 
     /**
      *
-     * Returns a Sodium keypair
+     * Returns a Sodium keypair, if no keypair exists a new one is generated and stored
      */
-    public getKeyPair(): _sodium.KeyPair | null {
+    public async getKeyPair(): Promise<KeyPair> {
         const keys = localStorage.getItem(KeyConstants.personalKeyPair)
         if (keys) {
             return this.parseKeysFromJSON(JSON.parse(keys))
         } else {
-            return null
+            const newKeys = await this.PackUnpack.generateKeyPair()
+            this.storePersonalKeys(this.parseKeysForJSON(newKeys))
+            return newKeys
         }
     }
 
@@ -98,11 +105,11 @@ export class KeyManager {
      * Rotates the key pair
      * @param key optional: if not provided a new keyPair is auto generated
      */
-    public async rotateKeyPair(key?: _sodium.KeyPair) {
+    public async rotateKeyPair(key?: KeyPair) {
         if (key) {
             localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(this.parseKeysForJSON(key)))
         } else {
-            await this.generateKeyPairAndStore()
+            await this.generateKeyPair()
         }
     }
 
@@ -114,7 +121,11 @@ export class KeyManager {
         this.storeAgentPK(key)
     }
 
-    private parseKeysForJSON(keypair: _sodium.KeyPair): IJSONKeyPair {
+    private async generateKeyPair() {
+        return await this.PackUnpack.generateKeyPair()
+    }
+
+    private parseKeysForJSON(keypair: KeyPair): IJSONKeyPair {
         return  {
             keyType: keypair.keyType,
             privateKey: Array.from(keypair.privateKey),
@@ -122,11 +133,15 @@ export class KeyManager {
         }
     }
 
-    private parseKeysFromJSON(keypair: IJSONKeyPair): _sodium.KeyPair {
+    private parseKeysFromJSON(keypair: IJSONKeyPair): KeyPair {
         return {
             keyType: keypair.keyType,
             privateKey: Uint8Array.from(keypair.privateKey),
             publicKey: Uint8Array.from(keypair.publicKey),
         }
+    }
+
+    private storePersonalKeys(keys: IJSONKeyPair) {
+        localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(keys))
     }
 }
