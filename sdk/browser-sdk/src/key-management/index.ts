@@ -1,15 +1,10 @@
-import { KeyPair, KeyType } from 'libsodium-wrappers'
+import { KeyType } from 'libsodium-wrappers'
 import { PackUnpack } from 'pack-unpack'
 
 export interface IJSONKeyPair {
     keyType: KeyType,
     privateKey: number[],
     publicKey: number[],
-}
-
-const KeyConstants = {
-    agentPK: 'AGENT_PUBLIC_KEY',
-    personalKeyPair: 'PERSONAL_KEY_PAIR',
 }
 
 export class KeyManager {
@@ -39,109 +34,109 @@ export class KeyManager {
 
     /**
      *
-     * Returns a Sodium keypair, if no keypair exists a new one is generated and stored
+     * Returns a Sodium keypair, if no keypair exists a new one is generated and stored and returned
      */
-    public async getKeyPair(): Promise<KeyPair> {
-        const keys = localStorage.getItem(KeyConstants.personalKeyPair)
-        if (keys) {
-            return this.parseKeysFromJSON(JSON.parse(keys))
-        } else {
-            const newKeys = await this.PackUnpack.generateKeyPair()
-            this.storePersonalKeys(this.parseKeysForJSON(newKeys))
-            return newKeys
-        }
-    }
+    // public async getKeyPair(): Promise<KeyPair> {
+    //     const keys = localStorage.getItem(KeyConstants.personalKeyPair)
+    //     if (keys) {
+    //         return this.parseKeysFromJSON(JSON.parse(keys))
+    //     } else {
+    //         const newKeys = await this.PackUnpack.generateKeyPair()
+    //         this.storePersonalKeys(newKeys)
+    //         return newKeys
+    //     }
+    // }
 
-    /**
-     * Returns the keypair in JSON format for transport
-     */
-    public getKeyPairJSON(): string | null {
-        return localStorage.getItem(KeyConstants.personalKeyPair)
-    }
+    // /**
+    //  * Returns the keypair in JSON format for transport
+    //  */
+    // public getKeyPairJSON(): string | null {
+    //     return localStorage.getItem(KeyConstants.personalKeyPair)
+    // }
 
-    /**
-     * Returns the public key for transport
-     */
-    public getPublicKeyTransport(): number[] | null {
-        const pk = localStorage.getItem(KeyConstants.personalKeyPair)
-        if (pk) {
-            const tmp = JSON.parse(pk)
-            return tmp.publicKey
-        } else {
-            return null
-        }
-    }
+    // /**
+    //  * Returns the public key for transport
+    //  */
+    // public getPublicKeyTransport(): number[] | null {
+    //     const pk = localStorage.getItem(KeyConstants.personalKeyPair)
+    //     if (pk) {
+    //         const tmp = JSON.parse(pk)
+    //         return tmp.publicKey
+    //     } else {
+    //         return null
+    //     }
+    // }
 
-    /**
-     *
-     * Returns a sodium agent PK
-     */
-    public getAgentKey(): Uint8Array | null {
-        const key = localStorage.getItem(KeyConstants.agentPK)
-        if (key) {
-            return Uint8Array.from(JSON.parse(key))
-        } else {
-            return null
-        }
-    }
+    // /**
+    //  *
+    //  * Returns a sodium agent PK
+    //  */
+    // public getAgentKey(): Uint8Array | null {
+    //     const key = localStorage.getItem(KeyConstants.agentPK)
+    //     if (key) {
+    //         return Uint8Array.from(JSON.parse(key))
+    //     } else {
+    //         return null
+    //     }
+    // }
 
-    /**
-     * Returns the JSON format of the agent PK for transport
-     */
-    public getAgentKeyJSON(): string | null {
-        return localStorage.getItem(KeyConstants.agentPK)
-    }
+    // /**
+    //  * Returns the JSON format of the agent PK for transport
+    //  */
+    // public getAgentKeyJSON(): string | null {
+    //     return localStorage.getItem(KeyConstants.agentPK)
+    // }
 
-    /**
-     *
-     * Stores an agents public key
-     * @param APK string
-     */
-    public storeAgentPK(APK: Uint8Array) {
-        localStorage.setItem(KeyConstants.agentPK, JSON.stringify(Array.from(APK)))
-    }
+    // /**
+    //  *
+    //  * Stores an agents public key
+    //  * @param APK string
+    //  */
+    // public storeAgentPK(APK: Uint8Array) {
+    //     localStorage.setItem(KeyConstants.agentPK, JSON.stringify(Array.from(APK)))
+    // }
 
-    /**
-     * Rotates the key pair
-     * @param key optional: if not provided a new keyPair is auto generated
-     */
-    public async rotateKeyPair(key?: KeyPair) {
-        if (key) {
-            localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(this.parseKeysForJSON(key)))
-        } else {
-            await this.generateKeyPair()
-        }
-    }
+    // /**
+    //  * Rotates the key pair
+    //  * @param key optional: if not provided a new keyPair is auto generated
+    //  */
+    // public async rotateKeyPair(key?: KeyPair) {
+    //     if (key) {
+    //         localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(this.parseKeysForJSON(key)))
+    //     } else {
+    //         await this.generateKeyPair()
+    //     }
+    // }
 
-    /**
-     * rotates the agent key
-     * @param key string of the agent PK
-     */
-    public rotateAgentKey(key: Uint8Array) {
-        this.storeAgentPK(key)
-    }
+    // /**
+    //  * rotates the agent key
+    //  * @param key string of the agent PK
+    //  */
+    // public rotateAgentKey(key: Uint8Array) {
+    //     this.storeAgentPK(key)
+    // }
 
-    private async generateKeyPair() {
-        return await this.PackUnpack.generateKeyPair()
-    }
+    // private async generateKeyPair() {
+    //     return await this.PackUnpack.generateKeyPair()
+    // }
 
-    private parseKeysForJSON(keypair: KeyPair): IJSONKeyPair {
-        return  {
-            keyType: keypair.keyType,
-            privateKey: Array.from(keypair.privateKey),
-            publicKey: Array.from(keypair.publicKey),
-        }
-    }
+    // private parseKeysForJSON(keypair: KeyPair): IJSONKeyPair {
+    //     return  {
+    //         keyType: keypair.keyType,
+    //         privateKey: Array.from(keypair.privateKey),
+    //         publicKey: Array.from(keypair.publicKey),
+    //     }
+    // }
 
-    private parseKeysFromJSON(keypair: IJSONKeyPair): KeyPair {
-        return {
-            keyType: keypair.keyType,
-            privateKey: Uint8Array.from(keypair.privateKey),
-            publicKey: Uint8Array.from(keypair.publicKey),
-        }
-    }
+    // private parseKeysFromJSON(keypair: IJSONKeyPair): KeyPair {
+    //     return {
+    //         keyType: keypair.keyType,
+    //         privateKey: Uint8Array.from(keypair.privateKey),
+    //         publicKey: Uint8Array.from(keypair.publicKey),
+    //     }
+    // }
 
-    private storePersonalKeys(keys: IJSONKeyPair) {
-        localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(keys))
-    }
+    // private storePersonalKeys(keys: KeyPair) {
+    //     localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(this.parseKeysForJSON(keys)))
+    // }
 }
