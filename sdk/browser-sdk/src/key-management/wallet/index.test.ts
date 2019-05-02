@@ -1,4 +1,5 @@
-import { ISerializedAgentKey, ISerializedBrowserKeyPair, Wallet } from '.'
+import { Wallet } from '.'
+import { ISerializedBrowserKeyPair } from '..'
 
 describe('key-management wallet', () => {
 
@@ -8,9 +9,7 @@ describe('key-management wallet', () => {
         publicKey: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     }
 
-    const testSerializedAgentPK: ISerializedAgentKey = {
-        publicKey: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    }
+    const testSerializedAgentPK = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const wallet = new Wallet()
 
@@ -52,5 +51,19 @@ describe('key-management wallet', () => {
         expect(keys).toEqual(testSerializedAgentPK)
         const noKeys = wallet.retrieveBrowserKeys()
         expect(noKeys).toEqual(undefined)
+    })
+
+    it('deletes the wallet storage', async () => {
+        wallet.setAgentKey(testSerializedAgentPK)
+        wallet.setBrowserKeys(testSerializedBrowserKeys)
+        const keys = wallet.retrieveAgentKey()
+        const keys2 = wallet.retrieveBrowserKeys()
+        if (keys && keys2) {
+            wallet.deleteWallet()
+            expect(wallet.retrieveAgentKey()).toBeUndefined()
+            expect(wallet.retrieveBrowserKeys()).toBeUndefined()
+        } else {
+            fail()
+        }
     })
 })

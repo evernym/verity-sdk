@@ -1,4 +1,4 @@
-import { KeyType } from 'libsodium-wrappers'
+import { ISerializedBrowserKeyPair } from '..'
 
 /**
  *
@@ -27,7 +27,7 @@ export class Wallet {
         localStorage.setItem(this.KeyValues.browserKeyPair, JSON.stringify(keys))
     }
 
-    public setAgentKey(key: ISerializedAgentKey) {
+    public setAgentKey(key: number[]) {
         localStorage.setItem(this.KeyValues.agentPK, JSON.stringify(key))
     }
 
@@ -40,7 +40,7 @@ export class Wallet {
         }
     }
 
-    public retrieveAgentKey(): ISerializedAgentKey | undefined {
+    public retrieveAgentKey(): number[] | undefined {
         const k = localStorage.getItem(this.KeyValues.agentPK)
         if (k) {
             return JSON.parse(k)
@@ -48,13 +48,8 @@ export class Wallet {
             return undefined
         }
     }
-}
 
-export interface ISerializedAgentKey {
-    publicKey: number[]
-}
-export interface ISerializedBrowserKeyPair {
-    keyType: KeyType,
-    privateKey: number[],
-    publicKey: number[],
+    public deleteWallet() {
+        localStorage.clear()
+    }
 }

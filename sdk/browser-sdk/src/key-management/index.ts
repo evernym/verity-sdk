@@ -1,7 +1,8 @@
-import { KeyType } from 'libsodium-wrappers'
+import { KeyPair, KeyType } from 'libsodium-wrappers'
 import { PackUnpack } from 'pack-unpack'
+import { Wallet } from './wallet'
 
-export interface IJSONKeyPair {
+export interface ISerializedBrowserKeyPair {
     keyType: KeyType,
     privateKey: number[],
     publicKey: number[],
@@ -14,6 +15,7 @@ export class KeyManager {
      */
     public readonly Ready: Promise<undefined>
     private PackUnpack!: PackUnpack
+    private Wallet: Wallet = new Wallet()
 
     /**
      *
@@ -33,110 +35,101 @@ export class KeyManager {
     }
 
     /**
-     *
-     * Returns a Sodium keypair, if no keypair exists a new one is generated and stored and returned
+     * Stores the agent public key, key can be either serialized or deserialzed
+     * If a key currently exists, the key is automatically rotated to the new key
+     * @param agentKey: ISerializedKey | IDeSerializedKey
      */
-    // public async getKeyPair(): Promise<KeyPair> {
-    //     const keys = localStorage.getItem(KeyConstants.personalKeyPair)
-    //     if (keys) {
-    //         return this.parseKeysFromJSON(JSON.parse(keys))
-    //     } else {
-    //         const newKeys = await this.PackUnpack.generateKeyPair()
-    //         this.storePersonalKeys(newKeys)
-    //         return newKeys
-    //     }
-    // }
+    public setAgentKey(agentKey: number[] | Uint8Array ) {
+        if (agentKey instanceof Uint8Array) {
+            agentKey = Array.from(agentKey)
+        }
+        this.Wallet.setAgentKey(agentKey)
+    }
 
-    // /**
-    //  * Returns the keypair in JSON format for transport
-    //  */
-    // public getKeyPairJSON(): string | null {
-    //     return localStorage.getItem(KeyConstants.personalKeyPair)
-    // }
+    /**
+     * Returns a Deserialized key keybuffer for the agent public key
+     */
+    public getAgentKeyDeserialized(): Uint8Array | undefined {
+        const keys = this.Wallet.retrieveAgentKey()
+        return !keys ? keys : Uint8Array.from(keys)
+    }
 
-    // /**
-    //  * Returns the public key for transport
-    //  */
-    // public getPublicKeyTransport(): number[] | null {
-    //     const pk = localStorage.getItem(KeyConstants.personalKeyPair)
-    //     if (pk) {
-    //         const tmp = JSON.parse(pk)
-    //         return tmp.publicKey
-    //     } else {
-    //         return null
-    //     }
-    // }
+    /**
+     * Returns a serialized agent public key
+     */
+    public getAgentKeySerialized(): number[] | undefined {
+        return this.Wallet.retrieveAgentKey()
+    }
 
-    // /**
-    //  *
-    //  * Returns a sodium agent PK
-    //  */
-    // public getAgentKey(): Uint8Array | null {
-    //     const key = localStorage.getItem(KeyConstants.agentPK)
-    //     if (key) {
-    //         return Uint8Array.from(JSON.parse(key))
-    //     } else {
-    //         return null
-    //     }
-    // }
+    /**
+     * Returns a sodium keypair
+     */
+    public async getKeyPairDeserialized(): Promise<KeyPair> {
+        return this.deserializeKeys(await this.getKeys())
+    }
 
-    // /**
-    //  * Returns the JSON format of the agent PK for transport
-    //  */
-    // public getAgentKeyJSON(): string | null {
-    //     return localStorage.getItem(KeyConstants.agentPK)
-    // }
+    /**
+     * Returns a serialized sodium keypair
+     */
+    public async getKeyPairSerialized(): Promise<ISerializedBrowserKeyPair> {
+        return await this.getKeys()
+    }
 
-    // /**
-    //  *
-    //  * Stores an agents public key
-    //  * @param APK string
-    //  */
-    // public storeAgentPK(APK: Uint8Array) {
-    //     localStorage.setItem(KeyConstants.agentPK, JSON.stringify(Array.from(APK)))
-    // }
+    /**
+     * Returns the sodium public personal key
+     */
+    public async getPersonalPubKeyDeserialized(): Promise<Uint8Array> {
+        const keys = await this.getKeys()
+        return this.deserializeKeys(keys).publicKey
+    }
 
-    // /**
-    //  * Rotates the key pair
-    //  * @param key optional: if not provided a new keyPair is auto generated
-    //  */
-    // public async rotateKeyPair(key?: KeyPair) {
-    //     if (key) {
-    //         localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(this.parseKeysForJSON(key)))
-    //     } else {
-    //         await this.generateKeyPair()
-    //     }
-    // }
+    /**
+     * Returns the serialized public personal key
+     */
+    public async getPersonalPubKeySerialized(): Promise<number[]> {
+        const keys = await this.getKeys()
+        return keys.publicKey
+    }
 
-    // /**
-    //  * rotates the agent key
-    //  * @param key string of the agent PK
-    //  */
-    // public rotateAgentKey(key: Uint8Array) {
-    //     this.storeAgentPK(key)
-    // }
+    /**
+     * Generates a new libsodium key and stores it. To retrieve the new keys await this method
+     * then call a GET method for the keys exposed in this class
+     */
+    public async rotateKeyPair() {
+        const newKeys = await this.PackUnpack.generateKeyPair()
+        this.Wallet.setBrowserKeys(this.serializeKeys(newKeys))
+    }
 
-    // private async generateKeyPair() {
-    //     return await this.PackUnpack.generateKeyPair()
-    // }
+    /**
+     * Removes all keys from the wallet
+     */
+    public deleteWallet() {
+        this.Wallet.deleteWallet()
+    }
 
-    // private parseKeysForJSON(keypair: KeyPair): IJSONKeyPair {
-    //     return  {
-    //         keyType: keypair.keyType,
-    //         privateKey: Array.from(keypair.privateKey),
-    //         publicKey: Array.from(keypair.publicKey),
-    //     }
-    // }
+    private async getKeys(): Promise<ISerializedBrowserKeyPair> {
+        const keys = this.Wallet.retrieveBrowserKeys()
+        if (!keys) {
+            const newKeys = await this.PackUnpack.generateKeyPair()
+            this.Wallet.setBrowserKeys(this.serializeKeys(newKeys))
+            return this.serializeKeys(newKeys)
+        }
+        return keys
+    }
 
-    // private parseKeysFromJSON(keypair: IJSONKeyPair): KeyPair {
-    //     return {
-    //         keyType: keypair.keyType,
-    //         privateKey: Uint8Array.from(keypair.privateKey),
-    //         publicKey: Uint8Array.from(keypair.publicKey),
-    //     }
-    // }
+    private deserializeKeys(keys: ISerializedBrowserKeyPair): KeyPair {
+        return {
+            keyType: keys.keyType,
+            privateKey: Uint8Array.from(keys.privateKey),
+            publicKey: Uint8Array.from(keys.publicKey),
+        }
+    }
 
-    // private storePersonalKeys(keys: KeyPair) {
-    //     localStorage.setItem(KeyConstants.personalKeyPair, JSON.stringify(this.parseKeysForJSON(keys)))
-    // }
+    private serializeKeys(keys: KeyPair): ISerializedBrowserKeyPair {
+        return {
+            keyType: keys.keyType,
+            privateKey: Array.from(keys.privateKey),
+            publicKey: Array.from(keys.publicKey),
+        }
+    }
 }
