@@ -63,6 +63,8 @@ export class KeyManager {
 
     /**
      * Returns a sodium keypair
+     * If no keys exist in the wallet a new keypair is automatically generated.
+     * This allows you to call for the keys even if they do not exist.
      */
     public async getKeyPairDeserialized(): Promise<KeyPair> {
         return this.deserializeKeys(await this.getKeys())
@@ -70,6 +72,8 @@ export class KeyManager {
 
     /**
      * Returns a serialized sodium keypair
+     * If no keys exist in the wallet a new keypair is automatically generated.
+     * This allows you to call for the keys even if they do not exist.
      */
     public async getKeyPairSerialized(): Promise<ISerializedBrowserKeyPair> {
         return await this.getKeys()
@@ -77,6 +81,8 @@ export class KeyManager {
 
     /**
      * Returns the sodium public personal key
+     * If no keys exist in the wallet a new keypair is automatically generated.
+     * This allows you to call for the keys even if they do not exist.
      */
     public async getPersonalPubKeyDeserialized(): Promise<Uint8Array> {
         const keys = await this.getKeys()
@@ -85,6 +91,8 @@ export class KeyManager {
 
     /**
      * Returns the serialized public personal key
+     * If no keys exist in the wallet a new keypair is automatically generated.
+     * This allows you to call for the keys even if they do not exist.
      */
     public async getPersonalPubKeySerialized(): Promise<number[]> {
         const keys = await this.getKeys()

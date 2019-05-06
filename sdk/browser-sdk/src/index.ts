@@ -1,52 +1,39 @@
-import { PackUnpack } from 'pack-unpack'
 import * as Axios from 'axios'
+import { PackUnpack } from 'pack-unpack'
 import { KeyManager } from './key-management'
 import { Enroll, ICredField } from './protocols/enroll'
 
+/**
+ * Verity SDK has 3 major responsibilities:
+ *
+ */
 export class VeritySDK {
 
+    public readonly Ready: Promise<undefined>
     private enroll: Enroll = new Enroll()
     private keyManager: KeyManager = new KeyManager()
-    private APK: Uint8Array
     private packUnpack: PackUnpack = new PackUnpack()
-    private url: string
-
-    /**
-     * Creates a new VeirtySDK class. VeritySDK primarily handles key management, encryption of agent messages,
-     * and handling of agent messages. This class expose all public methods needed to use full indy agent protocols
-     * without the need of libindy.
-     *
-     * @param url url of the verity backend
-     */
-    constructor(url: string) {
-        this.APK = new Uint8Array(1)
-        this.url = url
-    }
+    private verityApiUrl!: string
 
     /**
      *
-     * Sets up keys (generates keypair for browser)
-     * Sets up transport layer (sse is only one supported right now)
-     *
-     * Steps:
-     * generate key pair
-     * send public key to backend
-     * await backend public key
-     * set up sse connection with keys
+     * Sets up asyncronous internal classes
+     * Performs a handshake with the verity application
+     * Stores keys and makes them available in the verity SDK wallet
+     * @param verityApiUrl: url of the verity backend ex: localhost:3000
      */
-    public async setup() {
-
-        await this.packUnpack.setup()
-        await this.keyManager.generateKeyPairAndStore()
-
-        /**
-         * Posts the newly generated public key and stores the key on return
-         */
-        const keyPair = this.keyManager.getPublicKeyTransport()
-        if (keyPair) {
-            const keys = await Axios.default.post(`${this.url}handshake`, keyPair)
-            this.APK = Uint8Array.from(keys.data)
-        }
+    constructor(verityApiUrl: string) {
+        this.Ready = new Promise(async (res, rej) => {
+            try {
+                await this.keyManager.Ready
+                await this.packUnpack.setup()
+                this.verityApiUrl = verityApiUrl
+                await this.setupKeys()
+                res()
+            } catch (e) {
+                rej(e)
+            }
+        })
     }
 
     /**
@@ -61,22 +48,35 @@ export class VeritySDK {
     public async handleInboundMessage(e: MessageEvent, cb: (data: any) => void) {
         try {
             const data = JSON.parse(e.data)
-            console.log('Message from agent:', data)
-
-            const keypair = this.keyManager.getKeyPair()
-            if (keypair) {
-                const unpackedMsg = await this.packUnpack.unpackMessage(e.data, keypair)
-                cb(unpackedMsg)
-            }
+            const keypair = await this.keyManager.getKeyPairDeserialized()
+            const unpackedMsg = await this.packUnpack.unpackMessage(data, keypair)
+            cb(unpackedMsg)
         } catch (err) {
             console.log('Message from agent: ', e.data)
         }
     }
 
     public async newEnrollment(phoneNo: string, credendialDefId: string, credFields: ICredField[]) {
-        const keypair = this.keyManager.getKeyPair()
-        if (keypair) {
-            this.enroll.newEnrollment(phoneNo, credendialDefId, credFields, this.APK, keypair, this.url)
+        const keypair = await this.keyManager.getKeyPairDeserialized()
+        const agentPK = await this.keyManager.getAgentKeyDeserialized()
+        if (agentPK) {
+            this.enroll.newEnrollment(phoneNo, credendialDefId, credFields, agentPK, keypair, this.verityApiUrl)
+        }
+    }
+
+    private async setupKeys() {
+
+        /**
+         * Sets up the VeritySDK for use
+         * Posts the newly generated public key and stores the key on return
+         */
+        try {
+            const pk = this.keyManager.getPersonalPubKeySerialized()
+            const keys = await Axios.default.post(this.verityApiUrl, pk)
+            this.keyManager.setAgentKey(keys.data)
+        } catch (err) {
+            console.log(
+                'There was an error posting to the verity agent! Please check the verityApiUrl: ', this.verityApiUrl)
         }
     }
 }
