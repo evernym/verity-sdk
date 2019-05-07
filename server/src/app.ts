@@ -53,13 +53,14 @@ startServices().then(async () => {
         console.log('new connection has requested sse stream !', req.ip)
         await initialiseSSE(req, res)
         sseRes = res
-        res.write('data: SSE_ESTABLISHED\n\n')
+        const response = JSON.stringify({ msg: 'SSE_ESTABLISHED', status: 0 })
+        res.write(`data: ${response}\n\n`)
     })
 
     app.post('/msg', async (req, _res) => {
         console.log(`new inboxed message:`, req.body)
         inbox.newMessage(req.body.msg, KM.returnKeys(), sseRes, sseKeys)
-        sseRes.write(`data: 200: Successful mailbox delivery\n\n`)
+        _res.sendStatus(200)
     })
 
     app.listen(port, () => console.log(`express server has started and is listening on port ${port}`))

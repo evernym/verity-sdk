@@ -25,8 +25,9 @@ export class VeritySDK {
     constructor(verityApiUrl: string) {
         this.Ready = new Promise(async (res, rej) => {
             try {
+                console.log('Initializing Verity-SDK')
                 await this.keyManager.Ready
-                await this.packUnpack.setup()
+                await this.packUnpack.Ready
                 this.verityApiUrl = verityApiUrl
                 await this.setupKeys()
                 res()
@@ -48,17 +49,21 @@ export class VeritySDK {
     public async handleInboundMessage(e: MessageEvent, cb: (data: any) => void) {
         try {
             const data = JSON.parse(e.data)
+            if (!data.ciphertext) {
+                cb(data)
+                return
+            }
             const keypair = await this.keyManager.getKeyPairDeserialized()
             const unpackedMsg = await this.packUnpack.unpackMessage(data, keypair)
             cb(unpackedMsg)
         } catch (err) {
-            console.log('Message from agent: ', e.data)
+            cb(err)
         }
     }
 
     public async newEnrollment(phoneNo: string, credendialDefId: string, credFields: ICredField[]) {
         const keypair = await this.keyManager.getKeyPairDeserialized()
-        const agentPK = await this.keyManager.getAgentKeyDeserialized()
+        const agentPK = this.keyManager.getAgentKeyDeserialized()
         if (agentPK) {
             this.enroll.newEnrollment(phoneNo, credendialDefId, credFields, agentPK, keypair, this.verityApiUrl)
         }
@@ -71,9 +76,12 @@ export class VeritySDK {
          * Posts the newly generated public key and stores the key on return
          */
         try {
-            const pk = this.keyManager.getPersonalPubKeySerialized()
-            const keys = await Axios.default.post(this.verityApiUrl, pk)
+            console.log('Setting up keys for browser session')
+            const pk = await this.keyManager.getPersonalPubKeySerialized()
+            console.log('Performing handshake with Verity-Agent')
+            const keys = await Axios.default.post(`${this.verityApiUrl}handshake`, pk)
             this.keyManager.setAgentKey(keys.data)
+            console.log('Handshake Successful, storing public key of the Verity-Agent in Browser-Wallet')
         } catch (err) {
             console.log(
                 'There was an error posting to the verity agent! Please check the verityApiUrl: ', this.verityApiUrl)

@@ -1,6 +1,6 @@
-import * as vcx from 'node-vcx-wrapper'
+// import * as vcx from 'node-vcx-wrapper'
 import { IAgentMessage } from '..'
-import { makeid, generateCredentialDef } from '../../services/vcx/creddef'
+// import { makeid, generateCredentialDef } from '../../services/vcx/creddef'
 import { Response } from 'express-serve-static-core'
 import uuid = require('uuid')
 import { StateType } from 'node-vcx-wrapper';
@@ -62,7 +62,7 @@ export async function generateStatusReport(message: INewEnrollmentMessage, repor
     }
 
     const pu = new PackUnpack()
-    await pu.setup()
+    await pu.Ready
 
     const packedMsg = await pu.packMessage(JSON.stringify(statusReport), [APK], keypair)
 
@@ -71,40 +71,54 @@ export async function generateStatusReport(message: INewEnrollmentMessage, repor
 
 export async function newEnrollment(message: INewEnrollmentMessage, _responseHandle: Response, keypair: KeyPair, APK: Uint8Array) {
 
-    const { connectionDetail } = message
-    const connection = await vcx.Connection.create({ id: connectionDetail.sourceId })
+    // const { connectionDetail } = message
+    // const connection = await vcx.Connection.create({ id: connectionDetail.sourceId })
 
     
-    const data = `{"connection_type":"SMS","phone":"${connectionDetail.phoneNo}"}`
-    await connection.connect({ data })
+    // const data = `{"connection_type":"SMS","phone":"${connectionDetail.phoneNo}"}`
+    // await connection.connect({ data })
+
+    setTimeout(() => {
+        generateStatusReport(message, 1, _responseHandle, keypair, APK)
+        setTimeout(() => {
+            generateStatusReport(message, 2, _responseHandle, keypair, APK)
+            setTimeout(() => {
+                generateStatusReport(message, 3, _responseHandle, keypair, APK)
+                setTimeout(() => {
+                    generateStatusReport(message, 4, _responseHandle, keypair, APK)
+                    setTimeout(() => {
+                        generateStatusReport(message, 6, _responseHandle, keypair, APK)
+                    }, 3000)
+                }, 4000)
+            }, 4000)
+        }, 3000)
+    }, 5000)
+
+    // console.log('connection created! ', connection)
+
+    // const dataVCX = message.credentialData.credentialFields.reduce(
+    //     (accum, item) => ({ ...accum, [item.name]: item.value }),
+    //     {},
+    //     )
     
-    generateStatusReport(message, 1, _responseHandle, keypair, APK)
+    // try {
+    //     const { handle } = await generateCredentialDef()
+    //     const issuerCred = await vcx.IssuerCredential.create({
+    //         attr: dataVCX,
+    //         credDefHandle: handle,
+    //         credentialName: 'DEFAULT CRED',
+    //         price: message.credentialData.price.toString(),
+    //         sourceId: makeid(),
+    //     })
 
-    console.log('connection created! ', connection)
+    //     await issuerCred.sendOffer(connection)
+    //     await issuerCred.updateState()
+    //     if (await issuerCred.getState() === 3) {
+    //         await issuerCred.sendCredential(connection)
+    //     }
 
-    const dataVCX = message.credentialData.credentialFields.reduce(
-        (accum, item) => ({ ...accum, [item.name]: item.value }),
-        {},
-        )
-    
-    try {
-        const { handle } = await generateCredentialDef()
-        const issuerCred = await vcx.IssuerCredential.create({
-            attr: dataVCX,
-            credDefHandle: handle,
-            credentialName: 'DEFAULT CRED',
-            price: message.credentialData.price.toString(),
-            sourceId: makeid(),
-        })
-
-        await issuerCred.sendOffer(connection)
-        await issuerCred.updateState()
-        if (await issuerCred.getState() === 3) {
-            await issuerCred.sendCredential(connection)
-        }
-
-        console.log('issuer credential created! ', issuerCred)
-    } catch (e) {
-        throw e
-    }
+    //     console.log('issuer credential created! ', issuerCred)
+    // } catch (e) {
+    //     throw e
+    // }
 }

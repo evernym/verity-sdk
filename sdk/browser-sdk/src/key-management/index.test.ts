@@ -1,6 +1,6 @@
 import * as _sodium from 'libsodium-wrappers'
 import { ISerializedBrowserKeyPair, KeyManager } from '.'
-import { Wallet } from './wallet';
+import { Wallet } from './wallet'
 
 describe('Key manager', () => {
 

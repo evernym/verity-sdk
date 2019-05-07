@@ -1,8 +1,8 @@
+import Axios from 'axios'
 import { KeyPair } from 'libsodium-wrappers'
 import { PackUnpack } from 'pack-unpack'
 import * as uuid from 'uuid'
 import { makeid } from '../../utils/common.ts'
-import Axios from 'axios';
 
 export type CB = (data: any) => void
 
@@ -88,17 +88,13 @@ export class Enroll {
                 },
             }
 
+            console.log('packing msg: ', enrollment)
+
             const pack = new PackUnpack()
-            await pack.setup()
+            await pack.Ready
             const packedMsg = await pack.packMessage(JSON.stringify(enrollment), [APK], keyPair)
 
-            console.log(packedMsg)
-
+            console.log('sending packed msg', packedMsg)
             Axios.post(`${url}msg`, { msg: packedMsg })
         }
 }
-
-// One or two packages, browser/backend
-// Do we leave transport up to them, library doesnt handle transport?
-// AUTHENTICATION??
-// WASM, typescript?

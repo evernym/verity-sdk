@@ -19,11 +19,13 @@ class AppMain extends Component {
      * to send async messages to. VeritySDK provides a public method to handle decryption and message
      * handling of the message.
      */
-    await this.VSDK.setup()
+    await this.VSDK.Ready
+    console.log('VSDK ready, setting up SSE')
     this.eventSource = new EventSource('http://localhost:8080/sse-handshake')
     this.eventSource.addEventListener('message', async (e: MessageEvent) => {
+      console.log('New SSE Message, passing to Verity SDK: ', e.data)
       this.VSDK.handleInboundMessage(e, (data: any) => {
-        console.log(data, 'data')
+        console.log('SDK message callback: ', data)
       })
     })
   }

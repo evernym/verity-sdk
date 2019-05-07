@@ -32,7 +32,7 @@
     "express": "^4.16.4",
     "ffi": "^2.3.0",
     "node-vcx-wrapper": "https://repo.corp.evernym.com/filely/npm/node-vcx-wrapper_0.2.34516997-f3254f8_amd64.tgz",
-    "pack-unpack": "^1.1.3",
+    "pack-unpack": "^1.1.4",
     "pg": "^7.10.0",
     "tslib": "^1.9.3",
     "uuid": "^3.3.2"

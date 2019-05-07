@@ -16,7 +16,7 @@ export class KeyManager {
     public async setup() {
         if (!this.init) {
             this.pu = new PackUnpack()
-            await this.pu.setup()
+            await this.pu.Ready
             const keys = await this.pu.generateKeyPair()
             this.KEYS = keys
         }

@@ -1,6 +1,6 @@
 import { KeyPair } from 'libsodium-wrappers';
 import { PackUnpack } from 'pack-unpack';
-import { protocolExtensionRouter } from '../protocol-extensions';
+import { protocolExtensionRouter } from '../protocol-extensions'
 import { Response } from 'express';
 
 export class Inbox {
@@ -14,7 +14,7 @@ export class Inbox {
 
     public async newMessage(message: string, keypair: KeyPair, _sseHandle: Response, APK: Uint8Array) {
         if (!this.setup) {
-            await this.packUnpack.setup()
+            await this.packUnpack.Ready
             this.setup = true
         }
 

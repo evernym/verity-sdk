@@ -26,7 +26,7 @@ export class KeyManager {
         this.Ready = new Promise(async (res, rej) => {
             try {
                 this.PackUnpack = new PackUnpack()
-                await this.PackUnpack.setup()
+                await this.PackUnpack.Ready
                 res()
             } catch (e) {
                 rej(e)
@@ -118,6 +118,7 @@ export class KeyManager {
     private async getKeys(): Promise<ISerializedBrowserKeyPair> {
         const keys = this.Wallet.retrieveBrowserKeys()
         if (!keys) {
+            console.log('Generating new Keypair for Browser Session')
             const newKeys = await this.PackUnpack.generateKeyPair()
             this.Wallet.setBrowserKeys(this.serializeKeys(newKeys))
             return this.serializeKeys(newKeys)
