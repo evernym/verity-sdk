@@ -21,10 +21,11 @@ class AppMain extends Component {
      */
     await this.VSDK.Ready
     console.log('VSDK ready, setting up SSE')
-    this.eventSource = new EventSource('http://localhost:8080/sse-handshake')
-    this.eventSource.addEventListener('message', async (e: MessageEvent) => {
+    this.eventSource = new EventSource('http://localhost:8080/sse-handshake') // Create SSE event stream
+
+    this.eventSource.addEventListener('message', async (e: MessageEvent) => { // Add a callback for new messages
       console.log('New SSE Message, passing to Verity SDK: ', e.data)
-      this.VSDK.handleInboundMessage(e, (data: any) => {
+      this.VSDK.handleInboundMessage(e, (data: any) => { // pass the inbound message to the Verity-SDK1
         console.log('SDK message callback: ', data)
       })
     })
