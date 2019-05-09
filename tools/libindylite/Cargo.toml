@@ -1,0 +1,8 @@
+[package]
+name = "libindylite"
+version = "0.1.0"
+authors = ["Spencer Holman <spencer.holman@evernym.com>"]
+edition = "2018"
+
+[dependencies]
+sodiumoxide = "0.2.1"
