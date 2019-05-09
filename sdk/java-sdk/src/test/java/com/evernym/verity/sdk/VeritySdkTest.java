@@ -8,7 +8,7 @@ public class VeritySdkTest {
 
     @Test
     public void initialTesting() throws Exception {
-        VeritySdk sdk = new VeritySdk();
+        VeritySdk sdk = new VeritySdk("https://eas-team1.pdev.evernym.com");
         Listener listener = new Listener(4000, 5, (String message) -> {
             sdk.handleInboundMessage(message);
         });

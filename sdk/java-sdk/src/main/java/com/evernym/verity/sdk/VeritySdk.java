@@ -14,8 +14,10 @@ import org.hyperledger.indy.sdk.wallet.*;
 import org.json.JSONObject;
 
 public class VeritySdk {
-    public VeritySdk() {
+    String agencyUrl;
 
+    public VeritySdk(String agencyUrl) {
+        this.agencyUrl = agencyUrl;
     }
 
     public String handleInboundMessage(String message) {
@@ -25,7 +27,7 @@ public class VeritySdk {
 
     public void newConnection() throws IOException {
         JSONObject json = new JSONObject().put("key", "value");
-        send(json);
+        sendToAgency(this.agencyUrl, json);
     }
 
     public void provision() throws IndyException, Exception {
@@ -37,11 +39,11 @@ public class VeritySdk {
         Wallet.deleteWallet(walletConfig, walletCredentials).get();
     }
 
-    private void send(JSONObject json) throws IOException {
+    private void sendToAgency(String url, JSONObject json) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpResponse response;
         try {
-            HttpPost request = new HttpPost("http://localhost:4000");
+            HttpPost request = new HttpPost(url);
             StringEntity params = new StringEntity(json.toString());
             request.addHeader("content-type", "application/json");
             request.setEntity(params);

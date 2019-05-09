@@ -98,7 +98,7 @@ public class Listener {
                 HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
                 byte[] entityContent = EntityUtils.toByteArray(entity);
                 System.out.println("Incoming entity content (bytes): " + entityContent.length);
-                Listener.this.handler(new String(entityContent));
+                Listener.this.handler.handler(new String(entityContent));
                 System.out.println(Listener.this.port);
             }
             
