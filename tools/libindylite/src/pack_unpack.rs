@@ -3,6 +3,48 @@ extern crate sodiumoxide;
 use sodiumoxide::crypto::sign;
 use sodiumoxide::crypto::aead::chacha20poly1305_ietf;
 
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+pub struct JWE {
+    pub protected: String,
+    pub iv: String,
+    pub ciphertext: String,
+    pub tag: String
+
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+pub struct Recipient {
+    pub encrypted_key: String,
+    pub header: Header
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+pub struct Header {
+    pub kid: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iv: Option<String>,
+    #[serde(default)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender: Option<String>
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+pub struct Protected {
+    pub enc: String,
+    pub typ: String,
+    pub alg: String,
+    pub recipients: Vec<Recipient>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq)]
+pub struct UnpackMessage {
+    pub message: String,
+    pub recipient_verkey: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_verkey: Option<String>
+}
+
 pub extern fn indylite_generate_keypair() -> (sodiumoxide::crypto::sign::ed25519::PublicKey, sodiumoxide::crypto::sign::ed25519::SecretKey) {
     sodiumoxide::init();
     sodiumoxide::crypto::sign::gen_keypair()
@@ -32,30 +74,18 @@ pub extern fn indylite_generate_keypair() -> (sodiumoxide::crypto::sign::ed25519
         Authcrypt
             2. Generate a symmetric content encryption key (CEK)
 */
+
 pub extern fn indylite_pack_message(
     message: Vec<u8>,
-    receivers: &str,
-    keypair: Option<(sign::PublicKey, sign::SecretKey)>,
+    tokeys: Vec<[u8]>,
+    keypair: Option<(Vec<[u8]>, Vec<[u8]>)>,
 ) {
 //  Init libsodium : TODO init only once
     sodiumoxide::init();
 
-//  Generate a symmetric content encryption key (CEK)
-    let cek = chacha20poly1305_ietf::gen_key();
-
-    //parse receivers to structs
-    let receiver_list: Vec<String> = serde_json::from_str(receivers).map_err(|err| {})?;
-
-    //break early and error out if no receivers keys are provided
-    if receiver_list.is_empty() {
-        return Err(err_msg(IndyErrorKind::InvalidStructure, format!(
-            "No receiver keys found"
-        )));
-    }
-
 //    If keypair exists, authcrypt else anoncrypt
     let base64_protected = if let Some(keypair) = sender_vk {
-        prepare_protected_authcrypt(&cek, receiver_list, keypair)?
+        prepare_protected_authcrypt(&cek, receivers, keypair)?
     } else {
         prepare_protected_anoncrypt(&cek, receiver_list)?
     };
@@ -69,14 +99,50 @@ pub extern fn indylite_pack_message(
 
 }
 
+fn prepare_rec_keys(toKeys: Vec<[u8]>,
+                    keypair: Option<(sign::PublicKey, sign::SecretKey)>) {
+
+    //  Generate a symmetric content encryption key (CEK)
+    let cek = chacha20poly1305_ietf::gen_key();
+    let mut encrypted_recipients_struct : Vec<Recipient> = vec![];
+
+    for recipient in toKeys {
+
+        let enc_cek: Vec<u8>;
+
+        if Some(keypair) {
+            let senderVk = 
+            enc_cek = sodiumoxide::crypto::box_::seal()
+        } else {
+            enc_cek = sodiumoxide::crypto::sealedbox::seal(&recipient, &cek[..]);
+        }
+    }
+}
+
 fn prepare_protected_authcrypt(cek: &chacha20poly1305_ietf::Key,
                                receiver_list: Vec<String>,
                                keypair: (sign::PublicKey, sign::SecretKey)) {
 
 }
 
-fn prepare_protected_anoncrypt(cek: &chacha20poly1305_ietf::Key, receiver_list: Vec<String>){
+fn prepare_protected_anoncrypt(cek: &chacha20poly1305_ietf::Key, receiver_list: Vec<sign::PublicKey>){
+    let mut encrypted_recipients_struct : Vec<Recipient> = vec![];
 
+    for their_vk in receiver_list {
+        //encrypt sender verkey
+        let enc_cek = sodiumoxide::crypto::sealedbox::seal(&their_vk, &cek[..]);
+
+        //create recipient struct and push to encrypted list
+        encrypted_recipients_struct.push(Recipient {
+            encrypted_key: base64::encode_urlsafe(enc_cek.as_slice()),
+            header: Header {
+                kid: their_vk,
+                sender: None,
+                iv: None
+            },
+        });
+    } // end for-loop
+    Ok(self._base64_encode_protected(encrypted_recipients_struct, false)?)
 }
 
 //
