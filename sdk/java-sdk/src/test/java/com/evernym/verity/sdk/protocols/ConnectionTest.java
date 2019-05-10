@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols.connection;
+package com.evernym.verity.sdk.protocols;
 
 import static org.junit.Assert.assertTrue;
 

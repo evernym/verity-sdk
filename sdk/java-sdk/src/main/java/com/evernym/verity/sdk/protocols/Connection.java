@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols.connection;
+package com.evernym.verity.sdk.protocols;
 
 public class Connection {
 
