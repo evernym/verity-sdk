@@ -75,6 +75,7 @@ syntax:
 
 make_jar:
   stage: build
+  image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
   script:
     - sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' sdk/java-sdk/pom.xml
