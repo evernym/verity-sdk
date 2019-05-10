@@ -15,7 +15,7 @@ public class WalletContents {
     String myPairwiseVerkey;
     Wallet walletHandle;
 
-    WalletContents(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
+    public WalletContents(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
         String walletConfig = new JSONObject().put("id", walletName).toString();
         String walletCredentials = new JSONObject().put("key", walletKey).toString();
         walletHandle = Wallet.openWallet(walletConfig, walletCredentials).get();
@@ -28,27 +28,27 @@ public class WalletContents {
         myPairwiseVerkey = Did.keyForLocalDid(walletHandle, myPairwiseDid).get();
     }
 
-    void close() throws InterruptedException, ExecutionException, IndyException {
+    public void close() throws InterruptedException, ExecutionException, IndyException {
         walletHandle.closeWallet().get();
     }
 
-    String getAgencyUrl() {
+    public String getAgencyUrl() {
         return agencyUrl;
     }
 
-    String getAgencyVerkey() {
+    public String getAgencyVerkey() {
         return agencyVerkey;
     }
 
-    String getAgencyPairwiseVerkey() {
+    public String getAgencyPairwiseVerkey() {
         return agencyPairwiseVerkey;
     }
 
-    String getMyPairwiseVerkey() {
+    public String getMyPairwiseVerkey() {
         return myPairwiseVerkey;
     }
 
-    Wallet getWalletHandle() {
+    public Wallet getWalletHandle() {
         return walletHandle;
     }
 }

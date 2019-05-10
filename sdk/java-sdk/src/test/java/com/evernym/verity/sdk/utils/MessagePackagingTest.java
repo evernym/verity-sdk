@@ -43,7 +43,7 @@ public class MessagePackagingTest {
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(walletContents.getWalletHandle(), packedMessage).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
             String unpackedMessage = MessagePackaging.unpackMessageFromAgency(walletContents, partiallyUnpackedMessage.getBytes());
-            assertEquals(testMessage, new JSONObject(unpackedMessage).getString("message"));
+            assertEquals(testMessage, unpackedMessage);
 
             walletContents.close();
         } catch(Exception e) {

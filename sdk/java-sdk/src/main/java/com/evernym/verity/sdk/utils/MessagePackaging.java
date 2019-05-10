@@ -20,7 +20,7 @@ public class MessagePackaging {
 
     public static String unpackMessageFromAgency(WalletContents walletContents, byte[] message) throws InterruptedException, ExecutionException, IndyException {
         byte[] jwe = Crypto.unpackMessage(walletContents.getWalletHandle(), message).get();
-        return new JSONObject(new String(jwe)).toString();
+        return new JSONObject(new String(jwe)).getString("message");
     }
     
 }
