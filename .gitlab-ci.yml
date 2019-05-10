@@ -65,7 +65,6 @@ buildenv-docker-build:
     DOCKERFILE_PATH: 'buildenv.dockerfile'
     DOCKER_IMAGE_NAME: 'buildenv'
 
-
 syntax:
   stage: test
   image: $CI_REGISTRY_IMAGE/buildenv:latest
