@@ -1,1 +1,2 @@
-indy-sdk
+requests==2.21.0
+python3-indy==1.8.1
