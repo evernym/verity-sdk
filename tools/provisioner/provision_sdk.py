@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 # Provided by The Python Standard Library
 import json
 import argparse
@@ -7,8 +7,13 @@ import time
 import os
 import urllib.request
 import sys
+import requests
 from ctypes import *
-from indy import wallet
+
+from indy import did, wallet, crypto
+from indy.error import ErrorCode, IndyError
+
+TYPE_PREFIX = 'did:sov:123456789abcdefghi1234;spec/onboarding/1.0/'
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -49,50 +54,114 @@ def get_agency_info(agency_url):
         sys.exit(1)
     return agency_info
 
-wallet_config = {}
-wallet_credentials = {}
+
+# pack once with provided key, then anoncrypt to agency
+async def send_msg(url, my_wallet, message_json, agency_verkey, recipient_verkey, sender_verkey):
+    agent_message = await crypto.pack_message(my_wallet, json.dumps(message_json), [recipient_verkey], sender_verkey)
+    agency_message = await crypto.pack_message(my_wallet, agent_message, agency_verkey)
+    response = requests.post(url, data=agency_message)
+    if(response.status_code != 200):
+        print('Unable to POST message to agency') # TODO: Add more useful error messages here.
+        sys.exit(1)
+
+    agent_message = await crypto.unpack_message(my_wallet, response.content)
+
+    return agent_message
+
 
 async def register_agent(args):
+    agency_info = get_agency_info(args.AGENCY_URL)
 
     ## Create a wallet
-    wallet_config = {"id": args.wallet_name or 'wallet'}
-    wallet_credentials = {"key": args.WALLET_KEY}
-    indy.indy_create_wallet(0,c_encoder(wallet_config), c_encoder(wallet_credentials), register_agent2)
+    wallet_config = json.dumps({"id": args.wallet_name or 'wallet' })
+    wallet_credentials = json.dumps({"key": args.WALLET_KEY})
+
+    try:
+        await wallet.create_wallet(wallet_config, wallet_credentials)
+    except IndyError as ex:
+        if ex.error_code == ErrorCode.WalletAlreadyExistsError:
+            print("A wallet named {} already exists").format(args.wallet_name)
+            sys.exit(1)
+        else:
+            print("An error occured creating the wallet")
+            sys.exit(1)
+    
+    my_wallet = await wallet.open_wallet(wallet_config, wallet_credentials)
+    my_did, my_verkey = await did.create_and_store_my_did(my_wallet, json.dumps({}))
+
 
     ## Form messages
+    connect_msg = {
+        "@type": "{}CONNECT".format(TYPE_PREFIX),
+        "fromDID": my_did,
+        "fromDIDVerKey": my_verkey
+    }
 
-    ## Pack and send messages to agency
+    """
+    connect_response = {
+        "@type": "{}CONNECTED".format(TYPE_PREFIX),
+        "withPairwiseDID": None,
+        "withPairwiseDIDVerKey": None
+    }
+    """
+
+    # anoncrypt_for_agency(anoncrypt_for_agency(msg))
+    response = send_msg(args.AGENCY_URL, my_wallet, connect_msg, agency_info['verKey'], agency_info['verKey'])
+
+    their_did = response.withPairwiseDID
+    their_verkey = response.withPairwiseDIDVerKey
+
+    signup_msg = {
+        "@type": "{}SIGNUP".format(TYPE_PREFIX),
+    }
+
+    """
+    signup_response = {
+        "@type": "{}SIGNED_UP".format(TYPE_PREFIX),
+    }
+    """
+
+    # anoncrypt_for_agency()
+    response = send_msg(args.AGENCY_URL, my_wallet, signup_msg, agency_info['verKey'], their_verkey, my_verkey)
+
+    create_agent_msg = {
+        "@type": "{}CREATE_AGENT".format(TYPE_PREFIX),
+    }
+
+    """
+    create_agent_response = {
+        "@type": "{}AGENT_CREATED".format(TYPE_PREFIX),
+        "withPairwiseDID": None,
+        "withPairwiseDIDVerKey": None
+    }
+    """
+
+    response = send_msg(args.AGENCY_URL, my_wallet, create_agent_msg, agency_info['verKey'], their_verkey, my_verkey)
+
+    # Use latest only in config. 
+    their_did = response.withPairwiseDID
+    their_verkey = response.withPairwiseDIDVerKey
 
     ## Build sdk config
 
+    final_config = {
+        "wallet_name": args.wallet_name,
+        "wallet_key": args.WALLET_KEY,
+        "agency_endpoint": args.AGENCY_URL,
+        "agency_did": agency_info['DID'],
+        "agency_verkey": agency_info['verKey'],
+        "sdk_to_remote_did": my_did,
+        "sdk_to_remote_verkey": my_verkey,
+        "remote_to_sdk_did": their_did,
+        "remote_to_sdk_verkey": their_verkey
+    }
+
     ## Print sdk config (admin will place in config file)
+    print(json.dumps(final_config, indent=2, sort_keys=True))
 
-    # OLD CODE
-
-    # agency_info = get_agency_info(args.AGENCY_URL)
-    # json_str = json.dumps({'agency_url':args.AGENCY_URL,
-    #     'agency_did':agency_info['DID'],
-    #     'agency_verkey':agency_info['verKey'],
-    #     'wallet_key':args.WALLET_KEY,
-    #     'wallet_name':args.wallet_name,
-    #     'wallet_type':args.wallet_type,
-    #     'agent_seed':args.agent_seed,
-    #     'enterprise_seed':args.enterprise_seed})
-
-    # c_json = c_char_p(json_str.encode('utf-8'))
-
-    # if rc == 0:
-    #     sys.stderr.write("could not register agent, see log\n")
-    #     print(json.dumps({
-    #         'provisioned': False,
-    #         'provisioned_status': 'Failed: Could not register agent, see log\n'
-    #     },indent=2))
-    # else:
-    #     pointer = c_int(rc)
-    #     string = cast(pointer.value, c_char_p)
-    #     new_config = json.loads(string.value.decode('utf-8'))
-
-    #     print(json.dumps(new_config, indent=2, sort_keys=True))
+    # For now, delete wallet
+    await wallet.close_wallet(my_wallet)
+    await wallet.delete_wallet(wallet_config, wallet_credentials)
 
 
 
@@ -104,7 +173,7 @@ async def main():
     else:
         os.environ["RUST_LOG"] = "error"
 
-    register_agent(args)
+    await register_agent(args)
 
 
 if __name__ == "__main__":
