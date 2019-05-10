@@ -1,0 +1,44 @@
+---
+image: maven:3.6.1-jdk-11-slim
+
+stages:
+  - test
+  - build
+  # - deploy
+
+.tags:
+  tags:
+    - docker
+
+syntax:
+  stage: test
+  extends: .tags
+  script:
+    - cd sdk/java-sdk/ && mvn test
+
+make_deb:
+  stage: build
+  extends: .tags
+  script:
+    - sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' sdk/java-sdk/pom.xml
+    - cd sdk/java-sdk/ && mvn package
+  artifacts:
+    paths:
+      - sdk/java-sdk/target/java-sdk*.jar
+    expire_in: 1 week
+
+# upload_to_maven:
+#   stage: deploy
+#   extends: .tags
+#   environment:
+#     name: VCXauth
+#     url: https://ipas-ore-pe001.corp.evernym.com/
+#   variables:
+#     KRK_REPO: 'internal'
+#   script:
+#     - /usr/bin/cicd/upload.sh builds/*.deb
+#   dependencies:
+#     - make_deb
+#   only:
+#     - tags@cs/vcxauth
+#   when: on_success
