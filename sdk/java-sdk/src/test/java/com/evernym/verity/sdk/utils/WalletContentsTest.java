@@ -3,17 +3,17 @@ package com.evernym.verity.sdk.utils;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.hyperledger.indy.sdk.crypto.Crypto;
+import org.hyperledger.indy.sdk.wallet.*;
+import org.hyperledger.indy.sdk.non_secrets.*;
 import org.hyperledger.indy.sdk.did.*;
-import org.hyperledger.indy.sdk.non_secrets.WalletRecord;
-import org.hyperledger.indy.sdk.wallet.Wallet;
-import org.json.JSONObject;
-import org.junit.Test;
 
-public class MessagePackagingTest {
+import org.junit.Test;
+import org.json.JSONObject;
+
+public class WalletContentsTest {
 
     @Test
-    public void packCanUnpack() throws Exception {
+    public void ableToFindParams() throws Exception {
         String agencyUrl = "http://agency.url";
         String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
         String walletCredentials = new JSONObject().put("key", "12345").toString();
@@ -24,10 +24,13 @@ public class MessagePackagingTest {
 
             DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(myWallet, "{}").get();
             String theirDid = theirResult.getDid();
+            String theirVerkey = theirResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(myWallet, "{}").get();
             String theirPairwiseDid = theirPairwiseResult.getDid();
+            String theirPairwiseVerkey = theirPairwiseResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(myWallet, "{}").get();
             String myPairwiseDid = myPairwiseResult.getDid();
+            String myPairwiseVerkey = myPairwiseResult.getVerkey();
             WalletRecord.add(myWallet, "sdk_details", "agency_url", agencyUrl, null);
             WalletRecord.add(myWallet, "sdk_details", "agency_did", theirDid, null);
             WalletRecord.add(myWallet, "sdk_details", "agency_pairwise_did", theirPairwiseDid, null);
@@ -36,15 +39,10 @@ public class MessagePackagingTest {
             myWallet.closeWallet().get();
 
             WalletContents walletContents = new WalletContents("java_test_wallet", "12345");
-            
-            String testMessage = "Hello, World!";
-            byte[] packedMessage = MessagePackaging.packMessageForAgency(walletContents, testMessage);
-            // Manually unpack first layer since agency will only pack once.
-            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(walletContents.getWalletHandle(), packedMessage).get();
-            String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            String unpackedMessage = MessagePackaging.unpackMessageFromAgency(walletContents, partiallyUnpackedMessage.getBytes());
-            assertEquals(testMessage, new JSONObject(unpackedMessage).getString("message"));
-
+            assertEquals(agencyUrl, walletContents.getAgencyUrl());
+            assertEquals(theirVerkey, walletContents.getAgencyVerkey());
+            assertEquals(theirPairwiseVerkey, walletContents.getAgencyPairwiseVerkey());
+            assertEquals(myPairwiseVerkey, walletContents.getMyPairwiseVerkey());
             walletContents.close();
         } catch(Exception e) {
             e.printStackTrace();

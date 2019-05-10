@@ -8,6 +8,7 @@ public class ConnectionTest {
 
     @Test
     public void works() throws Exception {
+        System.out.println("Hello");
         assertTrue(true);
     }
 }

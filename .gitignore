@@ -1,5 +1,7 @@
 .vscode
 .idea
+*.swp
+.code-workspace
 # Created by https://www.gitignore.io/api/rust,linux,python
 # Edit at https://www.gitignore.io/?templates=rust,linux,python
 
