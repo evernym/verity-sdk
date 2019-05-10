@@ -60,7 +60,7 @@ buildenv-docker-build:
   extends: .kaniko-build
   only:
     changes:
-      - devops/dockerfiles/buildenv*
+      - cicd/dockerfiles/buildenv*
   variables:
     DOCKERFILE_PATH: 'buildenv.dockerfile'
     DOCKER_IMAGE_NAME: 'buildenv'

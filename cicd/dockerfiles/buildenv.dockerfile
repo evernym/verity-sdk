@@ -12,7 +12,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
     add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial master" && \
     apt-get update && apt-get install -y libindy
 
-# Install Maven
 RUN cd /opt/ && \
     wget http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz && \
     tar -xvzf apache-maven-3.3.9-bin.tar.gz && mv apache-maven-3.3.9 maven
