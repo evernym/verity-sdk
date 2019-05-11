@@ -55,4 +55,93 @@ public class ConnectionTest {
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
         }
     }
+
+    @Test
+    public void oneParamsConstructor() throws Exception {
+        String agencyUrl = "http://agency.url";
+        String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
+        String walletCredentials = new JSONObject().put("key", "12345").toString();
+        Wallet myWallet = null;
+        try {
+            Wallet.createWallet(walletConfig, walletCredentials).get();
+            myWallet = Wallet.openWallet(walletConfig, walletCredentials).get();
+
+            DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(myWallet, "{}").get();
+            String theirDid = theirResult.getDid();
+            DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(myWallet, "{}").get();
+            String theirPairwiseDid = theirPairwiseResult.getDid();
+            DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(myWallet, "{}").get();
+            String myPairwiseDid = myPairwiseResult.getDid();
+            WalletRecord.add(myWallet, "sdk_details", "agency_url", agencyUrl, null);
+            WalletRecord.add(myWallet, "sdk_details", "agency_did", theirDid, null);
+            WalletRecord.add(myWallet, "sdk_details", "agency_pairwise_did", theirPairwiseDid, null);
+            WalletRecord.add(myWallet, "sdk_details", "my_pairwise_did", myPairwiseDid, null);
+
+            myWallet.closeWallet().get();
+
+            WalletContents walletContents = new WalletContents("java_test_wallet", "12345");
+
+            String sourceId = "source_id";
+            Connection connection = new Connection(sourceId);
+            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(walletContents.getWalletHandle(), connection.encrypt(walletContents)).get();
+            String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
+            String unpackedMessage = MessagePackaging.unpackMessageFromAgency(walletContents, partiallyUnpackedMessage.getBytes());
+            assertEquals(connection.toString(), unpackedMessage);
+            String currentSourceId = new JSONObject(unpackedMessage).getJSONObject("connectionDetail").getString("sourceId");
+            assertEquals(sourceId, currentSourceId);
+
+            walletContents.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        } finally {
+            Wallet.deleteWallet(walletConfig, walletCredentials).get();
+        }
+    }
+
+    @Test
+    public void twoParamsConstructor() throws Exception {
+        String agencyUrl = "http://agency.url";
+        String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
+        String walletCredentials = new JSONObject().put("key", "12345").toString();
+        Wallet myWallet = null;
+        try {
+            Wallet.createWallet(walletConfig, walletCredentials).get();
+            myWallet = Wallet.openWallet(walletConfig, walletCredentials).get();
+
+            DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(myWallet, "{}").get();
+            String theirDid = theirResult.getDid();
+            DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(myWallet, "{}").get();
+            String theirPairwiseDid = theirPairwiseResult.getDid();
+            DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(myWallet, "{}").get();
+            String myPairwiseDid = myPairwiseResult.getDid();
+            WalletRecord.add(myWallet, "sdk_details", "agency_url", agencyUrl, null);
+            WalletRecord.add(myWallet, "sdk_details", "agency_did", theirDid, null);
+            WalletRecord.add(myWallet, "sdk_details", "agency_pairwise_did", theirPairwiseDid, null);
+            WalletRecord.add(myWallet, "sdk_details", "my_pairwise_did", myPairwiseDid, null);
+
+            myWallet.closeWallet().get();
+
+            WalletContents walletContents = new WalletContents("java_test_wallet", "12345");
+
+            String sourceId = "source_id";
+            String phoneNumber = "123-456-7891";
+            Connection connection = new Connection(sourceId, phoneNumber);
+            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(walletContents.getWalletHandle(), connection.encrypt(walletContents)).get();
+            String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
+            String unpackedMessage = MessagePackaging.unpackMessageFromAgency(walletContents, partiallyUnpackedMessage.getBytes());
+            assertEquals(connection.toString(), unpackedMessage);
+            String currentSourceId = new JSONObject(unpackedMessage).getJSONObject("connectionDetail").getString("sourceId");
+            assertEquals(sourceId, currentSourceId);
+            String currentPhoneNumber = new JSONObject(unpackedMessage).getJSONObject("connectionDetail").getString("phoneNo");
+            assertEquals(phoneNumber, currentPhoneNumber);
+
+            walletContents.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        } finally {
+            Wallet.deleteWallet(walletConfig, walletCredentials).get();
+        }
+    }
 }

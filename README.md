@@ -13,3 +13,7 @@ This project is broken up into two major portions: the sdk, and the server. The 
 verity-sdk. It is not intended to replace the verity appication currently under development. 
 
 In order to set up the application cd into both the server and the sdk and follow the readme for set up in both directories.
+
+# Tasks
+* Figure out how logging will work, including indy logs
+* Is there a way to package libindy.so inside the .jar?

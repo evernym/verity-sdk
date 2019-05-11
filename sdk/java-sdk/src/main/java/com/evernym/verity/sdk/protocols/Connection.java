@@ -65,7 +65,7 @@ public class Connection {
         JSONObject connectionDetail = new JSONObject();
         connectionDetail.put("sourceId", this.sourceId);
         if(this.phoneNumber != null) {
-            connectionDetail.put("phoneNumber", this.phoneNumber);
+            connectionDetail.put("phoneNo", this.phoneNumber);
         }
         message.put("connectionDetail", connectionDetail);
         return message.toString();
