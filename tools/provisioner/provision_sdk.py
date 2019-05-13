@@ -92,14 +92,14 @@ async def register_agent(args):
 
     ## Form messages
     connect_msg = {
-        "@type": "{}CONNECT".format(TYPE_PREFIX),
+        "@type": 'vs.service/provision/1.0/connect',
         "fromDID": my_did,
         "fromDIDVerKey": my_verkey
     }
 
     """
     connect_response = {
-        "@type": "{}CONNECTED".format(TYPE_PREFIX),
+        "@type": 'vs.service/provision/1.0/connect_response',
         "withPairwiseDID": None,
         "withPairwiseDIDVerKey": None
     }
@@ -112,12 +112,12 @@ async def register_agent(args):
     their_verkey = response.withPairwiseDIDVerKey
 
     signup_msg = {
-        "@type": "{}SIGNUP".format(TYPE_PREFIX),
+        "@type": 'vs.service/provision/1.0/signup',
     }
 
     """
     signup_response = {
-        "@type": "{}SIGNED_UP".format(TYPE_PREFIX),
+        "@type": 'vs.service/provision/1.0/signup_response',
     }
     """
 
@@ -125,12 +125,12 @@ async def register_agent(args):
     response = send_msg(args.AGENCY_URL, my_wallet, signup_msg, agency_info['verKey'], their_verkey, my_verkey)
 
     create_agent_msg = {
-        "@type": "{}CREATE_AGENT".format(TYPE_PREFIX),
+        "@type": "vs.service/provision/1.0/create_agent",
     }
 
     """
     create_agent_response = {
-        "@type": "{}AGENT_CREATED".format(TYPE_PREFIX),
+        "@type": "vs.service/provision/1.0/create_agent_response",
         "withPairwiseDID": None,
         "withPairwiseDIDVerKey": None
     }

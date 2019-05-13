@@ -1,7 +1,7 @@
 import { Response } from 'express-serve-static-core'
-import { INewEnrollmentMessage, newEnrollment } from './enroll';
-import { KeyPair } from 'libsodium-wrappers';
-// import uuid = require('uuid');
+import { KeyPair } from 'libsodium-wrappers'
+import { AgencyMessageTypes } from '../services/agency/register-agent'
+import { IProtocols } from '../inbox'
 
 export interface IAgentMessage {
     '@type': protocols
@@ -23,20 +23,23 @@ export type commonProtocols =
 export type protocols =
 | commonProtocols
 | enrollProtocols
-
-export type protocolMessage =
-| INewEnrollmentMessage
+| AgencyMessageTypes
 
 /**
  * Routes the message to the appropriate protocol extension
  * @param message
  */
-export const protocolExtensionRouter = (message: protocolMessage, responseHandle: Response, keypair: KeyPair, APK: Uint8Array) => {
-
+export const protocolExtensionRouter = (message: IAgentMessage, responseHandle: Response, keypair: KeyPair, APK: Uint8Array, protocols: IProtocols) => {
     try {
         switch (message['@type']) {
-            case 'vs.service/enroll/0.1/new-enrollment':
-                newEnrollment(message, responseHandle, keypair, APK)
+            case 'vs.service/provision/1.0/connect':
+                protocols.agency.connect()
+                return
+            case 'vs.service/provision/1.0/create_agent':
+                protocols.agency.createAgent()
+                return
+            case 'vs.service/provision/1.0/signup':
+                protocols.agency.signup()
                 return
             default:
                 console.log('NOT A RECOGNIZED MESSAGE!: ', message)

@@ -1,11 +1,14 @@
 import express = require('express')
 import { PaymentRuntime } from './services/libnullpay'
 import { Vcx } from './services/vcx'
-import { initialiseSSE } from './transport/sse'
+import { initializeSSE } from './transport/sse'
 import * as _sodium from 'libsodium-wrappers'
 import { KeyManager } from './services/key-management';
 import bodyParser = require('body-parser');
 import { Inbox } from './inbox';
+import * as vcx from 'node-vcx-wrapper'
+import * as Indy from 'indy-sdk'
+import { Agency } from './services/agency/register-agent'
 
 async function startServices() {
     try {
@@ -24,7 +27,12 @@ startServices().then(async () => {
     const KM = new KeyManager()
     await KM.setup()
 
+    const agency = new Agency()
     const inbox = new Inbox()
+
+    const protocols = {
+        agency
+    }
 
     let sseRes: any = undefined
     let sseKeys = new Uint8Array
@@ -51,7 +59,7 @@ startServices().then(async () => {
 
     app.get('/sse-handshake', async (req, res) => {
         console.log('new connection has requested sse stream !', req.ip)
-        await initialiseSSE(req, res)
+        await initializeSSE(req, res)
         sseRes = res
         const response = JSON.stringify({ msg: 'SSE_ESTABLISHED', status: 0 })
         res.write(`data: ${response}\n\n`)
@@ -59,8 +67,12 @@ startServices().then(async () => {
 
     app.post('/msg', async (req, _res) => {
         console.log(`new inboxed message:`, req.body)
-        inbox.newMessage(req.body.msg, KM.returnKeys(), sseRes, sseKeys)
+        inbox.newMessage(req.body.msg, KM.returnKeys(), sseRes, sseKeys, protocols)
         _res.sendStatus(200)
+    })
+
+    app.get('/agency', async (_req, res) => {
+        res.send({ DID: agency.config.myDID, verKey: agency.config.myVerkey })
     })
 
     app.listen(port, () => console.log(`express server has started and is listening on port ${port}`))
