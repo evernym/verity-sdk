@@ -10,17 +10,34 @@ import org.json.JSONObject;
 
 public class MessagePackaging {
 
-    public static byte[] packMessageForAgency(WalletContents walletContents, String message) throws InterruptedException, ExecutionException, IndyException {
-        String pairwiseReceiver = new JSONArray(new String[]{walletContents.getAgencyPairwiseVerkey()}).toString();
-        String agencyReceiver = new JSONArray(new String[]{walletContents.getAgencyVerkey()}).toString();
-        byte[] agentMessage = Crypto.packMessage(walletContents.getWalletHandle(), pairwiseReceiver, walletContents.getMyPairwiseVerkey(), message.getBytes()).get();
-        byte[] agencyMessage = Crypto.packMessage(walletContents.getWalletHandle(), agencyReceiver, null, agentMessage).get();
+    /**
+     * Encrypts a message for the Evernym agency. This function should not be called directly because it is called by the individual protocol classes.
+     * @param walletContents an instance of WalletContents that has been initialized with your wallet details
+     * @param message the message being sent
+     * @return Encrypted message ready to be sent to the agency
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws IndyException
+     */
+    public static byte[] packMessageForAgency(VerityConfig verityConfig, String message) throws InterruptedException, ExecutionException, IndyException {
+        String pairwiseReceiver = new JSONArray(new String[]{verityConfig.getAgencyPairwiseVerkey()}).toString();
+        String agencyReceiver = new JSONArray(new String[]{verityConfig.getAgencyPublicVerkey()}).toString();
+        byte[] agentMessage = Crypto.packMessage(verityConfig.getWalletHandle(), pairwiseReceiver, verityConfig.getSdkPairwiseVerkey(), message.getBytes()).get();
+        byte[] agencyMessage = Crypto.packMessage(verityConfig.getWalletHandle(), agencyReceiver, null, agentMessage).get();
         return agencyMessage;
     }
 
-    public static String unpackMessageFromAgency(WalletContents walletContents, byte[] message) throws InterruptedException, ExecutionException, IndyException {
-        byte[] jwe = Crypto.unpackMessage(walletContents.getWalletHandle(), message).get();
+    /**
+     * Unpacks a message received from the Evernym agency
+     * @param walletContents an instance of WalletContents that has been initialized with your wallet details
+     * @param message the message received from the Evernym agency
+     * @return an unencrypted String message
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws IndyException
+     */
+    public static String unpackMessageFromAgency(VerityConfig verityConfig, byte[] message) throws InterruptedException, ExecutionException, IndyException {
+        byte[] jwe = Crypto.unpackMessage(verityConfig.getWalletHandle(), message).get();
         return new JSONObject(new String(jwe)).getString("message");
     }
-    
 }

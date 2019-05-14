@@ -5,15 +5,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import org.hyperledger.indy.sdk.wallet.*;
 import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.did.*;
-import org.hyperledger.indy.sdk.wallet.Wallet;
-import org.json.JSONObject;
-import org.junit.Test;
 
-public class MessagePackagingTest {
+import org.junit.Test;
+import org.json.JSONObject;
+
+public class VerityConfigTest {
 
     public class TestWallet {
         String agencyPublicVerkey;
@@ -49,42 +50,39 @@ public class MessagePackagingTest {
         }
     }
 
-    VerityConfig getConfig() throws InterruptedException, ExecutionException, IndyException {
+    @Test
+    public void shouldCorrectlyParseConfig() throws Exception {
         String walletName = "java_test_wallet";
         String walletKey = "12345";
         String webhookUrl = "http://localhost:3000";
-        TestWallet testWallet = new TestWallet(walletName, walletKey);
-        JSONObject config = new JSONObject();
-        config.put("walletName", walletName);
-        config.put("walletKey", walletKey);
-        config.put("agencyPublicVerkey", testWallet.getAgencyPublicVerkey());
-        config.put("agencyPairwiseVerkey", testWallet.getAgencyPairwiseVerkey());
-        config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
-        config.put("webhookUrl", webhookUrl);
-        return new VerityConfig(config.toString());
-    }
-
-    @Test
-    public void packCanUnpack() throws Exception {
         try {
-            VerityConfig verityConfig = getConfig();
-            
-            String testMessage = "Hello, World!";
-            byte[] packedMessage = MessagePackaging.packMessageForAgency(verityConfig, testMessage);
-            // Manually unpack first layer since agency will only pack once.
-            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), packedMessage).get();
-            String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            String unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
-            assertEquals(testMessage, unpackedMessage);
+            TestWallet testWallet = new TestWallet(walletName, walletKey);
+            JSONObject config = new JSONObject();
+            config.put("walletName", walletName);
+            config.put("walletKey", walletKey);
+            config.put("agencyPublicVerkey", testWallet.getAgencyPublicVerkey());
+            config.put("agencyPairwiseVerkey", testWallet.getAgencyPairwiseVerkey());
+            config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
+            config.put("webhookUrl", webhookUrl);
+            VerityConfig verityConfig = new VerityConfig(config.toString());
+            assertEquals(walletName, verityConfig.walletName);
+            assertEquals(walletKey, verityConfig.walletKey);
+            assertEquals(testWallet.getAgencyPublicVerkey(), verityConfig.getAgencyPublicVerkey());
+            assertEquals(testWallet.getAgencyPairwiseVerkey(), verityConfig.getAgencyPairwiseVerkey());
+            assertEquals(testWallet.getSdkPairwiseVerkey(), verityConfig.getSdkPairwiseVerkey());
+            assertEquals(webhookUrl, verityConfig.webhookUrl);
+            assertNotNull(verityConfig.getWalletHandle());
 
             verityConfig.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             assertTrue(false);
         } finally {
-            String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
-            String walletCredentials = new JSONObject().put("key", "12345").toString();
+            String walletConfig = new JSONObject().put("id", walletName).toString();
+            String walletCredentials = new JSONObject().put("key", walletKey).toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
         }
     }
+
+    // TODO: Add more robust tests with bad configs.
 }
