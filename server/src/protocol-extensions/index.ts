@@ -1,5 +1,3 @@
-import { Response } from 'express-serve-static-core'
-import { KeyPair } from 'libsodium-wrappers'
 import { AgencyMessageTypes } from '../services/agency/register-agent'
 import { IProtocols } from '../inbox'
 
@@ -29,7 +27,7 @@ export type protocols =
  * Routes the message to the appropriate protocol extension
  * @param message
  */
-export const protocolExtensionRouter = (message: IAgentMessage, responseHandle: Response, keypair: KeyPair, APK: Uint8Array, protocols: IProtocols) => {
+export const protocolExtensionRouter = (message: IAgentMessage, protocols: IProtocols) => {
     try {
         switch (message['@type']) {
             case 'vs.service/provision/1.0/connect':
