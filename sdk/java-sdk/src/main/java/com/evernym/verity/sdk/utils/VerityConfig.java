@@ -32,15 +32,23 @@ public class VerityConfig {
     public byte[] getUpdateWebhookMessage() throws InterruptedException, ExecutionException, IndyException {
         /*
             {
-                "@type": "vs.service/common/0.1/update_webhook",
+                "@type": "vs.service/common/0.1/update_com_method",
                 "@id": <uuid>,
-                "webhookUrl": <new webhook>
+                "comMethod": {
+                    "id": <uuid2>,
+                    "type": "webhook"
+                    "value": <new webhook>
+                }
             }
         */
         JSONObject message = new JSONObject();
-        message.put("@type", "vs.service/common/0.1/update_webhook");
+        message.put("@type", "vs.service/common/0.1/update_com_method");
         message.put("@id", UUID.randomUUID().toString());
-        message.put("webhookUrl", this.webhookUrl);
+        JSONObject comMethod = new JSONObject();
+        comMethod.put("id", UUID.randomUUID().toString());
+        comMethod.put("type", "webhook");
+        comMethod.put("value", this.webhookUrl);
+        message.put("comMethod", comMethod);
         return MessagePackaging.packMessageForAgency(this, message.toString());
     }
 
