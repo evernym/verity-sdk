@@ -1,4 +1,6 @@
-import { KeyPair } from 'libsodium-wrappers'
+// import * as indy from 'indy-sdk'
+import * as vcx from 'node-vcx-wrapper';
+var indy = require('indy-sdk')
 
 export type AgencyMessageTypes = 
 | 'vs.service/provision/1.0/connect'
@@ -17,25 +19,27 @@ export interface IAgencyConfig {
 
 export class Agency {
 
+    public readonly Ready: Promise<undefined>
     public config: IAgencyConfig
-    private keypair: KeyPair
-
-    /**
-     * Get wallet handle
-     * const extn = new vcx.Extensions()
-     * const handle = entn.getWalletHandle()
-     * 
-     * Call indy to create new DID
-     * const { did, verkey } = Indy.did.createAndStoreMyDID(handle, {})
-     */
-
+   
     constructor() {
-        this.config = {
-            myDID: 'VSNODE_AGENCY_DID_12345',
-            myVerkey: new TextDecoder('utf-8').decode(this.keypair.publicKey),
-            fromDID: '',
-            fromVK: ''
-        }
+        this.Ready = new Promise(async (res, rej) => {
+            try {
+                const extn = new vcx.Extensions()
+                const handle = extn.getWalletHandle()
+                const [ did, verkey ] = await indy.createAndStoreMyDid(handle, {})
+                this.config = {
+                    myDID: did,
+                    myVerkey: verkey,
+                    fromDID: '',
+                    fromVK: ''
+                }
+                console.log('agency config: ', this.config)
+                res()
+            } catch (e) {
+                rej(e)
+            }
+        })
     }
 
     /**

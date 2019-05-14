@@ -6,8 +6,6 @@ import * as _sodium from 'libsodium-wrappers'
 import { KeyManager } from './services/key-management';
 import bodyParser = require('body-parser');
 import { Inbox } from './inbox';
-import * as vcx from 'node-vcx-wrapper'
-import * as Indy from 'indy-sdk'
 import { Agency } from './services/agency/register-agent'
 
 async function startServices() {
