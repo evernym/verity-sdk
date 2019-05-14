@@ -17,7 +17,7 @@ export class Inbox {
         this.setup = false
     }
 
-    public async newMessage(message: string, keypair: KeyPair, _sseHandle: Response, _APK: Uint8Array, protocols: IProtocols) {
+    public async newMessage(message: string, keypair: KeyPair, _sseHandle: Response, _APK: Uint8Array) {
         if (!this.setup) {
             await this.packUnpack.Ready
             this.setup = true
@@ -25,6 +25,6 @@ export class Inbox {
 
         const unpackedMessage = await this.packUnpack.unpackMessage(message, keypair)
         const msg = JSON.parse(unpackedMessage.message)
-        protocolExtensionRouter(msg, protocols)
+        protocolExtensionRouter(msg)
     }
 }

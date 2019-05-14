@@ -1,4 +1,3 @@
-import { IProtocols } from '../inbox'
 import { AgencyMessageTypes } from '../services/agency/register-agent'
 
 export interface IAgentMessage {
@@ -27,11 +26,10 @@ export type protocols =
  * Routes the message to the appropriate protocol extension
  * @param message
  */
-export const protocolExtensionRouter = (message: IAgentMessage, protocols: IProtocols) => {
+export const protocolExtensionRouter = (message: IAgentMessage) => {
     try {
         switch (message['@type']) {
             case 'vs.service/provision/1.0/connect':
-                protocols.agency.connect()
                 return
             case 'vs.service/provision/1.0/create_agent':
                 // protocols.agency.createAgent()

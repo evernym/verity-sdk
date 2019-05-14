@@ -36,7 +36,7 @@ startServices().then(async () => {
     const app = express()
     const port = 8080
 
-    app.use(bodyParser.json())
+    app.use(bodyParser.raw())
     app.use(bodyParser.urlencoded({
         extended: true,
     }))
@@ -59,6 +59,9 @@ startServices().then(async () => {
     //     const response = JSON.stringify({ msg: 'SSE_ESTABLISHED', status: 0 })
     //     res.write(`data: ${response}\n\n`)
     // })
+    app.post('/agency', async ( req, res) => {
+        agency.provision(req.body, res)
+    })
 
     app.post('/msg', async (req, res) => {
         console.log(req.body)

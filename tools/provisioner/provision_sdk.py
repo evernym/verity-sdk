@@ -57,15 +57,15 @@ def get_agency_info(agency_url):
 
 # pack once with provided key, then anoncrypt to agency
 async def send_msg(url, my_wallet, message_json, agency_verkey):
-    agency_message = await crypto.pack_message(my_wallet, json.dumps(message_json), agency_verkey)
-    response = requests.post(url, data=agency_message)
+    agency_message = await crypto.pack_message(my_wallet, json.dumps(message_json), [agency_verkey], None)
+    response = requests.post('{}/agency'.format(url), data=agency_message,headers={'Content-Type': 'application/octet-stream'})
     if(response.status_code != 200):
         print('Unable to POST message to agency') # TODO: Add more useful error messages here.
         sys.exit(1)
 
     agent_message = await crypto.unpack_message(my_wallet, response.content)
 
-    return agent_message
+    return json.loads(agent_message)
 
 
 async def register_agent(args):
@@ -105,10 +105,12 @@ async def register_agent(args):
     """
 
     # anoncrypt_for_agency(anoncrypt_for_agency(msg))
-    response = send_msg(args.AGENCY_URL, my_wallet, connect_msg, agency_info['verKey'])
+    response = await send_msg(args.AGENCY_URL, my_wallet, connect_msg, agency_info['verKey'])
 
-    their_did = response.withPairwiseDID
-    their_verkey = response.withPairwiseDIDVerKey
+    response = json.loads(response['message'])
+    print(response)
+    their_did = response['withPairwiseDID']
+    their_verkey = response['withPairwiseDIDVerKey']
 
     signup_msg = {
         "@type": 'vs.service/provision/1.0/signup',
@@ -121,7 +123,7 @@ async def register_agent(args):
     """
 
     # anoncrypt_for_agency()
-    response = send_msg(args.AGENCY_URL, my_wallet, signup_msg, agency_info['verKey'])
+    response = await send_msg(args.AGENCY_URL, my_wallet, signup_msg, agency_info['verKey'])
 
     create_agent_msg = {
         "@type": "vs.service/provision/1.0/create_agent",
@@ -135,11 +137,12 @@ async def register_agent(args):
     }
     """
 
-    response = send_msg(args.AGENCY_URL, my_wallet, create_agent_msg, agency_info['verKey'])
+    response = await send_msg(args.AGENCY_URL, my_wallet, create_agent_msg, agency_info['verKey'])
 
     # Use latest only in config. 
-    their_did = response.withPairwiseDID
-    their_verkey = response.withPairwiseDIDVerKey
+    response = json.loads(response['message'])
+    their_did = response['withPairwiseDID']
+    their_verkey = response['withPairwiseDIDVerKey']
 
     ## Build sdk config
 
