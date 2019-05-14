@@ -108,7 +108,6 @@ async def register_agent(args):
     response = await send_msg(args.AGENCY_URL, my_wallet, connect_msg, agency_info['verKey'])
 
     response = json.loads(response['message'])
-    print(response)
     their_did = response['withPairwiseDID']
     their_verkey = response['withPairwiseDIDVerKey']
 
