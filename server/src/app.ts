@@ -26,16 +26,13 @@ startServices().then(async () => {
     await KM.setup()
 
     const agency = new Agency()
-    const inbox = new Inbox()
-
-    const protocols = {
-        agency
-    }
+    await agency.Ready
 
     let sseRes: any = undefined
     let sseKeys = new Uint8Array
 
     console.log('Services successfully started')
+
     const app = express()
     const port = 8080
 
@@ -63,10 +60,9 @@ startServices().then(async () => {
         res.write(`data: ${response}\n\n`)
     })
 
-    app.post('/msg', async (req, _res) => {
-        console.log(`new inboxed message:`, req.body)
-        inbox.newMessage(req.body.msg, KM.returnKeys(), sseRes, sseKeys, protocols)
-        _res.sendStatus(200)
+    app.post('/msg', async (req, res) => {
+        agency.newMessage(req.body)
+        res.sendStatus(200)
     })
 
     app.get('/agency', async (_req, res) => {
@@ -74,7 +70,6 @@ startServices().then(async () => {
     })
 
     app.listen(port, () => console.log(`express server has started and is listening on port ${port}`))
-}).catch(e => {
-    
+}).catch((e) => {
     console.log('Services NOT started! Error: ', e)
 })

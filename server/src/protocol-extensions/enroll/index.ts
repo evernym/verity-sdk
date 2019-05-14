@@ -50,7 +50,8 @@ export interface ICredField {
     value: any
 }
 
-export async function generateStatusReport(message: INewEnrollmentMessage, reportNo: StateType, responseHandle: Response, keypair: KeyPair, APK: Uint8Array) {
+export async function generateStatusReport(
+    message: INewEnrollmentMessage, reportNo: StateType, responseHandle: Response, keypair: KeyPair, APK: Uint8Array) {
     const statusReport: IEnrollStatusMessage = {
         '@type': 'vs.service/enroll/0.1/status',
         '@id': uuid(),
@@ -69,12 +70,12 @@ export async function generateStatusReport(message: INewEnrollmentMessage, repor
     responseHandle.write(`data: ${packedMsg}\n\n`)
 }
 
-export async function newEnrollment(message: INewEnrollmentMessage, _responseHandle: Response, keypair: KeyPair, APK: Uint8Array) {
+export async function newEnrollment(
+    message: INewEnrollmentMessage, _responseHandle: Response, keypair: KeyPair, APK: Uint8Array) {
 
     // const { connectionDetail } = message
     // const connection = await vcx.Connection.create({ id: connectionDetail.sourceId })
 
-    
     // const data = `{"connection_type":"SMS","phone":"${connectionDetail.phoneNo}"}`
     // await connection.connect({ data })
 
@@ -100,7 +101,7 @@ export async function newEnrollment(message: INewEnrollmentMessage, _responseHan
     //     (accum, item) => ({ ...accum, [item.name]: item.value }),
     //     {},
     //     )
-    
+
     // try {
     //     const { handle } = await generateCredentialDef()
     //     const issuerCred = await vcx.IssuerCredential.create({

@@ -1,5 +1,5 @@
-import { AgencyMessageTypes } from '../services/agency/register-agent'
 import { IProtocols } from '../inbox'
+import { AgencyMessageTypes } from '../services/agency/register-agent'
 
 export interface IAgentMessage {
     '@type': protocols
