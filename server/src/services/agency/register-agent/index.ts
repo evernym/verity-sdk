@@ -1,5 +1,4 @@
 import { KeyPair } from 'libsodium-wrappers'
-import { PackUnpack } from 'pack-unpack';
 
 export type AgencyMessageTypes = 
 | 'vs.service/provision/1.0/connect'
@@ -20,7 +19,6 @@ export class Agency {
 
     public config: IAgencyConfig
     private keypair: KeyPair
-    private packUnpack: PackUnpack
 
     /**
      * Get wallet handle
@@ -61,7 +59,10 @@ export class Agency {
     }
     """
      *
-     *
+     */
+    connect() {}
+
+     /**
      * SIGNUP
      *  {
         “@type”: 'vs.service/provision/1.0/signup'
@@ -71,6 +72,10 @@ export class Agency {
      * {
     “@type”: 'vs.service/provision/1.0/signup_response'
         }
+        */
+    signup() {}
+
+    /**
      * PROVISION
      * {
      *    “@type”: 'vs.service/provision/1.0/create_agent'
@@ -82,8 +87,5 @@ export class Agency {
      *   "withPairwiseDIDVerKey": this.config.myVerkey
      * }
      */
-
-    connect() {}
-    signup() {}
     createAgent() {}
 }
