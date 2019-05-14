@@ -13,8 +13,6 @@ from ctypes import *
 from indy import did, wallet, crypto
 from indy.error import ErrorCode, IndyError
 
-TYPE_PREFIX = 'did:sov:123456789abcdefghi1234;spec/onboarding/1.0/'
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("AGENCY_URL")
@@ -146,15 +144,12 @@ async def register_agent(args):
     ## Build sdk config
 
     final_config = {
-        "wallet_name": args.wallet_name,
-        "wallet_key": args.WALLET_KEY,
-        "agency_endpoint": args.AGENCY_URL,
-        "agency_did": agency_info['DID'],
-        "agency_verkey": agency_info['verKey'],
-        "sdk_to_remote_did": my_did,
-        "sdk_to_remote_verkey": my_verkey,
-        "remote_to_sdk_did": their_did,
-        "remote_to_sdk_verkey": their_verkey
+        "walletName": args.wallet_name,
+        "walletKey": args.WALLET_KEY,
+        "agencyPublicVerkey": agency_info['verKey'],
+        "agencyPairwiseVerkey": their_verkey,
+        "sdkPairwiseVerkey": my_verkey,
+        "webhookUrl": "<CHANGE ME>"
     }
 
     ## Print sdk config (admin will place in config file)
