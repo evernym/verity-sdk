@@ -34,10 +34,10 @@ export const protocolExtensionRouter = (message: IAgentMessage, protocols: IProt
                 protocols.agency.connect()
                 return
             case 'vs.service/provision/1.0/create_agent':
-                protocols.agency.createAgent()
+                // protocols.agency.createAgent()
                 return
             case 'vs.service/provision/1.0/signup':
-                protocols.agency.signup()
+                // protocols.agency.signup()
                 return
             default:
                 console.log('NOT A RECOGNIZED MESSAGE!: ', message)

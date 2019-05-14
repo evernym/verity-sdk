@@ -1,7 +1,7 @@
 import indy from 'indy-sdk'
 import * as vcx from 'node-vcx-wrapper'
-import { Extensions } from 'node-vcx-wrapper';
-import { protocolExtensionRouter } from '../../../protocol-extensions'
+import { Extensions } from 'node-vcx-wrapper'
+// import { protocolExtensionRouter } from '../../../protocol-extensions'
 
 export type AgencyMessageTypes = 
 | 'vs.service/provision/1.0/connect'
@@ -79,7 +79,7 @@ export class Agency {
      *  “@type”: 'vs.service/provision/1.0/signup_response'
      * }
      */
-    public signup() {}
+    // public signup() {}
 
     /**
      * PROVISION
@@ -93,12 +93,12 @@ export class Agency {
      *   "withPairwiseDIDVerKey": this.config.myVerkey
      * }
      */
-    public createAgent() {}
+    // public createAgent() {}
 
     private async unpackMsg(msg: Buffer) {
         const unpackedMsg = await this.extn.unpackMessage({ data: msg })
         console.log(unpackedMsg)
      }
 
-    private packMsg(msg: string) { return msg }
+    // private packMsg(msg: string) { return msg }
 }

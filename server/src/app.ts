@@ -1,11 +1,11 @@
 import express = require('express')
 import { PaymentRuntime } from './services/libnullpay'
 import { Vcx } from './services/vcx'
-import { initializeSSE } from './transport/sse'
+// import { initializeSSE } from './transport/sse'
 import * as _sodium from 'libsodium-wrappers'
 import { KeyManager } from './services/key-management';
 import bodyParser = require('body-parser');
-import { Inbox } from './inbox';
+// import { Inbox } from './inbox';
 import { Agency } from './services/agency/register-agent'
 
 async function startServices() {
@@ -28,8 +28,8 @@ startServices().then(async () => {
     const agency = new Agency()
     await agency.Ready
 
-    let sseRes: any = undefined
-    let sseKeys = new Uint8Array
+    // let sseRes: any = undefined
+    // let sseKeys = new Uint8Array
 
     console.log('Services successfully started')
 
@@ -38,29 +38,30 @@ startServices().then(async () => {
 
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({
-        extended: true
-    })); 
+        extended: true,
+    }))
     app.use(function(_req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-    });
-
-    app.post('/handshake', async (_req, res) => {
-        sseKeys = Uint8Array.from(_req.body)
-        console.log('sseKeys', sseKeys)
-        res.json(KM.returnPublicKeyTransport())
+        next()
     })
 
-    app.get('/sse-handshake', async (req, res) => {
-        console.log('new connection has requested sse stream !', req.ip)
-        await initializeSSE(req, res)
-        sseRes = res
-        const response = JSON.stringify({ msg: 'SSE_ESTABLISHED', status: 0 })
-        res.write(`data: ${response}\n\n`)
-    })
+    // app.post('/handshake', async (_req, res) => {
+    //     sseKeys = Uint8Array.from(_req.body)
+    //     console.log('sseKeys', sseKeys)
+    //     res.json(KM.returnPublicKeyTransport())
+    // })
+
+    // app.get('/sse-handshake', async (req, res) => {
+    //     console.log('new connection has requested sse stream !', req.ip)
+    //     await initializeSSE(req, res)
+    //     sseRes = res
+    //     const response = JSON.stringify({ msg: 'SSE_ESTABLISHED', status: 0 })
+    //     res.write(`data: ${response}\n\n`)
+    // })
 
     app.post('/msg', async (req, res) => {
+        console.log(req.body)
         agency.newMessage(req.body)
         res.sendStatus(200)
     })
