@@ -35,7 +35,7 @@ public class VerityConfig {
                 "@type": "vs.service/common/0.1/update_com_method",
                 "@id": <uuid>,
                 "comMethod": {
-                    "id": <uuid2>,
+                    "id": "webhook",
                     "type": "webhook"
                     "value": <new webhook>
                 }
@@ -45,7 +45,7 @@ public class VerityConfig {
         message.put("@type", "vs.service/common/0.1/update_com_method");
         message.put("@id", UUID.randomUUID().toString());
         JSONObject comMethod = new JSONObject();
-        comMethod.put("id", UUID.randomUUID().toString());
+        comMethod.put("id", "webhook");
         comMethod.put("type", "webhook");
         comMethod.put("value", this.webhookUrl);
         message.put("comMethod", comMethod);
