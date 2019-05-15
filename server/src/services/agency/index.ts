@@ -1,10 +1,10 @@
+import { Response } from 'express'
 import indy from 'indy-sdk'
 import * as vcx from 'node-vcx-wrapper'
 import { Extensions } from 'node-vcx-wrapper'
-import { Response } from 'express';
-// import { protocolExtensionRouter } from '../../../protocol-extensions'
+import { Protocol } from './protocol-extensions'
 
-export type AgencyMessageTypes = 
+export type AgencyMessageTypes =
 | 'vs.service/provision/1.0/connect'
 | 'vs.service/provision/1.0/connect_response'
 | 'vs.service/provision/1.0/create_agent'
@@ -24,8 +24,9 @@ export class Agency {
     public readonly Ready: Promise<undefined>
     public config: IAgencyConfig
     private extn: Extensions
+    private protocols: Protocol[]
 
-    constructor() {
+    constructor(protocols: Protocol[]) {
         this.Ready = new Promise(async (res, rej) => {
             try {
                 this.extn = new vcx.Extensions()
@@ -37,7 +38,8 @@ export class Agency {
                     myDID: did,
                     myVerkey: verkey,
                 }
-                console.log('agency config: ', this.config)
+                this.protocols = protocols
+                this.protocols.forEach((protocol) => { protocol.updateConfig(this.config) })
                 res()
             } catch (e) {
                 rej(e)
@@ -45,8 +47,20 @@ export class Agency {
         })
     }
 
-    public newMessage(message: Buffer) {
-        this.unpackMsg(message)
+    public async newMessage(message: Buffer) {
+        try {
+            const unpackedMsg1 = await this.unpackMsg(message)
+            const messageString = unpackedMsg1.toString('utf8')
+            const outerMessage = JSON.parse(messageString)
+            const fullyUnpacked = await this.unpackMsg(outerMessage.message)
+            const unpacked = JSON.parse(fullyUnpacked.toString('utf8'))
+            const details = JSON.parse(unpacked.message)
+            this.protocols.forEach((protocol) => {
+                protocol.router(details)
+            })
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     public async provision(packedMessage: Buffer, res: Response) {
@@ -54,7 +68,6 @@ export class Agency {
         const messageString = message.toString('utf8')
         const outerMessage = JSON.parse(messageString)
         const jsonMessage = JSON.parse(outerMessage.message)
-        console.log('RECEIVED PROVISION MESSAGE\n', jsonMessage, '\n******************************')
         try {
             switch (jsonMessage['@type']) {
                 case 'vs.service/provision/1.0/connect':
@@ -97,7 +110,6 @@ export class Agency {
      *
      */
     public connect(message: any) {
-        console.log('processing message: ', message)
         this.config.fromVK = message['fromDIDVerKey']
         this.config.fromDID = message['fromDID']
         const connectResponse = {
@@ -106,8 +118,6 @@ export class Agency {
             withPairwiseDIDVerKey: this.config.myVerkey,
         }
         const receiverKeys = JSON.stringify([this.config.fromVK])
-        console.log(receiverKeys)
-
         const response = this.extn.packMessage({data: Buffer.from(JSON.stringify(connectResponse)),
             keys: receiverKeys, sender: this.config.myVerkey})
 
@@ -130,8 +140,6 @@ export class Agency {
             ['@type']: 'vs.service/provision/1.0/signup_response',
         }
         const receiverKeys = JSON.stringify([this.config.fromVK])
-        console.log(receiverKeys)
-
         const response = this.extn.packMessage({data: Buffer.from(JSON.stringify(connectResponse)),
             keys: receiverKeys, sender: this.config.myVerkey})
 
@@ -157,8 +165,6 @@ export class Agency {
             withPairwiseDIDVerKey: this.config.myVerkey,
         }
         const receiverKeys = JSON.stringify([this.config.fromVK])
-        console.log(receiverKeys)
-
         const response = this.extn.packMessage({data: Buffer.from(JSON.stringify(connectResponse)),
             keys: receiverKeys, sender: this.config.myVerkey})
 
@@ -167,9 +173,6 @@ export class Agency {
 
     private async unpackMsg(msg: Buffer) {
         const unpackedMsg = await this.extn.unpackMessage({ data: msg })
-        console.log(unpackedMsg)
         return unpackedMsg
      }
-
-    // private packMsg(msg: string) { return msg }
 }

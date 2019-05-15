@@ -1,8 +1,8 @@
 import { KeyPair } from 'libsodium-wrappers';
 import { PackUnpack } from 'pack-unpack';
-import { protocolExtensionRouter } from '../protocol-extensions'
+import { protocolExtensionRouter } from '../services/agency/protocol-extensions'
 import { Response } from 'express';
-import { Agency } from '../services/agency/register-agent'
+import { Agency } from '../services/agency'
 
 export interface IProtocols {
     agency: Agency
