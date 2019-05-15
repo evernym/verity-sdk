@@ -29,6 +29,7 @@ startServices().then(async () => {
         fromVK: '',
         myDID: '',
         myVerkey: '',
+        webhook: '',
     }
 
     /**

@@ -1,4 +1,4 @@
-import { IAgencyConfig } from '..'
+import { Agency, IAgencyConfig } from '..'
 import { ConfigurationProtocolTypes } from './configuration'
 import { ConnectionProtocolTypes } from './connection'
 
@@ -20,7 +20,7 @@ export abstract class Protocol {
         this.config = config
     }
 
-    public abstract router(message: IAgentMessage): boolean
+    public abstract router(message: IAgentMessage, agency?: Agency): boolean
 
     public updateConfig(config: IAgencyConfig) {
         this.config = config
