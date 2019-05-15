@@ -55,9 +55,13 @@ export class Agency {
             const fullyUnpacked = await this.unpackMsg(outerMessage.message)
             const unpacked = JSON.parse(fullyUnpacked.toString('utf8'))
             const details = JSON.parse(unpacked.message)
-            this.protocols.forEach((protocol) => {
-                protocol.router(details)
-            })
+            for (let i = 0; i <= this.protocols.length; i++) {
+                const valid = this.protocols[i].router(details)
+                if (valid) { break }
+                if (i === this.protocols.length - 1) {
+                    this.generateProblemReport('Not a supported message type!')
+                }
+            }
         } catch (e) {
             console.log(e)
         }
@@ -174,5 +178,9 @@ export class Agency {
     private async unpackMsg(msg: Buffer) {
         const unpackedMsg = await this.extn.unpackMessage({ data: msg })
         return unpackedMsg
-     }
+    }
+
+    private generateProblemReport(message: string) {
+        console.log('New Problem Report: ' + message)
+    }
 }

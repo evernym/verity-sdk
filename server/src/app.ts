@@ -30,6 +30,11 @@ startServices().then(async () => {
         myDID: '',
         myVerkey: '',
     }
+
+    /**
+     * Initialize protocols here you would like to plug into the agency
+     * All protocols must extend the abstract protocol class
+     */
     const config = new Configuration(blankConfig)
     const connection = new Connection(blankConfig)
 
