@@ -1,7 +1,11 @@
 package com.evernym.verity.sdk.utils;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+
+import com.evernym.verity.sdk.transports.HTTPTransport;
+import com.evernym.verity.sdk.transports.Transport;
 
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.*;
@@ -53,6 +57,12 @@ public class VerityConfig {
         comMethod.put("value", this.webhookUrl);
         message.put("comMethod", comMethod);
         return MessagePackaging.packMessageForAgency(this, message.toString());
+    }
+
+    public void sendUpdateWebhookMessage(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
+        // TODO: Switch on transport type
+        Transport transport = new HTTPTransport();
+        transport.sendMessage(verityConfig.getAgencyUrl(), getUpdateWebhookMessage());
     }
 
     public void closeWallet() throws InterruptedException, ExecutionException, IndyException {

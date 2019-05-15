@@ -24,7 +24,7 @@ public class App {
              // NOTE: Wallet must already exist. You can create it with the tools/provisioner/provision-sdk.py script
             String config = new String(Files.readAllBytes(FileSystems.getDefault().getPath("verityConfig.json")));
             VerityConfig verityConfig = new VerityConfig(config);
-            sendMessage(verityConfig.getUpdateWebhookMessage());
+            verityConfig.sendUpdateWebhookMessage(verityConfig);
 
             String sourceId = "my institution id";
             String phoneNumber = "123-456-7891";
@@ -43,23 +43,6 @@ public class App {
             System.out.println("Listening on port" + port);
         } catch(Exception ex) {
             ex.printStackTrace();
-        }
-    }
-
-    private static void sendMessage(byte[] message) throws IOException {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpResponse response;
-        try {
-            HttpPost request = new HttpPost(App.agencyUrl);
-            request.setEntity(new ByteArrayEntity(message));
-            response = httpClient.execute(request);
-            
-            if (response != null) {
-                InputStream in = response.getEntity().getContent(); //Get the data in the entity
-                // TODO: Check the status code, etc.
-            }
-        } finally {
-            httpClient.close();
         }
     }
 }
