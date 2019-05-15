@@ -26,10 +26,9 @@
     <dependency>
       <groupId>com.evernym.verity.sdk</groupId>
       <artifactId>sdk</artifactId>
-      <version>0.1</version>
+      <version>0.2</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/../target/java-sdk-0.1-SNAPSHOT.jar</systemPath>
-      <!-- <systemPath>${project.basedir}/lib/java-sdk-0.1.jar</systemPath> -->
+      <systemPath>${project.basedir}/../target/java-sdk-0.2-SNAPSHOT.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -40,6 +39,16 @@
       <groupId>org.hyperledger</groupId>
       <artifactId>indy</artifactId>
       <version>1.8.1-dev-985</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.8.0-beta4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.8.0-beta4</version>
     </dependency>
   </dependencies>
 

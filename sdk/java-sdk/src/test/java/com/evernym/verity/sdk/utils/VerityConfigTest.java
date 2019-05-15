@@ -55,12 +55,14 @@ public class VerityConfigTest {
     public void shouldCorrectlyParseConfig() throws Exception {
         String walletName = "java_test_wallet";
         String walletKey = "12345";
-        String webhookUrl = "http://localhost:3000";
+        String webhookUrl = "http://localhost:4000";
+        String agencyUrl = "http://localhost:3000";
         try {
             TestWallet testWallet = new TestWallet(walletName, walletKey);
             JSONObject config = new JSONObject();
             config.put("walletName", walletName);
             config.put("walletKey", walletKey);
+            config.put("agencyUrl", agencyUrl);
             config.put("agencyPublicVerkey", testWallet.getAgencyPublicVerkey());
             config.put("agencyPairwiseVerkey", testWallet.getAgencyPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
@@ -68,6 +70,7 @@ public class VerityConfigTest {
             VerityConfig verityConfig = new VerityConfig(config.toString());
             assertEquals(walletName, verityConfig.walletName);
             assertEquals(walletKey, verityConfig.walletKey);
+            assertEquals(agencyUrl, verityConfig.getAgencyUrl());
             assertEquals(testWallet.getAgencyPublicVerkey(), verityConfig.getAgencyPublicVerkey());
             assertEquals(testWallet.getAgencyPairwiseVerkey(), verityConfig.getAgencyPairwiseVerkey());
             assertEquals(testWallet.getSdkPairwiseVerkey(), verityConfig.getSdkPairwiseVerkey());
@@ -89,12 +92,14 @@ public class VerityConfigTest {
     public void shouldGenerateCorrectUpdateWebhookMessage() throws Exception {
         String walletName = "java_test_wallet";
         String walletKey = "12345";
-        String webhookUrl = "http://localhost:3000";
+        String webhookUrl = "http://localhost:4000";
+        String agencyUrl = "http://localhost:3000";
         try {
             TestWallet testWallet = new TestWallet(walletName, walletKey);
             JSONObject config = new JSONObject();
             config.put("walletName", walletName);
             config.put("walletKey", walletKey);
+            config.put("agencyUrl", agencyUrl);
             config.put("agencyPublicVerkey", testWallet.getAgencyPublicVerkey());
             config.put("agencyPairwiseVerkey", testWallet.getAgencyPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());

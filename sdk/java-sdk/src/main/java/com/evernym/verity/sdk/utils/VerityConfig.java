@@ -10,6 +10,7 @@ import org.json.JSONObject;
 public class VerityConfig {
     protected String walletName;
     protected String walletKey;
+    protected String agencyUrl;
     protected String agencyPublicVerkey;
     protected String agencyPairwiseVerkey;
     protected String sdkPairwiseVerkey;
@@ -17,9 +18,11 @@ public class VerityConfig {
     protected Wallet walletHandle;
 
     public VerityConfig(String configJson) throws InterruptedException, ExecutionException, IndyException {
+        // TODO: Validate config
         JSONObject config = new JSONObject(configJson);
         this.walletName = config.getString("walletName");
         this.walletKey = config.getString("walletKey");
+        this.agencyUrl = config.getString("agencyUrl");
         this.agencyPublicVerkey = config.getString("agencyPublicVerkey");
         this.agencyPairwiseVerkey = config.getString("agencyPairwiseVerkey");
         this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
@@ -54,6 +57,10 @@ public class VerityConfig {
 
     public void closeWallet() throws InterruptedException, ExecutionException, IndyException {
         walletHandle.closeWallet().get();
+    }
+
+    public String getAgencyUrl() {
+        return agencyUrl;
     }
 
     public String getAgencyPublicVerkey() {

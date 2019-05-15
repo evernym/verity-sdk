@@ -56,10 +56,12 @@ public class ProvableQuestionTest {
         String walletName = "java_test_wallet";
         String walletKey = "12345";
         String webhookUrl = "http://localhost:3000";
+        String agencyUrl = "http://localhost:3000";
         TestWallet testWallet = new TestWallet(walletName, walletKey);
         JSONObject config = new JSONObject();
         config.put("walletName", walletName);
         config.put("walletKey", walletKey);
+        config.put("agencyUrl", agencyUrl);
         config.put("agencyPublicVerkey", testWallet.getAgencyPublicVerkey());
         config.put("agencyPairwiseVerkey", testWallet.getAgencyPairwiseVerkey());
         config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());

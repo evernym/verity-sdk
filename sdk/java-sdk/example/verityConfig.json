@@ -1,6 +1,7 @@
 {
   "walletName": "my_test_wallet",
   "walletKey": "12345",
+  "agencyUrl": "http://localhost:3000",
   "agencyPublicVerkey": "5pfFLpndNyVet3VcW5ANRzRNdRyaCrvK8QD4YzdoDZLh",
   "agencyPairwiseVerkey": "vt6Kw8vXCkw6FnvLV27xwnD1nQJ5jpuxz4tjgU4sWfR",
   "sdkPairwiseVerkey": "5MEGcZRxKcJftcmQVXZMRG1XyVFWWRhK9TfULVkbm1QQ",

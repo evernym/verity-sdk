@@ -24,13 +24,12 @@ public class App {
              // NOTE: Wallet must already exist. You can create it with the tools/provisioner/provision-sdk.py script
             String config = new String(Files.readAllBytes(FileSystems.getDefault().getPath("verityConfig.json")));
             VerityConfig verityConfig = new VerityConfig(config);
-            // sendMessage(verityConfig.getUpdateWebhookMessage());
+            sendMessage(verityConfig.getUpdateWebhookMessage());
 
             String sourceId = "my institution id";
             String phoneNumber = "123-456-7891";
             Connection connection = new Connection(sourceId, phoneNumber);
-            byte[] agencyConnectionMessage = connection.getMessage(verityConfig);
-            sendMessage(agencyConnectionMessage);
+            connection.sendMessage(verityConfig);
 
             Listener listener = new Listener(App.port, 10, (String encryptedMessageFromAgency) -> {
                 try {
