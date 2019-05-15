@@ -1,6 +1,7 @@
 package com.evernym.verity.sdk.protocols;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -13,7 +14,6 @@ import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.did.Did;
 import org.hyperledger.indy.sdk.did.DidResults;
 import org.hyperledger.indy.sdk.wallet.Wallet;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -70,18 +70,26 @@ public class ProvableQuestionTest {
     }
 
     @Test
-    public void properlyParsesQuestion() throws Exception {
+    public void properlyBuildMessage() throws Exception {
         try {
             VerityConfig verityConfig = getConfig();
             
-            String question = getQuestion();
-            ProvableQuestion provableQuestion = new ProvableQuestion(question);
+            String connectionId = "abcd12345";
+            String questionText = "Question text";
+            String questionDetail = "Optional question detail";
+            String[] validResponses = {"Yes", "No"};
+            ProvableQuestion provableQuestion = new ProvableQuestion(connectionId, questionText, questionDetail, validResponses);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), provableQuestion.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
             String unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
             assertEquals(provableQuestion.toString(), unpackedMessage);
-            String currentQuestion = new JSONObject(unpackedMessage).getJSONObject("question").toString();
-            assertEquals(currentQuestion, question);
+            assertEquals(connectionId, new JSONObject(unpackedMessage).getString("connection_id"));
+            assertEquals(questionText, new JSONObject(unpackedMessage).getJSONObject("question").getString("question_text"));
+            assertEquals(questionDetail, new JSONObject(unpackedMessage).getJSONObject("question").getString("question_detail"));
+            assertEquals(validResponses[0], new JSONObject(unpackedMessage).getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("text"));
+            assertNotNull(new JSONObject(unpackedMessage).getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("nonce"));
+            assertEquals(validResponses[1], new JSONObject(unpackedMessage).getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("text"));
+            assertNotNull(new JSONObject(unpackedMessage).getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("nonce"));
 
             verityConfig.closeWallet();
         } catch(Exception e) {
@@ -92,13 +100,5 @@ public class ProvableQuestionTest {
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
         }
-    }
-
-    private String getQuestion() {
-        JSONObject question = new JSONObject();
-        question.put("question_text", "Alice, are you on the phone with Bob from Faber Bank right now?");
-        question.put("question_detail", "This is optional fine-print giving context to the question and its various answers.");
-        question.put("valid_responses", new JSONArray("[{\"text\": \"Yes, it is me\", \"nonce\": \"YES\"},{\"text\": \"No, that is not me!\", \"nonce\": \"NO\"}]"));
-        return question.toString();
     }
 }

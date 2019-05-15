@@ -14,7 +14,7 @@ import org.json.JSONObject;
  * }
  */
 public class Connection extends Protocol {
-    private String type = "vs.service/connect/0.1/new-connection";
+    private static String type = "vs.service/connect/0.1/new-connection";
     private String sourceId;
     private String phoneNumber = null;
     
@@ -44,7 +44,7 @@ public class Connection extends Protocol {
     @Override
     public String toString() {
         JSONObject message = new JSONObject();
-        message.put("@type", this.type);
+        message.put("@type", Connection.type);
         message.put("@id", this.id);
         JSONObject connectionDetail = new JSONObject();
         connectionDetail.put("sourceId", this.sourceId);
