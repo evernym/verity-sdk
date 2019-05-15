@@ -3,9 +3,20 @@ import { IAgentMessage } from '..'
 // import { makeid, generateCredentialDef } from '../../services/vcx/creddef'
 import { Response } from 'express-serve-static-core'
 import uuid = require('uuid')
-import { StateType } from 'node-vcx-wrapper';
-import { KeyPair } from 'libsodium-wrappers';
-import { PackUnpack } from 'pack-unpack';
+import { StateType } from 'node-vcx-wrapper'
+import { KeyPair } from 'libsodium-wrappers'
+import { PackUnpack } from 'pack-unpack'
+
+export type enrollProtocols =
+| 'vs.service/enroll/0.1/new-enrollment'
+| 'vs.service/enroll/0.1/problem-report'
+| 'vs.service/enroll/0.1/status'
+
+export type commonProtocols =
+| 'vs.service/common/0.1/check-status'
+| 'vs.service/common/0.1/invite-request'
+| 'vs.service/common/0.1/invite-response'
+| 'vs.service/common/0.1/problem-report'
 
 export interface INewEnrollmentMessage extends IAgentMessage {
     '@type': 'vs.service/enroll/0.1/new-enrollment'
@@ -72,12 +83,6 @@ export async function generateStatusReport(
 
 export async function newEnrollment(
     message: INewEnrollmentMessage, _responseHandle: Response, keypair: KeyPair, APK: Uint8Array) {
-
-    // const { connectionDetail } = message
-    // const connection = await vcx.Connection.create({ id: connectionDetail.sourceId })
-
-    // const data = `{"connection_type":"SMS","phone":"${connectionDetail.phoneNo}"}`
-    // await connection.connect({ data })
 
     setTimeout(() => {
         generateStatusReport(message, 1, _responseHandle, keypair, APK)
