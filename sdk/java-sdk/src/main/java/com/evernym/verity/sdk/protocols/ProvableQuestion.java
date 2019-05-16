@@ -27,6 +27,7 @@ public class ProvableQuestion extends Protocol {
     }
 
     // TODO: Add support for external links
+    // TODO: Add constructor w/o question detail
 
     @Override
     public String toString() {
