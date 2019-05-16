@@ -34,9 +34,15 @@ public class App {
                     String messageFromAgency = MessagePackaging.unpackMessageFromAgency(verityConfig, encryptedMessageFromAgency.getBytes());
                     System.out.println("New message from agency: " + messageFromAgency);
                     JSONObject message = new JSONObject(messageFromAgency);
-                    if(message.getString("@type") == Connection.getType() && Integer.parseInt(message.getString("status")) == 1) { // FIXME: Magic number should live somewhere. Add status consts to Connection class.
+                    if(message.getString("@type").equals("vs.service/connection/0.1/status") && message.getInt("status") == 0) { // FIXME: Magic number should live somewhere. Add status consts to Connection class.
+                        JSONObject inviteDetails = new JSONObject(message.getString("message"));
+                        System.out.println(inviteDetails.toString());
+                    }
+                    else if(message.getString("@type").equals("vs.service/connection/0.1/status") && message.getInt("status") == 1) { // FIXME: Magic number should live somewhere. Add status consts to Connection class.
+                        System.out.println("Connection Accepted!!!");
                         App.connectionId = message.getString("message");
                     }
+
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
@@ -45,8 +51,8 @@ public class App {
             System.out.println("Listening on port " + port);
 
             String sourceId = "my institution id";
-            String phoneNumber = "8012100201";
-            Connection connection = new Connection(sourceId, phoneNumber);
+            //String phoneNumber = "8015551234";
+            Connection connection = new Connection(sourceId);
             connection.sendMessage(verityConfig);
 
             while(App.connectionId == null);

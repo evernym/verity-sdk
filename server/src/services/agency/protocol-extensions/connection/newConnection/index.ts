@@ -36,15 +36,14 @@ export class NewConnection {
             this.state = await this.myConnection.getState()
             if (this.state === vcx.StateType.Accepted) {
                 Agency.inMemDB.setConnection(this.message['@id'], this.myConnection)
-                const statusReport = this.generateStatusReport(0, this.message['@id'])
-                const response = await Agency.packMsg(statusReport, this.config)
-                Agency.postResponse(response, this.config)
+                const statusReport = this.generateStatusReport(1, this.message['@id'])
+                Agency.postResponse(statusReport, this.config)
             } else {
                 this.updateState()
             }}, 20000)
     }
 
-    private async generateStatusReport(status: number, statusMessage: string) {
+    private generateStatusReport(status: number, statusMessage: string) {
         return {
             '@id': uuid(),
             '@type': 'vs.service/connection/0.1/status',
