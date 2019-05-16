@@ -108,8 +108,7 @@ public class VerityConfigTest {
             byte[] updateWebhookMessage = verityConfig.getUpdateWebhookMessage();
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), updateWebhookMessage).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            String unpackedMessageString = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
-            JSONObject unpackedMessage = new JSONObject(unpackedMessageString);
+            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
             assertEquals("vs.service/common/0.1/update_com_method", unpackedMessage.getString("@type"));
             assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("id"));
             assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("type"));

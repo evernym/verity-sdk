@@ -21,8 +21,8 @@ public class HTTPTransport extends Transport {
         request.setHeader("Content-Type", "application/octet-stream");
         HttpResponse response = httpClient.execute(request);
         Integer statusCode = response.getStatusLine().getStatusCode();
-        // System.out.println("statusCode: " + statusCode);
         if(statusCode > 399) {
+            System.out.println("statusCode: " + statusCode);
             throw new IOException("Request failed!");
         }
     }

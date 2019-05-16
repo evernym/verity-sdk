@@ -12,7 +12,6 @@ import com.evernym.verity.sdk.utils.*;
 import org.hyperledger.indy.sdk.IndyException;
 
 public abstract class Protocol {
-    protected static String type;
     protected String id;
 
     public Protocol() {
@@ -35,10 +34,6 @@ public abstract class Protocol {
         // TODO: Switch on verityConfig.getAgencyProtocol
         Transport transport = new HTTPTransport();
         transport.sendMessage(verityConfig.getAgencyUrl(), getMessage(verityConfig));
-    }
-
-    public static String getType() {
-        return type;
     }
 
     public abstract String toString();

@@ -79,9 +79,9 @@ public class ConnectionTest {
             Connection connection = new Connection(sourceId);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), connection.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            String unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
-            assertEquals(connection.toString(), unpackedMessage);
-            String currentSourceId = new JSONObject(unpackedMessage).getJSONObject("connectionDetail").getString("sourceId");
+            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
+            assertEquals(connection.toString(), unpackedMessage.toString());
+            String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
             assertEquals(sourceId, currentSourceId);
 
             verityConfig.closeWallet();
@@ -105,11 +105,11 @@ public class ConnectionTest {
             Connection connection = new Connection(sourceId, phoneNumber);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), connection.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            String unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
-            assertEquals(connection.toString(), unpackedMessage);
-            String currentSourceId = new JSONObject(unpackedMessage).getJSONObject("connectionDetail").getString("sourceId");
+            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
+            assertEquals(connection.toString(), unpackedMessage.toString());
+            String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
             assertEquals(sourceId, currentSourceId);
-            String currentPhoneNumber = new JSONObject(unpackedMessage).getJSONObject("connectionDetail").getString("phoneNo");
+            String currentPhoneNumber = unpackedMessage.getJSONObject("connectionDetail").getString("phoneNo");
             assertEquals(phoneNumber, currentPhoneNumber);
 
             verityConfig.closeWallet();

@@ -81,15 +81,15 @@ public class ProvableQuestionTest {
             ProvableQuestion provableQuestion = new ProvableQuestion(connectionId, questionText, questionDetail, validResponses);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), provableQuestion.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            String unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
-            assertEquals(provableQuestion.toString(), unpackedMessage);
-            assertEquals(connectionId, new JSONObject(unpackedMessage).getString("connection_id"));
-            assertEquals(questionText, new JSONObject(unpackedMessage).getJSONObject("question").getString("question_text"));
-            assertEquals(questionDetail, new JSONObject(unpackedMessage).getJSONObject("question").getString("question_detail"));
-            assertEquals(validResponses[0], new JSONObject(unpackedMessage).getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("text"));
-            assertNotNull(new JSONObject(unpackedMessage).getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("nonce"));
-            assertEquals(validResponses[1], new JSONObject(unpackedMessage).getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("text"));
-            assertNotNull(new JSONObject(unpackedMessage).getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("nonce"));
+            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
+            assertEquals(provableQuestion.toString(), unpackedMessage.toString());
+            assertEquals(connectionId, unpackedMessage.getString("connection_id"));
+            assertEquals(questionText, unpackedMessage.getJSONObject("question").getString("question_text"));
+            assertEquals(questionDetail, unpackedMessage.getJSONObject("question").getString("question_detail"));
+            assertEquals(validResponses[0], unpackedMessage.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("text"));
+            assertNotNull(unpackedMessage.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("nonce"));
+            assertEquals(validResponses[1], unpackedMessage.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("text"));
+            assertNotNull(unpackedMessage.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("nonce"));
 
             verityConfig.closeWallet();
         } catch(Exception e) {

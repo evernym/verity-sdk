@@ -17,7 +17,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.MethodNotSupportedException;
 import org.apache.http.config.SocketConfig;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.bootstrap.HttpServer;
 import org.apache.http.impl.bootstrap.ServerBootstrap;
@@ -32,12 +31,10 @@ interface Handler {
 
 public class Listener {
     Integer port;
-    Integer timeoutSeconds;
     Handler handler;
 
-    public Listener (Integer port, Integer timeoutSeconds, Handler handler) {
+    public Listener (Integer port, Handler handler) {
         this.port = port;
-        this.timeoutSeconds = timeoutSeconds;
         this.handler = handler;
     }
 
@@ -56,7 +53,7 @@ public class Listener {
                 .create();
 
         server.start();
-        server.awaitTermination(this.timeoutSeconds, TimeUnit.SECONDS);
+        // server.awaitTermination(this.timeoutSeconds, TimeUnit.SECONDS);
     }
 
     static class StdErrorExceptionLogger implements ExceptionLogger {
@@ -95,9 +92,7 @@ public class Listener {
             if (request instanceof HttpEntityEnclosingRequest) {
                 HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
                 byte[] entityContent = EntityUtils.toByteArray(entity);
-                System.out.println("Incoming entity content (bytes): " + entityContent.length);
                 Listener.this.handler.handler(new String(entityContent));
-                System.out.println(Listener.this.port);
             }
             
             HttpCoreContext coreContext = HttpCoreContext.adapt(context);

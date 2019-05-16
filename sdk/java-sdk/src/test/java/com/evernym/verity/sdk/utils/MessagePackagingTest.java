@@ -71,13 +71,13 @@ public class MessagePackagingTest {
         try {
             VerityConfig verityConfig = getConfig();
             
-            String testMessage = "Hello, World!";
-            byte[] packedMessage = MessagePackaging.packMessageForAgency(verityConfig, testMessage);
+            JSONObject testMessage = new JSONObject().put("hello", "world");
+            byte[] packedMessage = MessagePackaging.packMessageForAgency(verityConfig, testMessage.toString());
             // Manually unpack first layer since agency will only pack once.
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), packedMessage).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            String unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
-            assertEquals(testMessage, unpackedMessage);
+            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
+            assertEquals(testMessage.toString(), unpackedMessage.toString());
 
             verityConfig.closeWallet();
         } catch(Exception e) {
