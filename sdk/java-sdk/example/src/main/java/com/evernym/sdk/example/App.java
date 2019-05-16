@@ -18,7 +18,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
 
 public class App {
-    static String agencyUrl = "http://localhost:3000";
     static Integer port = 4000;
     static String connectionId;
 
@@ -29,13 +28,9 @@ public class App {
             VerityConfig verityConfig = new VerityConfig(config);
             verityConfig.sendUpdateWebhookMessage(verityConfig);
 
-            String sourceId = "my institution id";
-            String phoneNumber = "123-456-7891";
-            Connection connection = new Connection(sourceId, phoneNumber);
-            connection.sendMessage(verityConfig);
-
             Listener listener = new Listener(App.port, 10, (String encryptedMessageFromAgency) -> {
                 try {
+                    System.out.println("Unpacking new message from agency");
                     String messageFromAgency = MessagePackaging.unpackMessageFromAgency(verityConfig, encryptedMessageFromAgency.getBytes());
                     System.out.println("New message from agency: " + messageFromAgency);
                     JSONObject message = new JSONObject(messageFromAgency);
@@ -48,6 +43,11 @@ public class App {
             });
             listener.listen();
             System.out.println("Listening on port " + port);
+
+            String sourceId = "my institution id";
+            String phoneNumber = "8012100201";
+            Connection connection = new Connection(sourceId, phoneNumber);
+            connection.sendMessage(verityConfig);
 
             while(App.connectionId == null);
 

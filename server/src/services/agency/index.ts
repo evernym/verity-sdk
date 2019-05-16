@@ -1,7 +1,7 @@
 import { Response } from 'express'
-import indy from 'indy-sdk'
+import fs = require('fs')
 import * as vcx from 'node-vcx-wrapper'
-import { Extensions } from 'node-vcx-wrapper'
+import * as request from 'request-promise-native'
 import { Protocol } from './protocol-extensions'
 
 export type AgencyMessageTypes =
@@ -17,29 +17,59 @@ export interface IAgencyConfig {
     myVerkey: string,
     fromDID: string
     fromVK: string,
+    webhook: string,
 }
 
 export class Agency {
 
+    public static async unpackMsg(msg: Buffer) {
+        const extn = new vcx.Extensions()
+        const unpackedMsg = await extn.unpackMessage({ data: msg })
+        return unpackedMsg
+    }
+
+    public static async packMsg(msg: any, config: IAgencyConfig) {
+        const extn = new vcx.Extensions()
+        const receiverKeys = JSON.stringify([config.fromVK])
+        const packedMsg = extn.packMessage({data: Buffer.from(JSON.stringify(msg)),
+            keys: receiverKeys, sender: config.myVerkey})
+
+        return packedMsg
+    }
+
+
+
+    public static async postResponse(msg: any, config: IAgencyConfig) {
+        const body = await Agency.packMsg(msg, config)
+        const myOptions: request.OptionsWithUri = {
+            body,
+            headers: {
+                'content-type': 'application/octet-stream',
+            },
+            method: 'POST',
+            uri: config.webhook,
+        }
+        await request.post(myOptions)
+    }
+
     public readonly Ready: Promise<undefined>
     public config: IAgencyConfig
-    private extn: Extensions
     private protocols: Protocol[]
 
     constructor(protocols: Protocol[]) {
         this.Ready = new Promise(async (res, rej) => {
             try {
-                this.extn = new vcx.Extensions()
-                const handle = this.extn.getWalletHandle()
-                const [ did, verkey ] = await indy.createAndStoreMyDid(handle, {})
+                const vcxConfig = JSON.parse(fs.readFileSync('/etc/verity-server/vcxconfig.json').toString())
                 this.config = {
                     fromDID: '',
-                    fromVK: '',
-                    myDID: did,
-                    myVerkey: verkey,
+                    fromVK: 'Gp1snkUCzZ9eccYDJxSCnoc1rnwoYLmPosiuArsWzjz5',
+                    myDID: vcxConfig.institution_did,
+                    myVerkey: vcxConfig.institution_verkey,
+                    webhook: '',
                 }
                 this.protocols = protocols
                 this.protocols.forEach((protocol) => { protocol.updateConfig(this.config) })
+                console.log('VerityConfig: ', this.config)
                 res()
             } catch (e) {
                 rej(e)
@@ -47,19 +77,28 @@ export class Agency {
         })
     }
 
+
+
+
+
+    public setWebhook(webhook: string) {
+        this.config.webhook = webhook
+        this.protocols.forEach((protocol) => { protocol.updateConfig(this.config) })
+    }
+
     public async newMessage(message: Buffer) {
         try {
-            const unpackedMsg1 = await this.unpackMsg(message)
+            const unpackedMsg1 = await Agency.unpackMsg(message)
             const messageString = unpackedMsg1.toString('utf8')
             const outerMessage = JSON.parse(messageString)
-            const fullyUnpacked = await this.unpackMsg(outerMessage.message)
+            const fullyUnpacked = await Agency.unpackMsg(Buffer.from(outerMessage.message))
             const unpacked = JSON.parse(fullyUnpacked.toString('utf8'))
             const details = JSON.parse(unpacked.message)
             for (let i = 0; i <= this.protocols.length; i++) {
-                const valid = this.protocols[i].router(details)
+                const valid = this.protocols[i].router(details, this)
                 if (valid) { break }
                 if (i === this.protocols.length - 1) {
-                    this.generateProblemReport('Not a supported message type!')
+                    this.generateProblemReport(`Not a supported message type! ${details['@type']}`)
                 }
             }
         } catch (e) {
@@ -68,7 +107,7 @@ export class Agency {
     }
 
     public async provision(packedMessage: Buffer, res: Response) {
-        const message = await this.unpackMsg(packedMessage)
+        const message = await Agency.unpackMsg(packedMessage)
         const messageString = message.toString('utf8')
         const outerMessage = JSON.parse(messageString)
         const jsonMessage = JSON.parse(outerMessage.message)
@@ -99,7 +138,7 @@ export class Agency {
      * GET for my did & verkey
      * new agent message CONNECT with:
      * {
-     * @type: 'vs.service/provision/1.0/connect' 
+     * @type: 'vs.service/provision/1.0/connect'
      * fromDID: string
      * fromDIDVerKey: string
      * }
@@ -121,10 +160,7 @@ export class Agency {
             withPairwiseDID: this.config.myDID,
             withPairwiseDIDVerKey: this.config.myVerkey,
         }
-        const receiverKeys = JSON.stringify([this.config.fromVK])
-        const response = this.extn.packMessage({data: Buffer.from(JSON.stringify(connectResponse)),
-            keys: receiverKeys, sender: this.config.myVerkey})
-
+        const response = Agency.packMsg(connectResponse, this.config)
         return response
     }
 
@@ -143,10 +179,7 @@ export class Agency {
         const connectResponse = {
             ['@type']: 'vs.service/provision/1.0/signup_response',
         }
-        const receiverKeys = JSON.stringify([this.config.fromVK])
-        const response = this.extn.packMessage({data: Buffer.from(JSON.stringify(connectResponse)),
-            keys: receiverKeys, sender: this.config.myVerkey})
-
+        const response = Agency.packMsg(connectResponse, this.config)
         return response
     }
 
@@ -168,16 +201,8 @@ export class Agency {
             withPairwiseDID: this.config.myDID,
             withPairwiseDIDVerKey: this.config.myVerkey,
         }
-        const receiverKeys = JSON.stringify([this.config.fromVK])
-        const response = this.extn.packMessage({data: Buffer.from(JSON.stringify(connectResponse)),
-            keys: receiverKeys, sender: this.config.myVerkey})
-
+        const response = Agency.packMsg(connectResponse, this.config)
         return response
-    }
-
-    private async unpackMsg(msg: Buffer) {
-        const unpackedMsg = await this.extn.unpackMessage({ data: msg })
-        return unpackedMsg
     }
 
     private generateProblemReport(message: string) {
