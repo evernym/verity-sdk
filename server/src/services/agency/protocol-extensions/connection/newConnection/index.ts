@@ -35,8 +35,8 @@ export class NewConnection {
             await this.myConnection.updateState()
             this.state = await this.myConnection.getState()
             if (this.state === vcx.StateType.Accepted) {
-                Agency.inMemDB.setConnection(this.message['@id'], this.myConnection)
-                const statusReport = this.generateStatusReport(0, this.message['@id'])
+                Agency.inMemDB.setConnection(this.message.connectionDetail.sourceId, this.myConnection)
+                const statusReport = this.generateStatusReport(0, this.message.connectionDetail.sourceId)
                 const response = await Agency.packMsg(statusReport, this.config)
                 Agency.postResponse(response, this.config)
             } else {
