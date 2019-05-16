@@ -14,7 +14,7 @@ import org.json.JSONObject;
  * }
  */
 public class Connection extends Protocol {
-    private static String type = "vs.service/connect/0.1/new-connection";
+    private static String type = "vs.service/connection/0.1/new_connection";
     private String sourceId;
     private String phoneNumber = null;
     

@@ -224,7 +224,7 @@ Initiates the process to connect with a user
 
 ```json
 {
-    "@type": "vs.service/connect/0.1/new-connection",
+    "@type": "vs.service/connection/0.1/new_connection",
     "@id": "abcdefg-1234-5678-hijk",
     "connectionDetail":{
         "sourceId": "CONN_iAmAConnId",
@@ -253,7 +253,7 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 
 ```json
 {
-    "@type": "vs.service/connect/0.1/problem-report",
+    "@type": "vs.service/connection/0.1/problem_report",
     #@id": "123456789-abcdefghi-zzzz",
     "~thread": {
         "pthid": "abcdefg-1234-5678-hijk"
@@ -276,7 +276,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "vs.service/connect/0.1/status",
+    "@type": "vs.service/connection/0.1/status",
     "@id": '111111-2222222'
     "~thread": {
         "thid": "abcdefg-1234-5678-hijk",

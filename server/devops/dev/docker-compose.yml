@@ -4,6 +4,7 @@ services:
 
   verity-server:
     container_name: verity-server
+    network_mode: host
     build:
       context: .
       dockerfile: verity-server.dockerfile
