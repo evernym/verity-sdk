@@ -18,7 +18,6 @@ export class Connection extends Protocol {
     }
 
     public router(message: IAgentMessage) {
-        console.log('checking type: ', message['@type'])
         switch (message['@type']) {
             case 'vs.service/connection/0.1/new_connection':
                 const myConnection = new NewConnection(message, this.config)

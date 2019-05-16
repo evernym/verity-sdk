@@ -2,6 +2,7 @@ import { Response } from 'express'
 import fs = require('fs')
 import * as vcx from 'node-vcx-wrapper'
 import * as request from 'request-promise-native'
+import { DataStore } from '../storage/appStorage'
 import { Protocol } from './protocol-extensions'
 
 export type AgencyMessageTypes =
@@ -22,6 +23,8 @@ export interface IAgencyConfig {
 
 export class Agency {
 
+    public static inMemDB = new DataStore()
+
     public static async unpackMsg(msg: Buffer) {
         const extn = new vcx.Extensions()
         const unpackedMsg = await extn.unpackMessage({ data: msg })
@@ -36,8 +39,6 @@ export class Agency {
 
         return packedMsg
     }
-
-
 
     public static async postResponse(msg: any, config: IAgencyConfig) {
         const body = await Agency.packMsg(msg, config)
@@ -76,10 +77,6 @@ export class Agency {
             }
         })
     }
-
-
-
-
 
     public setWebhook(webhook: string) {
         this.config.webhook = webhook

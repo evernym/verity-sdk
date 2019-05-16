@@ -1,6 +1,6 @@
 import * as vcx from 'node-vcx-wrapper'
-import uuid = require('uuid');
-import { IAgentMessage } from '../..';
+import uuid = require('uuid')
+import { IAgentMessage } from '../..'
 import { Agency, IAgencyConfig } from '../../../../agency'
 
 export class NewConnection {
@@ -9,7 +9,6 @@ export class NewConnection {
     private myConnection: vcx.Connection
     private state: vcx.StateType
 
-    // TODO: pass full message with thread id
     constructor(message: IAgentMessage, config: IAgencyConfig) {
         this.message = message
         this.config = config
@@ -36,7 +35,8 @@ export class NewConnection {
             await this.myConnection.updateState()
             this.state = await this.myConnection.getState()
             if (this.state === vcx.StateType.Accepted) {
-                const statusReport = this.generateStatusReport(0, 'connection established')
+                Agency.inMemDB.setConnection(this.message['@id'], this.myConnection)
+                const statusReport = this.generateStatusReport(0, this.message['@id'])
                 const response = await Agency.packMsg(statusReport, this.config)
                 Agency.postResponse(response, this.config)
             } else {
@@ -44,12 +44,6 @@ export class NewConnection {
             }}, 20000)
     }
 
-
-
-
-
-
-    // TODO: get thid from full message
     private async generateStatusReport(status: number, statusMessage: string) {
         return {
             '@id': uuid(),
