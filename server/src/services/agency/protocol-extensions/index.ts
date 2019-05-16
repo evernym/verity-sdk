@@ -1,6 +1,7 @@
 import { Agency, IAgencyConfig } from '..'
 import { ConfigurationProtocolTypes } from './configuration'
 import { ConnectionProtocolTypes } from './connection'
+import { ProvableQuestionProtocolTypes } from './provable-question'
 
 export interface IAgentMessage {
     '@type': ProtocolTypes
@@ -11,6 +12,7 @@ export interface IAgentMessage {
 export type ProtocolTypes =
 | ConnectionProtocolTypes
 | ConfigurationProtocolTypes
+| ProvableQuestionProtocolTypes
 
 export abstract class Protocol {
 

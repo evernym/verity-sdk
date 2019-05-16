@@ -14,15 +14,15 @@ export class DataStore {
         Connection: {},
     }
 
-    public setConnection(did: string, connection: vcx.Connection) {
-        this.store.Connection[did] = connection
+    public setConnection(id: string, connection: vcx.Connection) {
+        this.store.Connection[id] = connection
     }
 
-    public getConnection(did: string) {
+    public getConnection(id: string): vcx.Connection | undefined {
         try {
-            return this.store.Connection[did]
+            return this.store.Connection[id]
         } catch (e) {
-            return 'No connection with that DID exists'
+            return undefined
         }
     }
 }
