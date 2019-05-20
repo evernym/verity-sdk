@@ -1,4 +1,4 @@
----
+
 .kaniko-build:
   only:
     refs:
@@ -84,18 +84,15 @@ make_jar:
       - sdk/java-sdk/target/java-sdk*.jar
     expire_in: 1 week
 
-# upload_to_maven:
-#   stage: deploy
-#   extends: .tags
-#   environment:
-#     name: VCXauth
-#     url: https://ipas-ore-pe001.corp.evernym.com/
-#   variables:
-#     KRK_REPO: 'internal'
-#   script:
-#     - /usr/bin/cicd/upload.sh builds/*.deb
-#   dependencies:
-#     - make_deb
-#   only:
-#     - tags@cs/vcxauth
-#   when: on_success
+upload_to_maven:
+  stage: deploy
+  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  extends: .tags
+  script:
+    - ./devops/maven/upload.sh
+  dependencies:
+    - make_jar
+  when: on_success
+  only:
+    refs:
+      - "java-sdk@spencer.holman/verity-sdk"
