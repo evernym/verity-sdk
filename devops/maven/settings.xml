@@ -4,9 +4,9 @@
       <!-- id is a unique identifier for a single repository.-->
       <id>io.cloudrepo</id>
       <!-- Email Address of the Repository User (Account Owner Credentials WILL NOT WORK). -->
-      <username>dev-services@evernym.com</username>
+      <username>dev-services+verity-java-sdk@evernym.com</username>
       <!-- Password of the Repository User. -->
-      <password>badpass1</password>
+      <password>repository-user-password</password>
     </server>
   </servers>
 </settings>

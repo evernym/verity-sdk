@@ -95,6 +95,7 @@ upload_to_maven:
   when: on_success
   only:
     refs:
-      - "master@dev/verity/verity-sdk"
+      - "master@spencerholman/verity-sdk"
+      # - "master@dev/verity/verity-sdk"
     changes:
       - sdk/java-sdk/
