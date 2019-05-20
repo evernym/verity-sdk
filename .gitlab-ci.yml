@@ -98,4 +98,4 @@ upload_to_maven:
       - "master@spencer.holman/verity-sdk"
       # - "master@dev/verity/verity-sdk"
     changes:
-      - sdk/java-sdk/
+      - sdk/java-sdk/*
