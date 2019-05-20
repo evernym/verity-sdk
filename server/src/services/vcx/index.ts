@@ -11,7 +11,7 @@ export class Vcx {
         try {
             console.log(this.getConfig())
             await vcx.initVcxWithConfig(this.getConfig())
-            vcx.defaultLogger('trace')
+            vcx.defaultLogger('warn')
         } catch (e) {
             throw e
         }

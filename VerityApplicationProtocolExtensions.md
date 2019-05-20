@@ -385,14 +385,7 @@ Verity generated message that gives human readable indications of the current st
         "seqnum": 3
     },
     "status": 1,
-    "message": JSON.stringify({
-      "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/answer",
-      "response.@sig": {
-        "signature": "wK0/2hGn7Auf831PESB9uOD1YgruPIRjhqfdPH8i2cUcN/YAhaYxN8fAWSLo9bmjILd+1sJCn6FvghmY5+H8CA==",
-        "sig_data": "PHVuaXF1ZV9pZGVudGlmaWVyX2ErMjAxOC0xMi0xM1QxNzowMDowMCswMDAwPg==",
-        "timestamp": "2018-12-13T17:29:34+0000"
-      }
-    })
+    "message": "Yes, I'm trying to login"
 }
 ```
 #### Attributes
