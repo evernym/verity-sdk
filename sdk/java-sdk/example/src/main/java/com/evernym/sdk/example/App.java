@@ -49,10 +49,10 @@ public class App {
     }
 
     private static void startListening() throws IOException, InterruptedException {
-        Listener listener = new Listener(App.port, (String encryptedMessageFromAgency) -> {
+        Listener listener = new Listener(App.port, (String encryptedMessageFromVerity) -> {
             try {
-                JSONObject message = MessagePackaging.unpackMessageFromAgency(verityConfig, encryptedMessageFromAgency.getBytes());
-                System.out.println("New message from agency: " + message.toString());
+                JSONObject message = MessagePackaging.unpackMessageFromVerity(verityConfig, encryptedMessageFromVerity.getBytes());
+                System.out.println("New message from verity: " + message.toString());
                 handleMessage(message);
             } catch(Exception ex) {
                 ex.printStackTrace();

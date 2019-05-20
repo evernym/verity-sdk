@@ -19,21 +19,21 @@ public abstract class Protocol {
     }
     
     /**
-     * Packs the connection message for the agency
+     * Packs the connection message for the verity
      * @param verityConfig an instance of VerityConfig that has been initialized with your wallet and key details
-     * @return Encrypted connection message ready to be sent to the agency
+     * @return Encrypted connection message ready to be sent to the verity
      * @throws InterruptedException
      * @throws ExecutionException
      * @throws IndyException
      */
     public byte[] getMessage(VerityConfig verityConfig) throws InterruptedException, ExecutionException, IndyException {
-        return MessagePackaging.packMessageForAgency(verityConfig, toString());
+        return MessagePackaging.packMessageForVerity(verityConfig, toString());
     }
 
     public void sendMessage(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        // TODO: Switch on verityConfig.getAgencyProtocol
+        // TODO: Switch on verityConfig.getVerityProtocol
         Transport transport = new HTTPTransport();
-        transport.sendMessage(verityConfig.getAgencyUrl(), getMessage(verityConfig));
+        transport.sendMessage(verityConfig.getVerityUrl(), getMessage(verityConfig));
     }
 
     public abstract String toString();

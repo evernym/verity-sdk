@@ -14,9 +14,9 @@ import org.json.JSONObject;
 public class VerityConfig {
     protected String walletName;
     protected String walletKey;
-    protected String agencyUrl;
-    protected String agencyPublicVerkey;
-    protected String agencyPairwiseVerkey;
+    protected String verityUrl;
+    protected String verityPublicVerkey;
+    protected String verityPairwiseVerkey;
     protected String sdkPairwiseVerkey;
     protected String webhookUrl;
     protected Wallet walletHandle;
@@ -26,9 +26,9 @@ public class VerityConfig {
         JSONObject config = new JSONObject(configJson);
         this.walletName = config.getString("walletName");
         this.walletKey = config.getString("walletKey");
-        this.agencyUrl = config.getString("agencyUrl");
-        this.agencyPublicVerkey = config.getString("agencyPublicVerkey");
-        this.agencyPairwiseVerkey = config.getString("agencyPairwiseVerkey");
+        this.verityUrl = config.getString("verityUrl");
+        this.verityPublicVerkey = config.getString("verityPublicVerkey");
+        this.verityPairwiseVerkey = config.getString("verityPairwiseVerkey");
         this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
         this.webhookUrl = config.getString("webhookUrl");
         String walletConfig = new JSONObject().put("id", walletName).toString();
@@ -56,29 +56,29 @@ public class VerityConfig {
         comMethod.put("type", "webhook");
         comMethod.put("value", this.webhookUrl);
         message.put("comMethod", comMethod);
-        return MessagePackaging.packMessageForAgency(this, message.toString());
+        return MessagePackaging.packMessageForVerity(this, message.toString());
     }
 
     public void sendUpdateWebhookMessage(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
         // TODO: Switch on transport type
         Transport transport = new HTTPTransport();
-        transport.sendMessage(verityConfig.getAgencyUrl(), getUpdateWebhookMessage());
+        transport.sendMessage(verityConfig.getVerityUrl(), getUpdateWebhookMessage());
     }
 
     public void closeWallet() throws InterruptedException, ExecutionException, IndyException {
         walletHandle.closeWallet().get();
     }
 
-    public String getAgencyUrl() {
-        return agencyUrl;
+    public String getVerityUrl() {
+        return verityUrl;
     }
 
-    public String getAgencyPublicVerkey() {
-        return agencyPublicVerkey;
+    public String getVerityPublicVerkey() {
+        return verityPublicVerkey;
     }
 
-    public String getAgencyPairwiseVerkey() {
-        return agencyPairwiseVerkey;
+    public String getVerityPairwiseVerkey() {
+        return verityPairwiseVerkey;
     }
 
     public String getSdkPairwiseVerkey() {

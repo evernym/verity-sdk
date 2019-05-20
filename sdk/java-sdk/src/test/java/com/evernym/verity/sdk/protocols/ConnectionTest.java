@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 import com.evernym.verity.sdk.utils.MessagePackaging;
@@ -20,8 +19,8 @@ import org.junit.Test;
 public class ConnectionTest {
 
     public class TestWallet {
-        String agencyPublicVerkey;
-        String agencyPairwiseVerkey;
+        String verityPublicVerkey;
+        String verityPairwiseVerkey;
         String sdkPairwiseVerkey;
 
         public TestWallet(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
@@ -31,21 +30,21 @@ public class ConnectionTest {
             Wallet walletHandle = Wallet.openWallet(walletConfig, walletCredentials).get();
             
             DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.agencyPublicVerkey = theirResult.getVerkey();
+            this.verityPublicVerkey = theirResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.agencyPairwiseVerkey = theirPairwiseResult.getVerkey();
+            this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
             this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
 
             walletHandle.closeWallet().get();
         }
 
-        String getAgencyPublicVerkey() {
-            return agencyPublicVerkey;
+        String getVerityPublicVerkey() {
+            return verityPublicVerkey;
         }
 
-        String getAgencyPairwiseVerkey() {
-            return agencyPairwiseVerkey;
+        String getVerityPairwiseVerkey() {
+            return verityPairwiseVerkey;
         }
 
         String getSdkPairwiseVerkey() {
@@ -57,14 +56,14 @@ public class ConnectionTest {
         String walletName = "java_test_wallet";
         String walletKey = "12345";
         String webhookUrl = "http://localhost:3000";
-        String agencyUrl = "http://localhost:3000";
+        String verityUrl = "http://localhost:3000";
         TestWallet testWallet = new TestWallet(walletName, walletKey);
         JSONObject config = new JSONObject();
         config.put("walletName", walletName);
         config.put("walletKey", walletKey);
-        config.put("agencyUrl", agencyUrl);
-        config.put("agencyPublicVerkey", testWallet.getAgencyPublicVerkey());
-        config.put("agencyPairwiseVerkey", testWallet.getAgencyPairwiseVerkey());
+        config.put("verityUrl", verityUrl);
+        config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
+        config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
         config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
         config.put("webhookUrl", webhookUrl);
         return new VerityConfig(config.toString());
@@ -79,7 +78,7 @@ public class ConnectionTest {
             Connection connection = new Connection(sourceId);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), connection.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
+            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
             assertEquals(connection.toString(), unpackedMessage.toString());
             String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
             assertEquals(sourceId, currentSourceId);
@@ -105,7 +104,7 @@ public class ConnectionTest {
             Connection connection = new Connection(sourceId, phoneNumber);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), connection.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
+            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
             assertEquals(connection.toString(), unpackedMessage.toString());
             String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
             assertEquals(sourceId, currentSourceId);

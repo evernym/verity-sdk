@@ -16,8 +16,8 @@ import org.junit.Test;
 public class MessagePackagingTest {
 
     public class TestWallet {
-        String agencyPublicVerkey;
-        String agencyPairwiseVerkey;
+        String verityPublicVerkey;
+        String verityPairwiseVerkey;
         String sdkPairwiseVerkey;
 
         public TestWallet(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
@@ -27,21 +27,21 @@ public class MessagePackagingTest {
             Wallet walletHandle = Wallet.openWallet(walletConfig, walletCredentials).get();
             
             DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.agencyPublicVerkey = theirResult.getVerkey();
+            this.verityPublicVerkey = theirResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.agencyPairwiseVerkey = theirPairwiseResult.getVerkey();
+            this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
             this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
 
             walletHandle.closeWallet().get();
         }
 
-        String getAgencyPublicVerkey() {
-            return agencyPublicVerkey;
+        String getVerityPublicVerkey() {
+            return verityPublicVerkey;
         }
 
-        String getAgencyPairwiseVerkey() {
-            return agencyPairwiseVerkey;
+        String getVerityPairwiseVerkey() {
+            return verityPairwiseVerkey;
         }
 
         String getSdkPairwiseVerkey() {
@@ -53,14 +53,14 @@ public class MessagePackagingTest {
         String walletName = "java_test_wallet";
         String walletKey = "12345";
         String webhookUrl = "http://localhost:3000";
-        String agencyUrl = "http://localhost:3000";
+        String verityUrl = "http://localhost:3000";
         TestWallet testWallet = new TestWallet(walletName, walletKey);
         JSONObject config = new JSONObject();
         config.put("walletName", walletName);
         config.put("walletKey", walletKey);
-        config.put("agencyUrl", agencyUrl);
-        config.put("agencyPublicVerkey", testWallet.getAgencyPublicVerkey());
-        config.put("agencyPairwiseVerkey", testWallet.getAgencyPairwiseVerkey());
+        config.put("verityUrl", verityUrl);
+        config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
+        config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
         config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
         config.put("webhookUrl", webhookUrl);
         return new VerityConfig(config.toString());
@@ -72,11 +72,11 @@ public class MessagePackagingTest {
             VerityConfig verityConfig = getConfig();
             
             JSONObject testMessage = new JSONObject().put("hello", "world");
-            byte[] packedMessage = MessagePackaging.packMessageForAgency(verityConfig, testMessage.toString());
-            // Manually unpack first layer since agency will only pack once.
+            byte[] packedMessage = MessagePackaging.packMessageForVerity(verityConfig, testMessage.toString());
+            // Manually unpack first layer since verity will only pack once.
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), packedMessage).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromAgency(verityConfig, partiallyUnpackedMessage.getBytes());
+            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
             assertEquals(testMessage.toString(), unpackedMessage.toString());
 
             verityConfig.closeWallet();

@@ -145,4 +145,12 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>io.cloudrepo</id> <!-- Must Match the Unique Identifier in settings.xml -->
+      <name>My First Cloud Repo Repository</name>
+      <url>https://evernym.mycloudrepo.io/repositories/verity-java-sdk</url>
+    </repository>
+  </distributionManagement>
 </project>

@@ -1,9 +1,9 @@
 {
-  "walletName": "my_test_wallet",
+  "verityPairwiseVerkey": "GJ1SzoWzavQYfNL9XkaJdrQejfztN4XqdsiV4ct3LXKL",
+  "verityPublicVerkey": "GJ1SzoWzavQYfNL9XkaJdrQejfztN4XqdsiV4ct3LXKL",
+  "verityUrl": "http://localhost:8080/msg",
+  "sdkPairwiseVerkey": "Fx2Y1Vmu82heKxpbEeiUi22HjRBRRbzwbkeYThDh3So7",
   "walletKey": "12345",
-  "agencyUrl": "http://localhost:3000",
-  "agencyPublicVerkey": "5pfFLpndNyVet3VcW5ANRzRNdRyaCrvK8QD4YzdoDZLh",
-  "agencyPairwiseVerkey": "vt6Kw8vXCkw6FnvLV27xwnD1nQJ5jpuxz4tjgU4sWfR",
-  "sdkPairwiseVerkey": "5MEGcZRxKcJftcmQVXZMRG1XyVFWWRhK9TfULVkbm1QQ",
+  "walletName": "java-sdk-wallet",
   "webhookUrl": "http://localhost:4000"
 }
