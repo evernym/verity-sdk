@@ -78,7 +78,7 @@ make_jar:
   extends: .tags
   script:
     - sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' sdk/java-sdk/pom.xml
-    - cd sdk/java-sdk/ && mvn package
+    - cd sdk/java-sdk/ && mvn package -DskipTests
   artifacts:
     paths:
       - sdk/java-sdk/target/java-sdk*.jar
