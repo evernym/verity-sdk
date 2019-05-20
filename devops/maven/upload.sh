@@ -10,7 +10,6 @@ sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' pom.xml
 
 if [[ $IO_CLOUDREPO_ACCOUNT_PASSWORD == *[!\ ]* ]] ; then
   sed -i "s/repository-user-password/$IO_CLOUDREPO_ACCOUNT_PASSWORD/g" $SETTINGS_PATH
-  cat $SETTINGS_PATH # REMOVE ME!! Just debugging unauthorized errors
   mvn --errors deploy --settings $SETTINGS_PATH
 else
   echo "Environment variable IO_CLOUDREPO_ACCOUNT_PASSWORD is not defined"
