@@ -1,7 +1,6 @@
 package com.evernym.verity.sdk.protocols;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -31,7 +30,7 @@ public abstract class Protocol {
     }
 
     public void sendMessage(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        // TODO: Switch on verityConfig.getVerityProtocol
+        // Later we can switch on verityConfig.getVerityProtocol
         Transport transport = new HTTPTransport();
         transport.sendMessage(verityConfig.getVerityUrl(), getMessage(verityConfig));
     }
