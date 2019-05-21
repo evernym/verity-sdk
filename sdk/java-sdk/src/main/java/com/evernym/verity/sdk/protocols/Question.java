@@ -1,8 +1,13 @@
 package com.evernym.verity.sdk.protocols;
 
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
+import org.bouncycastle.jcajce.provider.digest.SHA3;
+import org.bouncycastle.jcajce.provider.digest.SHA3.DigestSHA3;
+import org.bouncycastle.util.encoders.Hex;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Question extends Protocol {
@@ -22,23 +27,29 @@ public class Question extends Protocol {
     private String questionDetail;
     private JSONArray validResponses;
 
-    public Question(String connectionId, String notificationTitle, String questionText, String questionDetail, String[] validResponses) {
+    public Question(String connectionId, String notificationTitle, String questionText, String questionDetail,
+            String[] validResponses) throws JSONException, UnsupportedEncodingException {
         super();
         this.connectionId = connectionId;
         this.notificationTitle = notificationTitle;
         this.questionText = questionText;
         this.questionDetail = questionDetail;
         this.validResponses = new JSONArray();
-        for(String validResponseString : validResponses) {
+        for (String validResponseString : validResponses) {
             JSONObject validResponse = new JSONObject();
             validResponse.put("text", validResponseString);
-            validResponse.put("nonce", validResponse + "#" + UUID.randomUUID().toString());
+            validResponse.put("nonce", getHashedMessage(this.questionText, validResponseString));
             this.validResponses.put(validResponse);
         }
     }
 
-    // TODO: Add support for external links
-    // TODO: Add constructor w/o question detail
+    private String getHashedMessage(String questionText, String responseOption) throws UnsupportedEncodingException {
+        DigestSHA3 sha3256 = new SHA3.Digest256();
+        sha3256.update(questionText.getBytes("UTF-8"));
+        sha3256.update(responseOption.getBytes("UTF-8"));
+        sha3256.update(UUID.randomUUID().toString().getBytes("UTF-8"));
+        return Hex.toHexString(sha3256.digest());
+    }
 
     @Override
     public String toString() {
