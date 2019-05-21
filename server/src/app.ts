@@ -1,11 +1,12 @@
+import bodyParser = require('body-parser')
 import express = require('express')
+import * as _sodium from 'libsodium-wrappers'
+import { Agency } from './services/agency'
+import { Configuration } from './services/agency/protocol-extensions/configuration'
+import { Connection } from './services/agency/protocol-extensions/connection'
+import { ProvableQuestion } from './services/agency/protocol-extensions/provable-question'
 import { PaymentRuntime } from './services/libnullpay'
 import { Vcx } from './services/vcx'
-import { initialiseSSE } from './transport/sse'
-import * as _sodium from 'libsodium-wrappers'
-import { KeyManager } from './services/key-management';
-import bodyParser = require('body-parser');
-import { Inbox } from './inbox';
 
 async function startServices() {
     try {
@@ -21,50 +22,61 @@ async function startServices() {
 }
 
 startServices().then(async () => {
-    const KM = new KeyManager()
-    await KM.setup()
-
-    const inbox = new Inbox()
-
-    let sseRes: any = undefined
-    let sseKeys = new Uint8Array
-
     console.log('Services successfully started')
+    console.log('Initializing Protocols in Agency')
+
+    const blankConfig = {
+        fromDID: '',
+        fromVK: '',
+        myDID: '',
+        myVerkey: '',
+        webhook: '',
+    }
+
+    /**
+     * Initialize protocols here you would like to plug into the agency
+     * All protocols must extend the abstract protocol class
+     */
+    const config = new Configuration(blankConfig)
+    const connection = new Connection(blankConfig)
+    const provableQuestion = new ProvableQuestion(blankConfig)
+
+    const agency = new Agency([
+        config,
+        connection,
+        provableQuestion
+    ])
+
+    await agency.Ready
+    console.log('Agency services successfully started')
+
     const app = express()
     const port = 8080
 
-    app.use(bodyParser.json())
+    app.use(bodyParser.raw())
     app.use(bodyParser.urlencoded({
-        extended: true
-    })); 
-    app.use(function(_req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-    });
-
-    app.post('/handshake', async (_req, res) => {
-        sseKeys = Uint8Array.from(_req.body)
-        console.log('sseKeys', sseKeys)
-        res.json(KM.returnPublicKeyTransport())
-    })
-
-    app.get('/sse-handshake', async (req, res) => {
-        console.log('new connection has requested sse stream !', req.ip)
-        await initialiseSSE(req, res)
-        sseRes = res
-        const response = JSON.stringify({ msg: 'SSE_ESTABLISHED', status: 0 })
-        res.write(`data: ${response}\n\n`)
-    })
-
-    app.post('/msg', async (req, _res) => {
-        console.log(`new inboxed message:`, req.body)
-        inbox.newMessage(req.body.msg, KM.returnKeys(), sseRes, sseKeys)
-        _res.sendStatus(200)
+        extended: true,
+    }))
+    app.use((_R, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*')
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+        next()
     })
 
     app.listen(port, () => console.log(`express server has started and is listening on port ${port}`))
-}).catch(e => {
-    
+
+    app.get('/agency', async (_R, res) => {
+        res.send({ DID: agency.config.myDID, verKey: agency.config.myVerkey })
+    })
+
+    app.post('/agency', async ( req, res) => {
+        agency.provision(req.body, res)
+    })
+
+    app.post('/msg', async (req, res) => {
+        agency.newMessage(req.body)
+        res.sendStatus(200)
+    })
+}).catch((e) => {
     console.log('Services NOT started! Error: ', e)
 })

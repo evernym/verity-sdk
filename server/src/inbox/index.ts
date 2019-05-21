@@ -1,25 +1,30 @@
-import { KeyPair } from 'libsodium-wrappers';
-import { PackUnpack } from 'pack-unpack';
-import { protocolExtensionRouter } from '../protocol-extensions'
-import { Response } from 'express';
+// import { KeyPair } from 'libsodium-wrappers';
+// import { PackUnpack } from 'pack-unpack';
+// import { protocolExtensionRouter } from '../services/agency/protocol-extensions'
+// import { Response } from 'express';
+// import { Agency } from '../services/agency'
 
-export class Inbox {
+// export interface IProtocols {
+//     agency: Agency
+// }
 
-    private packUnpack: PackUnpack = new PackUnpack()
-    private setup: boolean
+// export class Inbox {
 
-    constructor() {
-        this.setup = false
-    }
+//     private packUnpack: PackUnpack = new PackUnpack()
+//     private setup: boolean
 
-    public async newMessage(message: string, keypair: KeyPair, _sseHandle: Response, APK: Uint8Array) {
-        if (!this.setup) {
-            await this.packUnpack.Ready
-            this.setup = true
-        }
+//     constructor() {
+//         this.setup = false
+//     }
 
-        const unpackedMessage = await this.packUnpack.unpackMessage(message, keypair)
-        const msg = JSON.parse(unpackedMessage.message)
-        protocolExtensionRouter(msg, _sseHandle, keypair, APK)
-    }
-}
+//     public async newMessage(message: string, keypair: KeyPair, _sseHandle: Response, _APK: Uint8Array) {
+//         if (!this.setup) {
+//             await this.packUnpack.Ready
+//             this.setup = true
+//         }
+
+//         const unpackedMessage = await this.packUnpack.unpackMessage(message, keypair)
+//         const msg = JSON.parse(unpackedMessage.message)
+//         protocolExtensionRouter(msg)
+//     }
+// }

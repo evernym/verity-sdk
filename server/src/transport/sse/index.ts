@@ -1,6 +1,6 @@
 import { Request, Response } from 'express-serve-static-core';
 
-export async function initialiseSSE(_REQ: Request, res: Response) {
+export async function initializeSSE(_REQ: Request, res: Response) {
 
     res.set({
         'Access-Control-Allow-Origin': '*',
