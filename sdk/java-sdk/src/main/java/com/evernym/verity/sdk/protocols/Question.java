@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class ProvableQuestion extends Protocol {
+public class Question extends Protocol {
     // Message Type Definitions
     public static String ASK_QUESTION_MESSAGE_TYPE = "vs.service/question/0.1/question";
     public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/question/0.1/problem-report";
@@ -17,13 +17,15 @@ public class ProvableQuestion extends Protocol {
     public static Integer ERROR_STATE = 2;
 
     private String connectionId;
+    private String notificationTitle;
     private String questionText;
     private String questionDetail;
     private JSONArray validResponses;
 
-    public ProvableQuestion(String connectionId, String questionText, String questionDetail, String[] validResponses) {
+    public Question(String connectionId, String notificationTitle, String questionText, String questionDetail, String[] validResponses) {
         super();
         this.connectionId = connectionId;
+        this.notificationTitle = notificationTitle;
         this.questionText = questionText;
         this.questionDetail = questionDetail;
         this.validResponses = new JSONArray();
@@ -41,10 +43,11 @@ public class ProvableQuestion extends Protocol {
     @Override
     public String toString() {
         JSONObject message = new JSONObject();
-        message.put("@type", ProvableQuestion.ASK_QUESTION_MESSAGE_TYPE);
+        message.put("@type", Question.ASK_QUESTION_MESSAGE_TYPE);
         message.put("@id", this.id);
         message.put("connection_id", this.connectionId);
         JSONObject question = new JSONObject();
+        question.put("notification_title", this.notificationTitle);
         question.put("question_text", this.questionText);
         question.put("question_detail", this.questionDetail);
         question.put("valid_responses", this.validResponses);

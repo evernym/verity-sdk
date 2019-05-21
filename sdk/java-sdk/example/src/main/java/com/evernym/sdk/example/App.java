@@ -6,7 +6,7 @@ import java.nio.file.Files;
 
 import com.evernym.verity.sdk.protocols.Connection;
 import com.evernym.verity.sdk.protocols.Protocols;
-import com.evernym.verity.sdk.protocols.ProvableQuestion;
+import com.evernym.verity.sdk.protocols.Question;
 import com.evernym.verity.sdk.utils.VerityConfig;
 
 import org.json.JSONObject;
@@ -31,10 +31,11 @@ public class App {
                 try {
                     System.out.println("Connection Accepted!!!");
                     App.connectionId = message.getString("message");
+                    String notificationTitle = "Challenge Question";
                     String questionText = "Hi Alice";
                     String questionDetail = "How are you today";
                     String[] validResponses = {"Great!", "Not so good"};
-                    ProvableQuestion provableQuestion = new ProvableQuestion(App.connectionId, questionText, questionDetail, validResponses);
+                    Question provableQuestion = new Question(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
                     provableQuestion.sendMessage(verityConfig);
                 } catch(Exception ex) {
                     ex.printStackTrace();
