@@ -70,8 +70,8 @@ syntax:
   image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
   script:
-    - cd sdk/java-sdk/ && mvn test
-    - cd server && npm run lint
+    - cd sdk/java-sdk/ && mvn test && cd -
+    - cd server && npm run lint && cd -
 
 make_jar:
   stage: build
