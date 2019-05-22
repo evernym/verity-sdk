@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
     apt-transport-https \
     default-jdk \
     wget \
-    tar
+    tar \
+    curl
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
     add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial master" && \
@@ -18,3 +19,7 @@ RUN cd /opt/ && \
 
 ENV M2_HOME=/opt/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
+
+# Install node.js
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get install -y nodejs
