@@ -62,7 +62,8 @@
 // }
 
 // export async function generateStatusReport(
-//     message: INewEnrollmentMessage, reportNo: StateType, responseHandle: Response, keypair: KeyPair, APK: Uint8Array) {
+//     message: INewEnrollmentMessage, reportNo: StateType, responseHandle: Response,
+//                                      keypair: KeyPair, APK: Uint8Array) {
 //     const statusReport: IEnrollStatusMessage = {
 //         '@type': 'vs.service/enroll/0.1/status',
 //         '@id': uuid(),

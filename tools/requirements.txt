@@ -1,2 +1,3 @@
 requests==2.21.0
 python3-indy==1.8.1
+python3-wrapper-vcx==0.2.4

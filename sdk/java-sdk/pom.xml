@@ -6,7 +6,7 @@
 
   <groupId>com.evernym.verity.sdk</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.9-SNAPSHOT</version>
 
   <name>java-sdk</name>
   <!-- FIXME change it to the project's website -->
@@ -139,13 +139,22 @@
           </executions>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.0.0</version>
-          <configuration>
-              <descriptorRefs>
+          <executions>
+            <execution>
+              <id>create-my-bundle</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+              <configuration>
+                <descriptorRefs>
                   <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
-          </configuration>
+                </descriptorRefs>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.jacoco</groupId>

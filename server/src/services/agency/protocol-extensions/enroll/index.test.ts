@@ -43,8 +43,6 @@
 //     responseHandle.write(JSON.stringify(statusReport))
 // }, 1000)
 
-
-
 // setTimeout(() => {
 //     statusReport.status = EnrollStatus.OfferReceived
 //     statusReport.message = 'The offer was received'

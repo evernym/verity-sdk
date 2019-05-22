@@ -1,5 +1,5 @@
-import { PackUnpack } from 'pack-unpack';
-import { KeyPair } from 'libsodium-wrappers';
+import { KeyPair } from 'libsodium-wrappers'
+import { PackUnpack } from 'pack-unpack'
 
 export interface IJSONKeyPair {
     keyType: KeyType,

@@ -8,6 +8,7 @@
     "build": "tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -p tsconfig.json",
+    "lint-fix": "tslint -p tsconfig.json --fix",
     "test": "jest --coverage",
     "test:watch": "jest --watchAll"
   },
