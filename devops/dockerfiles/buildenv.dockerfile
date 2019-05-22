@@ -23,3 +23,4 @@ ENV PATH=${M2_HOME}/bin:${PATH}
 # Install node.js and npm
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get install -y nodejs
+RUN npm i -g typescript tslint
