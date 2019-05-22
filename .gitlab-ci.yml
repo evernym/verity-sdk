@@ -71,6 +71,7 @@ syntax:
   extends: .tags
   script:
     - cd sdk/java-sdk/ && mvn test
+    - cd server && npm run lint
 
 make_jar:
   stage: build
