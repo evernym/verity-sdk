@@ -20,6 +20,6 @@ RUN cd /opt/ && \
 ENV M2_HOME=/opt/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
 
-# Install node.js
+# Install node.js and npm
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get install -y nodejs
