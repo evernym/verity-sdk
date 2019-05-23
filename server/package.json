@@ -35,7 +35,7 @@
     "express": "^4.16.4",
     "ffi": "^2.3.0",
     "indy-sdk": "^1.8.3-dev-1086",
-    "node-vcx-wrapper": "https://repo.corp.evernym.com/filely/npm/node-vcx-wrapper_0.2.42341556-8e99cb8_amd64.tgz",
+    "node-vcx-wrapper": "https://repo.corp.evernym.com/filely/npm/node-vcx-wrapper_0.2.43126324-d26ba20_amd64.tgz",
     "pack-unpack": "^1.1.4",
     "pg": "^7.10.0",
     "request": "^2.88.0",
