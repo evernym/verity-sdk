@@ -49,6 +49,7 @@
 
 stages:
   - docker-images
+  - mock-verity-image
   - test
   - build
   - deploy
@@ -81,6 +82,7 @@ verity-server-docker-build:
 
 verity-server-image-docker-build:
   extends: .kaniko-build
+  stage: mock-verity-image
   only:
     changes:
       - server/devops/dev/verity-server-image.dockerfile
