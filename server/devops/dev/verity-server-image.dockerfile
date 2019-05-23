@@ -6,4 +6,4 @@ RUN npm config set strict-ssl=false # FIXME: We need to get rid of this!! Pull f
 RUN npm install
 RUN npm install -g ts-node
 
-CMD ["sh", "-c", "nodemon ./build/src/app.js"] 
+CMD ["sh", "-c", "nodemon ./build/src/app.js"]
