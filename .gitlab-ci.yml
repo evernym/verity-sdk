@@ -66,7 +66,7 @@ buildenv-docker-build:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/buildenv.dockerfile'
     DOCKER_IMAGE_NAME: 'buildenv'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR'
-    DOCKER_PREP_COMMAND: '# none'
+    DOCKER_PREP_COMMAND: 'echo none'
 
 verity-server-docker-build:
   extends: .kaniko-build
@@ -88,7 +88,7 @@ verity-server-image-docker-build:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile'
     DOCKER_IMAGE_NAME: 'verity-server-image'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
-    DOCKER_PREP_COMMAND: '# none'
+    DOCKER_PREP_COMMAND: 'echo none'
 
 syntax:
   stage: test
