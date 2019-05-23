@@ -86,6 +86,7 @@ verity-server-image-docker-build:
   only:
     changes:
       - server/*
+      - server/devops/dev/verity-server-image.dockerfile
   dependencies:
     - verity-server-docker-build
   variables:
