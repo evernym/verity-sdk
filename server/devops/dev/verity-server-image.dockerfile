@@ -7,4 +7,3 @@ RUN npm install
 RUN npm install -g ts-node
 
 CMD ["sh", "-c", "nodemon ./build/src/app.js"] 
-# npm config set strict-ssl=false && 
