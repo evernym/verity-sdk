@@ -93,7 +93,7 @@ verity-server-image-docker-build:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile'
     DOCKER_IMAGE_NAME: 'verity-server-image'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
-    DOCKER_PREP_COMMAND: "sed -i 's/FROM verity-server/FROM $CI_REGISTRY_IMAGE\\/verity-server/g' server/devops/dev/verity-server-image.dockerfile"
+    DOCKER_PREP_COMMAND: "sed -i 's~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g' server/devops/dev/verity-server-image.dockerfile"
 
 syntax:
   stage: test
