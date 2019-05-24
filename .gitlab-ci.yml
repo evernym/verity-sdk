@@ -78,7 +78,8 @@ verity-server-docker-build:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server.dockerfile'
     DOCKER_IMAGE_NAME: 'verity-server'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
-    DOCKER_PREP_COMMAND: 'cd server && ./devops/dev/prepare-dev-environment.sh && cd -'
+    #DOCKER_PREP_COMMAND: 'cd server && ./devops/dev/prepare-dev-environment.sh && cd -'
+    DOCKER_PREP_COMMAND: 'echo none'
 
 verity-server-image-docker-build:
   extends: .kaniko-build
