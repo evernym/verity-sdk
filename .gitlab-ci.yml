@@ -44,7 +44,7 @@
         lFnjUUk49av67um43JHcinT5NFPuleZzkjaL/D8ueOrjXQDy05rwVdgmw9pXog4B
         Tw6APXtEnjfD2H8HOpOX/7ef4gWK0O1Q7A==
         -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
-    - echo $DOCKER_PREP_COMMAND && eval $DOCKER_PREP_COMMAND
+    - eval $DOCKER_PREP_COMMAND
     - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG
 
 stages:
@@ -86,6 +86,7 @@ verity-server-image-docker-build:
   only:
     changes:
       - server/*
+      - server/devops/dev/verity-server.dockerfile
       - server/devops/dev/verity-server-image.dockerfile
   dependencies:
     - verity-server-docker-build
