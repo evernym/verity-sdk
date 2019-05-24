@@ -3,6 +3,11 @@
 *.swp
 .code-workspace
 .code-workspace.code-workspace
+.vscode
+.settings
+.classpath
+.project
+
 # Created by https://www.gitignore.io/api/rust,linux,python
 # Edit at https://www.gitignore.io/?templates=rust,linux,python
 
