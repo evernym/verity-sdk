@@ -39,7 +39,7 @@ async def send_msg(url, my_wallet, message_json, agency_verkey):
 
     agent_message = await crypto.unpack_message(my_wallet, response.content)
 
-    return json.loads(agent_message)
+    return json.loads(agent_message.decode('utf-8'))
 
 
 async def register_agent(args):
@@ -122,7 +122,7 @@ async def register_agent(args):
     final_config = {
         "walletName": args.wallet_name,
         "walletKey": args.WALLET_KEY,
-        "verityUrl": f"{args.AGENCY_URL}/msg",
+        "verityUrl": "{}/msg".format(args.AGENCY_URL),
         "verityPublicVerkey": agency_info['verKey'],
         "verityPairwiseVerkey": their_verkey,
         "sdkPairwiseVerkey": my_verkey,
