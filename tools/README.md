@@ -13,7 +13,7 @@ And install the needed dependencies (inside the activated virtual environment)
 pip install -r requirements.txt
 ```
 
-Then you can run any of the scripts (inside the activated virtual environment) with 
+Then you can run any of the scripts (inside the activated virtual environment) with
 
 ```
 python provision_sdk.py
