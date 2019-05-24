@@ -10,6 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Builds and sends a new encrypted agent message for the Question protocol.
+ */
 public class Question extends Protocol {
     // Message Type Definitions
     public static String ASK_QUESTION_MESSAGE_TYPE = "vs.service/question/0.1/question";
@@ -27,8 +30,17 @@ public class Question extends Protocol {
     private String questionDetail;
     private JSONArray validResponses;
 
+    /**
+     * Create a new Question object
+     * @param connectionId the pairwise DID of the connection you want to send the question to
+     * @param notificationTitle the title of the push notification (currently only rendered in Connect.Me when questionDetail is omitted)
+     * @param questionText The main text of the question (included in the message the Connect.Me user signs with their private key)
+     * @param questionDetail Any additional information about the question
+     * @param validResponses The possible responses. See the Verity Protocol documentation for more information on how Connect.Me will render these options.
+     * @throws UnsupportedEncodingException when the encoding of the question_text and valid_responses are not encoded in a a supported format (utf-8 recommended)
+     */
     public Question(String connectionId, String notificationTitle, String questionText, String questionDetail,
-            String[] validResponses) throws JSONException, UnsupportedEncodingException {
+            String[] validResponses) throws UnsupportedEncodingException {
         super();
         this.connectionId = connectionId;
         this.notificationTitle = notificationTitle;
@@ -51,6 +63,9 @@ public class Question extends Protocol {
         return Hex.toHexString(sha3256.digest());
     }
 
+    /**
+     * Returns the JSON string of the Question message
+     */
     @Override
     public String toString() {
         JSONObject message = new JSONObject();

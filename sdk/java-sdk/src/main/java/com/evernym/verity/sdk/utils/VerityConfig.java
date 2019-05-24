@@ -11,6 +11,11 @@ import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.*;
 import org.json.JSONObject;
 
+/**
+ * An object used to hold the wallet handle and other configuration information. 
+ * An instance if this object is passed around to many different API calls. 
+ * It should be initialized the config output by the tools/provision_sdk.py script.
+ */
 public class VerityConfig {
     protected String walletName;
     protected String walletKey;
@@ -21,6 +26,13 @@ public class VerityConfig {
     protected String webhookUrl;
     protected Wallet walletHandle;
 
+    /**
+     * Initialize the VerityConfig object
+     * @param configJson the config output by the tools/provision_sdk.py script
+     * @throws InterruptedException when the wallet does not exist or Indy is unable to open it.
+     * @throws ExecutionException when the wallet does not exist or Indy is unable to open it.
+     * @throws IndyException when the wallet does not exist or Indy is unable to open it.
+     */
     public VerityConfig(String configJson) throws InterruptedException, ExecutionException, IndyException {
         // TODO: Validate config
         JSONObject config = new JSONObject(configJson);
@@ -36,6 +48,13 @@ public class VerityConfig {
         walletHandle = Wallet.openWallet(walletConfig, walletCredentials).get();
     }
 
+    /**
+     * Builds and encrypts the message to let Verity know what the SDK's endpoint is
+     * @return the encrypted message, ready to be POSTed to the agency endpoint
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
+     */
     public byte[] getUpdateWebhookMessage() throws InterruptedException, ExecutionException, IndyException {
         /*
             {
@@ -59,12 +78,26 @@ public class VerityConfig {
         return MessagePackaging.packMessageForVerity(this, message.toString());
     }
 
+    /**
+     * Sends a message to Verity to let it know what the SDK's endpoint is.
+     * @param verityConfig
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
+     */
     public void sendUpdateWebhookMessage(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
         // TODO: Switch on transport type
         Transport transport = new HTTPTransport();
         transport.sendMessage(verityConfig.getVerityUrl(), getUpdateWebhookMessage());
     }
 
+    /**
+     * Closes the wallet handle stored inside the VerityConfig object.
+     * @throws InterruptedException when there are errors closing the wallet
+     * @throws ExecutionException when there are errors closing the wallet
+     * @throws IndyException when there are errors closing the wallet
+     */
     public void closeWallet() throws InterruptedException, ExecutionException, IndyException {
         walletHandle.closeWallet().get();
     }

@@ -10,6 +10,9 @@ import com.evernym.verity.sdk.utils.*;
 
 import org.hyperledger.indy.sdk.IndyException;
 
+/**
+ * The base class for all protocols
+ */
 public abstract class Protocol {
     protected String id;
 
@@ -21,14 +24,22 @@ public abstract class Protocol {
      * Packs the connection message for the verity
      * @param verityConfig an instance of VerityConfig that has been initialized with your wallet and key details
      * @return Encrypted connection message ready to be sent to the verity
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws IndyException
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
      */
     public byte[] getMessage(VerityConfig verityConfig) throws InterruptedException, ExecutionException, IndyException {
         return MessagePackaging.packMessageForVerity(verityConfig, toString());
     }
 
+    /**
+     * Encrypts and sends a message to Verity
+     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
+     */
     public void sendMessage(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
         // Later we can switch on verityConfig.getVerityProtocol
         Transport transport = new HTTPTransport();

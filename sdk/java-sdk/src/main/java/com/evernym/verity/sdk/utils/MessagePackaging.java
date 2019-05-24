@@ -12,12 +12,12 @@ public class MessagePackaging {
 
     /**
      * Encrypts a message for the Evernym verity. This function should not be called directly because it is called by the individual protocol classes.
-     * @param walletContents an instance of WalletContents that has been initialized with your wallet details
+     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
      * @param message the message being sent
      * @return Encrypted message ready to be sent to the verity
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws IndyException
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
      */
     public static byte[] packMessageForVerity(VerityConfig verityConfig, String message) throws InterruptedException, ExecutionException, IndyException {
         String pairwiseReceiver = new JSONArray(new String[]{verityConfig.getVerityPairwiseVerkey()}).toString();
@@ -29,12 +29,12 @@ public class MessagePackaging {
 
     /**
      * Unpacks a message received from the Evernym verity
-     * @param walletContents an instance of WalletContents that has been initialized with your wallet details
+     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
      * @param message the message received from the Evernym verity
      * @return an unencrypted String message
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws IndyException
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
      */
     public static JSONObject unpackMessageFromVerity(VerityConfig verityConfig, byte[] message) throws InterruptedException, ExecutionException, IndyException {
         byte[] jwe = Crypto.unpackMessage(verityConfig.getWalletHandle(), message).get();

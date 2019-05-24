@@ -4,6 +4,17 @@
 
 This directory contains both the Java SDK and an example application that consumes the SDK.  The JAR file is available at https://evernym.mycloudrepo.io. See [below](#maven) for information on consuming this artifact.
 
+## Reference Documentation
+
+To generate the Javadoc reference documentation:
+
+```sh
+cd sdk/java-sdk
+mvn site
+```
+
+then open sdk/java-sdk/target/site/apidocs/index.html
+
 ## Steps to Run the Example Application (Ubuntu 16.04)
 
 1. Install libindy, Java 8 (JDK) and Maven
