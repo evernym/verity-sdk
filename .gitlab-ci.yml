@@ -44,7 +44,7 @@
         lFnjUUk49av67um43JHcinT5NFPuleZzkjaL/D8ueOrjXQDy05rwVdgmw9pXog4B
         Tw6APXtEnjfD2H8HOpOX/7ef4gWK0O1Q7A==
         -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
-    - echo $DOCKER_PREP_COMMAND && `$DOCKER_PREP_COMMAND`
+    - echo $DOCKER_PREP_COMMAND && eval $DOCKER_PREP_COMMAND
     - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG
 
 stages:
@@ -94,7 +94,7 @@ verity-server-image-docker-build:
     DOCKER_IMAGE_NAME: 'verity-server-image'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
     #DOCKER_PREP_COMMAND: 'sed "s~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g" -i server/devops/dev/verity-server-image.dockerfile'
-    DOCKER_PREP_COMMAND: 'sed "s~npm~brew~g" -i server/devops/dev/verity-server-image.dockerfile'
+    DOCKER_PREP_COMMAND: sed 's~npm~brew~g' -i server/devops/dev/verity-server-image.dockerfile
 
 syntax:
   stage: test
