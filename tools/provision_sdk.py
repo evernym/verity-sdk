@@ -16,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("AGENCY_URL")
     parser.add_argument("WALLET_KEY")
-    parser.add_argument("--wallet-name", help="optional name for libindy wallet")
+    parser.add_argument("--wallet-name", help="optional name for libindy wallet", default="wallet")
     # parser.add_argument("--wallet-type", help="optional type of libindy wallet")
     parser.add_argument("--verbose", action="store_true")
     return parser.parse_args()
@@ -46,7 +46,7 @@ async def register_agent(args):
     agency_info = get_agency_info(args.AGENCY_URL)
 
     ## Create a wallet
-    wallet_config = json.dumps({"id": args.wallet_name or 'wallet' })
+    wallet_config = json.dumps({"id": args.wallet_name})
     wallet_credentials = json.dumps({"key": args.WALLET_KEY})
 
     try:
