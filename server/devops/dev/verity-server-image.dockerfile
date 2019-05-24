@@ -1,4 +1,4 @@
-FROM verity-server
+FROM gitlab.corp.evernym.com:4567/spencer.holman/verity-sdk/verity-server
 ADD . /opt/mock-agency/.
 
 WORKDIR /opt/mock-agency
