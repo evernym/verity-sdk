@@ -19,12 +19,13 @@ public class App {
     public static void main( String[] args ) {
         try {
             // NOTE: Wallet must already exist. You can create it with the tools/provisioner/provision-sdk.py script
-            startListening(); 
+            startListening();
             verityConfig = new VerityConfig(readConfigFile());
             verityConfig.sendUpdateWebhookMessage(verityConfig);
 
             Protocols.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
                 JSONObject inviteDetails = new JSONObject(message.getString("message"));
+                System.out.print("Invite Details: ");
                 System.out.println(inviteDetails.toString());
             });
             Protocols.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
@@ -32,8 +33,8 @@ public class App {
                     System.out.println("Connection Accepted!!!");
                     App.connectionId = message.getString("message");
                     String notificationTitle = "Challenge Question";
-                    String questionText = "Hi Alice";
-                    String questionDetail = "How are you today";
+                    String questionText = "Hi Alice, how are you today?";
+                    String questionDetail = " ";
                     String[] validResponses = {"Great!", "Not so good"};
                     Question provableQuestion = new Question(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
                     provableQuestion.sendMessage(verityConfig);

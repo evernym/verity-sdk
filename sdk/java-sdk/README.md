@@ -61,7 +61,7 @@ then open sdk/java-sdk/target/site/apidocs/index.html
 
 	```
 	cd sdk/java-sdk/example
-	mvn install
+	mvn package
 	./run.sh
 	```
 
