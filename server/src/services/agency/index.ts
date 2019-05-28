@@ -63,7 +63,7 @@ export class Agency {
                 const vcxConfig = JSON.parse(fs.readFileSync('/etc/verity-server/vcxconfig.json').toString())
                 this.config = {
                     fromDID: '',
-                    fromVK: 'Gp1snkUCzZ9eccYDJxSCnoc1rnwoYLmPosiuArsWzjz5',
+                    fromVK: '',
                     myDID: vcxConfig.institution_did,
                     myVerkey: vcxConfig.institution_verkey,
                     webhook: '',

@@ -7,6 +7,7 @@ import time
 import os
 import sys
 import requests
+import logging
 
 from indy import did, wallet, crypto
 from indy.error import ErrorCode, IndyError
@@ -15,9 +16,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("AGENCY_URL")
     parser.add_argument("WALLET_KEY")
-    parser.add_argument("--wallet-name", help="optional name for libindy wallet")
+    parser.add_argument("--wallet-name", help="optional name for libindy wallet", default="wallet")
     # parser.add_argument("--wallet-type", help="optional type of libindy wallet")
-    parser.add_argument("--verbose", action="store_true") # FIXME: Doesn't support new indy logger
+    parser.add_argument("--verbose", action="store_true")
     return parser.parse_args()
 
 
@@ -38,14 +39,14 @@ async def send_msg(url, my_wallet, message_json, agency_verkey):
 
     agent_message = await crypto.unpack_message(my_wallet, response.content)
 
-    return json.loads(agent_message)
+    return json.loads(agent_message.decode('utf-8'))
 
 
 async def register_agent(args):
     agency_info = get_agency_info(args.AGENCY_URL)
 
     ## Create a wallet
-    wallet_config = json.dumps({"id": args.wallet_name or 'wallet' })
+    wallet_config = json.dumps({"id": args.wallet_name})
     wallet_credentials = json.dumps({"key": args.WALLET_KEY})
 
     try:
@@ -57,7 +58,7 @@ async def register_agent(args):
         else:
             print("An error occured creating the wallet")
             sys.exit(1)
-    
+
     my_wallet = await wallet.open_wallet(wallet_config, wallet_credentials)
     my_did, my_verkey = await did.create_and_store_my_did(my_wallet, json.dumps({}))
 
@@ -111,7 +112,7 @@ async def register_agent(args):
 
     response = await send_msg(args.AGENCY_URL, my_wallet, create_agent_msg, agency_info['verKey'])
 
-    # Use latest only in config. 
+    # Use latest only in config.
     response = json.loads(response['message'])
     their_did = response['withPairwiseDID']
     their_verkey = response['withPairwiseDIDVerKey']
@@ -121,11 +122,11 @@ async def register_agent(args):
     final_config = {
         "walletName": args.wallet_name,
         "walletKey": args.WALLET_KEY,
-        "agencyUrl": args.AGENCY_URL,
-        "agencyPublicVerkey": agency_info['verKey'],
-        "agencyPairwiseVerkey": their_verkey,
+        "verityUrl": "{}/msg".format(args.AGENCY_URL),
+        "verityPublicVerkey": agency_info['verKey'],
+        "verityPairwiseVerkey": their_verkey,
         "sdkPairwiseVerkey": my_verkey,
-        "webhookUrl": "<CHANGE ME>"
+        "webhookUrl": "http://localhost:4000" # TODO: Should eventually be "<CHANGE ME>"
     }
 
     ## Print sdk config (admin will place in config file)
@@ -139,9 +140,9 @@ async def main():
     args = parse_args()
 
     if args.verbose:
-        os.environ["RUST_LOG"] = "info"
+        logging.basicConfig(level=logging.INFO)
     else:
-        os.environ["RUST_LOG"] = "error"
+        logging.basicConfig(level=logging.ERROR)
 
     await register_agent(args)
 

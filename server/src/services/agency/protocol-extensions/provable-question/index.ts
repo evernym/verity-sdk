@@ -1,9 +1,9 @@
+import * as base64 from 'base-64'
+import { Connection } from 'node-vcx-wrapper'
 import * as vcx from 'node-vcx-wrapper'
+import uuid = require('uuid')
 import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
-import uuid = require('uuid');
-import * as base64 from 'base-64'
-import { Connection } from 'node-vcx-wrapper';
 
 export type ProvableQuestionProtocolTypes =
 | 'vs.service/question/0.1/question'
@@ -18,7 +18,7 @@ interface IProvableQuestion extends IAgentMessage {
         'valid_responses': [
             {'text': string, 'nonce': string},
             {'text': string, 'nonce': string}
-        ]
+        ],
     }
 }
 
@@ -45,19 +45,19 @@ export class ProvableQuestion extends Protocol {
             return
         } else {
             const question = {
-                '@type': 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/question',
                 '@id': uuid(),
+                '@type': 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/question',
                 'question_text': message.question.question_text,
                 'question_detail': message.question.question_detail,
-                'valid_responses': message.question.valid_responses
+                'valid_responses': message.question.valid_responses,
             }
             await connection.sendMessage({
                 msg: JSON.stringify(question),
                 type: 'Question',
-                title: 'Question'
+                title: 'Question',
             })
             const messageId = message['@id']
-            const statusReport = this.generateStatusReport(0, messageId, "Question sent")
+            const statusReport = this.generateStatusReport(0, messageId, 'Question sent')
             Agency.postResponse(statusReport, this.config)
 
             this.updateState(connection, message)
@@ -72,14 +72,14 @@ export class ProvableQuestion extends Protocol {
             messages = JSON.parse(messages)
             console.log(messages)
             let answer
-            for (const message of messages[0].msgs) {
-                if (message.type === 'Answer') {
+            for (const msg of messages[0].msgs) {
+                if (msg.type === 'Answer') {
                   if (answer) {
                     console.error('More then one "Answer" message')
                   } else {
-                    answer = JSON.parse(JSON.parse(message['decryptedPayload'])['@msg'])
+                    answer = JSON.parse(JSON.parse(msg['decryptedPayload'])['@msg'])
                   }
-                  await vcx.updateMessages({ msgJson: JSON.stringify([{ 'pairwiseDID': pairwiseDid, 'uids': [message.uid] }]) })
+                  await vcx.updateMessages({ msgJson: JSON.stringify([{ pairwiseDID: pairwiseDid, uids: [msg.uid] }]) })
                 }
               }
             if (answer) {
@@ -89,8 +89,8 @@ export class ProvableQuestion extends Protocol {
                 if (valid) {
                     console.log('Signature is valid!')
                     const signedNonce = base64.decode(data)
-                    for (let validResponse of message.question.valid_responses) {
-                        if(validResponse.nonce === signedNonce) {
+                    for (const validResponse of message.question.valid_responses) {
+                        if (validResponse.nonce === signedNonce) {
                             const statusReport = this.generateStatusReport(1, message['@id'], validResponse.text)
                             Agency.postResponse(statusReport, this.config)
                             return

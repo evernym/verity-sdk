@@ -9,15 +9,7 @@ import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
 
 /**
- * Builds a new encrypted agent message with the following format:
- * {
- *   "@type": "vs.service/connect/0.1/new-connection",
- *   "@id": "abcdefg-1234-5678-hijk",
- *   "connectionDetail":{
- *       "sourceId": "CONN_iAmAConnId",
- *       "phoneNo": "8001112222"
- *   }
- * }
+ * Builds and sends a new encrypted agent message for the Connection protocol.
  */
 public class Connection extends Protocol {
 
@@ -71,6 +63,14 @@ public class Connection extends Protocol {
         return message.toString();
     }
 
+    /**
+     * Sends the connection create message to Verity
+     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
+     */
     public void create(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
         this.sendMessage(verityConfig);
     }

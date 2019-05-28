@@ -5,7 +5,7 @@ export function makeid(length: number = 15) {
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
     for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+        text += possible.charAt(Math.floor(Math.random() * possible.length))
     }
     return text
   }
@@ -41,6 +41,6 @@ export async function generateCredentialDef(): Promise<{ id: string, handle: num
         return { handle: finalCredDef.handle, id: finalId }
 
     } catch (e) {
-        throw new e
+        throw new Error(e)
     }
 }

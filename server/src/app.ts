@@ -44,7 +44,7 @@ startServices().then(async () => {
     const agency = new Agency([
         config,
         connection,
-        provableQuestion
+        provableQuestion,
     ])
 
     await agency.Ready

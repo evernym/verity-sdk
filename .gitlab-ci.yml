@@ -44,10 +44,12 @@
         lFnjUUk49av67um43JHcinT5NFPuleZzkjaL/D8ueOrjXQDy05rwVdgmw9pXog4B
         Tw6APXtEnjfD2H8HOpOX/7ef4gWK0O1Q7A==
         -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
-    - /kaniko/executor --context $CI_PROJECT_DIR/cicd --dockerfile $CI_PROJECT_DIR/cicd/dockerfiles/$DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG
+    - eval $DOCKER_PREP_COMMAND
+    - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG
 
 stages:
   - docker-images
+  - mock-verity-image
   - test
   - build
   - deploy
@@ -60,17 +62,52 @@ buildenv-docker-build:
   extends: .kaniko-build
   only:
     changes:
-      - cicd/dockerfiles/buildenv*
+      - devops/dockerfiles/buildenv*
   variables:
-    DOCKERFILE_PATH: 'buildenv.dockerfile'
+    DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/buildenv.dockerfile'
     DOCKER_IMAGE_NAME: 'buildenv'
+    DOCKER_CONTEXT: '$CI_PROJECT_DIR'
+    DOCKER_PREP_COMMAND: 'echo none'
+
+verity-server-docker-build:
+  extends: .kaniko-build
+  only:
+    changes:
+      - server/devops/dev/verity-server.dockerfile
+    refs:
+      - "master"
+  variables:
+    DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server.dockerfile'
+    DOCKER_IMAGE_NAME: 'verity-server'
+    DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
+    #DOCKER_PREP_COMMAND: 'cd server && ./devops/dev/prepare-dev-environment.sh && cd -'
+    DOCKER_PREP_COMMAND: 'echo none'
+
+verity-server-image-docker-build:
+  extends: .kaniko-build
+  stage: mock-verity-image
+  only:
+    changes:
+      - server/*
+      - server/devops/dev/verity-server.dockerfile
+      - server/devops/dev/verity-server-image.dockerfile
+    refs:
+      - "master"
+  dependencies:
+    - verity-server-docker-build
+  variables:
+    DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile'
+    DOCKER_IMAGE_NAME: 'verity-server-image'
+    DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
+    DOCKER_PREP_COMMAND: sed 's~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g' -i server/devops/dev/verity-server-image.dockerfile
 
 syntax:
   stage: test
   image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
   script:
-    - cd sdk/java-sdk/ && mvn test
+    - cd sdk/java-sdk/ && mvn test && cd -
+    - cd server && npm run lint && cd -
 
 make_jar:
   stage: build

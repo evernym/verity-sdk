@@ -1,5 +1,6 @@
 #!/bin/bash
-mvn install:install-file -Dfile=../target/java-sdk-0.1-SNAPSHOT.jar
-mvn package
-mvn exec:java -D exec.mainClass="com.evernym.sdk.example.App"
-#java -cp ../target/java-sdk-0.1-SNAPSHOT.jar:target/example-1.0-SNAPSHOT.jar com.evernym.sdk.example.App
+cd ..
+SDK_DIR=$(pwd)
+cd example
+
+java -Dfile.encoding=UTF-8 -cp $SDK_DIR/example/target/classes:$SDK_DIR/target/java-sdk-0.9-SNAPSHOT.jar:$HOME/.m2/repository/org/apache/httpcomponents/httpclient/4.5.8/httpclient-4.5.8.jar:$HOME/.m2/repository/org/apache/httpcomponents/httpcore/4.4.11/httpcore-4.4.11.jar:$HOME/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar:$HOME/.m2/repository/commons-codec/commons-codec/1.11/commons-codec-1.11.jar:$HOME/.m2/repository/org/hyperledger/indy/1.8.1-dev-985/indy-1.8.1-dev-985.jar:$HOME/.m2/repository/net/java/dev/jna/jna/4.4.0/jna-4.4.0.jar:$HOME/.m2/repository/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar:$HOME/.m2/repository/org/json/json/20180130/json-20180130.jar:$HOME/.m2/repository/org/slf4j/slf4j-api/1.8.0-beta4/slf4j-api-1.8.0-beta4.jar:$HOME/.m2/repository/org/slf4j/slf4j-simple/1.8.0-beta4/slf4j-simple-1.8.0-beta4.jar:$HOME/.m2/repository/org/bouncycastle/bcprov-jdk15on/1.61/bcprov-jdk15on-1.61.jar com.evernym.sdk.example.App

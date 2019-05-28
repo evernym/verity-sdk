@@ -1,4 +1,4 @@
-import { Request, Response } from 'express-serve-static-core';
+import { Request, Response } from 'express-serve-static-core'
 
 export async function initializeSSE(_REQ: Request, res: Response) {
 
@@ -8,7 +8,7 @@ export async function initializeSSE(_REQ: Request, res: Response) {
         'Connection': 'keep-alive',
         'Content-Type': 'text/event-stream',
     })
-    
+
     res.write('retry: 10000\n\n')
 }
 

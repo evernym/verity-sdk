@@ -43,15 +43,15 @@ The following are universal definitions and helpful pointers for building messag
 ### JSON and DID Comms
 Because of the flexibility of JSON It is expected that JSON formatting for interaction with verity server will follow [this](https://docs.google.com/document/d/1flfXrvZ0ehzB6v69VjVLJXFyITCLjla58d7SNYVNhac/edit) document and it's guidelines around DID Comm messages.
 
-Message attributes and structure for all very protocol extensions will adhere to this [hipe](https://github.com/hyperledger/indy-hipe/tree/master/text/0021-message-types#message-type-design-guidelines), to ensure attributes are consistent and readable.
+Message attributes and structure for all very protocol extensions will adhere to this [HIPE](https://github.com/hyperledger/indy-hipe/tree/master/text/0021-message-types#message-type-design-guidelines), to ensure attributes are consistent and readable.
 
 #### Generating attributes
 
-* `@id` This attribute is common through verity service message extension protocols and has certain unique requirements in order to properly generate an id. You can read the specs and requirements in the message-threading hipe [here](https://github.com/hyperledger/indy-hipe/blob/613ed302bec4dcc62ed6fab1f3a38ce59a96ca3e/text/message-threading/README.md#message-ids).
+* `@id` This attribute is common through verity service message extension protocols and has certain unique requirements in order to properly generate an id. You can read the specs and requirements in the message-threading HIPE [here](https://github.com/hyperledger/indy-hipe/blob/613ed302bec4dcc62ed6fab1f3a38ce59a96ca3e/text/message-threading/README.md#message-ids).
 
 * `seqnum` Following the documentation on [seqnum](https://github.com/hyperledger/indy-hipe/blob/613ed302bec4dcc62ed6fab1f3a38ce59a96ca3e/text/message-threading/README.md#sequence-num-seqnum), this attribute is often required in messages within the `~thread` attribute object. This number is **required** for any message thread over a single message per sender.
 
-* `pthid` Nested interaction. Read [this](https://github.com/hyperledger/indy-hipe/blob/613ed302bec4dcc62ed6fab1f3a38ce59a96ca3e/text/message-threading/README.md#nested-interactions-parent-thread-id-or-pthid) hipe for an explanation on the differences between `thid` and `pthid`
+* `pthid` Nested interaction. Read [this](https://github.com/hyperledger/indy-hipe/blob/613ed302bec4dcc62ed6fab1f3a38ce59a96ca3e/text/message-threading/README.md#nested-interactions-parent-thread-id-or-pthid) HIPE for an explanation on the differences between `thid` and `pthid`
 
 <a id="roles"></a>
 ### Roles
@@ -81,9 +81,9 @@ Request to check the status of a protocol.
 ```json
 {
     "@type": "vs.service/common/0.1/check-status"
-    "@id": "zxy-987-654-321-cba",
+    "@id": <uuid>,
     "~thread": {
-        "pthid": "abcdefg-1234-5678-hijk"
+        "pthid": <pthid>
     }
 }
 ```
@@ -99,10 +99,11 @@ Request to check the status of a protocol.
 type: **invite-request**
 
 Initiates a request for the invite details of a particular connection.
+
 ```json
 {
     "@type": "vs.service/common/0.1/invite-request",
-    "@id": "acbdefg-zyxvut-123",
+    "@id": <uuid>,
     "connectionDetail": {
         "sourceId": "John Doe 1234"
     }
@@ -120,12 +121,13 @@ Initiates a request for the invite details of a particular connection.
 type: **invite-response**
 
 Provides the details of a connection
+
 ```json
 {
     "@type": "vs.service/common/0.1/invite-response",
-    "@id": "123456789-1111",
+    "@id": <uuid>,
     "~thread": {
-        "thid": "acbdefg-zyxvut-123"
+        "thid": <thid>
     }
     "invite": "I am an Invite detail for John Doe",
     "connectionDetail": {
@@ -153,9 +155,9 @@ TODO: Many errors will have error codes that live in other locations and will ne
 ```json
 {
     "@type": "vs.service/common/0.1/problem-report",
-    #@id": "aJJkil67553JKILSS-4444",
+    #@id": <uuid>,
     "~thread": {
-        "pthid": "abcdefg-1234-5678-hijk",
+        "pthid": <pthid>,
         "seqnum": 1
     },
     "@msg_catalog": "vs_repo/docs/errors"
@@ -163,7 +165,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
         "en": "internal serice error, out of memory",
         "code": 504
     },
-    "who_retries": "me",
+    "whoRetries": "me",
     "where": "consumer agent"
     "timestamp": 2019-06-12 13:23:06Z
 }
@@ -178,7 +180,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
 * `comment` field is **required**, but does not have to contain every element below, but needs **>1** attributes below. Details the error, contains: 
     * `en` **optional** human readable message for the error
     * `code` **optional** symbolic name for the error
-* `who_retries` **optional** (if not added to message it is assumed retry is **none**) enum describing which party retries, if any:
+* `whoRetries` **optional** (if not added to message it is assumed retry is **none**) enum describing which party retries, if any:
     * `0` recipient of message (you)
     * `1` sender of message (me)
     * `2` both 
@@ -204,7 +206,8 @@ type: **update-com-method**
 ```
 
 #### Attributes
-- `comMethod.value` The new webhook that verity should use to send messages to the SDK.
+- `comMethod`
+	- `value` The new webhook that verity should use to send messages to the SDK.
 
 ---
 
@@ -225,7 +228,7 @@ Initiates the process to connect with a user
 ```json
 {
     "@type": "vs.service/connection/0.1/new_connection",
-    "@id": "abcdefg-1234-5678-hijk",
+    "@id": <uuid>,
     "connectionDetail":{
         "sourceId": "CONN_iAmAConnId",
         "phoneNo": "8001112222"
@@ -254,15 +257,15 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 ```json
 {
     "@type": "vs.service/connection/0.1/problem_report",
-    #@id": "123456789-abcdefghi-zzzz",
+    #@id": <uuid>,
     "~thread": {
-        "pthid": "abcdefg-1234-5678-hijk"
+        "pthid": <pthid>
     },
     "comment": {
         "en": "user rejected the connection request",
         "code": 1024
     },
-    "who_retries": 3
+    "whoRetries": 3
     "timestamp": 2019-06-12 13:23:06Z
 }
 ```
@@ -277,23 +280,24 @@ Verity generated message that gives human readable indications of the current st
 ```json
 {
     "@type": "vs.service/connection/0.1/status",
-    "@id": '111111-2222222'
+    "@id": <uuid>
     "~thread": {
-        "thid": "abcdefg-1234-5678-hijk",
+        "thid": <pthid>,
         "seqnum": 3
     },
     "status": 1,
-    "message": "abcd12345"
+    "message": <status message>,
+    "content": <invite_details or pairwise_did>
 }
 ```
 
 #### Attributes
 
 * `status` enum that resolves to one of 6 states:
-    * `0` awaiting response. (invite details in message and invite has been sent if phoneNo defined)
-    * `1` invite was accepted by the user (connection_id in message)
-    * `2` ERR
+    * `0` awaiting response. (invite details in content and invite has been sent if phoneNo defined)
+    * `1` invite was accepted by the user (connectionId in content)
 * `message` **optional** message relating to the status
+* `content` **optional** content field associated with the status
 
 ---
 
@@ -314,22 +318,23 @@ Sends a question message to the specified connection
 ```json
 {
     "@type": "vs.service/question/0.1/question",
-    "@id": "123456789-abcdefghi-zzzz",
-    "connection_id": "abcd12345"
+    "@id": <uuid>,
+    "connectionId": <pairwise_did>
     "question": {
-      "question_text": "Alice, are you on the phone with Bob from Faber Bank right now?",
-      "question_detail": "This is optional fine-print giving context to the question and its various answers.",
-      "valid_responses": [
-        {"text": "Yes, it is me", "nonce": "YES"},
-        {"text": "No, that is not me!", "nonce": "NO"}
-      ],
-      "@timing": {
-        "expires_time": "2019-05-15T00:06:04.748Z"
-      },
-      "external_links:": [
-        {"text": "Some external link", "src": 'https://www.externalwebsite.com/'},
-        {"src": "https://www.directlinkwithouttext.com/"},
-      ]
+	  "notification_title": "Challenge Question",
+	  "question_text": "Alice, are you on the phone with Bob from Faber Bank right now?",
+	  "question_detail": "This is optional fine-print giving context to the question and its various answers.",
+	  "valid_responses": [
+	    {"text": "Yes, it is me", "nonce": "YES-<unique_id>"},
+	    {"text": "No, that is not me!", "nonce": "NO-<unique_id>"}
+	  ],
+	  "@timing": {
+	    "expires_time": "2019-05-15T00:06:04.748Z"
+	  },
+	  "external_links:": [
+	    {"text": "Some external link", "src": 'https://www.externalwebsite.com/'},
+	    {"src": "https://www.directlinkwithouttext.com/"},
+	  ]
     }
 }
 ```
@@ -337,7 +342,7 @@ Sends a question message to the specified connection
 #### Attributes
 * `connectionId` the DID returned in the success status message of the connection protocol
 * `question` contains:
-    * `question_text` **optional**
+    * `question_text`
     * `question_detail` **optional**
     * `valid_responses`
     * `@timing` **optional**
@@ -356,15 +361,15 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 ```json
 {
     "@type": "vs.service/question/0.1/problem-report",
-    "@id": "123456789-abcdefghi-zzzz",
+    "@id": <uuid>,
     "~thread": {
-        "pthid": "abcdefg-1234-5678-hijk"
+        "pthid": <pthid>
     },
     "comment": {
         "en": "user rejected the question",
         "code": 1024
     },
-    "who_retries": "me"
+    "whoRetries": "me"
     "timestamp": "2019-06-12 13:23:06Z"
 }
 ```
@@ -379,21 +384,222 @@ Verity generated message that gives human readable indications of the current st
 ```json
 {
     "@type": "vs.service/question/0.1/status",
-    "@id": '111111-2222222'
+    "@id": <uuid>
     "~thread": {
-        "thid": "abcdefg-1234-5678-hijk",
+        "thid": <thid>,
         "seqnum": 3
     },
     "status": 1,
-    "message": "Yes, I'm trying to login"
+    "message": <status message>,
+    "content": "Yes, I'm trying to login"
 }
 ```
 #### Attributes
 
 * `status` enum that resolves to one of 6 states:
     * `0` question has been sent
-    * `1` question was answered. Response in message.
-    * `2` ERR
+    * `1` question was answered. Response in content.
+* `message` **optional** message relating to the status
+* `content` **optional** content field associated with the status
+
+#### Notes
+
+* If the signature validation fails, a problem report will be sent and NOT a status message with status 1 and their response.
+
+---
+
+<a id="cred-def"></a>
+## Credential Definition
+
+protocol: **cred_def** | ver: **0.1**
+
+The *Credential Definition* set of protocols encompass the necessary functionality to allow an enterprise to write a credential to the ledger.
+
+<a id="cred-def:write"></a>
+### Write Credential Definition
+
+type: **write**
+
+Tells Verity to write a new credential definition to the ledger on behalf of the enterprise.
+
+```json
+{
+	"@type": "vs.service/cred-def/0.1/write",
+	"@id": <uuid>,
+	"schemaId": <schema_id>
+}
+```
+
+#### Attributes
+
+* `schemaId` is the id of a schema already written to the ledger with the desired attributes
+
+<a id="cred-def:problem-report"></a>
+### Problem Report
+
+type: **problem-report**
+
+Problem report for the connection protocol. See [Problem report common](#Attributes) for details on optional attributes.
+
+```json
+{
+    "@type": "vs.service/cred-def/0.1/problem-report",
+    "@id": <uuid>,
+    "~thread": {
+        "pthid": <pthid>
+    },
+    "comment": {
+        "en": "",
+        "code": 1024
+    },
+    "whoRetries": "me"
+    "timestamp": "2019-06-12 13:23:06Z"
+}
+```
+
+<a id="cred-def:status"></a>
+### Status
+
+type: **status**
+
+Verity generated message that gives human readable indications of the current status of an ongoing, complete, or cancelled enrollment.
+
+```json
+{
+    "@type": "vs.service/cred-def/0.1/status",
+    "@id": <uuid>
+    "~thread": {
+        "thid": <thid>,
+        "seqnum": 3
+    },
+    "status": 1,
+    "message": "Successfully wrote credential definition to ledger",
+    "content": <cred_def_id>
+}
+```
+#### Attributes
+
+* `status` enum that resolves to one of 6 states:
+    * `0` Write request received
+    * `1` Successfully wrote credential definition to ledger (cred\_def\_id in message).
+* `message` **optional** message relating to the status
+* `content` **optional** content field associated with the status
+
+---
+
+<a id="credential"></a>
+## Credential
+
+protocol: **credential** | ver: **0.1**
+
+The *Credential* set of protocols encompass the necessary functionality to allow an enterprise to issue a credential to an existing connection.
+
+<a id="credential:offer"></a>
+### Credential Offer
+
+type: **offer**
+
+Offers a credential to a user
+
+```json
+{
+	"@type": "vs.service/credential/0.1/offer",
+	"@id": <uuid>,
+	"connectionId": <pairwise DID>,
+	"credDefId": "<credential definition ID>"
+}
+```
+
+#### Attributes
+
+* `connectionId` is the id of the connection to whom you want to send the credential
+* `credDefId` is the identifier of the previously created Credential Definition associated with the credential you
+
+<a id="credential:credential"></a>
+### Credential
+
+type: **credential**
+
+Send a credential to a user
+
+```json
+{
+	"@type": "vs.service/credential/0.1/credential",
+	"@id": <uuid>,
+	"~thread": {
+        "pthid": <pthid>
+    },
+	"connectionId": "<pairwise_did>",
+	"credentialData":{
+        "id": <uuid>,
+        "credDefId": "did:sov:abcdefg12345",
+        "credentialFields": {
+            "name": "Joe Smith",
+            "degree": "Bachelors",
+            "gpa": "3.67"
+        },
+        "price": 3
+    }
+}
+```
+
+#### Attributes
+
+* `connectionId` is the id of the connection to whom you want to send the credential
+* `credentialData`
+	* `id` unique UUID of the credential
+	* `credDefId` Credential Definition ID of credential being sent
+	* `credentialFields` key-value pairs of attribute values
+
+<a id="credential:problem-report"></a>
+### Problem Report
+
+type: **problem-report**
+
+Problem report for the connection protocol. See [Problem report common](#Attributes) for details on optional attributes.
+
+```json
+{
+    "@type": "vs.service/credential/0.1/problem-report",
+    "@id": <uuid>,
+    "~thread": {
+        "pthid": <pthid>
+    },
+    "comment": {
+        "en": "",
+        "code": 1024
+    },
+    "whoRetries": "me"
+    "timestamp": "2019-06-12 13:23:06Z"
+}
+```
+
+<a id="credential:status"></a>
+### Status
+
+type: **status**
+
+Verity generated message that gives human readable indications of the current status of an ongoing, complete, or cancelled enrollment.
+
+```json
+{
+    "@type": "vs.service/credential/0.1/status",
+    "@id": <uuid>
+    "~thread": {
+        "thid": <thid>,
+        "seqnum": 3
+    },
+    "status": 3,
+    "message": "Credential Accepted by User"
+}
+```
+#### Attributes
+
+* `status` enum that resolves to one of 6 states: 
+    * `0` Offer sent to user
+    * `1` Offer accepted by user
+    * `2` Credential sent to user
+    * `3` Credential accepted by user
 * `message` **optional** message relating to the status
 
 ---
@@ -415,19 +621,19 @@ Initiates the process to onboard a new user
 ```json
 {
     "@type": "vs.service/enroll/0.1/new-enrollment",
-    "@id": "abcdefg-1234-5678-hijk",
+    "@id": <uuid>,
     "connectionDetail":{
         "sourceId": "CONN_iAmAConnId",
         "phoneNo": "8001112222"
     },
     "credentialData":{
-        "id": "CRED_iAmACredId",
+        "id": <uuid>,
         "credDefId": "did:sov:abcdefg12345",
-        "credentialFields": [{
-            "name": "cred_name",
-            "type": 3,
-            "value": "john doe"
-        }],
+        "credentialFields": "credentialFields": {
+            "name": "Joe Smith",
+            "degree": "Bachelors",
+            "gpa": "3.67"
+        },
         "price": 3
     } 
 }
@@ -461,15 +667,15 @@ Problem report for the enroll protocol. See [Problem report common](#Attributes)
 ```json
 {
     "@type": "vs.service/enroll/0.1/problem-report",
-    #@id": "123456789-abcdefghi-zzzz",
+    #@id": <uuid>,
     "~thread": {
-        "pthid": "abcdefg-1234-5678-hijk"
+        "pthid": <pthid>
     },
     "comment": {
         "en": "user rejected the connection request",
         "code": 1024
     },
-    "who_retries": 3
+    "whoRetries": 3
     "timestamp": 2019-06-12 13:23:06Z
 }
 ```
@@ -484,9 +690,9 @@ Verity generated message that gives human readable indications of the current st
 ```json
 {
     "@type": "vs.service/enroll/0.1/status",
-    "@id": '111111-2222222'
+    "@id": <uuid>
     "~thread": {
-        "thid": "abcdefg-1234-5678-hijk",
+        "thid": <thid>,
         "seqnum": 3
     },
     "status": 5,
@@ -502,7 +708,6 @@ Verity generated message that gives human readable indications of the current st
     * `2` the offer was sent to the user
     * `3` the offer was received 
     * `4` the credential was sent
-    * `5` the process is complete
-    * `6` ERR
+    * `5` the credential was accepted
 * `message` **optional** message relating to the status
 

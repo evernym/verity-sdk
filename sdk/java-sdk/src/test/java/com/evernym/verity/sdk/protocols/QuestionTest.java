@@ -17,7 +17,7 @@ import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 import org.junit.Test;
 
-public class ProvableQuestionTest {
+public class QuestionTest {
     public class TestWallet {
         String verityPublicVerkey;
         String verityPairwiseVerkey;
@@ -75,15 +75,17 @@ public class ProvableQuestionTest {
             VerityConfig verityConfig = getConfig();
             
             String connectionId = "abcd12345";
+            String notificationTitle = "Challenge Question";
             String questionText = "Question text";
             String questionDetail = "Optional question detail";
             String[] validResponses = {"Yes", "No"};
-            ProvableQuestion provableQuestion = new ProvableQuestion(connectionId, questionText, questionDetail, validResponses);
+            Question provableQuestion = new Question(connectionId, notificationTitle, questionText, questionDetail, validResponses);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), provableQuestion.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
             JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
             assertEquals(provableQuestion.toString(), unpackedMessage.toString());
             assertEquals(connectionId, unpackedMessage.getString("connection_id"));
+            assertEquals(notificationTitle, unpackedMessage.getJSONObject("question").getString("notification_title"));
             assertEquals(questionText, unpackedMessage.getJSONObject("question").getString("question_text"));
             assertEquals(questionDetail, unpackedMessage.getJSONObject("question").getString("question_detail"));
             assertEquals(validResponses[0], unpackedMessage.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("text"));
