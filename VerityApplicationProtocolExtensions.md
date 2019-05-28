@@ -490,7 +490,7 @@ Verity generated message that gives human readable indications of the current st
 
 * `status` enum that resolves to one of 6 states:
     * `0` Write request received
-    * `1` Successfully wrote credential definition to ledger (cred\_def\_id in message).
+    * `1` Successfully wrote credential definition to ledger (cred\_def\_id in content).
 * `message` **optional** message relating to the status
 * `content` **optional** content field associated with the status
 
