@@ -28,14 +28,14 @@ public class App {
             verityConfig.sendUpdateWebhookMessage(verityConfig);
 
             Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
-                JSONObject inviteDetails = new JSONObject(message.getString("message"));
+                JSONObject inviteDetails = new JSONObject(message.getString("content"));
                 System.out.print("Invite Details: ");
                 System.out.println(inviteDetails.toString());
             });
             Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Connection Accepted!!!");
-                    App.connectionId = message.getString("message");
+                    App.connectionId = message.getString("content");
                     String notificationTitle = "Challenge Question";
                     String questionText = "Hi Alice, how are you today?";
                     String questionDetail = " ";
@@ -51,7 +51,7 @@ public class App {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
 
                     // Writing Cred Def
-                    String schemaId = "default schema id"; // FIXME: mock agency needs to write this to ledger on startup.
+                    String schemaId = "V4SGRU86Z58d6TV7PBUe6f:2:sdk_test_schema:0.0.1"; // Only exists on team1 environment
                     CredDef credDef = new CredDef(schemaId);
                     credDef.write(verityConfig);
 

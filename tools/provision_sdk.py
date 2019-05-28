@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 # Provided by The Python Standard Library
 import json
 import argparse

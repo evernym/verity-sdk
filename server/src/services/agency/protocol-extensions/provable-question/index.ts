@@ -91,7 +91,7 @@ export class ProvableQuestion extends Protocol {
                     const signedNonce = base64.decode(data)
                     for (const validResponse of message.question.valid_responses) {
                         if (validResponse.nonce === signedNonce) {
-                            const statusReport = this.generateStatusReport(1, message['@id'], validResponse.text)
+                            const statusReport = this.generateStatusReport(1, message['@id'], "Question was answered", validResponse.text)
                             Agency.postResponse(statusReport, this.config)
                             return
                         }
@@ -107,7 +107,7 @@ export class ProvableQuestion extends Protocol {
             }}, 20000)
     }
 
-    private generateStatusReport(status: number, messageId: string, statusMessage: string) {
+    private generateStatusReport(status: number, messageId: string, statusMessage: string, content?: string) {
         return {
             '@id': uuid(),
             '@type': 'vs.service/question/0.1/status',
@@ -116,6 +116,7 @@ export class ProvableQuestion extends Protocol {
             '~thread': {
                 thid: messageId,
             },
+            'content': content
         }
     }
 }
