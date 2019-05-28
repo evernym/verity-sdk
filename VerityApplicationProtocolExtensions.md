@@ -533,7 +533,7 @@ Send a credential to a user
 	"credentialData":{
         "id": <uuid>,
         "credDefId": "did:sov:abcdefg12345",
-        "credentialFields": {
+        "credentialValues": {
             "name": "Joe Smith",
             "degree": "Bachelors",
             "gpa": "3.67"
@@ -549,7 +549,7 @@ Send a credential to a user
 * `credentialData`
 	* `id` unique UUID of the credential
 	* `credDefId` Credential Definition ID of credential being sent
-	* `credentialFields` key-value pairs of attribute values
+	* `credentialValues` key-value pairs of credential attribute fields with the specified params defined in the credential definition
 
 <a id="credential:problem-report"></a>
 ### Problem Report
@@ -629,7 +629,7 @@ Initiates the process to onboard a new user
     "credentialData":{
         "id": <uuid>,
         "credDefId": "did:sov:abcdefg12345",
-        "credentialFields": "credentialFields": {
+        "credentialValues": {
             "name": "Joe Smith",
             "degree": "Bachelors",
             "gpa": "3.67"
@@ -647,7 +647,7 @@ Initiates the process to onboard a new user
 * `credentialData` defines the credential details. Contains:
     * `id` unique identifier for the credential
     * `credDefId` resolver for a credential definition
-    * `credentialFields` **optional** attribute is an array of credential attribute fields with the specified params defined in the credential definition
+    * `credentialValues` key-value pairs of credential attribute fields with the specified params defined in the credential definition
     * `price` **optional** price for credential
 
 #### Notes
