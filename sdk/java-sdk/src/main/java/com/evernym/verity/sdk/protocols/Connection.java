@@ -21,7 +21,6 @@ public class Connection extends Protocol {
     // Status definitions
     public static Integer AWAITING_RESPONSE_STATUS = 0;
     public static Integer ACCEPTED_BY_USER_STATUS = 1;
-    public static Integer ERROR_STATE = 2;
 
     private String sourceId;
     private String phoneNumber = null;
@@ -72,6 +71,12 @@ public class Connection extends Protocol {
      * @throws IndyException when there are issues with encryption and decryption
      */
     public void create(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        this.sendMessage(verityConfig);
+        try {
+            this.sendMessage(verityConfig);
+        } catch(MethodNotSupportedException ex) {
+            // do nothing. We haven't disabled this method.
+        } catch(Exception ex) {
+            throw ex;
+        }
     }
 }
