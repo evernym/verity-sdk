@@ -5,7 +5,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 
 import com.evernym.verity.sdk.protocols.Connection;
-import com.evernym.verity.sdk.protocols.Protocols;
+import com.evernym.verity.sdk.protocols.Handlers;
 import com.evernym.verity.sdk.protocols.Question;
 import com.evernym.verity.sdk.utils.VerityConfig;
 
@@ -23,12 +23,12 @@ public class App {
             verityConfig = new VerityConfig(readConfigFile());
             verityConfig.sendUpdateWebhookMessage(verityConfig);
 
-            Protocols.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
+            Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
                 JSONObject inviteDetails = new JSONObject(message.getString("message"));
                 System.out.print("Invite Details: ");
                 System.out.println(inviteDetails.toString());
             });
-            Protocols.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+            Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Connection Accepted!!!");
                     App.connectionId = message.getString("message");
@@ -53,7 +53,7 @@ public class App {
     private static void startListening() throws IOException, InterruptedException {
         Listener listener = new Listener(App.port, (String encryptedMessageFromVerity) -> {
             try {
-                Protocols.handleMessage(verityConfig, encryptedMessageFromVerity.getBytes());
+                Handlers.handleMessage(verityConfig, encryptedMessageFromVerity.getBytes());
             } catch(Exception ex) {
                 ex.printStackTrace();
             }

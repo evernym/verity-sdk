@@ -12,7 +12,7 @@ import org.json.JSONObject;
 /**
  * Stores an array of message handlers that are used when receiving an inbound message
  */
-public class Protocols {
+public class Handlers {
     static ArrayList<MessageHandler> messageHandlers = new ArrayList<MessageHandler>();
 
     /**
