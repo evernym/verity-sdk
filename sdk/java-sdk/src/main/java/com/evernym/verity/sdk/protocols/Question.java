@@ -13,15 +13,15 @@ import org.json.JSONObject;
  * Builds and sends a new encrypted agent message for the Question protocol.
  */
 public class Question extends Protocol {
+
     // Message Type Definitions
     public static String ASK_QUESTION_MESSAGE_TYPE = "vs.service/question/0.1/question";
     public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/question/0.1/problem-report";
     public static String STATUS_MESSAGE_TYPE = "vs.service/question/0.1/status";
 
     // Status Definitions
-    public static Integer QUESTION_SENT_STATUS_STATE = 0;
-    public static Integer QUESTION_ANSWERED_STATE = 1;
-    public static Integer ERROR_STATE = 2;
+    public static Integer QUESTION_SENT_STATUS = 0;
+    public static Integer QUESTION_ANSWERED_STATUS = 1;
 
     private String connectionId;
     private String notificationTitle;

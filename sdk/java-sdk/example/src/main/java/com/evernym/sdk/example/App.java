@@ -5,6 +5,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 
 import com.evernym.verity.sdk.protocols.Connection;
+import com.evernym.verity.sdk.protocols.CredDef;
+import com.evernym.verity.sdk.protocols.Credential;
 import com.evernym.verity.sdk.protocols.Handlers;
 import com.evernym.verity.sdk.protocols.Question;
 import com.evernym.verity.sdk.utils.VerityConfig;
@@ -15,6 +17,8 @@ public class App {
     static Integer port = 4000;
     static String connectionId;
     static VerityConfig verityConfig;
+    static String credDefId;
+    static Credential credential;
 
     public static void main( String[] args ) {
         try {
@@ -38,6 +42,46 @@ public class App {
                     String[] validResponses = {"Great!", "Not so good"};
                     Question provableQuestion = new Question(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
                     provableQuestion.sendMessage(verityConfig);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            Handlers.addHandler(Question.STATUS_MESSAGE_TYPE, Question.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
+                try {
+                    System.out.println("Question Answered: \"" + message.getString("content") + "\"");
+
+                    // Writing Cred Def
+                    String schemaId = "default schema id"; // FIXME: mock agency needs to write this to ledger on startup.
+                    CredDef credDef = new CredDef(schemaId);
+                    credDef.write(verityConfig);
+
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            Handlers.addHandler(CredDef.STATUS_MESSAGE_TYPE, CredDef.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
+                try {
+                    credDefId = message.getString("content");
+                    JSONObject credentialValues = new JSONObject();
+                    credentialValues.put("name", "Joe Smith");
+                    credentialValues.put("degree", "Bachelors");
+                    credential = new Credential(connectionId, credDefId, credentialValues, 0);
+                    credential.sendOffer(verityConfig);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            Handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+                try {
+                    System.out.println("User accepted the credential offer. Sending credential...");
+                    credential.sendCredential(verityConfig);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            Handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.CREDENTIAL_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+                try {
+                    System.out.println("User accepted the credential");
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
