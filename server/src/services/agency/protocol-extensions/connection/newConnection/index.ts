@@ -24,7 +24,7 @@ export class NewConnection {
         }
         await this.myConnection.connect({ data })
         const inviteDetails = await this.myConnection.inviteDetails(true)
-        const report = this.generateStatusReport(0, "Awaiting response", inviteDetails)
+        const report = this.generateStatusReport(0, 'Awaiting response', inviteDetails)
         Agency.postResponse(report, this.config)
         this.state = await this.myConnection.getState()
         this.updateState()
@@ -36,7 +36,11 @@ export class NewConnection {
             this.state = await this.myConnection.getState()
             if (this.state === vcx.StateType.Accepted) {
                 Agency.inMemDB.setConnection(this.message.connectionDetail.sourceId, this.myConnection)
-                const statusReport = this.generateStatusReport(1, "invite accepted!", this.message.connectionDetail.sourceId) // FIXME: This should be the pairwise DID, not the given sourceId.
+                const statusReport = this.generateStatusReport(
+                    1,
+                    'invite accepted!',
+                    // FIXME: This should be the pairwise DID, not the given sourceId.
+                    this.message.connectionDetail.sourceId)
                 Agency.postResponse(statusReport, this.config)
             } else {
                 this.updateState()
@@ -52,7 +56,7 @@ export class NewConnection {
             '~thread': {
                 thid: this.message['@id'],
             },
-            'content': content
+            'content': content,
         }
     }
 }

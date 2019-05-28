@@ -1,31 +1,31 @@
-import { IAgentMessage, Protocol } from '..';
-import { IAgencyConfig } from '../..';
+import { IAgentMessage, Protocol } from '..'
+import { IAgencyConfig } from '../..'
 
-export type CredentialProtocolTypes = 
+export type CredentialProtocolTypes =
 | 'vs.service/credential/0.1/offer'
 | 'vs.service/credential/0.1/credential'
 | 'vs.service/credential/0.1/problem-report'
 | 'vs.service/credential/0.1/status'
 
-interface ICredentialOffer extends IAgentMessage {
-    'connectionId': string,
-    'credDefId': string
-}
+// interface ICredentialOffer extends IAgentMessage {
+//     'connectionId': string,
+//     'credDefId': string
+// }
 
-interface ICredential extends IAgentMessage {
-    "~thread": {
-        "pthid": string
-    },
-    "connectionId": string,
-    "credentialData":{
-        "id": string,
-        "credDefId": string,
-        "credentialValues": {
-            [key:string]: string
-        },
-        "price": number
-    }
-}
+// interface ICredential extends IAgentMessage {
+//     "~thread": {
+//         "pthid": string
+//     },
+//     "connectionId": string,
+//     "credentialData":{
+//         "id": string,
+//         "credDefId": string,
+//         "credentialValues": {
+//             [key:string]: string
+//         },
+//         "price": number
+//     }
+// }
 
 export class Credential extends Protocol {
 
@@ -45,6 +45,4 @@ export class Credential extends Protocol {
                 return false
         }
     }
-
-
 }

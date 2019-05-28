@@ -1,7 +1,7 @@
 import * as vcx from 'node-vcx-wrapper'
-import { Protocol, IAgentMessage } from '..'
-import { IAgencyConfig, Agency } from '../..'
 import uuid = require('uuid')
+import { IAgentMessage, Protocol } from '..'
+import { Agency, IAgencyConfig } from '../..'
 
 export type CredentialDefProtocolTypes =
 | 'vs.service/cred-def/0.1/write'
@@ -40,7 +40,11 @@ export class CredentialDef extends Protocol {
         Agency.inMemDB.setCredentialDef(credDef)
         const id = await credDef.getCredDefId()
 
-        Agency.postResponse(this.generateStatusReport(1, 'Successfully wrote credential definition to ledger', message, id), this.config)
+        Agency.postResponse(
+            this.generateStatusReport(
+                1, 'Successfully wrote credential definition to ledger', message, id),
+                this.config,
+            )
     }
 
     private generateStatusReport(status: number, statusMessage: string, message: ICredWriteMessage, content?: any) {
@@ -48,11 +52,11 @@ export class CredentialDef extends Protocol {
             '@type': 'vs.service/cred-def/0.1/status',
             '@id': uuid(),
             '~thread': {
-                'pthid': message['@id'],
-                'seqnum': 0
+                pthid: message['@id'],
+                seqnum: 0,
             },
             status,
-            message: statusMessage
+            'message': statusMessage,
         }
         if (content) { msg = Object.assign({}, { ...msg, content}) }
         return msg
