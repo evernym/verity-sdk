@@ -11,7 +11,7 @@ export type ProvableQuestionProtocolTypes =
 | 'vs.service/question/0.1/status'
 
 interface IProvableQuestion extends IAgentMessage {
-    'connection_id': 'abcd12345'
+    'connectionId': string,
     'question': {
         'question_text': string,
         'question_detail': string,
@@ -39,9 +39,9 @@ export class ProvableQuestion extends Protocol {
     }
 
     private async newQuestion(message: IProvableQuestion) {
-        const connection = Agency.inMemDB.getConnection(message.connection_id)
+        const connection = Agency.inMemDB.getConnection(message.connectionId)
         if (!connection) {
-            // FIXME: Send problem-report: NO CONNECTION WITH ID: ${message.connection_id} exists
+            // FIXME: Send problem-report: NO CONNECTION WITH ID: ${message.connectionId} exists
             return
         } else {
             const question = {

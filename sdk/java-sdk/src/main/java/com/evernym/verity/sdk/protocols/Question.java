@@ -70,7 +70,7 @@ public class Question extends Protocol {
         JSONObject message = new JSONObject();
         message.put("@type", Question.ASK_QUESTION_MESSAGE_TYPE);
         message.put("@id", this.id);
-        message.put("connection_id", this.connectionId);
+        message.put("connectionId", this.connectionId);
         JSONObject question = new JSONObject();
         question.put("notification_title", this.notificationTitle);
         question.put("question_text", this.questionText);
