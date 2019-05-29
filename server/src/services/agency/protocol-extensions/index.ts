@@ -16,11 +16,11 @@ export interface IAgentMessage {
 }
 
 export type ProtocolTypes =
-| ConnectionProtocolTypes
 | ConfigurationProtocolTypes
+| ConnectionProtocolTypes
 | CredentialDefProtocolTypes
-| ProvableQuestionProtocolTypes
 | CredentialProtocolTypes
+| ProvableQuestionProtocolTypes
 
 export abstract class Protocol {
 

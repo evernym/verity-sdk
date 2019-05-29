@@ -4,6 +4,7 @@ import * as _sodium from 'libsodium-wrappers'
 import { Agency } from './services/agency'
 import { Configuration } from './services/agency/protocol-extensions/configuration'
 import { Connection } from './services/agency/protocol-extensions/connection'
+import { Credential } from './services/agency/protocol-extensions/credential'
 import { CredentialDef } from './services/agency/protocol-extensions/credential-def'
 import { ProvableQuestion } from './services/agency/protocol-extensions/provable-question'
 import { PaymentRuntime } from './services/libnullpay'
@@ -40,12 +41,14 @@ startServices().then(async () => {
      */
     const config = new Configuration(blankConfig)
     const connection = new Connection(blankConfig)
-    const provableQuestion = new ProvableQuestion(blankConfig)
+    const credential = new Credential(blankConfig)
     const credentialDef = new CredentialDef(blankConfig)
+    const provableQuestion = new ProvableQuestion(blankConfig)
 
     const agency = new Agency([
         config,
         connection,
+        credential,
         credentialDef,
         provableQuestion,
     ])
