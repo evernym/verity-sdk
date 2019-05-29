@@ -79,13 +79,15 @@ public class SchemaTest {
         try {
             VerityConfig verityConfig = getConfig();
 
+            String schemaName = "test schema";
+            String schemaVersion = "0.0.1";
             String attr1 = "name";
             String attr2 = "degree";
-            Schema schema = new Schema(attr1, attr2);
+            Schema schema = new Schema(schemaName, schemaVersion, attr1, attr2);
             JSONObject unpackedMessage = unpackMessage(verityConfig, schema.getMessage(verityConfig));
             assertEquals(schema.toString(), unpackedMessage.toString());
-            assertEquals(attr1, unpackedMessage.getJSONArray("attrs").get(0));
-            assertEquals(attr2, unpackedMessage.getJSONArray("attrs").get(1));
+            assertEquals(attr1, unpackedMessage.getJSONObject("schema").getJSONArray("attrNames").get(0));
+            assertEquals(attr2, unpackedMessage.getJSONObject("schema").getJSONArray("attrNames").get(1));
 
             verityConfig.closeWallet();
         } catch(Exception e) {

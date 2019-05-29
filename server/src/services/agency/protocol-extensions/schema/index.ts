@@ -43,6 +43,7 @@ export class Schema extends Protocol {
                 0, 'Successfully wrote schema to ledger', message, schema.schemaId), this.config)
 
         } catch (e) {
+            console.error(e)
             Agency.postResponse(generateProblemReport(
                 'vs.service/schema/0.1/problem-report',
                 'failed to write schema to ledger',

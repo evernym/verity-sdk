@@ -436,11 +436,15 @@ Tells Verity to write a new schema to the ledger on behalf of the enterprise.
 {
 	"@type": "vs.service/schema/0.1/write",
 	"@id": <uuid>,
-	"attrs": [
-		"name",
-		"age",
-		...
-	]
+	"schema": {
+		"name": <schema name>,
+		"version": <schema version>,
+		"attrNames": [
+			"name",
+			"age",
+			...
+		]
+	}
 }
 ```
 

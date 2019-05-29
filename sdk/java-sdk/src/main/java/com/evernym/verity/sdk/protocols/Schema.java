@@ -19,14 +19,18 @@ public class Schema extends Protocol {
     // Status Definitions
     public static Integer WRITE_SUCCESSFUL_STATUS = 0;
 
+    private String name;
+    private String version;
     private String[] attrs;
 
     /**
      * Creates a Schema from a list of attributes
      * @param attrs
      */
-    public Schema(String ...attrs) {
+    public Schema(String name, String version, String ...attrs) {
         super();
+        this.name = name;
+        this.version = version;
         this.attrs = attrs;
     }
 
@@ -35,7 +39,11 @@ public class Schema extends Protocol {
         JSONObject message = new JSONObject();
         message.put("@type", Schema.WRITE_SCHEMA_MESSAGE_TYPE);
         message.put("@id", this.id);
-        message.put("attrs", new JSONArray(attrs));
+        JSONObject schema = new JSONObject();
+        schema.put("name", this.name);
+        schema.put("version", this.version);
+        schema.put("attrNames", new JSONArray(attrs));
+        message.put("schema", schema);
         return message.toString();
     }
 

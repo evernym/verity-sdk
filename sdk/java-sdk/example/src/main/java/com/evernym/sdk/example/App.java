@@ -3,6 +3,7 @@ package com.evernym.sdk.example;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.util.UUID;
 
 import com.evernym.verity.sdk.protocols.Connection;
 import com.evernym.verity.sdk.protocols.CredDef;
@@ -56,7 +57,9 @@ public class App {
             Handlers.addHandler(Question.STATUS_MESSAGE_TYPE, Question.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
-                    Schema schema = new Schema("name", "degree");
+                    String schemaName = "My test schema";
+                    String schemaVersion = getRandomInt(0, 100).toString() + "." + getRandomInt(0, 100).toString() + "." + getRandomInt(0, 100).toString();
+                    Schema schema = new Schema(schemaName, schemaVersion, "name", "degree");
                     schema.write(verityConfig);
 
                 } catch(Exception ex) {
@@ -120,5 +123,9 @@ public class App {
 
     private static String readConfigFile() throws IOException {
         return new String(Files.readAllBytes(FileSystems.getDefault().getPath("verityConfig.json")));
+    }
+
+    private static Integer getRandomInt(int min, int max) {
+        return new Integer((int)(Math.random() * ((max - min) + 1)) + min);
     }
 }
