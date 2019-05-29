@@ -33,7 +33,6 @@ This document outlines the various definitions, message formatting, and message 
 	 - [Problem Report](#cred-def:problem-report)
     - [Status](#cred-def:status)
 - [Credential](#credential)
-	 - [Credential Offer](#credential:offer)
 	 - [Credential](#credential:credential)
     - [Problem Report](#credential:problem-report)
     - [Status](#credential:status)
@@ -164,7 +163,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
 ```json
 {
     "@type": "vs.service/common/0.1/problem-report",
-    #@id": <uuid>,
+    "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>,
         "seqnum": 1
@@ -174,7 +173,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
         "en": "internal serice error, out of memory",
         "code": 504
     },
-    "whoRetries": "me",
+    "who_retries": "me",
     "where": "consumer agent"
     "timestamp": 2019-06-12 13:23:06Z
 }
@@ -189,7 +188,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
 * `comment` field is **required**, but does not have to contain every element below, but needs **>1** attributes below. Details the error, contains: 
     * `en` **optional** human readable message for the error
     * `code` **optional** symbolic name for the error
-* `whoRetries` **optional** (if not added to message it is assumed retry is **none**) enum describing which party retries, if any:
+* `who_retries` **optional** (if not added to message it is assumed retry is **none**) enum describing which party retries, if any:
     * `0` recipient of message (you)
     * `1` sender of message (me)
     * `2` both 
@@ -266,7 +265,7 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 ```json
 {
     "@type": "vs.service/connection/0.1/problem_report",
-    #@id": <uuid>,
+    "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
     },
@@ -274,7 +273,6 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
         "en": "user rejected the connection request",
         "code": 1024
     },
-    "whoRetries": 3
     "timestamp": 2019-06-12 13:23:06Z
 }
 ```
@@ -376,9 +374,8 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
     },
     "comment": {
         "en": "user rejected the question",
-        "code": 1024
+        "code": 1
     },
-    "whoRetries": "me"
     "timestamp": "2019-06-12 13:23:06Z"
 }
 ```
@@ -461,7 +458,6 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
         "en": "",
         "code": 1024
     },
-    "whoRetries": "me"
     "timestamp": "2019-06-12 13:23:06Z"
 }
 ```
@@ -481,7 +477,7 @@ Verity generated message that gives human readable indications of the current st
         "thid": <thid>,
         "seqnum": 3
     },
-    "status": 1,
+    "status": 0,
     "message": "Successfully wrote credential definition to ledger",
     "content": <cred_def_id>
 }
@@ -489,8 +485,7 @@ Verity generated message that gives human readable indications of the current st
 #### Attributes
 
 * `status` enum that resolves to one of 6 states:
-    * `0` Write request received
-    * `1` Successfully wrote credential definition to ledger (cred\_def\_id in content).
+    * `0` Successfully wrote credential definition to ledger (cred\_def\_id in content).
 * `message` **optional** message relating to the status
 * `content` **optional** content field associated with the status
 
@@ -503,27 +498,6 @@ protocol: **credential** | ver: **0.1**
 
 The *Credential* set of protocols encompass the necessary functionality to allow an enterprise to issue a credential to an existing connection.
 
-<a id="credential:offer"></a>
-### Credential Offer
-
-type: **offer**
-
-Offers a credential to a user
-
-```json
-{
-	"@type": "vs.service/credential/0.1/offer",
-	"@id": <uuid>,
-	"connectionId": <pairwise DID>,
-	"credDefId": "<credential definition ID>"
-}
-```
-
-#### Attributes
-
-* `connectionId` is the id of the connection to whom you want to send the credential
-* `credDefId` is the identifier of the previously created Credential Definition associated with the credential you
-
 <a id="credential:credential"></a>
 ### Credential
 
@@ -535,9 +509,6 @@ Send a credential to a user
 {
 	"@type": "vs.service/credential/0.1/credential",
 	"@id": <uuid>,
-	"~thread": {
-        "pthid": <pthid>
-    },
 	"connectionId": "<pairwise_did>",
 	"credentialData":{
         "id": <uuid>,
@@ -578,7 +549,6 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
         "en": "",
         "code": 1024
     },
-    "whoRetries": "me"
     "timestamp": "2019-06-12 13:23:06Z"
 }
 ```
@@ -676,7 +646,7 @@ Problem report for the enroll protocol. See [Problem report common](#Attributes)
 ```json
 {
     "@type": "vs.service/enroll/0.1/problem-report",
-    #@id": <uuid>,
+    "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
     },
@@ -684,7 +654,7 @@ Problem report for the enroll protocol. See [Problem report common](#Attributes)
         "en": "user rejected the connection request",
         "code": 1024
     },
-    "whoRetries": 3
+    "who_retries": 3
     "timestamp": 2019-06-12 13:23:06Z
 }
 ```

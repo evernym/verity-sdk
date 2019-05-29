@@ -14,7 +14,6 @@ import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.did.*;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CredentialTest {
@@ -89,14 +88,8 @@ public class CredentialTest {
             int price = 3;
             Credential credential = new Credential(connectionId, credDefId, credentialValues, price);
 
-            JSONObject unpackedOfferMessage = unpackMessage(verityConfig, credential.getOfferMessage(verityConfig));            
-            assertEquals(credential.offerMessageToString(), unpackedOfferMessage.toString());
-            assertEquals(connectionId, unpackedOfferMessage.getString("connectionId"));
-            assertEquals(credDefId, unpackedOfferMessage.getString("credDefId"));
-
-            JSONObject unpackedCredentialMessage = unpackMessage(verityConfig, credential.getCredentialMessage(verityConfig));
-            assertEquals(credential.credentialMessageToString(), unpackedCredentialMessage.toString());
-            assertEquals(unpackedOfferMessage.getString("@id"), unpackedCredentialMessage.getJSONObject("~thread").getString("pthid"));
+            JSONObject unpackedCredentialMessage = unpackMessage(verityConfig, credential.getMessage(verityConfig));
+            assertEquals(credential.toString(), unpackedCredentialMessage.toString());
             assertEquals(connectionId, unpackedCredentialMessage.getString("connectionId"));
             assertEquals(credDefId, unpackedCredentialMessage.getJSONObject("credentialData").getString("credDefId"));
             assertEquals(credentialValues.toString(), unpackedCredentialMessage.getJSONObject("credentialData").getJSONObject("credentialValues").toString());

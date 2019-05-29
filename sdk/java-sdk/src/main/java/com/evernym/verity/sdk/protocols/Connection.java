@@ -71,12 +71,6 @@ public class Connection extends Protocol {
      * @throws IndyException when there are issues with encryption and decryption
      */
     public void create(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        try {
-            this.sendMessage(verityConfig);
-        } catch(MethodNotSupportedException ex) {
-            // do nothing. We haven't disabled this method.
-        } catch(Exception ex) {
-            throw ex;
-        }
+        this.sendMessage(verityConfig);
     }
 }

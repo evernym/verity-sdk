@@ -4,6 +4,7 @@ import * as vcx from 'node-vcx-wrapper'
 import uuid = require('uuid')
 import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
+import { generateProblemReport } from '../../utils/problem-reports'
 
 export type ProvableQuestionProtocolTypes =
 | 'vs.service/question/0.1/question'
@@ -41,7 +42,12 @@ export class ProvableQuestion extends Protocol {
     private async newQuestion(message: IProvableQuestion) {
         const connection = Agency.inMemDB.getConnection(message.connectionId)
         if (!connection) {
-            // FIXME: Send problem-report: NO CONNECTION WITH ID: ${message.connectionId} exists
+            Agency.postResponse(generateProblemReport(
+                'vs.service/question/0.1/problem-report',
+                `No connection with id \"${message.connectionId}\"`,
+                message['@id']),
+                this.config,
+            )
             return
         } else {
             const question = {
@@ -97,15 +103,24 @@ export class ProvableQuestion extends Protocol {
                             return
                         }
                     }
-                    // FIXME: Send problem report here. Matching valid response not found.
+                    Agency.postResponse(generateProblemReport(
+                        'vs.service/question/0.1/problem-report',
+                        'Matching valid response not found',
+                        message['@id']),
+                        this.config,
+                    )
                 } else {
                     console.log('Signature validation failed')
-                    // FIXME: Send problem report. Signature validation failed.
-
+                    Agency.postResponse(generateProblemReport(
+                        'vs.service/question/0.1/problem-report',
+                        'Signature validation failed',
+                        message['@id']),
+                        this.config,
+                    )
                 }
             } else {
                 this.updateState(connection, message)
-            }}, 20000)
+            }}, 2000)
     }
 
     private generateStatusReport(status: number, messageId: string, statusMessage: string, content?: string) {

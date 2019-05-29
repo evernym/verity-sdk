@@ -44,7 +44,7 @@ export class NewConnection {
                 Agency.postResponse(statusReport, this.config)
             } else {
                 this.updateState()
-            }}, 20000)
+            }}, 2000)
     }
 
     private generateStatusReport(status: number, statusMessage: string, content?: string) {

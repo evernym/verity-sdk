@@ -3,6 +3,7 @@ package com.evernym.sdk.example;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.util.Scanner;
 
 import com.evernym.verity.sdk.protocols.Connection;
 import com.evernym.verity.sdk.protocols.CredDef;
@@ -50,8 +51,10 @@ public class App {
                 try {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
 
-                    // Writing Cred Def
-                    String schemaId = "V4SGRU86Z58d6TV7PBUe6f:2:sdk_test_schema:0.0.1"; // Only exists on team1 environment
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.print("Enter a valid schema ID: ");
+                    String schemaId = scanner.next();
+                    scanner.close();
                     CredDef credDef = new CredDef(schemaId);
                     credDef.write(verityConfig);
 
@@ -66,15 +69,14 @@ public class App {
                     credentialValues.put("name", "Joe Smith");
                     credentialValues.put("degree", "Bachelors");
                     credential = new Credential(connectionId, credDefId, credentialValues, 0);
-                    credential.sendOffer(verityConfig);
+                    credential.send(verityConfig);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
             Handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
-                    System.out.println("User accepted the credential offer. Sending credential...");
-                    credential.sendCredential(verityConfig);
+                    System.out.println("User accepted the credential offer. Verity should now be sending the Credential");
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }

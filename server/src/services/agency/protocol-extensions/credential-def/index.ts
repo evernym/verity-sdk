@@ -2,6 +2,7 @@ import * as vcx from 'node-vcx-wrapper'
 import uuid = require('uuid')
 import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
+import { generateProblemReport } from '../../utils/problem-reports'
 
 export type CredentialDefProtocolTypes =
 | 'vs.service/cred-def/0.1/write'
@@ -28,23 +29,31 @@ export class CredentialDef extends Protocol {
     }
 
     private async writeCredDef(message: ICredWriteMessage) {
-        Agency.postResponse(this.generateStatusReport(0, 'Write request received', message), this.config)
+        try {
+            const credDef = await vcx.CredentialDef.create({
+                name: 'dummyCredDef',
+                paymentHandle: 0,
+                revocationDetails: {},
+                schemaId: message.schemaId,
+                sourceId: uuid(),
+            })
+            await Agency.inMemDB.setCredentialDef(credDef)
+            const id = await credDef.getCredDefId()
 
-        const credDef = await vcx.CredentialDef.create({
-            name: 'dummyCredDef',
-            paymentHandle: 0,
-            revocationDetails: {},
-            schemaId: message.schemaId,
-            sourceId: uuid(),
-        })
-        await Agency.inMemDB.setCredentialDef(credDef)
-        const id = await credDef.getCredDefId()
-
-        Agency.postResponse(
-            this.generateStatusReport(
-                1, 'Successfully wrote credential definition to ledger', message, id),
+            Agency.postResponse(
+                this.generateStatusReport(
+                    0, 'Successfully wrote credential definition to ledger', message, id),
+                    this.config,
+                )
+        } catch (e) {
+            console.error('Failed to write credDef: ', e.message)
+            Agency.postResponse(generateProblemReport(
+                'vs.service/cred-def/0.1/problem-report',
+                'Failed to write credential definition to ledger',
+                message['@id']),
                 this.config,
             )
+        }
     }
 
     private generateStatusReport(status: number, statusMessage: string, message: ICredWriteMessage, content?: any) {

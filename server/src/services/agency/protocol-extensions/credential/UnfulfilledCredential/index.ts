@@ -2,7 +2,7 @@ import * as vcx from 'node-vcx-wrapper'
 import { IIssuerCredentialCreateData } from 'node-vcx-wrapper'
 import uuid = require('uuid')
 import { ICredential } from '..'
-import { Agency, IAgencyConfig } from '../../../../agency'
+import { Agency, IAgencyConfig } from '../../..'
 
 export class UnfulfiledCredential {
     private credential: vcx.IssuerCredential
@@ -47,7 +47,7 @@ export class UnfulfiledCredential {
                 this.updateSentCredState()
             } else {
                 this.updateOfferState()
-            }}, 20000)
+            }}, 2000)
     }
 
     private async updateSentCredState() {
@@ -58,7 +58,7 @@ export class UnfulfiledCredential {
                 Agency.postResponse(this.generateStatusReport(3, 'Credential accepted by user'), this.config)
             } else {
                 this.updateSentCredState()
-            }}, 20000)
+            }}, 2000)
     }
 
     private generateStatusReport(status: number, statusMessage: string) {

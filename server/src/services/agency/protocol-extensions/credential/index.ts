@@ -1,18 +1,15 @@
 import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
-import { UnfulfiledCredential } from './newCredential'
+import { generateProblemReport } from '../../utils/problem-reports'
+import { UnfulfiledCredential } from './UnfulfilledCredential'
 
 export type CredentialProtocolTypes =
-| 'vs.service/credential/0.1/offer'
 | 'vs.service/credential/0.1/credential'
 | 'vs.service/credential/0.1/problem-report'
 | 'vs.service/credential/0.1/status'
 
 export interface ICredential extends IAgentMessage {
     '@type': 'vs.service/credential/0.1/credential',
-    '~thread': {
-        'pthid': string,
-    },
     'connectionId': string,
     'credentialData': {
         'id': string,
@@ -26,7 +23,7 @@ export interface ICredential extends IAgentMessage {
 
 export class Credential extends Protocol {
 
-    private Credentials: UnfulfiledCredential[]
+    private Credentials: UnfulfiledCredential[] = []
 
     constructor(config: IAgencyConfig) {
         super(config)
@@ -47,11 +44,21 @@ export class Credential extends Protocol {
         const credDef = Agency.inMemDB.getCredentialDef(message.credentialData.credDefId)
 
         if (!credDef) {
-            console.log('GEN PR for no creddef by id')
+            Agency.postResponse(generateProblemReport(
+                'vs.service/credential/0.1/problem-report',
+                `No credential definition with id \"${message.credentialData.credDefId}\"`,
+                message['@id']),
+                this.config,
+            )
             return
         }
         if (!connection) {
-            console.log('Gen PR for no connection by id')
+            Agency.postResponse(generateProblemReport(
+                'vs.service/credential/0.1/problem-report',
+                `No connection with id \"${message.connectionId}\"`,
+                message['@id']),
+                this.config,
+            )
             return
         }
 

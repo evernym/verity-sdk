@@ -21,8 +21,7 @@ public class CredDef extends Protocol {
     public static String STATUS_MESSAGE_TYPE = "vs.service/cred-def/0.1/status";
 
     // Status Definitions
-    public static Integer WRITE_REQUEST_RECEIVED_STATUS = 0;
-    public static Integer WRITE_SUCCESSFUL_STATUS = 1;
+    public static Integer WRITE_SUCCESSFUL_STATUS = 0;
 
     private String schemaId;
 
@@ -53,12 +52,6 @@ public class CredDef extends Protocol {
      * @throws IndyException when there are issues with encryption and decryption
      */
     public void write(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        try {
-            this.sendMessage(verityConfig);
-        } catch(MethodNotSupportedException ex) {
-            // do nothing. We haven't disabled this method.
-        } catch(Exception ex) {
-            throw ex;
-        }
+        this.sendMessage(verityConfig);
     }
 }

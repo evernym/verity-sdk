@@ -7,6 +7,7 @@ import os
 import sys
 import random
 import requests
+import logging
 
 from ctypes import cdll
 from uuid import uuid4
@@ -26,7 +27,7 @@ def parse_args():
     parser.add_argument("SCHEMA_VERSION")
     parser.add_argument("SCHEMA_ATTRS", nargs='*', help="Schema attributes. ")
     parser.add_argument("-c", "--config", help="path to vcx_config.json", default="./vcx_config.json")
-    # parser.add_argument("--verbose", action="store_true")
+    parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args()
 
     if(not os.path.exists(args.config)):
@@ -41,6 +42,9 @@ def uuid():
 
 async def main():
     args = parse_args()
+
+    if(args.verbose):
+        logging.basicConfig(level=logging.DEBUG)
 
     # Initialize libindy
     lib = cdll.LoadLibrary('/usr/lib/libnullpay.so')
