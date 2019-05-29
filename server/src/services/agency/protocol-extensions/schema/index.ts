@@ -2,7 +2,7 @@ import * as vcx from 'node-vcx-wrapper'
 import uuid = require('uuid')
 import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
-import { generateProblemReport } from '../../utils/problem-reports';
+import { generateProblemReport } from '../../utils/problem-reports'
 
 export type SchemaProtocolTypes =
 | 'vs.service/schema/0.1/write'

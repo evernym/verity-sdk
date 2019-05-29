@@ -4,7 +4,7 @@ import { ConnectionProtocolTypes } from './connection'
 import { CredentialProtocolTypes } from './credential'
 import { CredentialDefProtocolTypes } from './credential-def'
 import { ProvableQuestionProtocolTypes } from './provable-question'
-import { SchemaProtocolTypes } from './schema';
+import { SchemaProtocolTypes } from './schema'
 
 export interface IAgentMessage {
     '@type': ProtocolTypes
