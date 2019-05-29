@@ -1,6 +1,6 @@
 import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
-import { UnfulfiledCredential } from './newCredential';
+import { UnfulfiledCredential } from './newCredential'
 
 export type CredentialProtocolTypes =
 | 'vs.service/credential/0.1/offer'
