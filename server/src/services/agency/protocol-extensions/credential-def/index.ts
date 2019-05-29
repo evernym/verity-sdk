@@ -37,7 +37,7 @@ export class CredentialDef extends Protocol {
             schemaId: message.schemaId,
             sourceId: uuid(),
         })
-        Agency.inMemDB.setCredentialDef(credDef)
+        await Agency.inMemDB.setCredentialDef(credDef)
         const id = await credDef.getCredDefId()
 
         Agency.postResponse(
