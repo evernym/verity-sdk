@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols;
+ package com.evernym.verity.sdk.handlers;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +14,8 @@ import org.json.JSONObject;
  */
 public class Handlers {
     static ArrayList<MessageHandler> messageHandlers = new ArrayList<MessageHandler>();
+    static MessageHandler defaultHandler;
+    static MessageHandler problemReportHandler;
 
     /**
      * Adds a MessageHandler for a message type to the list if current message handlers
@@ -35,6 +37,22 @@ public class Handlers {
     }
 
     /**
+     * Adds a handler that is called for all problem report messages not handled directly.
+     * @param messageHandler the function that will be called
+     */
+    public static void addProblemReportHandler(MessageHandler.Handler messageHandler) {
+        problemReportHandler = new MessageHandler(null, messageHandler);
+    }
+
+    /**
+     * Adds a handler for all message types not handled by other message handlers
+     * @param messageHandler the function that will be called
+     */
+    public static void addDefaultHandler(MessageHandler.Handler messageHandler) {
+        defaultHandler = new MessageHandler(null, messageHandler);
+    }
+
+    /**
      * Calls all of the handlers that support handling of this particular message type and message status
      * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
      * @param rawMessage the raw bytes received from Verity
@@ -44,12 +62,24 @@ public class Handlers {
      */
     public static void handleMessage(VerityConfig verityConfig, byte[] rawMessage) throws InterruptedException, ExecutionException, IndyException {
         JSONObject message = MessagePackaging.unpackMessageFromVerity(verityConfig, rawMessage);
-        System.out.println("New message from verity: " + message.toString());
+        boolean handled = false;
         for(MessageHandler messageHandler: messageHandlers) {
             if(messageHandler.handles(message)) {
                 messageHandler.handle(message);
+                handled = true;
             }
         }
+        if(!handled) {
+            if(isProblemReport(message.getString("@type")) && problemReportHandler != null) {
+                problemReportHandler.handle(message);
+            } else if(defaultHandler != null) {
+                defaultHandler.handle(message);
+            }
+        }
+    }
+
+    protected static boolean isProblemReport(String messageType) {
+        return messageType.split("/")[3].equals("problem-report");
     }
     
 }

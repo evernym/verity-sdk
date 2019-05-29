@@ -8,7 +8,7 @@ import java.util.Scanner;
 import com.evernym.verity.sdk.protocols.Connection;
 import com.evernym.verity.sdk.protocols.CredDef;
 import com.evernym.verity.sdk.protocols.Credential;
-import com.evernym.verity.sdk.protocols.Handlers;
+import com.evernym.verity.sdk.handlers.Handlers;
 import com.evernym.verity.sdk.protocols.Question;
 import com.evernym.verity.sdk.utils.VerityConfig;
 
@@ -28,6 +28,12 @@ public class App {
             verityConfig = new VerityConfig(readConfigFile());
             verityConfig.sendUpdateWebhookMessage(verityConfig);
 
+            Handlers.addDefaultHandler((JSONObject message) -> {
+                System.out.println("New message from verity: " + message.toString());
+            });
+            Handlers.addProblemReportHandler((JSONObject message) -> {
+                System.out.println("New problem report from verity: " + message.getJSONObject("comment").getString("en"));
+            });
             Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
                 JSONObject inviteDetails = new JSONObject(message.getString("content"));
                 System.out.print("Invite Details: ");
