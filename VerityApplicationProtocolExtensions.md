@@ -40,6 +40,10 @@ This document outlines the various definitions, message formatting, and message 
 	 - [Credential](#credential:credential)
     - [Problem Report](#credential:problem-report)
     - [Status](#credential:status)
+- [Proof](#proof)
+	 - [Proof Request](#proof:request)
+    - [Problem Report](#proof:problem-report)
+    - [Status](#proof:status)
 - [Enroll](#enroll)
     - [New Enrollment](#enroll:new-enrollment)
     - [Problem Report](#enroll:problem-report)
@@ -304,7 +308,7 @@ Verity generated message that gives human readable indications of the current st
 
 #### Attributes
 
-* `status` enum that resolves to one of 6 states:
+* `status` enum that resolves to one of 2 states:
     * `0` awaiting response. (invite details in content and invite has been sent if phoneNo defined)
     * `1` invite was accepted by the user (connectionId in content)
 * `message` **optional** message relating to the status
@@ -406,7 +410,7 @@ Verity generated message that gives human readable indications of the current st
 ```
 #### Attributes
 
-* `status` enum that resolves to one of 6 states:
+* `status` enum that resolves to one of 2 states:
     * `0` question has been sent
     * `1` question was answered. Response in content.
 * `message` **optional** message relating to the status
@@ -573,7 +577,7 @@ Verity generated message that gives human readable indications of the current st
 ```
 #### Attributes
 
-* `status` enum that resolves to one of 6 states:
+* `status` enum that resolves to one of 1 states:
     * `0` Successfully wrote credential definition to ledger (cred\_def\_id in content).
 * `message` **optional** message relating to the status
 * `content` **optional** content field associated with the status
@@ -663,7 +667,7 @@ Verity generated message that gives human readable indications of the current st
 ```
 #### Attributes
 
-* `status` enum that resolves to one of 6 states: 
+* `status` enum that resolves to one of 4 states: 
     * `0` Offer sent to user
     * `1` Offer accepted by user
     * `2` Credential sent to user
@@ -671,6 +675,96 @@ Verity generated message that gives human readable indications of the current st
 * `message` **optional** message relating to the status
 
 ---
+
+<a id="proof"></a>
+## Proof
+
+protocol: **proof** | ver: **0.1**
+
+The *Proof* set of protocols encompass the necessary functionality to allow an enterprise to send a proof request to and receive a proof from an existing connection.
+
+<a id="proof:request"></a>
+### Proof Request
+
+type: **request**
+
+Send a proof request to a user
+
+```json
+{
+	"@type": "vs.service/proof/0.1/request",
+	"@id": <uuid>,
+	"connectionId": "<pairwise_did>",
+	"proof":{
+        "name": <proof name>,
+        "proofAttrs": [
+        	{name: 'name', restrictions: [{issuer_did: configJson['institution_did']}]},
+    		{name: 'degree', restrictions: [{issuer_did: configJson['institution_did']}]}
+        ]
+    }
+}
+```
+
+#### Attributes
+
+* `connectionId` is the id of the connection to whom you want to send the credential
+* `proof`
+	* `name` The name of the proof request
+	* `proofAttrs` 
+		* `name` the name of the desired attribute
+		* `restrictions` an array of objects representing any restrictions on the desired attribute
+
+<a id="proof:problem-report"></a>
+### Problem Report
+
+type: **problem-report**
+
+Problem report for the proof protocol. See [Problem report common](#Attributes) for details on optional attributes.
+
+```json
+{
+    "@type": "vs.service/proof/0.1/problem-report",
+    "@id": <uuid>,
+    "~thread": {
+        "pthid": <pthid>
+    },
+    "comment": {
+        "en": "",
+        "code": 1024
+    },
+    "timestamp": "2019-06-12 13:23:06Z"
+}
+```
+
+<a id="proof:status"></a>
+### Status
+
+type: **status**
+
+Verity generated message that gives human readable indications of the current status of an ongoing, complete, or cancelled enrollment.
+
+```json
+{
+    "@type": "vs.service/proof/0.1/status",
+    "@id": <uuid>
+    "~thread": {
+        "thid": <thid>,
+        "seqnum": 3
+    },
+    "status": 1,
+    "message": "Proof received",
+    "content": <proof attributes>
+}
+```
+#### Attributes
+
+* `status` enum that resolves to one of 2 states:
+	 * `0` Proof request sent
+    * `1` Proof received and validated (proof attributes in content)
+* `message` **optional** message relating to the status
+
+---
+
 
 <a id="enroll"></a>
 ## Enroll

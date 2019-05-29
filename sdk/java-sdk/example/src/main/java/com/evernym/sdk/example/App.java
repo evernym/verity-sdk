@@ -9,10 +9,12 @@ import com.evernym.verity.sdk.protocols.Connection;
 import com.evernym.verity.sdk.protocols.CredDef;
 import com.evernym.verity.sdk.protocols.Credential;
 import com.evernym.verity.sdk.handlers.Handlers;
+import com.evernym.verity.sdk.protocols.ProofRequest;
 import com.evernym.verity.sdk.protocols.Question;
 import com.evernym.verity.sdk.protocols.Schema;
 import com.evernym.verity.sdk.utils.VerityConfig;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class App {
@@ -49,7 +51,7 @@ public class App {
                     String questionDetail = " ";
                     String[] validResponses = {"Great!", "Not so good"};
                     Question provableQuestion = new Question(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
-                    provableQuestion.sendMessage(verityConfig);
+                    provableQuestion.ask(verityConfig);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
@@ -97,9 +99,19 @@ public class App {
             Handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.CREDENTIAL_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("User accepted the credential");
+
+                    String proofRequestName = "Who are you?";
+                    JSONArray proofAttrs = new JSONArray();
+                    proofAttrs.put(getProofAttr("name", "V4SGRU86Z58d6TV7PBUe6f"));
+                    ProofRequest proofRequest = new ProofRequest(proofRequestName, proofAttrs, connectionId);
+                    proofRequest.send(verityConfig);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
+            });
+            Handlers.addHandler(ProofRequest.STATUS_MESSAGE_TYPE, ProofRequest.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
+                System.out.println("Proof Accepted!");
+                System.out.println(message.toString());
             });
 
             Connection connection = new Connection("my institution id");
@@ -127,5 +139,16 @@ public class App {
 
     private static Integer getRandomInt(int min, int max) {
         return new Integer((int)(Math.random() * ((max - min) + 1)) + min);
+    }
+
+    private static JSONObject getProofAttr(String name, String issuerDid) {
+        JSONObject proofAttr = new JSONObject();
+        proofAttr.put("name", name);
+        JSONArray restrictions = new JSONArray();
+        JSONObject restriction = new JSONObject();
+        restriction.put("issuer_did", issuerDid);
+        restrictions.put(restriction);
+        proofAttr.put("restrictions", restrictions);
+        return proofAttr;
     }
 }
