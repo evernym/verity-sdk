@@ -28,6 +28,10 @@ This document outlines the various definitions, message formatting, and message 
     - [Ask Question](#provable-question:ask-question)
     - [Problem Report](#provable-question:problem-report)
     - [Status](#provable-question:status)
+- [Schema](#schema)
+	 - [Write New Schema](#schema:write)
+	 - [Problem Report](#schema:problem-report)
+    - [Status](#schema:status)
 - [Credential Definition](#cred-def)
 	 - [Write New CredDef](#cred-def:write)
 	 - [Problem Report](#cred-def:problem-report)
@@ -411,6 +415,87 @@ Verity generated message that gives human readable indications of the current st
 #### Notes
 
 * If the signature validation fails, a problem report will be sent and NOT a status message with status 1 and their response.
+
+---
+
+<a id="schema"></a>
+## Schema
+
+protocol: **schema** | ver: **0.1**
+
+The *Schema* set of protocols encompass the necessary functionality to allow an enterprise to write a schema to the ledger.
+
+<a id="schema:write"></a>
+### Write Schema
+
+type: **write**
+
+Tells Verity to write a new schema to the ledger on behalf of the enterprise.
+
+```json
+{
+	"@type": "vs.service/schema/0.1/write",
+	"@id": <uuid>,
+	"attrs": [
+		"name",
+		"age",
+		...
+	]
+}
+```
+
+#### Attributes
+
+* `attrs` list of schema attributes
+
+<a id="schema:problem-report"></a>
+### Problem Report
+
+type: **problem-report**
+
+Problem report for the schema protocol. See [Problem report common](#Attributes) for details on optional attributes.
+
+```json
+{
+    "@type": "vs.service/schema/0.1/problem-report",
+    "@id": <uuid>,
+    "~thread": {
+        "pthid": <pthid>
+    },
+    "comment": {
+        "en": "",
+        "code": 1024
+    },
+    "timestamp": "2019-06-12 13:23:06Z"
+}
+```
+
+<a id="schema:status"></a>
+### Status
+
+type: **status**
+
+Verity generated message that gives human readable indications of the current status of an ongoing, complete, or cancelled enrollment.
+
+```json
+{
+    "@type": "vs.service/cred-def/0.1/status",
+    "@id": <uuid>
+    "~thread": {
+        "thid": <thid>,
+        "seqnum": 3
+    },
+    "status": 0,
+    "message": "Successfully wrote schema to ledger",
+    "content": <schema_id>
+}
+```
+#### Attributes
+
+* `status` enum that resolves to one of 6 states:
+    * `0` Successfully wrote schema to ledger (schema_id in content).
+* `message` **optional** message relating to the status
+* `content` **optional** content field associated with the status
 
 ---
 

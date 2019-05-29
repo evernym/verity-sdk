@@ -3,13 +3,13 @@ package com.evernym.sdk.example;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.util.Scanner;
 
 import com.evernym.verity.sdk.protocols.Connection;
 import com.evernym.verity.sdk.protocols.CredDef;
 import com.evernym.verity.sdk.protocols.Credential;
 import com.evernym.verity.sdk.handlers.Handlers;
 import com.evernym.verity.sdk.protocols.Question;
+import com.evernym.verity.sdk.protocols.Schema;
 import com.evernym.verity.sdk.utils.VerityConfig;
 
 import org.json.JSONObject;
@@ -56,14 +56,18 @@ public class App {
             Handlers.addHandler(Question.STATUS_MESSAGE_TYPE, Question.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
+                    Schema schema = new Schema("name", "degree");
+                    schema.write(verityConfig);
 
-                    Scanner scanner = new Scanner(System.in);
-                    System.out.print("Enter a valid schema ID: ");
-                    String schemaId = scanner.next();
-                    scanner.close();
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            Handlers.addHandler(Schema.STATUS_MESSAGE_TYPE, Schema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
+                try {
+                    String schemaId = message.getString("content");
                     CredDef credDef = new CredDef(schemaId);
                     credDef.write(verityConfig);
-
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
