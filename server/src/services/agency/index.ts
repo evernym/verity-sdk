@@ -92,15 +92,19 @@ export class Agency {
             const fullyUnpacked = await Agency.unpackMsg(Buffer.from(outerMessage.message))
             const unpacked = JSON.parse(fullyUnpacked.toString('utf8'))
             const details = JSON.parse(unpacked.message)
-            for (let i = 0; i <= this.protocols.length; i++) {
-                const valid = this.protocols[i].router(details, this)
-                if (valid) { break }
-                if (i === this.protocols.length - 1) {
-                    Agency.postResponse(generateProblemReport(
-                        'vs.service/common/0.1/problem-report',
-                        `Not a supported message type! ${details['@type']}`,
-                        details['@id'],
-                    ), this.config)
+            if (!this.config.fromVK) {
+                console.error('You need to provision first! The in-memory data store has been reset.')
+            } else {
+                for (let i = 0; i <= this.protocols.length; i++) {
+                    const valid = this.protocols[i].router(details, this)
+                    if (valid) { break }
+                    if (i === this.protocols.length - 1) {
+                        Agency.postResponse(generateProblemReport(
+                            'vs.service/common/0.1/problem-report',
+                            `Not a supported message type! ${details['@type']}`,
+                            details['@id'],
+                        ), this.config)
+                    }
                 }
             }
         } catch (e) {
