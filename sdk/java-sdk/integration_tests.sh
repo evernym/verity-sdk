@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e 
+set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 EXIT_CODE=0
 
@@ -10,7 +10,7 @@ function test_java_sdk() {
     sleep 15 # Wait for invitation details to be written to file
     cd $SCRIPT_DIR/../../tools/
     # Run client auto responder
-    ./vcx-client-auto-respond.py $(cat $SCRIPT_DIR/example/inviteDetails.json)  
+    ./vcx-client-auto-respond.py $(cat $SCRIPT_DIR/example/inviteDetails.json)
 }
 
 # Build Java SDK and example
@@ -21,6 +21,7 @@ mvn package
 
 # Start Mock Verity
 cd $SCRIPT_DIR/../../server
+npm install
 npm run build
 docker-compose up --build -d
 sleep 30 # Wait for Mock Verity to come up
