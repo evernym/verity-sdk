@@ -79,7 +79,7 @@ export class ProvableQuestion extends Protocol {
             console.log(messages)
             let answer
             for (const msg of messages[0].msgs) {
-                if (msg.type === 'Answer') {
+                if (msg.type.toLowerCase() === 'answer') {
                   if (answer) {
                     console.error('More then one "Answer" message')
                   } else {

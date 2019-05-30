@@ -37,9 +37,14 @@ public class App {
                 System.out.println("New problem report from verity: " + message.getJSONObject("comment").getString("en"));
             });
             Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
-                JSONObject inviteDetails = new JSONObject(message.getString("content"));
-                System.out.print("Invite Details: ");
-                System.out.println(inviteDetails.toString());
+                try {
+                    JSONObject inviteDetails = new JSONObject(message.getString("content"));
+                    System.out.print("Invite Details: ");
+                    System.out.println(inviteDetails.toString());
+                    writeInviteDetailsFile(inviteDetails); // For integration tests
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
             });
             Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
@@ -111,6 +116,7 @@ public class App {
             Handlers.addHandler(ProofRequest.STATUS_MESSAGE_TYPE, ProofRequest.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
                 System.out.println("Proof Accepted!");
                 System.out.println(message.toString());
+                System.exit(0);
             });
 
             Connection connection = new Connection("my institution id");
@@ -134,6 +140,10 @@ public class App {
 
     private static String readConfigFile() throws IOException {
         return new String(Files.readAllBytes(FileSystems.getDefault().getPath("verityConfig.json")));
+    }
+
+    private static void writeInviteDetailsFile(JSONObject data) throws IOException {
+        Files.write(FileSystems.getDefault().getPath("inviteDetails.json"), data.toString().getBytes());
     }
 
     private static Integer getRandomInt(int min, int max) {
