@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y \
     default-jdk \
     wget \
     tar \
-    curl
+    curl \
+    python-dev
 
 RUN add-apt-repository ppa:jonathonf/python-3.6 && \
     apt-get update && apt-get install -y \
