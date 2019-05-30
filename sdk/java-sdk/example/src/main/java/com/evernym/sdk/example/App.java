@@ -3,7 +3,6 @@ package com.evernym.sdk.example;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.util.UUID;
 
 import com.evernym.verity.sdk.protocols.Connection;
 import com.evernym.verity.sdk.protocols.CredDef;

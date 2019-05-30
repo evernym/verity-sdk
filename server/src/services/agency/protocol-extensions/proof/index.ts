@@ -17,7 +17,7 @@ export interface IProofMessage extends IAgentMessage {
     connectionId: string,
 }
 
-export class Schema extends Protocol {
+export class Proof extends Protocol {
 
     constructor(config: IAgencyConfig) {
         super(config)
@@ -25,7 +25,7 @@ export class Schema extends Protocol {
 
     public router(message: IProofMessage) {
         switch (message['@type']) {
-            case 'vs.service/schema/0.1/write':
+            case 'vs.service/proof/0.1/request':
                 this.proofRequest(message)
                 return true
             default: return false

@@ -42,12 +42,13 @@ export class UnfulfilledProof {
     private async updateProofState() {
         setTimeout(async () => {
             await this.proof.updateState()
-            const { proof, proofState } = await this.proof.getProof(this.myConnection)
             this.state = await this.proof.getState()
-            if (this.state === vcx.StateType.OfferSent) {
-                if (proofState === vcx.ProofState.Verified) {
+            if (this.state === vcx.StateType.Accepted) {
+                const { proof, proofState } = await this.proof.getProof(this.myConnection)
+                if (proof && proofState === vcx.ProofState.Verified) {
+                    const proofJSON = JSON.parse(proof)
                     Agency.postResponse(this.generateStatusReport(
-                        1, 'Proof recieved and validated', this.message, proof), this.config)
+                        1, 'Proof recieved and validated', this.message, proofJSON.requested_proof), this.config)
                 } else {
                     Agency.postResponse(generateProblemReport(
                         'vs.service/proof/0.1/problem-report',

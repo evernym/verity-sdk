@@ -10,6 +10,7 @@ import { ProvableQuestion } from './services/agency/protocol-extensions/provable
 import { Schema } from './services/agency/protocol-extensions/schema'
 import { PaymentRuntime } from './services/libnullpay'
 import { Vcx } from './services/vcx'
+import { Proof } from './services/agency/protocol-extensions/proof';
 
 async function startServices() {
     try {
@@ -46,6 +47,7 @@ startServices().then(async () => {
     const credentialDef = new CredentialDef(blankConfig)
     const provableQuestion = new ProvableQuestion(blankConfig)
     const schema = new Schema(blankConfig)
+    const proof = new Proof(blankConfig)
 
     const agency = new Agency([
         config,
@@ -54,6 +56,7 @@ startServices().then(async () => {
         credentialDef,
         provableQuestion,
         schema,
+        proof,
     ])
 
     await agency.Ready
