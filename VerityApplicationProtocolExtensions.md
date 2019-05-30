@@ -28,6 +28,22 @@ This document outlines the various definitions, message formatting, and message 
     - [Ask Question](#provable-question:ask-question)
     - [Problem Report](#provable-question:problem-report)
     - [Status](#provable-question:status)
+- [Schema](#schema)
+	 - [Write New Schema](#schema:write)
+	 - [Problem Report](#schema:problem-report)
+    - [Status](#schema:status)
+- [Credential Definition](#cred-def)
+	 - [Write New CredDef](#cred-def:write)
+	 - [Problem Report](#cred-def:problem-report)
+    - [Status](#cred-def:status)
+- [Credential](#credential)
+	 - [Credential](#credential:credential)
+    - [Problem Report](#credential:problem-report)
+    - [Status](#credential:status)
+- [Proof](#proof)
+	 - [Proof Request](#proof:request)
+    - [Problem Report](#proof:problem-report)
+    - [Status](#proof:status)
 - [Enroll](#enroll)
     - [New Enrollment](#enroll:new-enrollment)
     - [Problem Report](#enroll:problem-report)
@@ -155,7 +171,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
 ```json
 {
     "@type": "vs.service/common/0.1/problem-report",
-    #@id": <uuid>,
+    "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>,
         "seqnum": 1
@@ -165,7 +181,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
         "en": "internal serice error, out of memory",
         "code": 504
     },
-    "whoRetries": "me",
+    "who_retries": "me",
     "where": "consumer agent"
     "timestamp": 2019-06-12 13:23:06Z
 }
@@ -180,7 +196,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
 * `comment` field is **required**, but does not have to contain every element below, but needs **>1** attributes below. Details the error, contains: 
     * `en` **optional** human readable message for the error
     * `code` **optional** symbolic name for the error
-* `whoRetries` **optional** (if not added to message it is assumed retry is **none**) enum describing which party retries, if any:
+* `who_retries` **optional** (if not added to message it is assumed retry is **none**) enum describing which party retries, if any:
     * `0` recipient of message (you)
     * `1` sender of message (me)
     * `2` both 
@@ -257,7 +273,7 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 ```json
 {
     "@type": "vs.service/connection/0.1/problem_report",
-    #@id": <uuid>,
+    "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
     },
@@ -265,7 +281,6 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
         "en": "user rejected the connection request",
         "code": 1024
     },
-    "whoRetries": 3
     "timestamp": 2019-06-12 13:23:06Z
 }
 ```
@@ -293,7 +308,7 @@ Verity generated message that gives human readable indications of the current st
 
 #### Attributes
 
-* `status` enum that resolves to one of 6 states:
+* `status` enum that resolves to one of 2 states:
     * `0` awaiting response. (invite details in content and invite has been sent if phoneNo defined)
     * `1` invite was accepted by the user (connectionId in content)
 * `message` **optional** message relating to the status
@@ -367,9 +382,8 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
     },
     "comment": {
         "en": "user rejected the question",
-        "code": 1024
+        "code": 1
     },
-    "whoRetries": "me"
     "timestamp": "2019-06-12 13:23:06Z"
 }
 ```
@@ -396,7 +410,7 @@ Verity generated message that gives human readable indications of the current st
 ```
 #### Attributes
 
-* `status` enum that resolves to one of 6 states:
+* `status` enum that resolves to one of 2 states:
     * `0` question has been sent
     * `1` question was answered. Response in content.
 * `message` **optional** message relating to the status
@@ -405,6 +419,91 @@ Verity generated message that gives human readable indications of the current st
 #### Notes
 
 * If the signature validation fails, a problem report will be sent and NOT a status message with status 1 and their response.
+
+---
+
+<a id="schema"></a>
+## Schema
+
+protocol: **schema** | ver: **0.1**
+
+The *Schema* set of protocols encompass the necessary functionality to allow an enterprise to write a schema to the ledger.
+
+<a id="schema:write"></a>
+### Write Schema
+
+type: **write**
+
+Tells Verity to write a new schema to the ledger on behalf of the enterprise.
+
+```json
+{
+	"@type": "vs.service/schema/0.1/write",
+	"@id": <uuid>,
+	"schema": {
+		"name": <schema name>,
+		"version": <schema version>,
+		"attrNames": [
+			"name",
+			"age",
+			...
+		]
+	}
+}
+```
+
+#### Attributes
+
+* `attrs` list of schema attributes
+
+<a id="schema:problem-report"></a>
+### Problem Report
+
+type: **problem-report**
+
+Problem report for the schema protocol. See [Problem report common](#Attributes) for details on optional attributes.
+
+```json
+{
+    "@type": "vs.service/schema/0.1/problem-report",
+    "@id": <uuid>,
+    "~thread": {
+        "pthid": <pthid>
+    },
+    "comment": {
+        "en": "",
+        "code": 1024
+    },
+    "timestamp": "2019-06-12 13:23:06Z"
+}
+```
+
+<a id="schema:status"></a>
+### Status
+
+type: **status**
+
+Verity generated message that gives human readable indications of the current status of an ongoing, complete, or cancelled enrollment.
+
+```json
+{
+    "@type": "vs.service/cred-def/0.1/status",
+    "@id": <uuid>
+    "~thread": {
+        "thid": <thid>,
+        "seqnum": 3
+    },
+    "status": 0,
+    "message": "Successfully wrote schema to ledger",
+    "content": <schema_id>
+}
+```
+#### Attributes
+
+* `status` enum that resolves to one of 6 states:
+    * `0` Successfully wrote schema to ledger (schema_id in content).
+* `message` **optional** message relating to the status
+* `content` **optional** content field associated with the status
 
 ---
 
@@ -452,7 +551,6 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
         "en": "",
         "code": 1024
     },
-    "whoRetries": "me"
     "timestamp": "2019-06-12 13:23:06Z"
 }
 ```
@@ -472,16 +570,15 @@ Verity generated message that gives human readable indications of the current st
         "thid": <thid>,
         "seqnum": 3
     },
-    "status": 1,
+    "status": 0,
     "message": "Successfully wrote credential definition to ledger",
     "content": <cred_def_id>
 }
 ```
 #### Attributes
 
-* `status` enum that resolves to one of 6 states:
-    * `0` Write request received
-    * `1` Successfully wrote credential definition to ledger (cred\_def\_id in message).
+* `status` enum that resolves to one of 1 states:
+    * `0` Successfully wrote credential definition to ledger (cred\_def\_id in content).
 * `message` **optional** message relating to the status
 * `content` **optional** content field associated with the status
 
@@ -494,27 +591,6 @@ protocol: **credential** | ver: **0.1**
 
 The *Credential* set of protocols encompass the necessary functionality to allow an enterprise to issue a credential to an existing connection.
 
-<a id="credential:offer"></a>
-### Credential Offer
-
-type: **offer**
-
-Offers a credential to a user
-
-```json
-{
-	"@type": "vs.service/credential/0.1/offer",
-	"@id": <uuid>,
-	"connectionId": <pairwise DID>,
-	"credDefId": "<credential definition ID>"
-}
-```
-
-#### Attributes
-
-* `connectionId` is the id of the connection to whom you want to send the credential
-* `credDefId` is the identifier of the previously created Credential Definition associated with the credential you
-
 <a id="credential:credential"></a>
 ### Credential
 
@@ -526,14 +602,11 @@ Send a credential to a user
 {
 	"@type": "vs.service/credential/0.1/credential",
 	"@id": <uuid>,
-	"~thread": {
-        "pthid": <pthid>
-    },
 	"connectionId": "<pairwise_did>",
 	"credentialData":{
         "id": <uuid>,
         "credDefId": "did:sov:abcdefg12345",
-        "credentialFields": {
+        "credentialValues": {
             "name": "Joe Smith",
             "degree": "Bachelors",
             "gpa": "3.67"
@@ -549,7 +622,7 @@ Send a credential to a user
 * `credentialData`
 	* `id` unique UUID of the credential
 	* `credDefId` Credential Definition ID of credential being sent
-	* `credentialFields` key-value pairs of attribute values
+	* `credentialValues` key-value pairs of credential attribute fields with the specified params defined in the credential definition
 
 <a id="credential:problem-report"></a>
 ### Problem Report
@@ -569,7 +642,6 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
         "en": "",
         "code": 1024
     },
-    "whoRetries": "me"
     "timestamp": "2019-06-12 13:23:06Z"
 }
 ```
@@ -595,7 +667,7 @@ Verity generated message that gives human readable indications of the current st
 ```
 #### Attributes
 
-* `status` enum that resolves to one of 6 states: 
+* `status` enum that resolves to one of 4 states: 
     * `0` Offer sent to user
     * `1` Offer accepted by user
     * `2` Credential sent to user
@@ -603,6 +675,96 @@ Verity generated message that gives human readable indications of the current st
 * `message` **optional** message relating to the status
 
 ---
+
+<a id="proof"></a>
+## Proof
+
+protocol: **proof** | ver: **0.1**
+
+The *Proof* set of protocols encompass the necessary functionality to allow an enterprise to send a proof request to and receive a proof from an existing connection.
+
+<a id="proof:request"></a>
+### Proof Request
+
+type: **request**
+
+Send a proof request to a user
+
+```json
+{
+	"@type": "vs.service/proof/0.1/request",
+	"@id": <uuid>,
+	"connectionId": "<pairwise_did>",
+	"proof":{
+        "name": <proof name>,
+        "proofAttrs": [
+        	{name: 'name', restrictions: [{issuer_did: configJson['institution_did']}]},
+    		{name: 'degree', restrictions: [{issuer_did: configJson['institution_did']}]}
+        ]
+    }
+}
+```
+
+#### Attributes
+
+* `connectionId` is the id of the connection to whom you want to send the credential
+* `proof`
+	* `name` The name of the proof request
+	* `proofAttrs` 
+		* `name` the name of the desired attribute
+		* `restrictions` an array of objects representing any restrictions on the desired attribute
+
+<a id="proof:problem-report"></a>
+### Problem Report
+
+type: **problem-report**
+
+Problem report for the proof protocol. See [Problem report common](#Attributes) for details on optional attributes.
+
+```json
+{
+    "@type": "vs.service/proof/0.1/problem-report",
+    "@id": <uuid>,
+    "~thread": {
+        "pthid": <pthid>
+    },
+    "comment": {
+        "en": "",
+        "code": 1024
+    },
+    "timestamp": "2019-06-12 13:23:06Z"
+}
+```
+
+<a id="proof:status"></a>
+### Status
+
+type: **status**
+
+Verity generated message that gives human readable indications of the current status of an ongoing, complete, or cancelled enrollment.
+
+```json
+{
+    "@type": "vs.service/proof/0.1/status",
+    "@id": <uuid>
+    "~thread": {
+        "thid": <thid>,
+        "seqnum": 3
+    },
+    "status": 1,
+    "message": "Proof received",
+    "content": <proof attributes>
+}
+```
+#### Attributes
+
+* `status` enum that resolves to one of 2 states:
+	 * `0` Proof request sent
+    * `1` Proof received and validated (proof attributes in content)
+* `message` **optional** message relating to the status
+
+---
+
 
 <a id="enroll"></a>
 ## Enroll
@@ -629,7 +791,7 @@ Initiates the process to onboard a new user
     "credentialData":{
         "id": <uuid>,
         "credDefId": "did:sov:abcdefg12345",
-        "credentialFields": "credentialFields": {
+        "credentialValues": {
             "name": "Joe Smith",
             "degree": "Bachelors",
             "gpa": "3.67"
@@ -647,7 +809,7 @@ Initiates the process to onboard a new user
 * `credentialData` defines the credential details. Contains:
     * `id` unique identifier for the credential
     * `credDefId` resolver for a credential definition
-    * `credentialFields` **optional** attribute is an array of credential attribute fields with the specified params defined in the credential definition
+    * `credentialValues` key-value pairs of credential attribute fields with the specified params defined in the credential definition
     * `price` **optional** price for credential
 
 #### Notes
@@ -667,7 +829,7 @@ Problem report for the enroll protocol. See [Problem report common](#Attributes)
 ```json
 {
     "@type": "vs.service/enroll/0.1/problem-report",
-    #@id": <uuid>,
+    "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
     },
@@ -675,7 +837,7 @@ Problem report for the enroll protocol. See [Problem report common](#Attributes)
         "en": "user rejected the connection request",
         "code": 1024
     },
-    "whoRetries": 3
+    "who_retries": 3
     "timestamp": 2019-06-12 13:23:06Z
 }
 ```

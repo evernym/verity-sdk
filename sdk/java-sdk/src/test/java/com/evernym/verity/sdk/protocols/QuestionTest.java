@@ -84,7 +84,7 @@ public class QuestionTest {
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
             JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
             assertEquals(provableQuestion.toString(), unpackedMessage.toString());
-            assertEquals(connectionId, unpackedMessage.getString("connection_id"));
+            assertEquals(connectionId, unpackedMessage.getString("connectionId"));
             assertEquals(notificationTitle, unpackedMessage.getJSONObject("question").getString("notification_title"));
             assertEquals(questionText, unpackedMessage.getJSONObject("question").getString("question_text"));
             assertEquals(questionDetail, unpackedMessage.getJSONObject("question").getString("question_detail"));

@@ -16,8 +16,7 @@ import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 import org.junit.Test;
 
-public class ConnectionTest {
-
+public class CredentialTest {
     public class TestWallet {
         String verityPublicVerkey;
         String verityPairwiseVerkey;
@@ -69,53 +68,38 @@ public class ConnectionTest {
         return new VerityConfig(config.toString());
     }
 
+    public JSONObject unpackMessage(VerityConfig verityConfig, byte[] message) throws InterruptedException, ExecutionException, IndyException {
+        byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), message).get();
+        String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
+        return MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
+    }
+
     @Test
-    public void oneParamsConstructor() throws Exception {
+    public void basicCredDefTest() throws Exception {
         try {
             VerityConfig verityConfig = getConfig();
 
-            String sourceId = "source_id";
-            Connection connection = new Connection(sourceId);
-            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), connection.getMessage(verityConfig)).get();
-            String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
-            assertEquals(connection.toString(), unpackedMessage.toString());
-            String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
-            assertEquals(sourceId, currentSourceId);
+            String connectionId = "...someConnectionId...";
+            String credDefId = "...someCredDefId...";
+            JSONObject credentialValues = new JSONObject();
+            credentialValues.put("name", "Jose Smith");
+            credentialValues.put("degree", "Bachelors");
+            credentialValues.put("gpa", "3.67");
+            int price = 3;
+            Credential credential = new Credential(connectionId, credDefId, credentialValues, price);
+
+            JSONObject unpackedCredentialMessage = unpackMessage(verityConfig, credential.getMessage(verityConfig));
+            assertEquals(credential.toString(), unpackedCredentialMessage.toString());
+            assertEquals(connectionId, unpackedCredentialMessage.getString("connectionId"));
+            assertEquals(credDefId, unpackedCredentialMessage.getJSONObject("credentialData").getString("credDefId"));
+            assertEquals(credentialValues.toString(), unpackedCredentialMessage.getJSONObject("credentialData").getJSONObject("credentialValues").toString());
+            assertEquals(price, unpackedCredentialMessage.getJSONObject("credentialData").getInt("price"));
 
             verityConfig.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             assertTrue(false);
             throw e;
-        } finally {
-            String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
-            String walletCredentials = new JSONObject().put("key", "12345").toString();
-            Wallet.deleteWallet(walletConfig, walletCredentials).get();
-        }
-    }
-
-    @Test
-    public void twoParamsConstructor() throws Exception {
-        try {
-            VerityConfig verityConfig = getConfig();
-
-            String sourceId = "source_id";
-            String phoneNumber = "123-456-7891";
-            Connection connection = new Connection(sourceId, phoneNumber);
-            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), connection.getMessage(verityConfig)).get();
-            String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
-            assertEquals(connection.toString(), unpackedMessage.toString());
-            String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
-            assertEquals(sourceId, currentSourceId);
-            String currentPhoneNumber = unpackedMessage.getJSONObject("connectionDetail").getString("phoneNo");
-            assertEquals(phoneNumber, currentPhoneNumber);
-
-            verityConfig.closeWallet();
-        } catch(Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
         } finally {
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();

@@ -21,7 +21,6 @@ public class Connection extends Protocol {
     // Status definitions
     public static Integer AWAITING_RESPONSE_STATUS = 0;
     public static Integer ACCEPTED_BY_USER_STATUS = 1;
-    public static Integer ERROR_STATE = 2;
 
     private String sourceId;
     private String phoneNumber = null;

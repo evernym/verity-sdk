@@ -87,7 +87,7 @@ public class VerityConfig {
      * @throws IndyException when there are issues with encryption and decryption
      */
     public void sendUpdateWebhookMessage(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        // TODO: Switch on transport type
+        // Later we can switch on transport type
         Transport transport = new HTTPTransport();
         transport.sendMessage(verityConfig.getVerityUrl(), getUpdateWebhookMessage());
     }
