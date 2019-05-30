@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     curl
 
 RUN add-apt-repository ppa:jonathonf/python-3.6 && \
-    apt-get update && apt-get install -y python3.6
+    apt-get update && apt-get install -y \
+    python3.6 \
+    python3.6-pip
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
     add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial master" && \
