@@ -21,7 +21,7 @@ mvn package
 
 # Start Mock Verity
 cd $SCRIPT_DIR/../../server
-RUN npm config set strict-ssl=false # FIXME: We need to get rid of this!! Pull from real NPM!
+npm config set strict-ssl=false # FIXME: We need to get rid of this!! Pull from real NPM!
 npm install
 npm run build
 docker-compose up --build -d
