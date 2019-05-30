@@ -3,6 +3,7 @@ import { ConfigurationProtocolTypes } from './configuration'
 import { ConnectionProtocolTypes } from './connection'
 import { CredentialProtocolTypes } from './credential'
 import { CredentialDefProtocolTypes } from './credential-def'
+import { ProofProtocolTypes } from './proof'
 import { ProvableQuestionProtocolTypes } from './provable-question'
 import { SchemaProtocolTypes } from './schema'
 
@@ -22,6 +23,7 @@ export type ProtocolTypes =
 | CredentialDefProtocolTypes
 | CredentialProtocolTypes
 | ProvableQuestionProtocolTypes
+| ProofProtocolTypes
 | SchemaProtocolTypes
 
 export abstract class Protocol {
