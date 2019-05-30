@@ -4,6 +4,7 @@ import * as vcx from 'node-vcx-wrapper'
 import * as request from 'request-promise-native'
 import { DataStore } from '../storage/appStorage'
 import { Protocol } from './protocol-extensions'
+import { generateProblemReport } from './utils/problem-reports'
 
 export type AgencyMessageTypes =
 | 'vs.service/provision/1.0/connect'
@@ -95,7 +96,11 @@ export class Agency {
                 const valid = this.protocols[i].router(details, this)
                 if (valid) { break }
                 if (i === this.protocols.length - 1) {
-                    this.generateProblemReport(`Not a supported message type! ${details['@type']}`)
+                    Agency.postResponse(generateProblemReport(
+                        'vs.service/common/0.1/problem-report',
+                        `Not a supported message type! ${details['@type']}`,
+                        details['@id'],
+                    ), this.config)
                 }
             }
         } catch (e) {
@@ -123,7 +128,11 @@ export class Agency {
                     res.send(signupResponse)
                     return
                 default:
-                    console.log('NOT A RECOGNIZED MESSAGE!: ', jsonMessage['@type'])
+                    Agency.postResponse(generateProblemReport(
+                        'vs.service/proof/0.1/problem-report',
+                        `Not a recognized configuration message type: ${jsonMessage['@type']}`,
+                        jsonMessage['@id'],
+                    ), this.config)
                     return
             }
         } catch (e) {
@@ -200,9 +209,5 @@ export class Agency {
         }
         const response = Agency.packMsg(connectResponse, this.config)
         return response
-    }
-
-    private generateProblemReport(message: string) {
-        console.log('New Problem Report: ' + message)
     }
 }

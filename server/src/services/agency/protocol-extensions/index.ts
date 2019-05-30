@@ -17,7 +17,11 @@ export interface IAgentMessage {
     [key: string]: any
 }
 
+export type BasicProtocolTypes =
+| 'vs.service/common/0.1/problem-report'
+
 export type ProtocolTypes =
+| BasicProtocolTypes
 | ConfigurationProtocolTypes
 | ConnectionProtocolTypes
 | CredentialDefProtocolTypes

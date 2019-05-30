@@ -6,11 +6,11 @@ import { Configuration } from './services/agency/protocol-extensions/configurati
 import { Connection } from './services/agency/protocol-extensions/connection'
 import { Credential } from './services/agency/protocol-extensions/credential'
 import { CredentialDef } from './services/agency/protocol-extensions/credential-def'
+import { Proof } from './services/agency/protocol-extensions/proof'
 import { ProvableQuestion } from './services/agency/protocol-extensions/provable-question'
 import { Schema } from './services/agency/protocol-extensions/schema'
 import { PaymentRuntime } from './services/libnullpay'
 import { Vcx } from './services/vcx'
-import { Proof } from './services/agency/protocol-extensions/proof';
 
 async function startServices() {
     try {
