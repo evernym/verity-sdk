@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y \
     wget \
     tar \
     curl \
-    python-dev
+    python-dev \
+    docker
 
 RUN add-apt-repository ppa:jonathonf/python-3.6 && \
     apt-get update && apt-get install -y \
