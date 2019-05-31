@@ -6,6 +6,7 @@ import { Configuration } from './services/agency/protocol-extensions/configurati
 import { Connection } from './services/agency/protocol-extensions/connection'
 import { Credential } from './services/agency/protocol-extensions/credential'
 import { CredentialDef } from './services/agency/protocol-extensions/credential-def'
+import { Proof } from './services/agency/protocol-extensions/proof'
 import { ProvableQuestion } from './services/agency/protocol-extensions/provable-question'
 import { Schema } from './services/agency/protocol-extensions/schema'
 import { PaymentRuntime } from './services/libnullpay'
@@ -46,6 +47,7 @@ startServices().then(async () => {
     const credentialDef = new CredentialDef(blankConfig)
     const provableQuestion = new ProvableQuestion(blankConfig)
     const schema = new Schema(blankConfig)
+    const proof = new Proof(blankConfig)
 
     const agency = new Agency([
         config,
@@ -54,6 +56,7 @@ startServices().then(async () => {
         credentialDef,
         provableQuestion,
         schema,
+        proof,
     ])
 
     await agency.Ready
