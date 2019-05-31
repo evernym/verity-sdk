@@ -8,4 +8,7 @@ RUN npm install
 RUN npm install -g ts-node
 RUN npm run build
 
-CMD ["sh", "-c", "nodemon ./build/src/app.js"]
+RUN rm -rf ~/.indy_client
+Add devops/dev/pool_client.txn /var/lib/verity-server/pool.txn
+
+CMD ["sh", "-c", "sh ./devops/dev/provision.sh && nodemon ./build/src/app.js"]
