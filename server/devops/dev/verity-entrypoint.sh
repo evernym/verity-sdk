@@ -10,6 +10,7 @@ elif [ "$#" -eq 2 ]; then
   ENTERPRISE_SEED=$1
   AGENCY_URL=$2
   GENESIS_PATH='team1.txn'
+  echo "WARNING: Using the genesis transaction file for the Evernym Team1 Envronment. Other environments are not yet supported"
 else
   echo "Usage: ./verity-entrypoint.sh ENTERPRISE_SEED [AGENCY_URL]"
   exit 1
