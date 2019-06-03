@@ -7,8 +7,10 @@ RUN npm config set strict-ssl=false # FIXME: We need to get rid of this!! Pull f
 RUN npm install
 RUN npm install -g ts-node
 RUN npm run build
+RUN npm config set strict-ssl=true
 
 RUN rm -rf ~/.indy_client
-Add devops/dev/pool_client.txn /var/lib/verity-server/pool.txn
+ADD devops/dev/pool_client.txn /var/lib/verity-server/pool.txn
 
-CMD ["sh", "-c", "sh ./devops/dev/provision.sh && nodemon ./build/src/app.js"]
+RUN chmod u+x ./devops/dev/verity-entrypoint.sh
+ENTRYPOINT ["./devops/dev/verity-entrypoint.sh"]
