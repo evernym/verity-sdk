@@ -10,7 +10,6 @@ RUN npm run build
 RUN npm config set strict-ssl=true
 
 RUN rm -rf ~/.indy_client
-ADD devops/dev/pool_client.txn /var/lib/verity-server/pool.txn
 
 RUN chmod u+x ./devops/dev/verity-entrypoint.sh
 ENTRYPOINT ["./devops/dev/verity-entrypoint.sh"]
