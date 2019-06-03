@@ -110,12 +110,12 @@ unit-tests-and-syntax:
     - cd sdk/java-sdk/ && mvn test && cd - # Java SDK unit tests
     - cd server && npm run lint && cd - # Mock Verity linting
 
-integration-tests:
-  stage: integration-tests
-  image: $CI_REGISTRY_IMAGE/buildenv:latest
-  extends: .tags
-  script:
-    - cd sdk/java-sdk/ && ./integration_tests.sh # Java SDK integration tests
+# integration-tests:
+#  stage: integration-tests
+#  image: $CI_REGISTRY_IMAGE/buildenv:latest
+#  extends: .tags
+#  script:
+#    - cd sdk/java-sdk/ && ./integration_tests.sh # Java SDK integration tests
 
 make_jar:
   stage: build
