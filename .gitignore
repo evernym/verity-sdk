@@ -8,7 +8,10 @@
 .classpath
 .project
 tools/vcx_config.json
+tools/vcx_client_config.json
 sdk/java-sdk/example/verityConfig.json
+sdk/java-sdk/example/inviteDetails.json
+.DS_Store
 
 # Created by https://www.gitignore.io/api/rust,linux,python
 # Edit at https://www.gitignore.io/?templates=rust,linux,python

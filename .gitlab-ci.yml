@@ -49,8 +49,9 @@
 
 stages:
   - docker-images
+  - unit-tests
+    #  - integration-tests
   - mock-verity-image
-  - test
   - build
   - deploy
 
@@ -101,13 +102,20 @@ verity-server-image-docker-build:
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
     DOCKER_PREP_COMMAND: sed 's~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g' -i server/devops/dev/verity-server-image.dockerfile
 
-syntax:
-  stage: test
+unit-tests-and-syntax:
+  stage: unit-tests
   image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
   script:
-    - cd sdk/java-sdk/ && mvn test && cd -
-    - cd server && npm run lint && cd -
+    - cd sdk/java-sdk/ && mvn test && cd - # Java SDK unit tests
+    - cd server && npm run lint && cd - # Mock Verity linting
+
+# integration-tests:
+#  stage: integration-tests
+#  image: $CI_REGISTRY_IMAGE/buildenv:latest
+#  extends: .tags
+#  script:
+#    - cd sdk/java-sdk/ && ./integration_tests.sh # Java SDK integration tests
 
 make_jar:
   stage: build
