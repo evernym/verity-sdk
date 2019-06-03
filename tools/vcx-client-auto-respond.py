@@ -10,7 +10,7 @@ import logging
 import requests
 
 from pathlib import Path
-
+from aiohttp import web
 from ctypes import cdll
 from vcx.api.vcx_init import vcx_init
 from vcx.api.connection import Connection
@@ -32,6 +32,7 @@ AGENCY_URL = 'https://agency-team1.pdev.evernym.com'
 VCX_CONFIG_PATH = f'{str(Path.cwd())}/vcx_client_config.json'
 GENESIS_FILE = f'{str(Path.cwd())}/team1.txn'
 data = {}
+routes = web.RouteTableDef()
 
 async def http_get(url):
     response = requests.get(url)
@@ -66,7 +67,7 @@ async def init():
     with open(VCX_CONFIG_PATH, 'w') as outfile:
         json.dump(config, outfile)
 
-    print('Provisioning complete. Config written to vcx_config.json')
+    print('Provisioning complete. Config written to {}'.format(VCX_CONFIG_PATH))
 
 
 async def init_vcx():
@@ -212,8 +213,6 @@ async def handle_proof_request(my_connection, request):
             sleep(2)
 
     print("Sent Proof")
-    sys.exit(0)
-
 
 async def autorespond():
     # await init_vcx()
@@ -229,15 +228,26 @@ async def autorespond():
 
         sleep(3)
 
+@routes.post('/connect')
+async def connect_handler(request):
+    await new_connection(await request.json())
+    return web.Response(text="Success")
 
-
-async def main():
+async def main(loop):
     if not os.path.exists(VCX_CONFIG_PATH):
         await init()
-    invite_details = json.loads(sys.argv[1])
-    await new_connection(invite_details)
-    await autorespond()
+    if(len(sys.argv) == 2):
+        invite_details = json.loads(sys.argv[1])
+        await new_connection(invite_details)
+        await autorespond()
+    else:
+        app = web.Application(loop=loop)
+        app.add_routes(routes)
+        await loop.create_server(app.make_handler(), '0.0.0.0', 4002)
+        await loop.create_task(autorespond())
+
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    loop.run_until_complete(main(loop))
+    loop.run_forever()
