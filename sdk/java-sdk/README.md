@@ -40,14 +40,14 @@ then open sdk/java-sdk/target/site/apidocs/index.html
 	mvn package
 	```
 
-4. Start the mock agency
+4. Start the Mock Verity service
 
 	```sh
 	docker login gitlab.corp.evernym.com:4567
 	docker run -it --network host gitlab.corp.evernym.com:4567/dev/verity/verity-sdk/verity-server-image
 	```
 
-5. Provision against the mock agency
+5. Provision against Mock Verity
 
 	```sh
 	# From the root of the repository
@@ -61,11 +61,11 @@ then open sdk/java-sdk/target/site/apidocs/index.html
 
 	```
 	cd sdk/java-sdk/example
-	mvn install
+	mvn package
 	./run.sh
 	```
 
-NOTE: If you restart the mock agency at any point, you will need to provision again.
+NOTE: If you restart Mock Verity at any point, you will need to provision again.
 
 <a id="maven"></a>
 ## Adding the Java SDK for Verity to your Maven Application

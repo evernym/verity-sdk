@@ -1,28 +1,32 @@
 package com.evernym.verity.sdk.protocols;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+
+import com.evernym.verity.sdk.utils.VerityConfig;
 
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.bouncycastle.jcajce.provider.digest.SHA3.DigestSHA3;
 import org.bouncycastle.util.encoders.Hex;
+import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Builds and sends a new encrypted agent message for the Question protocol.
  */
 public class Question extends Protocol {
+
     // Message Type Definitions
     public static String ASK_QUESTION_MESSAGE_TYPE = "vs.service/question/0.1/question";
     public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/question/0.1/problem-report";
     public static String STATUS_MESSAGE_TYPE = "vs.service/question/0.1/status";
 
     // Status Definitions
-    public static Integer QUESTION_SENT_STATUS_STATE = 0;
-    public static Integer QUESTION_ANSWERED_STATE = 1;
-    public static Integer ERROR_STATE = 2;
+    public static Integer QUESTION_SENT_STATUS = 0;
+    public static Integer QUESTION_ANSWERED_STATUS = 1;
 
     private String connectionId;
     private String notificationTitle;
@@ -71,7 +75,7 @@ public class Question extends Protocol {
         JSONObject message = new JSONObject();
         message.put("@type", Question.ASK_QUESTION_MESSAGE_TYPE);
         message.put("@id", this.id);
-        message.put("connection_id", this.connectionId);
+        message.put("connectionId", this.connectionId);
         JSONObject question = new JSONObject();
         question.put("notification_title", this.notificationTitle);
         question.put("question_text", this.questionText);
@@ -79,5 +83,17 @@ public class Question extends Protocol {
         question.put("valid_responses", this.validResponses);
         message.put("question", question);
         return message.toString();
+    }
+
+    /**
+     * Sends the question message to Verity
+     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
+     */
+    public void ask(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
+        this.sendMessage(verityConfig);
     }
 }

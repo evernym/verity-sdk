@@ -4,6 +4,7 @@ import * as vcx from 'node-vcx-wrapper'
 import uuid = require('uuid')
 import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
+import { generateProblemReport } from '../../utils/problem-reports'
 
 export type ProvableQuestionProtocolTypes =
 | 'vs.service/question/0.1/question'
@@ -11,7 +12,7 @@ export type ProvableQuestionProtocolTypes =
 | 'vs.service/question/0.1/status'
 
 interface IProvableQuestion extends IAgentMessage {
-    'connection_id': 'abcd12345'
+    'connectionId': string,
     'question': {
         'question_text': string,
         'question_detail': string,
@@ -39,9 +40,14 @@ export class ProvableQuestion extends Protocol {
     }
 
     private async newQuestion(message: IProvableQuestion) {
-        const connection = Agency.inMemDB.getConnection(message.connection_id)
+        const connection = Agency.inMemDB.getConnection(message.connectionId)
         if (!connection) {
-            // FIXME: Send problem-report: NO CONNECTION WITH ID: ${message.connection_id} exists
+            Agency.postResponse(generateProblemReport(
+                'vs.service/question/0.1/problem-report',
+                `No connection with id \"${message.connectionId}\"`,
+                message['@id']),
+                this.config,
+            )
             return
         } else {
             const question = {
@@ -73,7 +79,7 @@ export class ProvableQuestion extends Protocol {
             console.log(messages)
             let answer
             for (const msg of messages[0].msgs) {
-                if (msg.type === 'Answer') {
+                if (msg.type.toLowerCase() === 'answer') {
                   if (answer) {
                     console.error('More then one "Answer" message')
                   } else {
@@ -91,23 +97,33 @@ export class ProvableQuestion extends Protocol {
                     const signedNonce = base64.decode(data)
                     for (const validResponse of message.question.valid_responses) {
                         if (validResponse.nonce === signedNonce) {
-                            const statusReport = this.generateStatusReport(1, message['@id'], validResponse.text)
+                            const statusReport = this.generateStatusReport(
+                                1, message['@id'], 'Question was answered', validResponse.text)
                             Agency.postResponse(statusReport, this.config)
                             return
                         }
                     }
-                    // FIXME: Send problem report here. Matching valid response not found.
+                    Agency.postResponse(generateProblemReport(
+                        'vs.service/question/0.1/problem-report',
+                        'Matching valid response not found',
+                        message['@id']),
+                        this.config,
+                    )
                 } else {
                     console.log('Signature validation failed')
-                    // FIXME: Send problem report. Signature validation failed.
-
+                    Agency.postResponse(generateProblemReport(
+                        'vs.service/question/0.1/problem-report',
+                        'Signature validation failed',
+                        message['@id']),
+                        this.config,
+                    )
                 }
             } else {
                 this.updateState(connection, message)
-            }}, 20000)
+            }}, 2000)
     }
 
-    private generateStatusReport(status: number, messageId: string, statusMessage: string) {
+    private generateStatusReport(status: number, messageId: string, statusMessage: string, content?: string) {
         return {
             '@id': uuid(),
             '@type': 'vs.service/question/0.1/status',
@@ -116,6 +132,7 @@ export class ProvableQuestion extends Protocol {
             '~thread': {
                 thid: messageId,
             },
+            'content': content,
         }
     }
 }

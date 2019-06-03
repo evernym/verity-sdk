@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.handlers;
 
 import org.json.JSONObject;
 
