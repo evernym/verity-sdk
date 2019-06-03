@@ -49,9 +49,9 @@
 
 stages:
   - docker-images
-  - mock-verity-image
   - unit-tests
     #  - integration-tests
+  - mock-verity-image
   - build
   - deploy
 
