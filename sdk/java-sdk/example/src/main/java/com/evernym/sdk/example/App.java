@@ -30,12 +30,17 @@ public class App {
             verityConfig = new VerityConfig(readConfigFile());
             verityConfig.sendUpdateWebhookMessage(verityConfig);
 
+            // Handle all messages not handled by other handlers
             Handlers.addDefaultHandler((JSONObject message) -> {
                 System.out.println("New message from verity: " + message.toString());
             });
+
+            // Handle all problem report messages not handled directly by other handlers
             Handlers.addProblemReportHandler((JSONObject message) -> {
                 System.out.println("New problem report from verity: " + message.getJSONObject("comment").getString("en"));
             });
+
+            // Handler for getting invite details (connection awaiting response)
             Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
                 try {
                     JSONObject inviteDetails = new JSONObject(message.getString("content"));
@@ -46,6 +51,8 @@ public class App {
                     ex.printStackTrace();
                 }
             });
+
+            // Handler for Connection Accepted message
             Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Connection Accepted!!!");
@@ -60,6 +67,8 @@ public class App {
                     ex.printStackTrace();
                 }
             });
+
+            // Handler for Question Answered message
             Handlers.addHandler(Question.STATUS_MESSAGE_TYPE, Question.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
@@ -72,6 +81,8 @@ public class App {
                     ex.printStackTrace();
                 }
             });
+
+            // Handler for Schema write successful status
             Handlers.addHandler(Schema.STATUS_MESSAGE_TYPE, Schema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
                     String schemaId = message.getString("content");
@@ -81,6 +92,8 @@ public class App {
                     ex.printStackTrace();
                 }
             });
+
+            // Handler for Cred Def write successful status
             Handlers.addHandler(CredDef.STATUS_MESSAGE_TYPE, CredDef.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
                     credDefId = message.getString("content");
@@ -93,6 +106,8 @@ public class App {
                     ex.printStackTrace();
                 }
             });
+
+            // Handler for Credential Offer Accepted message
             Handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("User accepted the credential offer. Verity should now be sending the Credential");
@@ -100,6 +115,8 @@ public class App {
                     ex.printStackTrace();
                 }
             });
+
+            // Handler for Credential Accepted message
             Handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.CREDENTIAL_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("User accepted the credential");
@@ -113,12 +130,15 @@ public class App {
                     ex.printStackTrace();
                 }
             });
+
+            // Handler for Proof Received message
             Handlers.addHandler(ProofRequest.STATUS_MESSAGE_TYPE, ProofRequest.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
                 System.out.println("Proof Accepted!");
                 System.out.println(message.toString());
                 System.exit(0);
             });
 
+            // Create a new connection (initiates the entire flow)
             Connection connection = new Connection("my institution id");
             connection.create(verityConfig);
         } catch(Exception ex) {
@@ -126,6 +146,7 @@ public class App {
         }
     }
 
+    // Basic http server listening for messages from Verity
     private static void startListening() throws IOException, InterruptedException {
         Listener listener = new Listener(App.port, (String encryptedMessageFromVerity) -> {
             try {
@@ -150,6 +171,7 @@ public class App {
         return new Integer((int)(Math.random() * ((max - min) + 1)) + min);
     }
 
+    // Builds JSON object for proof requested attributes
     private static JSONObject getProofAttr(String name, String issuerDid) {
         JSONObject proofAttr = new JSONObject();
         proofAttr.put("name", name);

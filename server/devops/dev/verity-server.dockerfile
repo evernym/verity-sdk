@@ -72,7 +72,8 @@ RUN apt-get update -y
 RUN dpkg -i /usr/lib/${libnullpay_pkg_name}
 RUN rm /usr/lib/${libnullpay_pkg_name}
 
-ADD devops/dev/pool.txn /var/lib/verity-server/pool.txn
+ADD devops/dev/eas01.txn /var/lib/verity-server/eas01.txn
+ADD devops/dev/team1.txn /var/lib/verity-server/team1.txn
 
 RUN /usr/share/libvcx/provision_agent_keys.py https://eas-team1.pdev.evernym.com thiskeyisforthewallet1234 --enterprise-seed 000000000000000000000000Trustee1 > /etc/verity-server/vcxconfig.json
 RUN sed -i 's/"genesis_path": "<CHANGE_ME>"/"genesis_path": "\/var\/lib\/verity-server\/pool.txn"/g' /etc/verity-server/vcxconfig.json
