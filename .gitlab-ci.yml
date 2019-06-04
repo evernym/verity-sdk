@@ -49,6 +49,7 @@
 
 stages:
   - docker-images
+  - dependent-docker-images
   - unit-tests
   - integration-tests
   - build
@@ -85,9 +86,7 @@ verity-server-docker-build:
 
 autorespond-docker-build:
   extends: .kaniko-build
-  stage: base-docker-images
-  depends:
-    - buildenv-docker-build
+  stage: dependent-docker-images
   only:
     changes:
       - devops/dockerfiles/buildenv.dockerfile
@@ -136,8 +135,7 @@ make_jar:
 
 verity-server-image-docker-build:
   extends: .kaniko-build
-  depends:
-    - verity-server-docker-build
+  stage: dependent-docker-images
   only:
     changes:
       - server/*
