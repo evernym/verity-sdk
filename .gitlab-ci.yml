@@ -51,7 +51,6 @@ stages:
   - unit-tests
     #  - integration-tests
   - build
-  - dependent-docker-images
   - deploy
 
 .tags:
@@ -115,7 +114,7 @@ make_jar:
 
 verity-server-image-docker-build:
   extends: .kaniko-build
-  stage: dependent-docker-images
+  stage: build
   only:
     changes:
       - server/*
@@ -136,7 +135,7 @@ upload_to_maven:
   image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
   script:
-    - ./devops/maven/upload.sh
+    - ./devops/scripts/maven/upload.sh
   dependencies:
     - make_jar
   when: on_success
@@ -145,3 +144,15 @@ upload_to_maven:
       - "master@dev/verity/verity-sdk"
     changes:
       - sdk/java-sdk/*
+
+update_getting_started_guide:
+  stage: deploy
+  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  extends: .tags
+  script:
+    - ./devops/scripts/update_getting_started_repo.sh
+  dependencies:
+  when: on_success
+  only:
+    refs:
+      - "master@spencer.holman/verity-sdk"
