@@ -2,6 +2,7 @@
 set -e
 
 if [ ! -z "$GETTING_STARTED_DEPLOY_KEY" ]; then
+  eval `ssh-agent -s`
   echo $GETTING_STARTED_DEPLOY_KEY | ssh-add - > /dev/null
 fi
 

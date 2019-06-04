@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     tar \
     curl \
     python-dev \
-    maven
+    maven \
+    openssh-client
 
 # Install python3.6
 RUN add-apt-repository ppa:jonathonf/python-3.6 && \
