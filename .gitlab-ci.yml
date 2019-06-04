@@ -145,7 +145,7 @@ upload_to_maven:
     changes:
       - sdk/java-sdk/*
 
-update_getting_started_guilde:
+update_getting_started_guide:
   stage: deploy
   image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
