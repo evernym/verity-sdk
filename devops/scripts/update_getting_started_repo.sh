@@ -28,4 +28,4 @@ git config user.name "Evernym CICD"
 git add -A
 git commit -m "forced update of getting started guide"
 git remote add origin git@github.com:evernym/Getting-Started-With-The-Verity-SDK.git
-git push -u origin master -f
+GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git push -u origin master -f
