@@ -178,4 +178,4 @@ update_getting_started_guide:
   when: on_success
   only:
     refs:
-      - "master@spencer.holman/verity-sdk"
+      - "master@dev/verity/verity-sdk"
