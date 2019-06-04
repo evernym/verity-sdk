@@ -10,4 +10,3 @@ RUN chmod u+x vcx-client-auto-respond.py
 ENTRYPOINT ["./vcx-client-auto-respond.py"]
 
 EXPOSE 4002
-
