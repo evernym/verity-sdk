@@ -23,6 +23,8 @@ cat tools/requirements.txt | grep python3-indy >> $TEMP_DIR/python-dependencies.
 
 cd $TEMP_DIR
 git init
+git config user.email "none"
+git config user.name "Evernym CICD"
 git add -A
 git commit -m "forced update of getting started guide"
 git remote add origin git@github.com:evernym/Getting-Started-With-The-Verity-SDK.git
