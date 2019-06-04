@@ -7,7 +7,6 @@
       - push
   tags:
     - docker
-  stage: docker-images
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
@@ -48,22 +47,23 @@
     - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG
 
 stages:
-  - docker-images
+  - base-docker-images
   - unit-tests
     #  - integration-tests
-  - mock-verity-image
   - build
+  - dependent-docker-images
   - deploy
 
 .tags:
   tags:
     - docker
 
-buildenv-docker-build:
+build-buildenv:
   extends: .kaniko-build
+  stage: base-docker-images
   only:
     changes:
-      - devops/dockerfiles/buildenv*
+      - devops/dockerfiles/buildenv.dockerfile
   variables:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/buildenv.dockerfile'
     DOCKER_IMAGE_NAME: 'buildenv'
@@ -72,6 +72,7 @@ buildenv-docker-build:
 
 verity-server-docker-build:
   extends: .kaniko-build
+  stage: base-docker-images
   only:
     changes:
       - server/devops/dev/verity-server.dockerfile
@@ -84,23 +85,6 @@ verity-server-docker-build:
     #DOCKER_PREP_COMMAND: 'cd server && ./devops/dev/prepare-dev-environment.sh && cd -'
     DOCKER_PREP_COMMAND: 'echo none'
 
-verity-server-image-docker-build:
-  extends: .kaniko-build
-  stage: mock-verity-image
-  only:
-    changes:
-      - server/*
-      - server/devops/dev/verity-server.dockerfile
-      - server/devops/dev/verity-server-image.dockerfile
-    refs:
-      - "master"
-  dependencies:
-    - verity-server-docker-build
-  variables:
-    DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile'
-    DOCKER_IMAGE_NAME: 'verity-server-image'
-    DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
-    DOCKER_PREP_COMMAND: sed 's~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g' -i server/devops/dev/verity-server-image.dockerfile
 
 unit-tests-and-syntax:
   stage: unit-tests
@@ -128,6 +112,24 @@ make_jar:
     paths:
       - sdk/java-sdk/target/java-sdk*.jar
     expire_in: 1 week
+
+verity-server-image-docker-build:
+  extends: .kaniko-build
+  stage: dependent-docker-images
+  only:
+    changes:
+      - server/*
+      - server/devops/dev/verity-server.dockerfile
+      - server/devops/dev/verity-server-image.dockerfile
+    refs:
+      - "master"
+  dependencies:
+    - verity-server-docker-build
+  variables:
+    DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile'
+    DOCKER_IMAGE_NAME: 'verity-server-image'
+    DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
+    DOCKER_PREP_COMMAND: sed 's~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g' -i server/devops/dev/verity-server-image.dockerfile
 
 upload_to_maven:
   stage: deploy

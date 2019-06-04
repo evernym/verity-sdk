@@ -123,7 +123,7 @@ public class App {
 
                     String proofRequestName = "Who are you?";
                     JSONArray proofAttrs = new JSONArray();
-                    proofAttrs.put(getProofAttr("name", "V4SGRU86Z58d6TV7PBUe6f"));
+                    proofAttrs.put(getProofAttr("name", credDefId.split(":")[0]));
                     ProofRequest proofRequest = new ProofRequest(proofRequestName, proofAttrs, connectionId);
                     proofRequest.send(verityConfig);
                 } catch(Exception ex) {
