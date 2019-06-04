@@ -95,7 +95,7 @@ autorespond-docker-build:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/auto-respond-client.dockerfile'
     DOCKER_IMAGE_NAME: 'autorespond'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR'
-    DOCKER_PREP_COMMAND: sed 's~FROM buildenv~FROM $CI_REGISTRY_IMAGE/buildenv~g' -i server/devops/dev/verity-server-image.dockerfile
+    DOCKER_PREP_COMMAND: sed 's~FROM buildenv~FROM $CI_REGISTRY_IMAGE/buildenv~g' -i devops/dockerfiles/auto-respond-client.dockerfile
 
 unit-tests-and-syntax:
   stage: unit-tests
