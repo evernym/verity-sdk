@@ -3,40 +3,28 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 EXIT_CODE=0
 
-function test_java_sdk() {
-    cd $SCRIPT_DIR/example
-    # Run the example app in background
-    ./run.sh &
-    sleep 15 # Wait for invitation details to be written to file
-    cd $SCRIPT_DIR/../../tools/
-    # Run client auto responder
-    ./vcx-client-auto-respond.py $(cat $SCRIPT_DIR/example/inviteDetails.json)
-}
-
-# Build Java SDK and example
-cd $SCRIPT_DIR
-mvn package -DskipTests
 cd $SCRIPT_DIR/example
-mvn package
-
-# Start Mock Verity
-cd $SCRIPT_DIR/../../server
-npm config set strict-ssl=false # FIXME: We need to get rid of this!! Pull from real NPM!
-npm install
-npm run build
-docker-compose up --build -d
-sleep 30 # Wait for Mock Verity to come up
-
-# Provision
-rm -rf ~/.indy_client/wallet/test-wallet
+# Run the example app in background
+./run.sh &
+my_pid=$!
+sleep 15 # Wait for invitation details to be written to file
 cd $SCRIPT_DIR/../../tools/
-./provision_sdk.py --wallet-name test-wallet http://localhost:8080 12345 > ../sdk/java-sdk/example/verityConfig.json
+# Run client auto responder
+curl -X POST --data-binary "$SCRIPT_DIR/example/inviteDetails.json" http://localhost:4002/connect
 
-test_java_sdk || EXIT_CODE=1
+# FIXME: From here, exit with same status as ./run.sh
 
-docker kill verity-server
-docker rm verity-server
+while   ps | grep " $my_pid "     # might also need  | grep -v grep  here
+do
+      echo $my_pid is still in the ps output. Must still be running.
+          sleep 3
+        done
 
-exit $EXIT_CODE
+        echo Oh, it looks like the process is done.
+        wait $my_pid
+        # The variable $? always holds the exit code of the last command to finish.
+        # Here it holds the exit code of $my_pid, since wait exits with that code. 
+        my_status=$?
+        echo The exit status of the process was $my_status
 
 
