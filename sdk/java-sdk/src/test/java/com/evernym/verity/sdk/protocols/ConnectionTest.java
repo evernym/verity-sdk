@@ -87,7 +87,7 @@ public class ConnectionTest {
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
             JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
             assertEquals(connection.toString(), unpackedMessage.toString());
-            String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
+            String currentSourceId = unpackedMessage.getString("sourceId");
             assertEquals(sourceId, currentSourceId);
 
             verityConfig.closeWallet();
@@ -114,9 +114,10 @@ public class ConnectionTest {
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
             JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
             assertEquals(connection.toString(), unpackedMessage.toString());
-            String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
+            System.out.println(unpackedMessage.toString());
+            String currentSourceId = unpackedMessage.getString("sourceId");
             assertEquals(sourceId, currentSourceId);
-            String currentPhoneNumber = unpackedMessage.getJSONObject("connectionDetail").getString("phoneNo");
+            String currentPhoneNumber = unpackedMessage.getString("phoneNo");
             assertEquals(phoneNumber, currentPhoneNumber);
 
             verityConfig.closeWallet();

@@ -80,6 +80,7 @@ public class VerityConfigTest {
             assertEquals(verityUrl, verityConfig.getVerityUrl());
             assertEquals(testWallet.getVerityPublicVerkey(), verityConfig.getVerityPublicVerkey());
             assertEquals(testWallet.getVerityPairwiseVerkey(), verityConfig.getVerityPairwiseVerkey());
+            assertEquals(testWallet.getVerityPairwiseDID(), verityConfig.getVerityPairwiseDID());
             assertEquals(testWallet.getSdkPairwiseVerkey(), verityConfig.getSdkPairwiseVerkey());
             assertEquals(webhookUrl, verityConfig.webhookUrl);
             assertNotNull(verityConfig.getWalletHandle());
@@ -119,7 +120,7 @@ public class VerityConfigTest {
             JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
             assertEquals("did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD", unpackedMessage.getString("@type"));
             assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("id"));
-            assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("type"));
+            assertEquals(2, unpackedMessage.getJSONObject("comMethod").getInt("type"));
             assertEquals(webhookUrl, unpackedMessage.getJSONObject("comMethod").getString("value"));
             verityConfig.closeWallet();
         } catch(Exception e) {

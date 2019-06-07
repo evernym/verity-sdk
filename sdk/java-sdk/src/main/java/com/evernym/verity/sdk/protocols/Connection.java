@@ -52,7 +52,7 @@ public class Connection extends Protocol {
     public String toString() {
         JSONObject message = new JSONObject();
         message.put("@type", Connection.NEW_CONNECTION_MESSAGE_TYPE);
-        message.put("sourceId", this.id);
+        message.put("sourceId", this.sourceId);
         message.put("phoneNo", this.phoneNumber);
         return message.toString();
     }
