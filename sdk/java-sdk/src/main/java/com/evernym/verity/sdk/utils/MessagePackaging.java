@@ -30,7 +30,7 @@ public class MessagePackaging {
 
     public static String prepareFwdMessage(String DID, byte[] message) throws InterruptedException, ExecutionException {
         JSONObject fwdMessage = new JSONObject();
-        fwdMessage.put("@type", "fwd");
+        fwdMessage.put("@type", "did:123456789abcdefghi1234;spec/routing/0.6/FWD");
         fwdMessage.put("@fwd", DID);
         fwdMessage.put("@msg", message);
         return fwdMessage.toString();
