@@ -68,7 +68,7 @@ public class VerityConfig {
             }
         */
         JSONObject message = new JSONObject();
-        message.put("@type", "vs.service/common/0.1/update_com_method");
+        message.put("@type", "did:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD");
         message.put("@id", UUID.randomUUID().toString());
         JSONObject comMethod = new JSONObject();
         comMethod.put("id", "webhook");
