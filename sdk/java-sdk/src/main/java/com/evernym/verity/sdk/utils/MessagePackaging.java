@@ -32,7 +32,8 @@ public class MessagePackaging {
         JSONObject fwdMessage = new JSONObject();
         fwdMessage.put("@type", "did:sov:123456789abcdefghi1234;spec/routing/0.6/FWD");
         fwdMessage.put("@fwd", DID);
-        fwdMessage.put("@msg", message);
+        fwdMessage.put("@msg", new JSONObject(new String(message)));
+        System.out.println(fwdMessage.toString());
         return fwdMessage.toString();
     }
 
