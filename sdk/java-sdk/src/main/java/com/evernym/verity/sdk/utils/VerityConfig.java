@@ -74,7 +74,7 @@ public class VerityConfig {
         message.put("@id", UUID.randomUUID().toString());
         JSONObject comMethod = new JSONObject();
         comMethod.put("id", "webhook");
-        comMethod.put("type", "webhook");
+        comMethod.put("type", 2);
         comMethod.put("value", this.webhookUrl);
         message.put("comMethod", comMethod);
         return MessagePackaging.packMessageForVerity(this, message.toString());
