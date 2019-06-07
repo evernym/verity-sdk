@@ -21,6 +21,7 @@ public class VerityConfigTest {
         String verityPublicVerkey;
         String verityPairwiseVerkey;
         String sdkPairwiseVerkey;
+        String verityPairwiseDID;
 
         public TestWallet(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
             String walletConfig = new JSONObject().put("id", walletName).toString();
@@ -32,6 +33,7 @@ public class VerityConfigTest {
             this.verityPublicVerkey = theirResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
             this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
+            this.verityPairwiseDID = theirPairwiseResult.getDid();
             DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
             this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
 
@@ -49,6 +51,10 @@ public class VerityConfigTest {
         String getSdkPairwiseVerkey() {
             return sdkPairwiseVerkey;
         }
+
+        String getVerityPairwiseDID() {
+            return verityPairwiseDID;
+        }
     }
 
     @Test
@@ -64,6 +70,7 @@ public class VerityConfigTest {
             config.put("walletKey", walletKey);
             config.put("verityUrl", verityUrl);
             config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
+            config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
             config.put("webhookUrl", webhookUrl);
@@ -101,6 +108,7 @@ public class VerityConfigTest {
             config.put("walletKey", walletKey);
             config.put("verityUrl", verityUrl);
             config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
+            config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
             config.put("webhookUrl", webhookUrl);
@@ -108,7 +116,7 @@ public class VerityConfigTest {
             byte[] updateWebhookMessage = verityConfig.getUpdateWebhookMessage();
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), updateWebhookMessage).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONArray("@msg"));
+            JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
             assertEquals("did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD", unpackedMessage.getString("@type"));
             assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("id"));
             assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("type"));
