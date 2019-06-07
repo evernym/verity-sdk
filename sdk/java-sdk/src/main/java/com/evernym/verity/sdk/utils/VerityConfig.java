@@ -21,6 +21,7 @@ public class VerityConfig {
     protected String walletKey;
     protected String verityUrl;
     protected String verityPublicVerkey;
+    protected String verityPairwiseDID;
     protected String verityPairwiseVerkey;
     protected String sdkPairwiseVerkey;
     protected String webhookUrl;
@@ -40,6 +41,7 @@ public class VerityConfig {
         this.walletKey = config.getString("walletKey");
         this.verityUrl = config.getString("verityUrl");
         this.verityPublicVerkey = config.getString("verityPublicVerkey");
+        this.verityPairwiseDID = config.getString("verityPairwiseDID");
         this.verityPairwiseVerkey = config.getString("verityPairwiseVerkey");
         this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
         this.webhookUrl = config.getString("webhookUrl");
@@ -108,6 +110,10 @@ public class VerityConfig {
 
     public String getVerityPublicVerkey() {
         return verityPublicVerkey;
+    }
+
+    public String getVerityPairwiseDID() {
+        return verityPairwiseDID;
     }
 
     public String getVerityPairwiseVerkey() {

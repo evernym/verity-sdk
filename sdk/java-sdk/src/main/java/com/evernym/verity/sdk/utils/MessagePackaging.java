@@ -23,7 +23,7 @@ public class MessagePackaging {
         String pairwiseReceiver = new JSONArray(new String[]{verityConfig.getVerityPairwiseVerkey()}).toString();
         String verityReceiver = new JSONArray(new String[]{verityConfig.getVerityPublicVerkey()}).toString();
         byte[] agentMessage = Crypto.packMessage(verityConfig.getWalletHandle(), pairwiseReceiver, verityConfig.getSdkPairwiseVerkey(), message.getBytes()).get();
-        String innerFwd = prepareFwdMessage(verityConfig.getVerityPairwiseVerkey(),agentMessage);
+        String innerFwd = prepareFwdMessage(verityConfig.getVerityPairwiseDID(),agentMessage);
         byte[] verityMessage = Crypto.packMessage(verityConfig.getWalletHandle(), verityReceiver, null, innerFwd.getBytes()).get();
         return verityMessage;
     }
@@ -59,9 +59,8 @@ public class MessagePackaging {
         return myArray;
     }
 
-    public static JSONObject unpackForwardMsg(VerityConfig verityConfig, JSONArray message) throws InterruptedException, ExecutionException, IndyException {
-        byte[] fwd = objectToByteArray(message);
-        byte[] jwe = Crypto.unpackMessage(verityConfig.getWalletHandle(), fwd).get();
+    public static JSONObject unpackForwardMsg(VerityConfig verityConfig, JSONObject message) throws InterruptedException, ExecutionException, IndyException {
+        byte[] jwe = Crypto.unpackMessage(verityConfig.getWalletHandle(), message.toString().getBytes()).get();
         return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
     }
 }
