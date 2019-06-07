@@ -77,7 +77,7 @@ public class CredDefTest {
             CredDef credDef = new CredDef(schemaId);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), credDef.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
+            JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONArray("@msg"));
             assertEquals(credDef.toString(), unpackedMessage.toString());
             assertEquals(schemaId, unpackedMessage.getString("schemaId"));
 

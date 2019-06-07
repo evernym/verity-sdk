@@ -23,8 +23,17 @@ public class MessagePackaging {
         String pairwiseReceiver = new JSONArray(new String[]{verityConfig.getVerityPairwiseVerkey()}).toString();
         String verityReceiver = new JSONArray(new String[]{verityConfig.getVerityPublicVerkey()}).toString();
         byte[] agentMessage = Crypto.packMessage(verityConfig.getWalletHandle(), pairwiseReceiver, verityConfig.getSdkPairwiseVerkey(), message.getBytes()).get();
-        byte[] verityMessage = Crypto.packMessage(verityConfig.getWalletHandle(), verityReceiver, null, agentMessage).get();
+        String innerFwd = prepareFwdMessage(verityConfig.getVerityPairwiseVerkey(),agentMessage);
+        byte[] verityMessage = Crypto.packMessage(verityConfig.getWalletHandle(), verityReceiver, null, innerFwd.getBytes()).get();
         return verityMessage;
+    }
+
+    public static String prepareFwdMessage(String DID, byte[] message) throws InterruptedException, ExecutionException {
+        JSONObject fwdMessage = new JSONObject();
+        fwdMessage.put("@type", "fwd");
+        fwdMessage.put("@fwd", DID);
+        fwdMessage.put("@msg", message);
+        return fwdMessage.toString();
     }
 
     /**
@@ -38,6 +47,20 @@ public class MessagePackaging {
      */
     public static JSONObject unpackMessageFromVerity(VerityConfig verityConfig, byte[] message) throws InterruptedException, ExecutionException, IndyException {
         byte[] jwe = Crypto.unpackMessage(verityConfig.getWalletHandle(), message).get();
+        return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
+    }
+
+    public static byte[] objectToByteArray( JSONArray array ){
+        byte[] myArray = new byte[array.length()];
+        for (int i = 0; i < array.length(); i++) {
+            myArray[i] = (byte) array.getInt(i);
+        }
+        return myArray;
+    }
+
+    public static JSONObject unpackForwardMsg(VerityConfig verityConfig, JSONArray message) throws InterruptedException, ExecutionException, IndyException {
+        byte[] fwd = objectToByteArray(message);
+        byte[] jwe = Crypto.unpackMessage(verityConfig.getWalletHandle(), fwd).get();
         return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
     }
 }

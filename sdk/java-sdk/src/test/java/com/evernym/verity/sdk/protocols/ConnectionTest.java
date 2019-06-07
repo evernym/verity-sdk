@@ -78,7 +78,7 @@ public class ConnectionTest {
             Connection connection = new Connection(sourceId);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), connection.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
+            JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONArray("@msg"));
             assertEquals(connection.toString(), unpackedMessage.toString());
             String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
             assertEquals(sourceId, currentSourceId);
@@ -105,7 +105,7 @@ public class ConnectionTest {
             Connection connection = new Connection(sourceId, phoneNumber);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), connection.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
+            JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONArray("@msg"));
             assertEquals(connection.toString(), unpackedMessage.toString());
             String currentSourceId = unpackedMessage.getJSONObject("connectionDetail").getString("sourceId");
             assertEquals(sourceId, currentSourceId);

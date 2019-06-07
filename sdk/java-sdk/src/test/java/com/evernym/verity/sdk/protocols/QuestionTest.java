@@ -82,7 +82,7 @@ public class QuestionTest {
             Question provableQuestion = new Question(connectionId, notificationTitle, questionText, questionDetail, validResponses);
             byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), provableQuestion.getMessage(verityConfig)).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
+            JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONArray("@msg"));
             assertEquals(provableQuestion.toString(), unpackedMessage.toString());
             assertEquals(connectionId, unpackedMessage.getString("connectionId"));
             assertEquals(notificationTitle, unpackedMessage.getJSONObject("question").getString("notification_title"));
