@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public class Connection extends Protocol {
 
     // Message type definitions
-    public static String NEW_CONNECTION_MESSAGE_TYPE = "vs.service/connection/0.1/new_connection";
+    public static String NEW_CONNECTION_MESSAGE_TYPE = "did:sov:123456789abcdefghi1234;spec/connecting/0.6/CREATE_CONNECTION";
     public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/connection/0.1/problem_report";
     public static String STATUS_MESSAGE_TYPE = "vs.service/connection/0.1/status";
     
@@ -52,13 +52,8 @@ public class Connection extends Protocol {
     public String toString() {
         JSONObject message = new JSONObject();
         message.put("@type", Connection.NEW_CONNECTION_MESSAGE_TYPE);
-        message.put("@id", this.id);
-        JSONObject connectionDetail = new JSONObject();
-        connectionDetail.put("sourceId", this.sourceId);
-        if(this.phoneNumber != null) {
-            connectionDetail.put("phoneNo", this.phoneNumber);
-        }
-        message.put("connectionDetail", connectionDetail);
+        message.put("sourceId", this.sourceId);
+        message.put("phoneNo", this.phoneNumber);
         return message.toString();
     }
 

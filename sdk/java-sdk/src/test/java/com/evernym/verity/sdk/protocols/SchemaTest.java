@@ -13,6 +13,7 @@ import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.did.*;
 import org.hyperledger.indy.sdk.wallet.Wallet;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -20,6 +21,7 @@ public class SchemaTest {
     public class TestWallet {
         String verityPublicVerkey;
         String verityPairwiseVerkey;
+        String verityPairwiseDID;
         String sdkPairwiseVerkey;
 
         public TestWallet(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
@@ -32,6 +34,7 @@ public class SchemaTest {
             this.verityPublicVerkey = theirResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
             this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
+            this.verityPairwiseDID = theirPairwiseResult.getDid();
             DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
             this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
 
@@ -44,6 +47,10 @@ public class SchemaTest {
 
         String getVerityPairwiseVerkey() {
             return verityPairwiseVerkey;
+        }
+
+        String getVerityPairwiseDID() {
+            return verityPairwiseDID;
         }
 
         String getSdkPairwiseVerkey() {
@@ -63,6 +70,7 @@ public class SchemaTest {
         config.put("verityUrl", verityUrl);
         config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
         config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
+        config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
         config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
         config.put("webhookUrl", webhookUrl);
         return new VerityConfig(config.toString());
@@ -71,7 +79,7 @@ public class SchemaTest {
     public JSONObject unpackMessage(VerityConfig verityConfig, byte[] message) throws InterruptedException, ExecutionException, IndyException {
         byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), message).get();
         String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-        return MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
+        return MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
     }
 
     @Test

@@ -21,6 +21,7 @@ public class CredentialTest {
         String verityPublicVerkey;
         String verityPairwiseVerkey;
         String sdkPairwiseVerkey;
+        String verityPairwiseDID;
 
         public TestWallet(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
             String walletConfig = new JSONObject().put("id", walletName).toString();
@@ -32,6 +33,7 @@ public class CredentialTest {
             this.verityPublicVerkey = theirResult.getVerkey();
             DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
             this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
+            this.verityPairwiseDID = theirPairwiseResult.getDid();
             DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
             this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
 
@@ -49,6 +51,10 @@ public class CredentialTest {
         String getSdkPairwiseVerkey() {
             return sdkPairwiseVerkey;
         }
+
+        String getVerityPairwiseDID() {
+            return verityPairwiseDID;
+        }
     }
 
     VerityConfig getConfig() throws InterruptedException, ExecutionException, IndyException {
@@ -63,6 +69,7 @@ public class CredentialTest {
         config.put("verityUrl", verityUrl);
         config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
         config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
+        config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
         config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
         config.put("webhookUrl", webhookUrl);
         return new VerityConfig(config.toString());
@@ -71,7 +78,7 @@ public class CredentialTest {
     public JSONObject unpackMessage(VerityConfig verityConfig, byte[] message) throws InterruptedException, ExecutionException, IndyException {
         byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), message).get();
         String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-        return MessagePackaging.unpackMessageFromVerity(verityConfig, partiallyUnpackedMessage.getBytes());
+        return MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
     }
 
     @Test

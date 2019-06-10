@@ -8,6 +8,7 @@ import os
 import sys
 import requests
 import logging
+import json
 
 from indy import did, wallet, crypto
 from indy.error import ErrorCode, IndyError
@@ -30,11 +31,20 @@ def get_agency_info(agency_url):
     return response.json()
 
 
-async def send_msg(url, my_wallet, message_json, agency_verkey):
-    agency_message = await crypto.pack_message(my_wallet, json.dumps(message_json), [agency_verkey], None)
-    response = requests.post('{}/agency'.format(url), data=agency_message,headers={'Content-Type': 'application/octet-stream'})
+async def send_msg(url, my_wallet, message_json, agency_did, agency_verkey, my_verkey):
+    agency_message = await crypto.pack_message(my_wallet, json.dumps(message_json), [agency_verkey], my_verkey)
+
+    forward_msg = {
+        "@type":"did:sov:123456789abcdefghi1234;spec/routing/0.6/FWD",
+        "@fwd":agency_did,
+        "@msg":json.loads(agency_message)
+    }
+
+    message = await crypto.pack_message(my_wallet, json.dumps(forward_msg), [agency_verkey], None)
+    response = requests.post('{}/agency/msg'.format(url), data=message,headers={'Content-Type': 'application/octet-stream'})
+
     if(response.status_code != 200):
-        print('Unable to POST message to agency') # TODO: Add more useful error messages here.
+        print('Unable to POST message to agency: {}', response.content) # TODO: Add more useful error messages here.
         sys.exit(1)
 
     agent_message = await crypto.unpack_message(my_wallet, response.content)
@@ -63,43 +73,14 @@ async def register_agent(args):
     my_did, my_verkey = await did.create_and_store_my_did(my_wallet, json.dumps({}))
 
 
+    def buildMsgTypePrefix(familyName, msgName):
+        return f'did:sov:123456789abcdefghi1234;spec/{familyName}/0.6/{msgName}'
+
     ## Form messages
-    connect_msg = {
-        "@type": 'vs.service/provision/1.0/connect',
+    create_agent = {
+        "@type": buildMsgTypePrefix("agent-provisioning", "CREATE_AGENT"),
         "fromDID": my_did,
         "fromDIDVerKey": my_verkey
-    }
-
-    """
-    connect_response = {
-        "@type": 'vs.service/provision/1.0/connect_response',
-        "withPairwiseDID": None,
-        "withPairwiseDIDVerKey": None
-    }
-    """
-
-    # anoncrypt_for_agency(anoncrypt_for_agency(msg))
-    response = await send_msg(args.AGENCY_URL, my_wallet, connect_msg, agency_info['verKey'])
-
-    response = json.loads(response['message'])
-    their_did = response['withPairwiseDID']
-    their_verkey = response['withPairwiseDIDVerKey']
-
-    signup_msg = {
-        "@type": 'vs.service/provision/1.0/signup',
-    }
-
-    """
-    signup_response = {
-        "@type": 'vs.service/provision/1.0/signup_response',
-    }
-    """
-
-    # anoncrypt_for_agency()
-    response = await send_msg(args.AGENCY_URL, my_wallet, signup_msg, agency_info['verKey'])
-
-    create_agent_msg = {
-        "@type": "vs.service/provision/1.0/create_agent",
     }
 
     """
@@ -110,7 +91,7 @@ async def register_agent(args):
     }
     """
 
-    response = await send_msg(args.AGENCY_URL, my_wallet, create_agent_msg, agency_info['verKey'])
+    response = await send_msg(args.AGENCY_URL, my_wallet, create_agent, agency_info['DID'], agency_info['verKey'], my_verkey)
 
     # Use latest only in config.
     response = json.loads(response['message'])

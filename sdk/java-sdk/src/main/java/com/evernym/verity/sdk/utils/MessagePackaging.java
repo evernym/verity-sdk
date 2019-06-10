@@ -23,8 +23,17 @@ public class MessagePackaging {
         String pairwiseReceiver = new JSONArray(new String[]{verityConfig.getVerityPairwiseVerkey()}).toString();
         String verityReceiver = new JSONArray(new String[]{verityConfig.getVerityPublicVerkey()}).toString();
         byte[] agentMessage = Crypto.packMessage(verityConfig.getWalletHandle(), pairwiseReceiver, verityConfig.getSdkPairwiseVerkey(), message.getBytes()).get();
-        byte[] verityMessage = Crypto.packMessage(verityConfig.getWalletHandle(), verityReceiver, null, agentMessage).get();
+        String innerFwd = prepareFwdMessage(verityConfig.getVerityPairwiseDID(),agentMessage);
+        byte[] verityMessage = Crypto.packMessage(verityConfig.getWalletHandle(), verityReceiver, null, innerFwd.getBytes()).get();
         return verityMessage;
+    }
+
+    public static String prepareFwdMessage(String DID, byte[] message) throws InterruptedException, ExecutionException {
+        JSONObject fwdMessage = new JSONObject();
+        fwdMessage.put("@type", "did:sov:123456789abcdefghi1234;spec/routing/0.6/FWD");
+        fwdMessage.put("@fwd", DID);
+        fwdMessage.put("@msg", new JSONObject(new String(message)));
+        return fwdMessage.toString();
     }
 
     /**
@@ -38,6 +47,19 @@ public class MessagePackaging {
      */
     public static JSONObject unpackMessageFromVerity(VerityConfig verityConfig, byte[] message) throws InterruptedException, ExecutionException, IndyException {
         byte[] jwe = Crypto.unpackMessage(verityConfig.getWalletHandle(), message).get();
+        return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
+    }
+
+    public static byte[] objectToByteArray( JSONArray array ){
+        byte[] myArray = new byte[array.length()];
+        for (int i = 0; i < array.length(); i++) {
+            myArray[i] = (byte) array.getInt(i);
+        }
+        return myArray;
+    }
+
+    public static JSONObject unpackForwardMsg(VerityConfig verityConfig, JSONObject message) throws InterruptedException, ExecutionException, IndyException {
+        byte[] jwe = Crypto.unpackMessage(verityConfig.getWalletHandle(), message.toString().getBytes()).get();
         return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
     }
 }

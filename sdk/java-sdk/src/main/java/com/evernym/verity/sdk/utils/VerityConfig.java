@@ -21,6 +21,7 @@ public class VerityConfig {
     protected String walletKey;
     protected String verityUrl;
     protected String verityPublicVerkey;
+    protected String verityPairwiseDID;
     protected String verityPairwiseVerkey;
     protected String sdkPairwiseVerkey;
     protected String webhookUrl;
@@ -40,6 +41,7 @@ public class VerityConfig {
         this.walletKey = config.getString("walletKey");
         this.verityUrl = config.getString("verityUrl");
         this.verityPublicVerkey = config.getString("verityPublicVerkey");
+        this.verityPairwiseDID = config.getString("verityPairwiseDID");
         this.verityPairwiseVerkey = config.getString("verityPairwiseVerkey");
         this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
         this.webhookUrl = config.getString("webhookUrl");
@@ -68,11 +70,11 @@ public class VerityConfig {
             }
         */
         JSONObject message = new JSONObject();
-        message.put("@type", "vs.service/common/0.1/update_com_method");
+        message.put("@type", "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD");
         message.put("@id", UUID.randomUUID().toString());
         JSONObject comMethod = new JSONObject();
         comMethod.put("id", "webhook");
-        comMethod.put("type", "webhook");
+        comMethod.put("type", 2);
         comMethod.put("value", this.webhookUrl);
         message.put("comMethod", comMethod);
         return MessagePackaging.packMessageForVerity(this, message.toString());
@@ -108,6 +110,10 @@ public class VerityConfig {
 
     public String getVerityPublicVerkey() {
         return verityPublicVerkey;
+    }
+
+    public String getVerityPairwiseDID() {
+        return verityPairwiseDID;
     }
 
     public String getVerityPairwiseVerkey() {

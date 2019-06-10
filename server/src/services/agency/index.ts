@@ -88,8 +88,11 @@ export class Agency {
         try {
             const unpackedMsg1 = await Agency.unpackMsg(message)
             const messageString = unpackedMsg1.toString('utf8')
-            const outerMessage = JSON.parse(messageString)
-            const fullyUnpacked = await Agency.unpackMsg(Buffer.from(outerMessage.message))
+            let outerMessage = JSON.parse(messageString)
+            if (outerMessage['@type'] === 'fwd') {
+                outerMessage = outerMessage['@msg']
+            } else { outerMessage = outerMessage.message }
+            const fullyUnpacked = await Agency.unpackMsg(Buffer.from(outerMessage))
             const unpacked = JSON.parse(fullyUnpacked.toString('utf8'))
             const details = JSON.parse(unpacked.message)
             if (!this.config.fromVK) {
