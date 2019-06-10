@@ -103,8 +103,9 @@ async def register_agent(args):
     final_config = {
         "walletName": args.wallet_name,
         "walletKey": args.WALLET_KEY,
-        "verityUrl": "{}/msg".format(args.AGENCY_URL),
+        "verityUrl": "{}/agency/msg".format(args.AGENCY_URL),
         "verityPublicVerkey": agency_info['verKey'],
+        "verityPairwiseDID": their_did,
         "verityPairwiseVerkey": their_verkey,
         "sdkPairwiseVerkey": my_verkey,
         "webhookUrl": "http://localhost:4000" # TODO: Should eventually be "<CHANGE ME>"

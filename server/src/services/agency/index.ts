@@ -84,66 +84,36 @@ export class Agency {
         this.protocols.forEach((protocol) => { protocol.updateConfig(this.config) })
     }
 
-    public async newMessage(message: Buffer) {
+    public async newMessage(message: Buffer, res: Response) {
         try {
-            const unpackedMsg1 = await Agency.unpackMsg(message)
-            const messageString = unpackedMsg1.toString('utf8')
-            let outerMessage = JSON.parse(messageString)
-            if (outerMessage['@type'] === 'fwd') {
-                outerMessage = outerMessage['@msg']
-            } else { outerMessage = outerMessage.message }
-            const fullyUnpacked = await Agency.unpackMsg(Buffer.from(outerMessage))
-            const unpacked = JSON.parse(fullyUnpacked.toString('utf8'))
-            const details = JSON.parse(unpacked.message)
-            if (!this.config.fromVK) {
-                console.error('You need to provision first! The in-memory data store has been reset.')
+            const details = await this.unpackForwardMessage(message)
+            console.log(details)
+            if (details['@type'] === 'did:sov:123456789abcdefghi1234;spec/agent-provisioning/0.6/CREATE_AGENT') {
+                const response = await this.connect(details)
+                res.send(response)
             } else {
-                for (let i = 0; i <= this.protocols.length; i++) {
-                    const valid = this.protocols[i].router(details, this)
-                    if (valid) { break }
-                    if (i === this.protocols.length - 1) {
-                        Agency.postResponse(generateProblemReport(
-                            'vs.service/common/0.1/problem-report',
-                            `Not a supported message type! ${details['@type']}`,
-                            details['@id'],
-                        ), this.config)
+                if (!this.config.fromVK) {
+                    console.error('You need to provision first! The in-memory data store has been reset.')
+                } else {
+                    for (let i = 0; i <= this.protocols.length; i++) {
+                        const valid = this.protocols[i].router(details, this)
+                        if (valid) { break }
+                        if (i === this.protocols.length - 1) {
+                            console.error(`Not a supported message type! ${details['@type']}`)
+
+                            // This isn't going to work before the updateComMethod message.
+                            Agency.postResponse(generateProblemReport(
+                                'vs.service/common/0.1/problem-report',
+                                `Not a supported message type! ${details['@type']}`,
+                                details['@id'],
+                            ), this.config)
+                        }
                     }
                 }
+                res.send()
             }
         } catch (e) {
             console.log(e)
-        }
-    }
-
-    public async provision(packedMessage: Buffer, res: Response) {
-        const message = await Agency.unpackMsg(packedMessage)
-        const messageString = message.toString('utf8')
-        const outerMessage = JSON.parse(messageString)
-        const jsonMessage = JSON.parse(outerMessage.message)
-        try {
-            switch (jsonMessage['@type']) {
-                case 'vs.service/provision/1.0/connect':
-                    const response = await this.connect(jsonMessage)
-                    res.send(response)
-                    return
-                case 'vs.service/provision/1.0/create_agent':
-                    const createAgentResponse = await this.createAgent()
-                    res.send(createAgentResponse)
-                    return
-                case 'vs.service/provision/1.0/signup':
-                    const signupResponse = await this.signup()
-                    res.send(signupResponse)
-                    return
-                default:
-                    Agency.postResponse(generateProblemReport(
-                        'vs.service/proof/0.1/problem-report',
-                        `Not a recognized configuration message type: ${jsonMessage['@type']}`,
-                        jsonMessage['@id'],
-                    ), this.config)
-                    return
-            }
-        } catch (e) {
-            return e
         }
     }
 
@@ -216,5 +186,15 @@ export class Agency {
         }
         const response = Agency.packMsg(connectResponse, this.config)
         return response
+    }
+
+    private async unpackForwardMessage(message: Buffer) {
+        const unpackedForwardMessageBuffer = await Agency.unpackMsg(message)
+        const unpackedForwardMessageString = unpackedForwardMessageBuffer.toString('utf-8')
+        const unpackedForwardMessage = JSON.parse(JSON.parse(unpackedForwardMessageString).message)
+        const unpackedForwardMessageMsg = JSON.stringify(unpackedForwardMessage['@msg'])
+        const unpackedMessageBuffer = await Agency.unpackMsg(Buffer.from(unpackedForwardMessageMsg))
+        const unpackedMessage = JSON.parse(unpackedMessageBuffer.toString('utf-8'))
+        return JSON.parse(unpackedMessage.message)
     }
 }

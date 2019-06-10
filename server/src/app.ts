@@ -81,13 +81,8 @@ startServices().then(async () => {
         res.send({ DID: agency.config.myDID, verKey: agency.config.myVerkey })
     })
 
-    app.post('/agency', async ( req, res) => {
-        agency.provision(req.body, res)
-    })
-
-    app.post('/msg', async (req, res) => {
-        agency.newMessage(req.body)
-        res.sendStatus(200)
+    app.post('/agency/msg', async (req, res) => {
+        agency.newMessage(req.body, res)
     })
 }).catch((e) => {
     console.log('Services NOT started! Error: ', e)
