@@ -1,61 +1,17 @@
 package com.evernym.verity.sdk.utils;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.concurrent.ExecutionException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.hyperledger.indy.sdk.wallet.*;
-import org.hyperledger.indy.sdk.IndyException;
+import com.evernym.verity.sdk.TestWallet;
+
 import org.hyperledger.indy.sdk.crypto.Crypto;
-import org.hyperledger.indy.sdk.did.*;
-
-import org.junit.Test;
+import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
+import org.junit.Test;
 
-public class VerityConfigTest {
-
-    public class TestWallet {
-        String verityPublicVerkey;
-        String verityPairwiseVerkey;
-        String sdkPairwiseVerkey;
-        String verityPairwiseDID;
-
-        public TestWallet(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
-            String walletConfig = new JSONObject().put("id", walletName).toString();
-            String walletCredentials = new JSONObject().put("key", walletKey).toString();
-            Wallet.createWallet(walletConfig, walletCredentials).get();
-            Wallet walletHandle = Wallet.openWallet(walletConfig, walletCredentials).get();
-            
-            DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.verityPublicVerkey = theirResult.getVerkey();
-            DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
-            this.verityPairwiseDID = theirPairwiseResult.getDid();
-            DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
-
-            walletHandle.closeWallet().get();
-        }
-
-        String getVerityPublicVerkey() {
-            return verityPublicVerkey;
-        }
-
-        String getVerityPairwiseVerkey() {
-            return verityPairwiseVerkey;
-        }
-
-        String getSdkPairwiseVerkey() {
-            return sdkPairwiseVerkey;
-        }
-
-        String getVerityPairwiseDID() {
-            return verityPairwiseDID;
-        }
-    }
+public class ContextTest {
 
     @Test
     public void shouldCorrectlyParseConfig() throws Exception {
@@ -74,18 +30,18 @@ public class VerityConfigTest {
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
             config.put("webhookUrl", webhookUrl);
-            VerityConfig verityConfig = new VerityConfig(config.toString());
-            assertEquals(walletName, verityConfig.walletName);
-            assertEquals(walletKey, verityConfig.walletKey);
-            assertEquals(verityUrl, verityConfig.getVerityUrl());
-            assertEquals(testWallet.getVerityPublicVerkey(), verityConfig.getVerityPublicVerkey());
-            assertEquals(testWallet.getVerityPairwiseVerkey(), verityConfig.getVerityPairwiseVerkey());
-            assertEquals(testWallet.getVerityPairwiseDID(), verityConfig.getVerityPairwiseDID());
-            assertEquals(testWallet.getSdkPairwiseVerkey(), verityConfig.getSdkPairwiseVerkey());
-            assertEquals(webhookUrl, verityConfig.webhookUrl);
-            assertNotNull(verityConfig.getWalletHandle());
+            Context context = new Context(config.toString());
+            assertEquals(walletName, context.walletName);
+            assertEquals(walletKey, context.walletKey);
+            assertEquals(verityUrl, context.getVerityUrl());
+            assertEquals(testWallet.getVerityPublicVerkey(), context.getVerityPublicVerkey());
+            assertEquals(testWallet.getVerityPairwiseVerkey(), context.getVerityPairwiseVerkey());
+            assertEquals(testWallet.getVerityPairwiseDID(), context.getVerityPairwiseDID());
+            assertEquals(testWallet.getSdkPairwiseVerkey(), context.getSdkPairwiseVerkey());
+            assertEquals(webhookUrl, context.webhookUrl);
+            assertNotNull(context.getWalletHandle());
 
-            verityConfig.closeWallet();
+            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -113,16 +69,16 @@ public class VerityConfigTest {
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
             config.put("webhookUrl", webhookUrl);
-            VerityConfig verityConfig = new VerityConfig(config.toString());
-            byte[] updateWebhookMessage = verityConfig.getUpdateWebhookMessage();
-            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(verityConfig.getWalletHandle(), updateWebhookMessage).get();
+            Context context = new Context(config.toString());
+            byte[] updateWebhookMessage = context.getUpdateWebhookMessage();
+            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(context.getWalletHandle(), updateWebhookMessage).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-            JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(verityConfig, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
+            JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(context, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
             assertEquals("did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD", unpackedMessage.getString("@type"));
             assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("id"));
             assertEquals(2, unpackedMessage.getJSONObject("comMethod").getInt("type"));
             assertEquals(webhookUrl, unpackedMessage.getJSONObject("comMethod").getString("value"));
-            verityConfig.closeWallet();
+            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             assertTrue(false);

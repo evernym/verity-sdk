@@ -22,56 +22,56 @@ public abstract class Protocol {
     
     /**
      * Packs the connection message for the verity
-     * @param verityConfig an instance of VerityConfig that has been initialized with your wallet and key details
+     * @param context an instance of Context that has been initialized with your wallet and key details
      * @return Encrypted connection message ready to be sent to the verity
      * @throws InterruptedException when there are issues with encryption and decryption
      * @throws ExecutionException when there are issues with encryption and decryption
      * @throws IndyException when there are issues with encryption and decryption
      */
-    public byte[] getMessage(VerityConfig verityConfig) throws InterruptedException, ExecutionException, IndyException {
-        return MessagePackaging.packMessageForVerity(verityConfig, toString());
+    public byte[] getMessage(Context context) throws InterruptedException, ExecutionException, IndyException {
+        return MessagePackaging.packMessageForVerity(context, toString());
     }
 
     // /**
     //  * Packs the connection message for the verity
-    //  * @param verityConfig an instance of VerityConfig that has been initialized with your wallet and key details
+    //  * @param context an instance of Context that has been initialized with your wallet and key details
     //  * @param message the message to pack for Verity
     //  * @return Encrypted connection message ready to be sent to the verity
     //  * @throws InterruptedException when there are issues with encryption and decryption
     //  * @throws ExecutionException when there are issues with encryption and decryption
     //  * @throws IndyException when there are issues with encryption and decryption
     //  */
-    // public byte[] getMessage(VerityConfig verityConfig, String message) throws InterruptedException, ExecutionException, IndyException {
-    //     return MessagePackaging.packMessageForVerity(verityConfig, message);
+    // public byte[] getMessage(Context context, String message) throws InterruptedException, ExecutionException, IndyException {
+    //     return MessagePackaging.packMessageForVerity(context, message);
     // }
 
     /**
      * Encrypts and sends the default message to Verity
-     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws InterruptedException when there are issues with encryption and decryption
      * @throws ExecutionException when there are issues with encryption and decryption
      * @throws IndyException when there are issues with encryption and decryption
      */
-    public void sendMessage(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        // Later we can switch on verityConfig.getVerityProtocol
+    public void sendMessage(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
+        // Later we can switch on context.getVerityProtocol
         Transport transport = new HTTPTransport();
-        transport.sendMessage(verityConfig.getVerityUrl(), getMessage(verityConfig));
+        transport.sendMessage(context.getVerityUrl(), getMessage(context));
     }
 
     // /**
     //  * Encrypts and sends a specified message to Verity
-    //  * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
+    //  * @param context an instance of Context configured with the results of the provision_sdk.py script
     //  * @param message the message to send to Verity
     //  * @throws IOException when the HTTP library fails to post to the agency endpoint
     //  * @throws InterruptedException when there are issues with encryption and decryption
     //  * @throws ExecutionException when there are issues with encryption and decryption
     //  * @throws IndyException when there are issues with encryption and decryption
     //  */
-    // public void sendMessage(VerityConfig verityConfig, String message) throws IOException, InterruptedException, ExecutionException, IndyException {
-    //     // Later we can switch on verityConfig.getVerityProtocol
+    // public void sendMessage(Context context, String message) throws IOException, InterruptedException, ExecutionException, IndyException {
+    //     // Later we can switch on context.getVerityProtocol
     //     Transport transport = new HTTPTransport();
-    //     transport.sendMessage(verityConfig.getVerityUrl(), getMessage(verityConfig, message));
+    //     transport.sendMessage(context.getVerityUrl(), getMessage(context, message));
     // }
 
     public abstract String toString();

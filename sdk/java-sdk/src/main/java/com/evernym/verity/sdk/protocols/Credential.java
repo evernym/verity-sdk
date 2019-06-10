@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-import com.evernym.verity.sdk.utils.VerityConfig;
+import com.evernym.verity.sdk.utils.Context;
 
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
@@ -45,14 +45,14 @@ public class Credential extends Protocol {
 
     /**
      * Sends the credential message to the connection
-     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws InterruptedException when there are issues with encryption and decryption
      * @throws ExecutionException when there are issues with encryption and decryption
      * @throws IndyException when there are issues with encryption and decryption
      */
-    public void send(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        this.sendMessage(verityConfig);
+    public void send(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
+        this.sendMessage(context);
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.evernym.verity.sdk.protocols;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import com.evernym.verity.sdk.utils.VerityConfig;
+import com.evernym.verity.sdk.utils.Context;
 
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
@@ -59,13 +59,13 @@ public class Connection extends Protocol {
 
     /**
      * Sends the connection create message to Verity
-     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws InterruptedException when there are issues with encryption and decryption
      * @throws ExecutionException when there are issues with encryption and decryption
      * @throws IndyException when there are issues with encryption and decryption
      */
-    public void create(VerityConfig verityConfig) throws IOException, InterruptedException, ExecutionException, IndyException {
-        this.sendMessage(verityConfig);
+    public void create(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
+        this.sendMessage(context);
     }
 }
