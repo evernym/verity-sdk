@@ -3,8 +3,7 @@ package com.evernym.verity.sdk.utils;
 import java.util.concurrent.ExecutionException;
 
 import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.crypto.*;
-
+import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

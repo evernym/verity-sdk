@@ -8,7 +8,6 @@ import com.evernym.verity.sdk.TestHelpers;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONException;
 import org.junit.Test;
 
 public class MessagePackagingTest {
