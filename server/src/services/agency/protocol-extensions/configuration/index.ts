@@ -2,7 +2,7 @@ import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
 
 export type ConfigurationProtocolTypes =
-| 'vs.service/common/0.1/update_com_method'
+| 'did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD'
 
 export class Configuration extends Protocol {
 
@@ -12,7 +12,7 @@ export class Configuration extends Protocol {
 
     public router(message: IAgentMessage, agency: Agency) {
         switch (message['@type']) {
-            case 'vs.service/common/0.1/update_com_method':
+            case 'did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD':
                 this.updateComMethod(message, agency)
                 console.log('updated config: ', this.config)
                 return true
@@ -22,7 +22,7 @@ export class Configuration extends Protocol {
 
     private updateComMethod(message: IAgentMessage, agency: Agency) {
         switch (message.comMethod.type) {
-            case 'webhook': agency.setWebhook(message.comMethod.value); break
+            case 2: agency.setWebhook(message.comMethod.value); break
             default: console.log('unsupported comMethod: ', message.comMethod.type)
         }
     }

@@ -3,14 +3,10 @@ import { IAgencyConfig } from '../..'
 import { NewConnection } from './newConnection'
 
 export type ConnectionProtocolTypes =
-| 'vs.service/connection/0.1/new_connection'
+| 'did:sov:123456789abcdefghi1234;spec/connecting/0.6/CREATE_CONNECTION'
 | 'vs.service/connect/0.1/problem-report'
 | 'vs.service/connect/0.1/status'
 
-export interface IConnectionDetail {
-    sourceId: string,
-    phoneNo?: string
-}
 export class Connection extends Protocol {
 
     constructor(config: IAgencyConfig) {
@@ -19,7 +15,7 @@ export class Connection extends Protocol {
 
     public router(message: IAgentMessage) {
         switch (message['@type']) {
-            case 'vs.service/connection/0.1/new_connection':
+            case 'did:sov:123456789abcdefghi1234;spec/connecting/0.6/CREATE_CONNECTION':
                 const myConnection = new NewConnection(message, this.config)
                 myConnection.connect()
                 return true

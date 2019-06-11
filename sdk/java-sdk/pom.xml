@@ -6,7 +6,7 @@
 
   <groupId>com.evernym.verity.sdk</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>0.12-SNAPSHOT</version>
+  <version>0.13-SNAPSHOT</version>
 
   <name>java-sdk</name>
   <!-- FIXME change it to the project's website -->
@@ -70,6 +70,15 @@
         <configuration>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
     </plugins>
   </reporting>
 
@@ -117,18 +126,6 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>attach-sources</id>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <executions>
             <execution>
@@ -136,24 +133,6 @@
               <goals>
                 <goal>jar</goal>
               </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>create-my-bundle</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-              <configuration>
-                <descriptorRefs>
-                  <descriptorRef>jar-with-dependencies</descriptorRef>
-                </descriptorRefs>
-              </configuration>
             </execution>
           </executions>
         </plugin>
@@ -172,6 +151,22 @@
               <phase>test</phase>
               <goals>
                 <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <configuration>
+              <failOnViolation>true</failOnViolation> <!-- this is actually true by default, but can be disabled -->
+              <printFailingErrors>true</printFailingErrors>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+                <goal>cpd-check</goal>
               </goals>
             </execution>
           </executions>

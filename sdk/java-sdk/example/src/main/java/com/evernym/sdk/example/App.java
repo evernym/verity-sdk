@@ -11,7 +11,7 @@ import com.evernym.verity.sdk.handlers.Handlers;
 import com.evernym.verity.sdk.protocols.ProofRequest;
 import com.evernym.verity.sdk.protocols.Question;
 import com.evernym.verity.sdk.protocols.Schema;
-import com.evernym.verity.sdk.utils.VerityConfig;
+import com.evernym.verity.sdk.utils.Context;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,29 +19,32 @@ import org.json.JSONObject;
 public class App {
     static Integer port = 4000;
     static String connectionId;
-    static VerityConfig verityConfig;
+    static Context context;
     static String credDefId;
     static Credential credential;
+    static Handlers handlers;
 
     public static void main( String[] args ) {
         try {
             // NOTE: Wallet must already exist. You can create it with the tools/provisioner/provision-sdk.py script
             startListening();
-            verityConfig = new VerityConfig(readConfigFile());
-            verityConfig.sendUpdateWebhookMessage(verityConfig);
+            context = new Context(readConfigFile());
+            context.sendUpdateWebhookMessage(context);
+
+            handlers = new Handlers();
 
             // Handle all messages not handled by other handlers
-            Handlers.addDefaultHandler((JSONObject message) -> {
+            handlers.addDefaultHandler((JSONObject message) -> {
                 System.out.println("New message from verity: " + message.toString());
             });
 
             // Handle all problem report messages not handled directly by other handlers
-            Handlers.addProblemReportHandler((JSONObject message) -> {
+            handlers.addProblemReportHandler((JSONObject message) -> {
                 System.out.println("New problem report from verity: " + message.getJSONObject("comment").getString("en"));
             });
 
             // Handler for getting invite details (connection awaiting response)
-            Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
                 try {
                     JSONObject inviteDetails = new JSONObject(message.getString("content"));
                     System.out.print("Invite Details: ");
@@ -53,7 +56,7 @@ public class App {
             });
 
             // Handler for Connection Accepted message
-            Handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Connection Accepted!!!");
                     App.connectionId = message.getString("content");
@@ -62,20 +65,20 @@ public class App {
                     String questionDetail = " ";
                     String[] validResponses = {"Great!", "Not so good"};
                     Question provableQuestion = new Question(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
-                    provableQuestion.ask(verityConfig);
+                    provableQuestion.ask(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Question Answered message
-            Handlers.addHandler(Question.STATUS_MESSAGE_TYPE, Question.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Question.STATUS_MESSAGE_TYPE, Question.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
                     String schemaName = "My test schema";
                     String schemaVersion = getRandomInt(0, 100).toString() + "." + getRandomInt(0, 100).toString() + "." + getRandomInt(0, 100).toString();
                     Schema schema = new Schema(schemaName, schemaVersion, "name", "degree");
-                    schema.write(verityConfig);
+                    schema.write(context);
 
                 } catch(Exception ex) {
                     ex.printStackTrace();
@@ -83,32 +86,32 @@ public class App {
             });
 
             // Handler for Schema write successful status
-            Handlers.addHandler(Schema.STATUS_MESSAGE_TYPE, Schema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Schema.STATUS_MESSAGE_TYPE, Schema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
                     String schemaId = message.getString("content");
                     CredDef credDef = new CredDef(schemaId);
-                    credDef.write(verityConfig);
+                    credDef.write(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Cred Def write successful status
-            Handlers.addHandler(CredDef.STATUS_MESSAGE_TYPE, CredDef.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
+            handlers.addHandler(CredDef.STATUS_MESSAGE_TYPE, CredDef.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
                     credDefId = message.getString("content");
                     JSONObject credentialValues = new JSONObject();
                     credentialValues.put("name", "Joe Smith");
                     credentialValues.put("degree", "Bachelors");
                     credential = new Credential(connectionId, credDefId, credentialValues, 0);
-                    credential.send(verityConfig);
+                    credential.send(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Credential Offer Accepted message
-            Handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("User accepted the credential offer. Verity should now be sending the Credential");
                 } catch(Exception ex) {
@@ -117,7 +120,7 @@ public class App {
             });
 
             // Handler for Credential Accepted message
-            Handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.CREDENTIAL_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.CREDENTIAL_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("User accepted the credential");
 
@@ -125,14 +128,14 @@ public class App {
                     JSONArray proofAttrs = new JSONArray();
                     proofAttrs.put(getProofAttr("name", credDefId.split(":")[0]));
                     ProofRequest proofRequest = new ProofRequest(proofRequestName, proofAttrs, connectionId);
-                    proofRequest.send(verityConfig);
+                    proofRequest.send(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Proof Received message
-            Handlers.addHandler(ProofRequest.STATUS_MESSAGE_TYPE, ProofRequest.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
+            handlers.addHandler(ProofRequest.STATUS_MESSAGE_TYPE, ProofRequest.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
                 System.out.println("Proof Accepted!");
                 System.out.println(message.toString());
                 System.exit(0);
@@ -140,7 +143,7 @@ public class App {
 
             // Create a new connection (initiates the entire flow)
             Connection connection = new Connection("my institution id");
-            connection.create(verityConfig);
+            connection.create(context);
         } catch(Exception ex) {
             ex.printStackTrace();
         }
@@ -150,7 +153,7 @@ public class App {
     private static void startListening() throws IOException, InterruptedException {
         Listener listener = new Listener(App.port, (String encryptedMessageFromVerity) -> {
             try {
-                Handlers.handleMessage(verityConfig, encryptedMessageFromVerity.getBytes());
+                handlers.handleMessage(context, encryptedMessageFromVerity.getBytes());
             } catch(Exception ex) {
                 ex.printStackTrace();
             }
