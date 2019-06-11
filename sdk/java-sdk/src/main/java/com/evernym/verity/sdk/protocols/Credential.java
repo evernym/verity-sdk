@@ -9,6 +9,9 @@ import com.evernym.verity.sdk.utils.Context;
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
 
+/**
+ * Builds and sends a message asking Verity to issue a credential to a connection
+ */
 public class Credential extends Protocol {
 
     // Message type definitions

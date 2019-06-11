@@ -9,6 +9,9 @@ import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Builds and sends a message to Verity asking it to send a Proof Request to a connection
+ */
 public class ProofRequest extends Protocol {
 
     // Message Type Definitions

@@ -9,6 +9,12 @@ import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Builds and sends an encrypted agent message to Verity asking Verity to 
+ * write a new Schema to the ledger on behalf of the 
+ * SDK/enterprise.
+ */
+
 public class Schema extends Protocol {
 
     // Message type definitions
