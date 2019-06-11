@@ -50,7 +50,7 @@ public class MessagePackaging {
         return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
     }
 
-    public static byte[] objectToByteArray( JSONArray array ){
+    public static byte[] objectToByteArray( JSONArray array ) {
         byte[] myArray = new byte[array.length()];
         for (int i = 0; i < array.length(); i++) {
             myArray[i] = (byte) array.getInt(i);
