@@ -33,6 +33,7 @@ VCX_CONFIG_PATH = f'{str(Path.cwd())}/vcx_client_config.json'
 GENESIS_FILE = f'{str(Path.cwd())}/team1.txn'
 data = {}
 routes = web.RouteTableDef()
+PORT=4002
 
 async def http_get(url):
     response = requests.get(url)
@@ -102,8 +103,8 @@ async def handle_messages(my_connection, handled_offers, handled_requests):
     # Get Questions
     messages = await vcx_messages_download('MS-103', None, None);
     messages = json.loads(messages.decode('utf-8'))
-    if(len(messages[0]['msgs']) > 0):
-        print(messages)
+    #if(len(messages[0]['msgs']) > 0):
+    #    print(messages)
     for msg_group in messages:
         for message in msg_group['msgs']:
             if (message['type'].lower() == 'question'):
@@ -220,13 +221,20 @@ async def autorespond():
     global data
 
     while True:
-        for connection in data['connections']:
-            connection = await Connection.deserialize(connection)
-            await connection.update_state()
-            state = await connection.get_state()
-            await handle_messages(connection, data['handled_offers'], data['handled_requests'])
+        if 'connections' in data:
+            for connection in data['connections']:
+                connection = await Connection.deserialize(connection)
+                await connection.update_state()
+                state = await connection.get_state()
+                await handle_messages(connection, data['handled_offers'], data['handled_requests'])
+        else:
+            print("No connections found!")
 
-        sleep(3)
+        await asyncio.sleep(2)
+
+@routes.get('/')
+async def health_handler(request):
+    return web.Response(text="Success")
 
 @routes.post('/connect')
 async def connect_handler(request):
@@ -243,7 +251,8 @@ async def main(loop):
     else:
         app = web.Application(loop=loop)
         app.add_routes(routes)
-        await loop.create_server(app.make_handler(), '0.0.0.0', 4002)
+        await loop.create_server(app.make_handler(), '0.0.0.0', PORT)
+        print("Listening for invite details on port {}".format(PORT))
         await loop.create_task(autorespond())
 
 

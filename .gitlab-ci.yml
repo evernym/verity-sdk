@@ -7,6 +7,7 @@
       - push
   tags:
     - docker
+  stage: docker-images
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
@@ -47,9 +48,10 @@
     - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG
 
 stages:
-  - base-docker-images
+  - docker-images
+  - dependent-docker-images
   - unit-tests
-    #  - integration-tests
+  - integration-tests
   - build
   - deploy
 
@@ -57,9 +59,8 @@ stages:
   tags:
     - docker
 
-build-buildenv:
+buildenv-docker-build:
   extends: .kaniko-build
-  stage: base-docker-images
   only:
     changes:
       - devops/dockerfiles/buildenv.dockerfile
@@ -71,7 +72,6 @@ build-buildenv:
 
 verity-server-docker-build:
   extends: .kaniko-build
-  stage: base-docker-images
   only:
     changes:
       - server/devops/dev/verity-server.dockerfile
@@ -81,24 +81,47 @@ verity-server-docker-build:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server.dockerfile'
     DOCKER_IMAGE_NAME: 'verity-server'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
-    #DOCKER_PREP_COMMAND: 'cd server && ./devops/dev/prepare-dev-environment.sh && cd -'
     DOCKER_PREP_COMMAND: 'echo none'
 
+autorespond-docker-build:
+  extends: .kaniko-build
+  stage: dependent-docker-images
+  only:
+    changes:
+      - devops/dockerfiles/buildenv.dockerfile
+      - devops/dockerfiles/auto-respond-client.dockerfile
+  variables:
+    DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/auto-respond-client.dockerfile'
+    DOCKER_IMAGE_NAME: 'autorespond'
+    DOCKER_CONTEXT: '$CI_PROJECT_DIR'
+    DOCKER_PREP_COMMAND: sed 's~FROM buildenv~FROM $CI_REGISTRY_IMAGE/buildenv~g' -i devops/dockerfiles/auto-respond-client.dockerfile
 
 unit-tests-and-syntax:
   stage: unit-tests
   image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
   script:
+    - cd sdk/java-sdk/ && mvn pmd:check && mvn pmd:cpd-check && cd - # Java SDK Linting
     - cd sdk/java-sdk/ && mvn test && cd - # Java SDK unit tests
     - cd server && npm run lint && cd - # Mock Verity linting
 
-# integration-tests:
-#  stage: integration-tests
-#  image: $CI_REGISTRY_IMAGE/buildenv:latest
-#  extends: .tags
-#  script:
-#    - cd sdk/java-sdk/ && ./integration_tests.sh # Java SDK integration tests
+java-sdk-integration-tests:
+  stage: integration-tests
+  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  extends: .tags
+  services:
+    - name: $CI_REGISTRY_IMAGE/autorespond:latest
+      alias: autorespond
+    - name: $CI_REGISTRY_IMAGE/verity-server-image:latest
+      alias: mock-verity
+      command: ["000000000000000000000000Trustee1", "https://eas-team1.pdev.evernym.com"]
+  script:
+    - cd sdk/java-sdk && mvn package -DskipTests && cd -
+    - cd sdk/java-sdk/example && mvn package && cd -
+    - python3 -m pip install -r tools/requirements.txt
+    - ./tools/provision_sdk.py --wallet-name test-wallet http://mock-verity:8080 12345 > sdk/java-sdk/example/verityConfig.json
+    - cat sdk/java-sdk/example/verityConfig.json
+    - ./sdk/java-sdk/devops/integration_tests.sh autorespond
 
 make_jar:
   stage: build
@@ -106,7 +129,10 @@ make_jar:
   extends: .tags
   script:
     - sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' sdk/java-sdk/pom.xml
-    - cd sdk/java-sdk/ && mvn package -DskipTests
+    - cd sdk/java-sdk/
+    - mvn package -DskipTests
+    - mvn javadoc:jar
+    # - mvn source:jar
   artifacts:
     paths:
       - sdk/java-sdk/target/java-sdk*.jar
@@ -114,7 +140,7 @@ make_jar:
 
 verity-server-image-docker-build:
   extends: .kaniko-build
-  stage: build
+  stage: dependent-docker-images
   only:
     changes:
       - server/*
@@ -155,4 +181,4 @@ update_getting_started_guide:
   when: on_success
   only:
     refs:
-      - "master@spencer.holman/verity-sdk"
+      - "master@dev/verity/verity-sdk"
