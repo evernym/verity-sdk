@@ -6,7 +6,8 @@ import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.transports.Transport;
-import com.evernym.verity.sdk.utils.*;
+import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.MessagePackaging;
 
 import org.hyperledger.indy.sdk.IndyException;
 
