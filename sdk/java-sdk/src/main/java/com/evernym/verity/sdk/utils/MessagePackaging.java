@@ -46,7 +46,7 @@ public class MessagePackaging {
      */
     public static JSONObject unpackMessageFromVerity(Context context, byte[] message) throws InterruptedException, ExecutionException, IndyException {
         byte[] jwe = Crypto.unpackMessage(context.getWalletHandle(), message).get();
-        return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
+        return new JSONObject(new JSONObject(jwe).getString("message"));
     }
 
     public static byte[] objectToByteArray( JSONArray array ) {
