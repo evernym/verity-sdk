@@ -16,7 +16,9 @@ if [ -z "$1" ]; then
 else
   AUTORESPONDER_HOST=$1
 fi
-curl -X POST --data-binary "$SCRIPT_DIR/example/inviteDetails.json" http://$AUTORESPONDER_HOST:4002/connect
+echo "invite details: "
+cat $SCRIPT_DIR/../example/inviteDetails.json
+curl -X POST --data-binary "$SCRIPT_DIR/../example/inviteDetails.json" http://$AUTORESPONDER_HOST:4002/connect
 
 while   ps | grep -v grep | grep " $my_pid "; do
   echo $my_pid is still in the ps output. Must still be running.
