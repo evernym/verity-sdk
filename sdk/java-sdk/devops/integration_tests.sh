@@ -11,7 +11,12 @@ sleep 15 # Wait for invitation details to be written to file
 cd $SCRIPT_DIR/../../../tools/
 
 # POST invite details to autoresponder
-curl -X POST --data-binary "$SCRIPT_DIR/example/inviteDetails.json" http://localhost:4002/connect
+if [ -z "$1" ]; then
+  AUTORESPONDER_HOST="localhost"
+else
+  AUTORESPONDER_HOST=$1
+fi
+curl -X POST --data-binary "$SCRIPT_DIR/example/inviteDetails.json" http://$AUTORESPONDER_HOST:4002/connect
 
 while   ps | grep -v grep | grep " $my_pid "; do
   echo $my_pid is still in the ps output. Must still be running.
