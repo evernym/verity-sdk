@@ -59,6 +59,6 @@ public class MessagePackaging {
 
     public static JSONObject unpackForwardMsg(Context context, JSONObject message) throws InterruptedException, ExecutionException, IndyException {
         byte[] jwe = Crypto.unpackMessage(context.getWalletHandle(), message.toString().getBytes()).get();
-        return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
+        return new JSONObject(new JSONObject(jwe).getString("message"));
     }
 }
