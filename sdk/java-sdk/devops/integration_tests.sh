@@ -7,7 +7,7 @@ cd $SCRIPT_DIR/../example
 # Run the example app in background
 ./run.sh &
 my_pid=$!
-sleep 15 # Wait for invitation details to be written to file
+sleep 60 # Wait for invitation details to be written to file
 cd $SCRIPT_DIR/../../../tools/
 
 # POST invite details to autoresponder
