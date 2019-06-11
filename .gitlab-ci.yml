@@ -144,8 +144,6 @@ verity-server-image-docker-build:
   only:
     changes:
       - server/*
-      - server/devops/dev/verity-server.dockerfile
-      - server/devops/dev/verity-server-image.dockerfile
     refs:
       - "master"
   dependencies:
