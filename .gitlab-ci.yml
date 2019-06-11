@@ -113,7 +113,7 @@ java-sdk-integration-tests:
       alias: autorespond
     - name: $CI_REGISTRY_IMAGE/verity-server-image:latest
       alias: mock-verity
-      command: ["./devops/dev/verity-entrypoint.sh", "000000000000000000000000Trustee1", "https://eas-team1.pdev.evernym.com"]
+      command: ["./devops/dev/verity-entrypoint.sh 000000000000000000000000Trustee1 https://eas-team1.pdev.evernym.com"]
   script:
     - cd sdk/java-sdk && mvn package -DskipTests && cd -
     - cd sdk/java-sdk/example && mvn package && cd -
