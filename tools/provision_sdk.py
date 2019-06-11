@@ -74,7 +74,7 @@ async def register_agent(args):
 
 
     def buildMsgTypePrefix(familyName, msgName):
-        return f'did:sov:123456789abcdefghi1234;spec/{familyName}/0.6/{msgName}'
+        return 'did:sov:123456789abcdefghi1234;spec/{}/0.6/{}'.format(familyName, msgName)
 
     ## Form messages
     create_agent = {
