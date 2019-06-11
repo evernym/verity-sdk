@@ -5,7 +5,7 @@ EXIT_CODE=0
 
 cd $SCRIPT_DIR/../example
 # Run the example app in background
-./run.sh &
+./run.sh
 my_pid=$!
 sleep 120 # Wait for invitation details to be written to file
 cd $SCRIPT_DIR/../../../tools/
@@ -20,15 +20,6 @@ echo "invite details: "
 cat $SCRIPT_DIR/../example/inviteDetails.json
 curl -X POST --data-binary "$SCRIPT_DIR/../example/inviteDetails.json" http://$AUTORESPONDER_HOST:4002/connect
 
-while   ps | grep -v grep | grep " $my_pid "; do
-  echo $my_pid is still in the ps output. Must still be running.
-  sleep 3
-done
-
-echo Oh, it looks like the process is done.
+echo "Waiting for ./run.sh to exit"
 wait $my_pid
-# The variable $? always holds the exit code of the last command to finish.
-# Here it holds the exit code of $my_pid, since wait exits with that code.
-my_status=$?
-echo The exit status of the process was $my_status
-exit $my_status
+exit $?
