@@ -24,10 +24,11 @@ public class Connection extends Protocol {
 
     private String sourceId;
     private String phoneNumber = null;
+    private boolean usePublicDid = false;
     
     /**
     * Create connection without phone number
-    * @param sourceId optional param that sets an id of the connection
+    * @param sourceId required optional param that sets an id of the connection
     */
     public Connection(String sourceId) {
         super();
@@ -36,13 +37,26 @@ public class Connection extends Protocol {
 
     /**
     * Create connection with phone number
-    * @param sourceId optional param that sets an id of the connection
+    * @param sourceId required param that sets an id of the connection
     * @param phoneNo optional param that sets the sms phone number for an identity holder 
     */
     public Connection(String sourceId, String phoneNo) {
         super();
         this.sourceId = sourceId;
         this.phoneNumber = phoneNo;
+    }
+
+    /**
+    * Create connection with phone number
+    * @param sourceId required param that sets an id of the connection
+    * @param phoneNo optional param that sets the sms phone number for an identity holder 
+    * @param usePublicDid optional param that indicates the connection invite should use the institution's public DID.
+    */
+    public Connection(String sourceId, String phoneNo, boolean usePublicDid) {
+        super();
+        this.sourceId = sourceId;
+        this.phoneNumber = phoneNo;
+        this.usePublicDid = usePublicDid;
     }
 
     /**
@@ -53,7 +67,10 @@ public class Connection extends Protocol {
         JSONObject message = new JSONObject();
         message.put("@type", Connection.NEW_CONNECTION_MESSAGE_TYPE);
         message.put("sourceId", this.sourceId);
-        message.put("phoneNo", this.phoneNumber);
+        if(this.phoneNumber != null) {
+            message.put("phoneNo", this.phoneNumber);
+        }
+        message.put("usePublicDid", this.usePublicDid);
         return message.toString();
     }
 
