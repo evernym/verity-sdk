@@ -130,8 +130,6 @@ make_jar:
     - sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' sdk/java-sdk/pom.xml
     - cd sdk/java-sdk/
     - mvn package -DskipTests
-    - mvn javadoc:jar
-    # - mvn source:jar
   artifacts:
     paths:
       - sdk/java-sdk/target/java-sdk*.jar
