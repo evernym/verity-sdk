@@ -85,4 +85,14 @@ public class ConnectionTest {
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
         }
     }
+
+    @Test
+    public void testAcceptInviteMessageToString() {
+        String inviteDetails = "{\"hello\":\"world\"}";
+        Connection connection = new Connection("id");
+        String acceptInviteDetailsMessage = connection.acceptInvitationMessageToString(inviteDetails);
+        JSONObject acceptInviteDetailsJson = new JSONObject(acceptInviteDetailsMessage);
+        assertEquals(Connection.ACCEPT_INVITATION_MESSAGE_TYPE, acceptInviteDetailsJson.getString("@type"));
+        assertEquals(inviteDetails, acceptInviteDetailsJson.getJSONObject("invitationDetails").toString());
+    }
 }

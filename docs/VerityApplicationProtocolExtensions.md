@@ -265,6 +265,29 @@ Initiates the process to connect with a user
 1) Connection will be usable (unless deleted?) for sending credentials and requesting proof.
 2) DID comm is asynchronous so status updates will be sent in the response.
 
+
+<a id="connection:accept-invitation"></a>
+### Accept Invitation
+
+type: **accept-invitation**
+
+Initiates the process to connect with a user
+
+```json
+{
+    "@type": "vs.service/connection/0.1/accept_invite",
+    "@id": <uuid>,
+    "invitationDetails": {
+        ... invite details json
+    }
+}
+```
+
+#### Attributes
+
+* `invitationDeatils` contains the libvcx invite details JSON object.
+
+
 <a id="connection:problem-report"></a>
 ### Problem Report
 
@@ -313,6 +336,7 @@ Verity generated message that gives human readable indications of the current st
 * `status` enum that resolves to one of 2 states:
     * `0` awaiting response. (invite details in content and invite has been sent if phoneNo defined)
     * `1` invite was accepted by the user (connectionId in content)
+    * `2` connection invite accepted by verity on your behalf
 * `message` **optional** message relating to the status
 * `content` **optional** content field associated with the status
 
