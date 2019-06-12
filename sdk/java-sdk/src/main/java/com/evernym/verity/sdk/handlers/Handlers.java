@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.MessagePackaging;
-import com.evernym.verity.sdk.utils.VerityConfig;
+import com.evernym.verity.sdk.utils.Context;
 
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
@@ -13,16 +13,16 @@ import org.json.JSONObject;
  * Stores an array of message handlers that are used when receiving an inbound message
  */
 public class Handlers {
-    static ArrayList<MessageHandler> messageHandlers = new ArrayList<MessageHandler>();
-    static MessageHandler defaultHandler;
-    static MessageHandler problemReportHandler;
+    private ArrayList<MessageHandler> messageHandlers = new ArrayList<MessageHandler>();
+    private MessageHandler defaultHandler;
+    private MessageHandler problemReportHandler;
 
     /**
      * Adds a MessageHandler for a message type to the list if current message handlers
      * @param messageType the type of message to be handled
      * @param messageHandler the handler function itself
      */
-    public static void addHandler(String messageType, MessageHandler.Handler messageHandler) {
+    public void addHandler(String messageType, MessageHandler.Handler messageHandler) {
         messageHandlers.add(new MessageHandler(messageType, messageHandler));
     }
 
@@ -32,7 +32,7 @@ public class Handlers {
      * @param messageStatus the status of the message to be handled
      * @param messageHandler the handler function itself
      */
-    public static void addHandler(String messageType, Integer messageStatus, MessageHandler.Handler messageHandler) {
+    public void addHandler(String messageType, Integer messageStatus, MessageHandler.Handler messageHandler) {
         messageHandlers.add(new MessageHandler(messageType, messageStatus, messageHandler));
     }
 
@@ -40,7 +40,7 @@ public class Handlers {
      * Adds a handler that is called for all problem report messages not handled directly.
      * @param messageHandler the function that will be called
      */
-    public static void addProblemReportHandler(MessageHandler.Handler messageHandler) {
+    public void addProblemReportHandler(MessageHandler.Handler messageHandler) {
         problemReportHandler = new MessageHandler(null, messageHandler);
     }
 
@@ -48,20 +48,20 @@ public class Handlers {
      * Adds a handler for all message types not handled by other message handlers
      * @param messageHandler the function that will be called
      */
-    public static void addDefaultHandler(MessageHandler.Handler messageHandler) {
+    public void addDefaultHandler(MessageHandler.Handler messageHandler) {
         defaultHandler = new MessageHandler(null, messageHandler);
     }
 
     /**
      * Calls all of the handlers that support handling of this particular message type and message status
-     * @param verityConfig an instance of VerityConfig configured with the results of the provision_sdk.py script
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @param rawMessage the raw bytes received from Verity
      * @throws InterruptedException when there are issues with encryption and decryption
      * @throws ExecutionException when there are issues with encryption and decryption
      * @throws IndyException when there are issues with encryption and decryption
      */
-    public static void handleMessage(VerityConfig verityConfig, byte[] rawMessage) throws InterruptedException, ExecutionException, IndyException {
-        JSONObject message = MessagePackaging.unpackMessageFromVerity(verityConfig, rawMessage);
+    public void handleMessage(Context context, byte[] rawMessage) throws InterruptedException, ExecutionException, IndyException {
+        JSONObject message = MessagePackaging.unpackMessageFromVerity(context, rawMessage);
         boolean handled = false;
         for(MessageHandler messageHandler: messageHandlers) {
             if(messageHandler.handles(message)) {

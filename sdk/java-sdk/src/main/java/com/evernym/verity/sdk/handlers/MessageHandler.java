@@ -11,7 +11,7 @@ public class MessageHandler {
     private Handler messageHandler;
 
     public interface Handler {
-        public void handle(JSONObject message);
+        void handle(JSONObject message);
     }
 
     /**
