@@ -183,12 +183,13 @@ update_getting_started_guide:
 upload_mock_verity_to_docker_hub:
   image: docker:stable
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://dind:2375
     DOCKER_DRIVER: overlay2
   stage: deploy
   extends: .tags
   services:
-    - docker:dind
+    - name: docker:dind
+      alias: dind
   when: on_success
   only:
     refs:
