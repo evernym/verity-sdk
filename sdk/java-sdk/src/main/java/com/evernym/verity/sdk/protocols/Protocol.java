@@ -33,19 +33,6 @@ public abstract class Protocol {
         return MessagePackaging.packMessageForVerity(context, toString());
     }
 
-    // /**
-    //  * Packs the connection message for the verity
-    //  * @param context an instance of Context that has been initialized with your wallet and key details
-    //  * @param message the message to pack for Verity
-    //  * @return Encrypted connection message ready to be sent to the verity
-    //  * @throws InterruptedException when there are issues with encryption and decryption
-    //  * @throws ExecutionException when there are issues with encryption and decryption
-    //  * @throws IndyException when there are issues with encryption and decryption
-    //  */
-    // public byte[] getMessage(Context context, String message) throws InterruptedException, ExecutionException, IndyException {
-    //     return MessagePackaging.packMessageForVerity(context, message);
-    // }
-
     /**
      * Encrypts and sends the default message to Verity
      * @param context an instance of Context configured with the results of the provision_sdk.py script
@@ -60,20 +47,20 @@ public abstract class Protocol {
         transport.sendMessage(context.getVerityUrl(), getMessage(context));
     }
 
-    // /**
-    //  * Encrypts and sends a specified message to Verity
-    //  * @param context an instance of Context configured with the results of the provision_sdk.py script
-    //  * @param message the message to send to Verity
-    //  * @throws IOException when the HTTP library fails to post to the agency endpoint
-    //  * @throws InterruptedException when there are issues with encryption and decryption
-    //  * @throws ExecutionException when there are issues with encryption and decryption
-    //  * @throws IndyException when there are issues with encryption and decryption
-    //  */
-    // public void sendMessage(Context context, String message) throws IOException, InterruptedException, ExecutionException, IndyException {
-    //     // Later we can switch on context.getVerityProtocol
-    //     Transport transport = new HTTPTransport();
-    //     transport.sendMessage(context.getVerityUrl(), getMessage(context, message));
-    // }
+    /**
+     * Encrypts and sends a specified message to Verity
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @param message the message to send to Verity
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws InterruptedException when there are issues with encryption and decryption
+     * @throws ExecutionException when there are issues with encryption and decryption
+     * @throws IndyException when there are issues with encryption and decryption
+     */
+    public void sendMessage(Context context, String message) throws IOException, InterruptedException, ExecutionException, IndyException {
+        // Later we can switch on context.getVerityProtocol
+        Transport transport = new HTTPTransport();
+        transport.sendMessage(context.getVerityUrl(), MessagePackaging.packMessageForVerity(context, message));
+    }
 
     public abstract String toString();
 }

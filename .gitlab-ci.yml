@@ -131,8 +131,6 @@ make_jar:
     - sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' sdk/java-sdk/pom.xml
     - cd sdk/java-sdk/
     - mvn package -DskipTests
-    - mvn javadoc:jar
-    # - mvn source:jar
   artifacts:
     paths:
       - sdk/java-sdk/target/java-sdk*.jar
@@ -180,3 +178,19 @@ update_getting_started_guide:
   only:
     refs:
       - "master@dev/verity/verity-sdk"
+
+upload_mock_verity_to_docker_hub:
+  stage: deploy
+  image: docker
+  services:
+    - docker:dind
+  when: on_success
+  only:
+    refs:
+      - "master" # @dev/verity/verity-sdk
+  script:
+    - docker login -u $DOCKER_HUB_ACCOUNT_USERNAME -p DOCKER_HUB_ACCOUNT_PASSWORD
+    - docker login --username gitlab-ci-token --password $CI_BUILD_TOKEN gitlab.corp.evernym.com:4567
+    - docker pull $CI_REGISTRY_IMAGE/verity-server-image:latest
+    - docker tag $CI_REGISTRY_IMAGE/verity-server-image:latest evernymdev/mock-verity:latest
+    - docker push evernymdev/mock-verity:latest

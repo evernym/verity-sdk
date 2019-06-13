@@ -1,0 +1,52 @@
+@startuml example-app
+
+SDK -> Verity: "Update Endpoint" message
+
+group Connection Protocol
+SDK -> Verity: "Create Connection" message
+Verity -> SDK: "Awaiting Connection Response" message
+note right: contains the invitation details
+Verity -> SDK: "Connection Accepted" message
+end
+
+group Question Protocol
+SDK -> Verity: "Ask Challenge Question" message
+alt signature is valid
+Verity -> SDK: "Question Answered" message
+note right: contains their answer
+else signature validation failed
+Verity -> SDK: "Problem Report" message
+end
+end
+
+group Schema Protocol
+SDK -> Verity: "Write Schema to Ledger for Me" message
+Verity -> SDK: "Schema successfully written" message
+end
+
+group Credential Definition Protocol
+SDK -> Verity: "Write CredDef to Ledger for Me" message
+Verity -> SDK: "CredDef successfully written" message
+end
+
+group Credential Protocol
+SDK -> Verity: "Send Credential for Me" message
+note left: contains the credential values
+Verity -> SDK: "Credential Offer Accepted" message
+Verity -> SDK: "Credential Accepted" message
+end
+
+group Proof Protocol
+SDK -> Verity: "Send Proof Request for Me" message
+alt proof is valid
+Verity -> SDK: "Proof Received" message
+note right
+Contains the proof attributes
+(not the whole proof)
+end note
+else proof validation failed
+Verity -> SDK: "Problem Report" message
+end
+end
+
+@enduml

@@ -58,19 +58,6 @@ public class MessagePackaging {
     }
 
     /**
-     * Helper function for converting a JSONArray of bytes to byte[]
-     * @param array JSONArray of integers
-     * @return Java byte array
-     */
-    public static byte[] objectToByteArray( JSONArray array ) {
-        byte[] myArray = new byte[array.length()];
-        for (int i = 0; i < array.length(); i++) {
-            myArray[i] = (byte) array.getInt(i);
-        }
-        return myArray;
-    }
-
-    /**
      * Unpack message forwarded message
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @param message the message received from the Evernym verity
