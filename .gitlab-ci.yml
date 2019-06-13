@@ -178,7 +178,7 @@ update_getting_started_guide:
   when: on_success
   only:
     refs:
-      - "master@dev/verity/verity-sdk"
+      - "java-sdk" #"master@dev/verity/verity-sdk"
 
 upload_mock_verity_to_docker_hub:
   tags:

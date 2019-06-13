@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     python-dev \
     maven \
     openssh-client \
-    git
+    git \
+    plantuml
 
 # Install python3.6
 RUN add-apt-repository ppa:jonathonf/python-3.6 && \

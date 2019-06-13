@@ -1,4 +1,4 @@
-@startuml example-app
+@startuml example-app-flow
 
 SDK -> Verity: "Update Endpoint" message
 
