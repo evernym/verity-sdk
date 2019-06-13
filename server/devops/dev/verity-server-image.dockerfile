@@ -1,4 +1,4 @@
-FROM gitlab.corp.evernym.com:4567/dev/verity/verity-sdk/verity-server
+FROM verity-server
 # gitlab.corp.evernym.com:4567/spencer.holman/verity-sdk/verity-server
 ADD . /opt/mock-agency/.
 
