@@ -192,7 +192,7 @@ upload_mock_verity_to_docker_hub:
     refs:
       - "java-sdk" # master@dev/verity/verity-sdk
   script:
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}},\"registry.hub.docker.com\":{\"username\":\"$DOCKER_HUB_ACCOUNT_USERNAME\",\"password\":\"$DOCKER_HUB_ACCOUNT_PASSWORD\"}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}},\"https://index.docker.io/v1/\":{\"username\":\"$DOCKER_HUB_ACCOUNT_USERNAME\",\"password\":\"$DOCKER_HUB_ACCOUNT_PASSWORD\"}}" > /kaniko/.docker/config.json
     - |
         echo "-----BEGIN CERTIFICATE-----
         MIIFJTCCAw2gAwIBAgIUMI0Z8YSLeRq8pZks40O3Dq2m8TIwDQYJKoZIhvcNAQEL
@@ -225,5 +225,5 @@ upload_mock_verity_to_docker_hub:
         Tw6APXtEnjfD2H8HOpOX/7ef4gWK0O1Q7A==
         -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
     - sed 's~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g' -i $CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile
-    - /kaniko/executor --context $CI_PROJECT_DIR/server --dockerfile $CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile --destination registry.hub.docker.com/evernymdev/mock-verity:latest
+    - /kaniko/executor --context $CI_PROJECT_DIR/server --dockerfile $CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile --destination evernymdev/mock-verity:latest
 
