@@ -193,6 +193,7 @@ upload_mock_verity_to_docker_hub:
       - "java-sdk" # master@dev/verity/verity-sdk
   script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"},\"https://index.docker.io/v1/\":{\"auth\":\"$DOCKER_HUB_ACCOUNT_USERNAME\",\"password\":\"$DOCKER_HUB_ACCOUNT_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - cat /kaniko/.docker/config.json
     - |
         echo "-----BEGIN CERTIFICATE-----
         MIIFJTCCAw2gAwIBAgIUMI0Z8YSLeRq8pZks40O3Dq2m8TIwDQYJKoZIhvcNAQEL
