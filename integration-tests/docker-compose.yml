@@ -1,0 +1,48 @@
+version: '3.5'
+
+services:
+  buildenv:
+    image: buildenv
+    build:
+      context: ../devops/dockerfiles/.
+      dockerfile: buildenv.dockerfile
+  autorespond:
+    container_name: autorespond
+    depends_on:
+      - buildenv
+    build:
+      context: ../.
+      dockerfile: devops/dockerfiles/auto-respond-client.dockerfile
+    ports:
+      - "4002:4002"
+  verity-server:
+    image: verity-server
+    build:
+      context: ../server/.
+      dockerfile: devops/dev/verity-server.dockerfile
+  verity-server-image:
+    container_name: mock-verity
+    depends_on:
+      - verity-server
+    build:
+      context: ../server/.
+      dockerfile: devops/dev/verity-server-image.dockerfile
+    command: ["000000000000000000000000Trustee1", "https://eas-team1.pdev.evernym.com"]
+    ports:
+      - "8080:8080"
+  java-integration-tests:
+    image: buildenv
+    container_name: integration-tests
+    depends_on:
+      - verity-server-image
+      - autorespond
+    volumes:
+      - '../.:/root/verity-server'
+    working_dir: /root/verity-server
+    ports:
+      - "4000:4000"
+    command: >
+      bash -c "sleep 30 &&
+      ./tools/provision_sdk.py --wallet-name test-wallet http://mock-verity:8080 12345 > sdk/java-sdk/example/verityConfig.json &&
+      sed 's/localhost:4000/integration-tests:4000/g' -i sdk/java-sdk/example/verityConfig.json &&
+      ./sdk/java-sdk/devops/integration_tests.sh autorespond"

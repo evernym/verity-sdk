@@ -51,7 +51,6 @@ stages:
   - docker-images
   - dependent-docker-images
   - unit-tests
-    #  - integration-tests
   - build
   - deploy
 
@@ -81,7 +80,6 @@ verity-server-docker-build:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server.dockerfile'
     DOCKER_IMAGE_NAME: 'verity-server'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
-    #DOCKER_PREP_COMMAND: 'cd server && ./devops/dev/prepare-dev-environment.sh && cd -'
     DOCKER_PREP_COMMAND: 'echo none'
 
 autorespond-docker-build:
@@ -106,22 +104,6 @@ unit-tests-and-syntax:
     - cd sdk/java-sdk/ && mvn test && cd - # Java SDK unit tests
     - cd server && npm run lint && cd - # Mock Verity linting
 
-# java-sdk-integration-tests:
-#   stage: integration-tests
-#   image: $CI_REGISTRY_IMAGE/buildenv:latest
-#   extends: .tags
-#   services:
-#     - name: $CI_REGISTRY_IMAGE/autorespond:latest
-#       alias: autorespond
-#     - name: $CI_REGISTRY_IMAGE/verity-server-image:latest
-#       alias: mock-verity
-#   script:
-#     - cd sdk/java-sdk && mvn package -DskipTests && cd -
-#     - cd sdk/java-sdk/example && mvn package && cd -
-#     - python3 -m pip install -r tools/requirements.txt
-#     - ./tools/provision_sdk.py --wallet-name test-wallet http://mock-verity:8080 12345 > sdk/java-sdk/example/verityConfig.json
-#     - cd sdk/java-sdk/example && ./run.sh
-
 make_jar:
   stage: build
   image: $CI_REGISTRY_IMAGE/buildenv:latest
@@ -141,8 +123,6 @@ verity-server-image-docker-build:
   only:
     changes:
       - server/*
-      - server/devops/dev/verity-server.dockerfile
-      - server/devops/dev/verity-server-image.dockerfile
     refs:
       - "master"
   dependencies:
