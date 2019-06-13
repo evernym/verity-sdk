@@ -182,6 +182,7 @@ update_getting_started_guide:
 
 upload_mock_verity_to_docker_hub:
   stage: deploy
+  extends: .tags
   services:
     - docker:dind
   when: on_success
