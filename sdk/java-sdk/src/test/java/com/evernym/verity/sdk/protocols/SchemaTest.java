@@ -1,14 +1,13 @@
 package com.evernym.verity.sdk.protocols;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
 
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class SchemaTest {
 
@@ -30,7 +29,7 @@ public class SchemaTest {
             context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
-            assertTrue(false);
+            fail();
             throw e;
         } finally {
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
