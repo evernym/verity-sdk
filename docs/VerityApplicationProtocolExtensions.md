@@ -266,28 +266,6 @@ Initiates the process to connect with a user
 2) DID comm is asynchronous so status updates will be sent in the response.
 
 
-<a id="connection:accept-invitation"></a>
-### Accept Invitation
-
-type: **accept-invitation**
-
-Initiates the process to connect with a user
-
-```json
-{
-    "@type": "vs.service/connection/0.1/accept_invite",
-    "@id": <uuid>,
-    "invitationDetails": {
-        ... invite details json
-    }
-}
-```
-
-#### Attributes
-
-* `invitationDeatils` contains the libvcx invite details JSON object.
-
-
 <a id="connection:problem-report"></a>
 ### Problem Report
 
