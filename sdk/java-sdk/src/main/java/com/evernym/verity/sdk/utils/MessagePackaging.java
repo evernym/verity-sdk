@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.crypto.Crypto;
+import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,6 +12,22 @@ import org.json.JSONObject;
  * Static helper functions used for packaging and unpackaging messages
  */
 public class MessagePackaging {
+
+    public static byte[] packMessageForVerity(Wallet walletHandle,
+                                              String message,
+                                              String pairwiseRemoteDID,
+                                              String pairwiseRemoteVerkey,
+                                              String pairwiseLocalVerkey,
+                                              String publicVerkey
+    ) throws InterruptedException, ExecutionException, IndyException {
+
+        String pairwiseReceiver = new JSONArray(new String[]{pairwiseRemoteVerkey}).toString();
+        String verityReceiver = new JSONArray(new String[]{publicVerkey}).toString();
+        byte[] agentMessage = Crypto.packMessage(walletHandle, pairwiseReceiver, pairwiseLocalVerkey, message.getBytes()).get();
+        String innerFwd = prepareFwdMessage(pairwiseRemoteDID,agentMessage);
+        byte[] verityMessage = Crypto.packMessage(walletHandle, verityReceiver, null, innerFwd.getBytes()).get();
+        return verityMessage;
+    }
 
     /**
      * Encrypts a message for the Evernym verity. This function should not be called directly because it is called by the individual protocol classes.
@@ -22,12 +39,14 @@ public class MessagePackaging {
      * @throws IndyException when there are issues with encryption and decryption
      */
     public static byte[] packMessageForVerity(Context context, String message) throws InterruptedException, ExecutionException, IndyException {
-        String pairwiseReceiver = new JSONArray(new String[]{context.getVerityPairwiseVerkey()}).toString();
-        String verityReceiver = new JSONArray(new String[]{context.getVerityPublicVerkey()}).toString();
-        byte[] agentMessage = Crypto.packMessage(context.getWalletHandle(), pairwiseReceiver, context.getSdkPairwiseVerkey(), message.getBytes()).get();
-        String innerFwd = prepareFwdMessage(context.getVerityPairwiseDID(),agentMessage);
-        byte[] verityMessage = Crypto.packMessage(context.getWalletHandle(), verityReceiver, null, innerFwd.getBytes()).get();
-        return verityMessage;
+        return packMessageForVerity(
+                context.walletHandle,
+                message,
+                context.getVerityPairwiseDID(),
+                context.getVerityPairwiseVerkey(),
+                context.getSdkPairwiseVerkey(),
+                context.getVerityPublicVerkey()
+        );
     }
 
     /**

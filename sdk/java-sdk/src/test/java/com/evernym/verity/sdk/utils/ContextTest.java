@@ -1,15 +1,13 @@
 package com.evernym.verity.sdk.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import com.evernym.verity.sdk.TestWallet;
 
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ContextTest {
 
@@ -44,7 +42,7 @@ public class ContextTest {
             context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
-            assertTrue(false);
+            fail();
         } finally {
             String walletConfig = new JSONObject().put("id", walletName).toString();
             String walletCredentials = new JSONObject().put("key", walletKey).toString();
@@ -81,7 +79,7 @@ public class ContextTest {
             context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
-            assertTrue(false);
+            fail();
         } finally {
             String walletConfig = new JSONObject().put("id", walletName).toString();
             String walletCredentials = new JSONObject().put("key", walletKey).toString();

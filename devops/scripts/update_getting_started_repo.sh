@@ -21,6 +21,10 @@ cp tools/provision_sdk.py $TEMP_DIR/.
 cat tools/requirements.txt | grep requests >> $TEMP_DIR/python-dependencies.txt
 cat tools/requirements.txt | grep python3-indy >> $TEMP_DIR/python-dependencies.txt
 
+# Generate and add Flow Diagram
+plantuml -o $TEMP_DIR docs/example-flow.puml
+mv $TEMP_DIR/example-app-flow $TEMP_DIR/example-app-flow.png
+
 cd $TEMP_DIR
 git init
 git config user.email "none"
