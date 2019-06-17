@@ -39,6 +39,17 @@ public class Connection extends Protocol {
     }
 
     /**
+    * Create connection without a phone number that uses a public DID.
+    * @param sourceId required param that sets an id of the connection
+    * @param usePublicDid optional param that indicates the connection invite should use the institution's public DID.
+    */
+    public Connection(String sourceId, boolean usePublicDid) {
+        super();
+        this.sourceId = sourceId;
+        this.usePublicDid = usePublicDid;
+    }
+
+    /**
     * Create connection with phone number
     * @param sourceId required param that sets an id of the connection
     * @param phoneNo optional param that sets the sms phone number for an identity holder 
@@ -50,7 +61,7 @@ public class Connection extends Protocol {
     }
 
     /**
-    * Create connection with phone number
+    * Create connection with phone number that uses a public DID
     * @param sourceId required param that sets an id of the connection
     * @param phoneNo optional param that sets the sms phone number for an identity holder 
     * @param usePublicDid optional param that indicates the connection invite should use the institution's public DID.

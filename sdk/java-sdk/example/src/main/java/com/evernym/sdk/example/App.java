@@ -142,7 +142,7 @@ public class App {
             });
 
             // Create a new connection (initiates the entire flow)
-            Connection connection = new Connection("my institution id");
+            Connection connection = new Connection("my institution id", true);
             connection.create(context);
         } catch(Exception ex) {
             ex.printStackTrace();
