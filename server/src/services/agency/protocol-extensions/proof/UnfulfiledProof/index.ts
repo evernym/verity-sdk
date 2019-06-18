@@ -20,11 +20,15 @@ export class UnfulfilledProof {
 
     public async proofRequest() {
         try {
+            let revocationInterval = {}
+            if (this.message.proofRequest.revocationInterval) {
+                revocationInterval = this.message.proofRequest.revocationInterval
+            }
             this.proof = await vcx.Proof.create({
                 sourceId: uuid(),
-                attrs: this.message.proof.proofAttrs,
-                name: this.message.proof.name,
-                revocationInterval: {},
+                attrs: this.message.proofRequest.proofAttrs,
+                name: this.message.proofRequest.name,
+                revocationInterval,
             })
             await this.proof.requestProof(this.myConnection)
             Agency.postResponse(this.generateStatusReport(

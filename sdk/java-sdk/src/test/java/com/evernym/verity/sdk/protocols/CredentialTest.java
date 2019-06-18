@@ -13,8 +13,9 @@ public class CredentialTest {
 
     @Test
     public void basicCredDefTest() throws Exception {
+        Context context = null;
         try {
-            Context context = TestHelpers.getConfig();
+            context = TestHelpers.getConfig();
 
             String connectionId = "...someConnectionId...";
             String credDefId = "...someCredDefId...";
@@ -31,13 +32,14 @@ public class CredentialTest {
             assertEquals(credDefId, unpackedCredentialMessage.getJSONObject("credentialData").getString("credDefId"));
             assertEquals(credentialValues.toString(), unpackedCredentialMessage.getJSONObject("credentialData").getJSONObject("credentialValues").toString());
             assertEquals(price, unpackedCredentialMessage.getJSONObject("credentialData").getInt("price"));
-
-            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             fail();
             throw e;
         } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();

@@ -38,6 +38,7 @@ services:
       - autorespond
     volumes:
       - '../.:/root/verity-server'
+      - '~/.m2:/root/.m2'
     working_dir: /root/verity-server
     ports:
       - "4000:4000"

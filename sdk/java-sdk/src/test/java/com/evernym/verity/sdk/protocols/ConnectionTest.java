@@ -13,21 +13,23 @@ public class ConnectionTest {
 
     @Test
     public void oneParamsConstructor() throws Exception {
+        Context context = null;
         try {
-            Context context = TestHelpers.getConfig();
+            context = TestHelpers.getConfig();
 
             String sourceId = "source_id";
             Connection connection = new Connection(sourceId);
             JSONObject unpackedMessage = TestHelpers.unpackMessage(context, connection.getMessage(context));
             assertEquals(connection.toString(), unpackedMessage.toString());
             assertEquals(sourceId, unpackedMessage.getString("sourceId"));
-
-            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             fail();
             throw e;
         } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
@@ -36,8 +38,9 @@ public class ConnectionTest {
 
     @Test
     public void twoParamsConstructor() throws Exception {
+        Context context = null;
         try {
-            Context context = TestHelpers.getConfig();
+            context = TestHelpers.getConfig();
 
             String sourceId = "source_id";
             String phoneNumber = "123-456-7891";
@@ -46,12 +49,13 @@ public class ConnectionTest {
             assertEquals(connection.toString(), unpackedMessage.toString());
             assertEquals(sourceId, unpackedMessage.getString("sourceId"));
             assertEquals(phoneNumber, unpackedMessage.getString("phoneNo"));
-
-            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             fail();
         } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
@@ -60,8 +64,9 @@ public class ConnectionTest {
 
     @Test
     public void threeParamsConstructor() throws Exception {
+        Context context = null;
         try {
-            Context context = TestHelpers.getConfig();
+            context = TestHelpers.getConfig();
 
             String sourceId = "source_id";
             String phoneNumber = "123-456-7891";
@@ -72,12 +77,13 @@ public class ConnectionTest {
             assertEquals(sourceId, unpackedMessage.getString("sourceId"));
             assertEquals(phoneNumber, unpackedMessage.getString("phoneNo"));
             assertEquals(usePublicDid, unpackedMessage.getBoolean("usePublicDid"));
-
-            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             fail();
         } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();

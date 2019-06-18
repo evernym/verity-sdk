@@ -77,7 +77,7 @@ public class App {
                     // Write a Schema and Cred Def to the ledger in preparation for issuing
                     // This step will likely be done manually by the institution, and not on a regular basis
                     String schemaName = "My test schema";
-                    String schemaVersion = getRandomInt(0, 100).toString() + "." + getRandomInt(0, 100).toString() + "." + getRandomInt(0, 100).toString();
+                    String schemaVersion = getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString();
                     Schema schema = new Schema(schemaName, schemaVersion, "name", "degree");
                     schema.write(context);
                 } catch(Exception ex) {
@@ -129,7 +129,8 @@ public class App {
                     String proofRequestName = "Who are you?";
                     JSONArray proofAttrs = new JSONArray();
                     proofAttrs.put(getProofAttr("name", credDefId.split(":")[0]));
-                    ProofRequest proofRequest = new ProofRequest(proofRequestName, proofAttrs, connectionId);
+                    JSONObject revocationInterval = new JSONObject();
+                    ProofRequest proofRequest = new ProofRequest(connectionId, proofRequestName, proofAttrs, revocationInterval);
                     proofRequest.send(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
@@ -151,6 +152,7 @@ public class App {
             // Handle all problem report messages not handled directly by other handlers
             handlers.addProblemReportHandler((JSONObject message) -> {
                 System.out.println("New problem report from verity: " + message.getJSONObject("comment").getString("en"));
+                System.exit(1);
             });
         } catch(Exception ex) {
             ex.printStackTrace();
