@@ -26,22 +26,18 @@ public class App {
 
     public static void main( String[] args ) {
         try {
-            // NOTE: Wallet must already exist. You can create it with the tools/provisioner/provision-sdk.py script
-            startListening();
-            context = new Context(readConfigFile());
-            context.sendUpdateWebhookMessage(context);
+            // NOTE: You must provision against Verity using the provision-sdk.py script before running this example. 
+                // The output of that script should be stored in verityConfig.json
+
+            startListening(); // The example app stands up an endpoint to listen for messages from Verity
+            context = new Context(readConfigFile("verityConfig.json"));
+            context.sendUpdateWebhookMessage(context); // The SDK lets Verity know what its endpoint is
+
+            // Create a new connection (initiates the daisy-chained flow of Connection, Question, Credential, Proof)
+            Connection connection = new Connection("my institution id", true); // Note that Connection also supports a phone number in the constructor. See javadocs.
+            connection.create(context); // Send the connection create message to Verity
 
             handlers = new Handlers();
-
-            // Handle all messages not handled by other handlers
-            handlers.addDefaultHandler((JSONObject message) -> {
-                System.out.println("New message from verity: " + message.toString());
-            });
-
-            // Handle all problem report messages not handled directly by other handlers
-            handlers.addProblemReportHandler((JSONObject message) -> {
-                System.out.println("New problem report from verity: " + message.getJSONObject("comment").getString("en"));
-            });
 
             // Handler for getting invite details (connection awaiting response)
             handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
@@ -59,6 +55,8 @@ public class App {
             handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Connection Accepted!!!");
+
+                    // Now that the connection has been accepted, let's send Alice a Question.
                     App.connectionId = message.getString("content");
                     String notificationTitle = "Challenge Question";
                     String questionText = "Hi Alice, how are you today?";
@@ -75,11 +73,13 @@ public class App {
             handlers.addHandler(Question.STATUS_MESSAGE_TYPE, Question.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
+
+                    // Write a Schema and Cred Def to the ledger in preparation for issuing
+                    // This step will likely be done manually by the institution, and not on a regular basis
                     String schemaName = "My test schema";
                     String schemaVersion = getRandomInt(0, 100).toString() + "." + getRandomInt(0, 100).toString() + "." + getRandomInt(0, 100).toString();
                     Schema schema = new Schema(schemaName, schemaVersion, "name", "degree");
                     schema.write(context);
-
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
@@ -99,6 +99,7 @@ public class App {
             // Handler for Cred Def write successful status
             handlers.addHandler(CredDef.STATUS_MESSAGE_TYPE, CredDef.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
+                    // Issue a credential to Alice
                     credDefId = message.getString("content");
                     JSONObject credentialValues = new JSONObject();
                     credentialValues.put("name", "Joe Smith");
@@ -124,6 +125,7 @@ public class App {
                 try {
                     System.out.println("User accepted the credential");
 
+                    // Ask Alice to prove she owns the credential we sent her
                     String proofRequestName = "Who are you?";
                     JSONArray proofAttrs = new JSONArray();
                     proofAttrs.put(getProofAttr("name", credDefId.split(":")[0]));
@@ -141,9 +143,15 @@ public class App {
                 System.exit(0);
             });
 
-            // Create a new connection (initiates the entire flow)
-            Connection connection = new Connection("my institution id", true);
-            connection.create(context);
+            // Handle all messages not handled by other handlers
+            handlers.addDefaultHandler((JSONObject message) -> {
+                System.out.println("New message from verity: " + message.toString());
+            });
+
+            // Handle all problem report messages not handled directly by other handlers
+            handlers.addProblemReportHandler((JSONObject message) -> {
+                System.out.println("New problem report from verity: " + message.getJSONObject("comment").getString("en"));
+            });
         } catch(Exception ex) {
             ex.printStackTrace();
         }
@@ -162,8 +170,8 @@ public class App {
         System.out.println("Listening on port " + port);
     }
 
-    private static String readConfigFile() throws IOException {
-        return new String(Files.readAllBytes(FileSystems.getDefault().getPath("verityConfig.json")));
+    private static String readConfigFile(String configPath) throws IOException {
+        return new String(Files.readAllBytes(FileSystems.getDefault().getPath(configPath)));
     }
 
     private static void writeInviteDetailsFile(JSONObject data) throws IOException {
