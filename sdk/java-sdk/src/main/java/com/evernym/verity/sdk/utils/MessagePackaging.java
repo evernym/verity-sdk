@@ -24,7 +24,7 @@ public class MessagePackaging {
         String pairwiseReceiver = new JSONArray(new String[]{pairwiseRemoteVerkey}).toString();
         String verityReceiver = new JSONArray(new String[]{publicVerkey}).toString();
         byte[] agentMessage = Crypto.packMessage(walletHandle, pairwiseReceiver, pairwiseLocalVerkey, message.getBytes()).get();
-        String innerFwd = prepareFwdMessage(pairwiseRemoteDID,agentMessage);
+        String innerFwd = prepareFwdMessage(pairwiseRemoteDID, agentMessage);
         byte[] verityMessage = Crypto.packMessage(walletHandle, verityReceiver, null, innerFwd.getBytes()).get();
         return verityMessage;
     }

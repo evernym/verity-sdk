@@ -13,8 +13,9 @@ public class QuestionTest {
 
     @Test
     public void properlyBuildMessage() throws Exception {
+        Context context = null;
         try {
-            Context context = TestHelpers.getConfig();
+            context = TestHelpers.getConfig();
             
             String connectionId = "abcd12345";
             String notificationTitle = "Challenge Question";
@@ -32,12 +33,13 @@ public class QuestionTest {
             assertNotNull(unpackedMessage.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("nonce"));
             assertEquals(validResponses[1], unpackedMessage.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("text"));
             assertNotNull(unpackedMessage.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("nonce"));
-
-            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             fail();
         } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();

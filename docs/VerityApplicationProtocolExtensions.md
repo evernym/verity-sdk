@@ -699,12 +699,13 @@ Send a proof request to a user
 	"@type": "vs.service/proof/0.1/request",
 	"@id": <uuid>,
 	"connectionId": "<pairwise_did>",
-	"proof":{
+	"proofRequest":{
         "name": <proof name>,
         "proofAttrs": [
         	{name: 'name', restrictions: [{issuer_did: configJson['institution_did']}]},
     		{name: 'degree', restrictions: [{issuer_did: configJson['institution_did']}]}
-        ]
+        ],
+        "revocationInterval": {}
     }
 }
 ```

@@ -14,29 +14,62 @@ public class ProofRequestTest {
 
     @Test
     public void properlyBuildMessage() throws Exception {
+        Context context = null;
         try {
-            Context context = TestHelpers.getConfig();
+            context = TestHelpers.getConfig();
             
             String proofRequestName = "Name Check";
             JSONArray proofAttrs = getProofAttrs();
             String connectionId = "<some connection id>";
-            ProofRequest proofRequest = new ProofRequest(proofRequestName, proofAttrs, connectionId);
+            ProofRequest proofRequest = new ProofRequest(connectionId, proofRequestName, proofAttrs);
             JSONObject unpackedMessage = TestHelpers.unpackMessage(context, proofRequest.getMessage(context));
             assertEquals(proofRequest.toString(), unpackedMessage.toString());
-            assertEquals(proofRequestName, unpackedMessage.getJSONObject("proof").getString("name"));
-            assertEquals(proofAttrs.toString(), unpackedMessage.getJSONObject("proof").getJSONArray("proofAttrs").toString());
+            assertEquals(proofRequestName, unpackedMessage.getJSONObject("proofRequest").getString("name"));
+            assertEquals(proofAttrs.toString(), unpackedMessage.getJSONObject("proofRequest").getJSONArray("proofAttrs").toString());
             assertEquals(connectionId, unpackedMessage.getString("connectionId"));
-            
-            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             fail();
         } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
         }
     }
+    
+    @Test
+    public void properlyBuildMessageWithRevocationInterval() throws Exception {
+        Context context = null;
+        try {
+            context = TestHelpers.getConfig();
+            
+            String proofRequestName = "Name Check";
+            JSONArray proofAttrs = getProofAttrs();
+            String connectionId = "<some connection id>";
+            JSONObject revocationInterval = new JSONObject();
+            ProofRequest proofRequest = new ProofRequest(connectionId, proofRequestName, proofAttrs, revocationInterval);
+            JSONObject unpackedMessage = TestHelpers.unpackMessage(context, proofRequest.getMessage(context));
+            assertEquals(proofRequest.toString(), unpackedMessage.toString());
+            assertEquals(proofRequestName, unpackedMessage.getJSONObject("proofRequest").getString("name"));
+            assertEquals(proofAttrs.toString(), unpackedMessage.getJSONObject("proofRequest").getJSONArray("proofAttrs").toString());
+            assertEquals(connectionId, unpackedMessage.getString("connectionId"));
+            assertEquals(revocationInterval.toString(), unpackedMessage.getJSONObject("proofRequest").getJSONObject("revocationInterval").toString());
+        } catch(Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
+            String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
+            String walletCredentials = new JSONObject().put("key", "12345").toString();
+            Wallet.deleteWallet(walletConfig, walletCredentials).get();
+        }
+    }
+
 
     private JSONArray getProofAttrs() {
         JSONArray proofAttrs = new JSONArray();

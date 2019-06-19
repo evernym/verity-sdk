@@ -13,8 +13,9 @@ public class SchemaTest {
 
     @Test
     public void basicSchemaTest() throws Exception {
+        Context context = null;
         try {
-            Context context = TestHelpers.getConfig();
+            context = TestHelpers.getConfig();
 
             String schemaName = "test schema";
             String schemaVersion = "0.0.1";
@@ -25,13 +26,14 @@ public class SchemaTest {
             assertEquals(schema.toString(), unpackedMessage.toString());
             assertEquals(attr1, unpackedMessage.getJSONObject("schema").getJSONArray("attrNames").get(0));
             assertEquals(attr2, unpackedMessage.getJSONObject("schema").getJSONArray("attrNames").get(1));
-
-            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             fail();
             throw e;
         } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
