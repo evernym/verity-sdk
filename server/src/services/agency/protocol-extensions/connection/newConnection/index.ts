@@ -60,7 +60,7 @@ export class NewConnection {
     private generateStatusReport(status: number, statusMessage: string, content?: string) {
         return {
             '@id': uuid(),
-            '@type': 'vs.service/connection/0.1/status',
+            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/status',
             'message': statusMessage,
             status,
             '~thread': {

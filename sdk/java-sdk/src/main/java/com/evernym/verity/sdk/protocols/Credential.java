@@ -15,9 +15,9 @@ import org.json.JSONObject;
 public class Credential extends Protocol {
 
     // Message type definitions
-    public static String CREDENTIAL_MESSAGE_TYPE = "vs.service/credential/0.1/credential";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/credential/0.1/problem-report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/credential/0.1/status";
+    public static String CREDENTIAL_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/credential";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/problem-report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/status";
 
     // Status definitions
     public static Integer OFFER_SENT_STATUS = 0;

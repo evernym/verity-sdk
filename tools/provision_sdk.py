@@ -85,7 +85,7 @@ async def register_agent(args):
 
     """
     create_agent_response = {
-        "@type": "vs.service/provision/1.0/create_agent_response",
+        "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/create_agent_response",
         "withPairwiseDID": None,
         "withPairwiseDIDVerKey": None
     }

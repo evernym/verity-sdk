@@ -37,7 +37,7 @@ export class UnfulfilledProof {
             this.updateProofState()
         } catch (e) {
             Agency.postResponse(generateProblemReport(
-                'vs.service/proof/0.1/problem-report',
+                'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/problem-report',
                 'failed to send proof request',
                 this.message['@id']), this.config)
         }
@@ -55,7 +55,7 @@ export class UnfulfilledProof {
                         1, 'Proof recieved and validated', this.message, proofJSON.requested_proof), this.config)
                 } else {
                     Agency.postResponse(generateProblemReport(
-                        'vs.service/proof/0.1/problem-report',
+                        'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/problem-report',
                         'proof recieved but was invalid!',
                         this.message['@id'],
                     ), this.config)
@@ -67,7 +67,7 @@ export class UnfulfilledProof {
 
     private generateStatusReport(status: number, statusMessage: string, message: IProofMessage, content?: any) {
         let msg = {
-            '@type': 'vs.service/proof/0.1/status',
+            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/status',
             '@id': uuid(),
             '~thread': {
                 pthid: message['@id'],

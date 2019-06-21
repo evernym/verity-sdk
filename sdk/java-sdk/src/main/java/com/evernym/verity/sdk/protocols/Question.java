@@ -20,9 +20,9 @@ import org.json.JSONObject;
 public class Question extends Protocol {
 
     // Message Type Definitions
-    public static String ASK_QUESTION_MESSAGE_TYPE = "vs.service/question/0.1/question";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/question/0.1/problem-report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/question/0.1/status";
+    public static String ASK_QUESTION_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/question";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/problem-report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/status";
 
     // Status Definitions
     public static Integer QUESTION_SENT_STATUS = 0;

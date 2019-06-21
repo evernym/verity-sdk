@@ -15,9 +15,9 @@ import org.json.JSONObject;
 public class ProofRequest extends Protocol {
 
     // Message Type Definitions
-    public static String PROOF_REQUEST_MESSAGE_TYPE = "vs.service/proof/0.1/request";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/proof/0.1/problem-report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/proof/0.1/status";
+    public static String PROOF_REQUEST_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/request";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/problem-report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/status";
 
     // Status Definitions
     public static Integer PROOF_REQUEST_SENT_STATUS = 0;

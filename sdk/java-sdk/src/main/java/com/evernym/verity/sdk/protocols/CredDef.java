@@ -16,9 +16,9 @@ import org.json.JSONObject;
 public class CredDef extends Protocol {
 
     // Message Type Definitions
-    public static String WRITE_CRED_DEF_MESSAGE_TYPE = "vs.service/cred-def/0.1/write";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/cred-def/0.1/problem-report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/cred-def/0.1/status";
+    public static String WRITE_CRED_DEF_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/write";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/problem-report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/status";
 
     // Status Definitions
     public static Integer WRITE_SUCCESSFUL_STATUS = 0;
