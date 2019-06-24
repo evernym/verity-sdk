@@ -552,9 +552,14 @@ Tells Verity to write a new credential definition to the ledger on behalf of the
 
 ```json
 {
-	"@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/write",
-	"@id": <uuid>,
-	"schemaId": <schema_id>
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/write",
+    "@id": <uuid>,
+    "name": <name of cred def>,
+    "schemaId": <schema_id>,
+    "tag": <optional tag>,
+    "revocation_details": {
+        ... <optional revocation details>
+    }
 }
 ```
 

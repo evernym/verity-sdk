@@ -30,10 +30,14 @@ export class CredentialDef extends Protocol {
 
     private async writeCredDef(message: ICredWriteMessage) {
         try {
+            let revocationDetails = {}
+            if(message.revocation_details) {
+                revocationDetails = message.revocation_details
+            }
             const credDef = await vcx.CredentialDef.create({
-                name: 'dummyCredDef',
+                name: message.name,
                 paymentHandle: 0,
-                revocationDetails: {},
+                revocationDetails,
                 schemaId: message.schemaId,
                 sourceId: uuid(),
             })

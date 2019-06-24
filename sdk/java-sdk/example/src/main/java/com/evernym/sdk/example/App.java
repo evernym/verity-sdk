@@ -88,8 +88,12 @@ public class App {
             // Handler for Schema write successful status
             handlers.addHandler(Schema.STATUS_MESSAGE_TYPE, Schema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
+                    String credDefName = "My test credential definition";
                     String schemaId = message.getString("content");
-                    CredDef credDef = new CredDef(schemaId);
+                    String credDefTag = "latest";
+                    JSONObject revocationDetails = new JSONObject();
+                    revocationDetails.put("support_revocation", false);
+                    CredDef credDef = new CredDef(credDefName, schemaId, credDefTag, revocationDetails);
                     credDef.write(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
