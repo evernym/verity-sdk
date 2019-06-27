@@ -16,8 +16,8 @@ public class Connection extends Protocol {
     // Message type definitions
     public static String NEW_CONNECTION_MESSAGE_TYPE = "did:sov:123456789abcdefghi1234;spec/connecting/0.6/CREATE_CONNECTION";
 //    public static String ACCEPT_INVITATION_MESSAGE_TYPE = "did:sov:123456789abcdefghi1234;spec/connecting/0.6/ACCEPT_CONN_REQ";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/connection/0.1/problem_report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/connection/0.1/status";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/problem_report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/status";
     
     // Status definitions
     public static Integer AWAITING_RESPONSE_STATUS = 0;

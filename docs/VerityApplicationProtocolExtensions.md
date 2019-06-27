@@ -9,45 +9,70 @@ This document outlines the various definitions, message formatting, and message 
 
 <a id="tableofcontents"></a>
 ## Table of Contents
-- [Overview](#overview)
-- [Table of Contents](#tableofcontents)
-- [Global definitions and helpers](#global-defs)
-    - [JSON and DID Comms](#json-and-did-comms)
-    - [Roles](#roles)
-- [Common](#common)
-    - [Check Status](#common:check-status)
-    - [Invite Request](#common:invite-request)
-    - [Invite Response](#common:invite-response)
-    - [Problem Report](#common:problem-report)
-    - [Update Communication Method](#common:update-com-method)
-- [Connection](#connection)
-    - [New Connection](#connection:new-connection)
-    - [Problem Report](#connection:problem-report)
-    - [Status](#connection:status)
-- [Provable Question](#provable-question)
-    - [Ask Question](#provable-question:ask-question)
-    - [Problem Report](#provable-question:problem-report)
-    - [Status](#provable-question:status)
-- [Schema](#schema)
-	 - [Write New Schema](#schema:write)
-	 - [Problem Report](#schema:problem-report)
-    - [Status](#schema:status)
-- [Credential Definition](#cred-def)
-	 - [Write New CredDef](#cred-def:write)
-	 - [Problem Report](#cred-def:problem-report)
-    - [Status](#cred-def:status)
-- [Credential](#credential)
-	 - [Credential](#credential:credential)
-    - [Problem Report](#credential:problem-report)
-    - [Status](#credential:status)
-- [Proof](#proof)
-	 - [Proof Request](#proof:request)
-    - [Problem Report](#proof:problem-report)
-    - [Status](#proof:status)
-- [Enroll](#enroll)
-    - [New Enrollment](#enroll:new-enrollment)
-    - [Problem Report](#enroll:problem-report)
-    - [Status](#enroll:status)
+- [Verity Application Protocol Extensions Doc](#Verity-Application-Protocol-Extensions-Doc)
+  - [Overview](#Overview)
+  - [Table of Contents](#Table-of-Contents)
+  - [Global definitions and helpers](#Global-definitions-and-helpers)
+    - [JSON and DID Comms](#JSON-and-DID-Comms)
+      - [Generating attributes](#Generating-attributes)
+    - [Roles](#Roles)
+  - [Common](#Common)
+    - [Check Status](#Check-Status)
+      - [Attributes](#Attributes)
+    - [Invite Request](#Invite-Request)
+      - [Attributes](#Attributes-1)
+    - [Invite Response](#Invite-Response)
+      - [Attributes](#Attributes-2)
+    - [Problem Report](#Problem-Report)
+      - [Attributes](#Attributes-3)
+    - [Update Communication Method](#Update-Communication-Method)
+      - [Attributes](#Attributes-4)
+  - [Connection](#Connection)
+    - [New Connection](#New-Connection)
+      - [Attributes](#Attributes-5)
+      - [Notes](#Notes)
+    - [Problem Report](#Problem-Report-1)
+    - [Status](#Status)
+      - [Attributes](#Attributes-6)
+  - [Provable Question](#Provable-Question)
+    - [Ask Question](#Ask-Question)
+      - [Attributes](#Attributes-7)
+      - [Notes](#Notes-1)
+    - [Problem Report](#Problem-Report-2)
+    - [Status](#Status-1)
+      - [Attributes](#Attributes-8)
+      - [Notes](#Notes-2)
+  - [Schema](#Schema)
+    - [Write Schema](#Write-Schema)
+      - [Attributes](#Attributes-9)
+    - [Problem Report](#Problem-Report-3)
+    - [Status](#Status-2)
+      - [Attributes](#Attributes-10)
+  - [Credential Definition](#Credential-Definition)
+    - [Write Credential Definition](#Write-Credential-Definition)
+      - [Attributes](#Attributes-11)
+    - [Problem Report](#Problem-Report-4)
+    - [Status](#Status-3)
+      - [Attributes](#Attributes-12)
+  - [Credential](#Credential)
+    - [Credential](#Credential-1)
+      - [Attributes](#Attributes-13)
+    - [Problem Report](#Problem-Report-5)
+    - [Status](#Status-4)
+      - [Attributes](#Attributes-14)
+  - [Proof](#Proof)
+    - [Proof Request](#Proof-Request)
+      - [Attributes](#Attributes-15)
+    - [Problem Report](#Problem-Report-6)
+    - [Status](#Status-5)
+      - [Attributes](#Attributes-16)
+  - [Enroll](#Enroll)
+    - [New Enrollment](#New-Enrollment)
+      - [Attributes](#Attributes-17)
+      - [Notes](#Notes-3)
+    - [Problem Report](#Problem-Report-7)
+    - [Status](#Status-6)
+      - [Attributes](#Attributes-18)
 
 
 <a id="global-defs"></a>
@@ -96,7 +121,7 @@ Request to check the status of a protocol.
 
 ```json
 {
-    "@type": "vs.service/common/0.1/check-status"
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/check-status"
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -118,7 +143,7 @@ Initiates a request for the invite details of a particular connection.
 
 ```json
 {
-    "@type": "vs.service/common/0.1/invite-request",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/invite-request",
     "@id": <uuid>,
     "connectionDetail": {
         "sourceId": "John Doe 1234"
@@ -140,7 +165,7 @@ Provides the details of a connection
 
 ```json
 {
-    "@type": "vs.service/common/0.1/invite-response",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/invite-response",
     "@id": <uuid>,
     "~thread": {
         "thid": <thid>
@@ -170,7 +195,7 @@ TODO: Many errors will have error codes that live in other locations and will ne
 
 ```json
 {
-    "@type": "vs.service/common/0.1/problem-report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/problem-report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>,
@@ -211,7 +236,7 @@ type: **update-com-method**
 
 ```json
 {
-    "@type": "vs.service/common/0.1/update_com_method",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/update_com_method",
     "@id": <uuid>,
     "comMethod": {
         "id": "webhook",
@@ -243,7 +268,7 @@ Initiates the process to connect with a user
 
 ```json
 {
-    "@type": "vs.service/connection/0.1/new_connection",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/new_connection",
     "@id": <uuid>,
     "connectionDetail":{
         "sourceId": "CONN_iAmAConnId",
@@ -275,7 +300,7 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 
 ```json
 {
-    "@type": "vs.service/connection/0.1/problem_report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/problem_report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -297,7 +322,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "vs.service/connection/0.1/status",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/status",
     "@id": <uuid>
     "~thread": {
         "thid": <pthid>,
@@ -336,7 +361,7 @@ Sends a question message to the specified connection
 
 ```json
 {
-    "@type": "vs.service/question/0.1/question",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/question",
     "@id": <uuid>,
     "connectionId": <pairwise_did>
     "question": {
@@ -379,7 +404,7 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 
 ```json
 {
-    "@type": "vs.service/question/0.1/problem-report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/problem-report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -401,7 +426,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "vs.service/question/0.1/status",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/status",
     "@id": <uuid>
     "~thread": {
         "thid": <thid>,
@@ -442,7 +467,7 @@ Tells Verity to write a new schema to the ledger on behalf of the enterprise.
 
 ```json
 {
-	"@type": "vs.service/schema/0.1/write",
+	"@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/write",
 	"@id": <uuid>,
 	"schema": {
 		"name": <schema name>,
@@ -469,7 +494,7 @@ Problem report for the schema protocol. See [Problem report common](#Attributes)
 
 ```json
 {
-    "@type": "vs.service/schema/0.1/problem-report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/problem-report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -491,7 +516,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "vs.service/cred-def/0.1/status",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/status",
     "@id": <uuid>
     "~thread": {
         "thid": <thid>,
@@ -527,9 +552,14 @@ Tells Verity to write a new credential definition to the ledger on behalf of the
 
 ```json
 {
-	"@type": "vs.service/cred-def/0.1/write",
-	"@id": <uuid>,
-	"schemaId": <schema_id>
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/write",
+    "@id": <uuid>,
+    "name": <name of cred def>,
+    "schemaId": <schema_id>,
+    "tag": <optional tag>,
+    "revocation_details": {
+        ... <optional revocation details>
+    }
 }
 ```
 
@@ -546,7 +576,7 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 
 ```json
 {
-    "@type": "vs.service/cred-def/0.1/problem-report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/problem-report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -568,7 +598,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "vs.service/cred-def/0.1/status",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/status",
     "@id": <uuid>
     "~thread": {
         "thid": <thid>,
@@ -604,7 +634,7 @@ Send a credential to a user
 
 ```json
 {
-	"@type": "vs.service/credential/0.1/credential",
+	"@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/credential",
 	"@id": <uuid>,
 	"connectionId": "<pairwise_did>",
 	"credentialData":{
@@ -637,7 +667,7 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 
 ```json
 {
-    "@type": "vs.service/credential/0.1/problem-report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/problem-report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -659,7 +689,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "vs.service/credential/0.1/status",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/status",
     "@id": <uuid>
     "~thread": {
         "thid": <thid>,
@@ -696,7 +726,7 @@ Send a proof request to a user
 
 ```json
 {
-	"@type": "vs.service/proof/0.1/request",
+	"@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/request",
 	"@id": <uuid>,
 	"connectionId": "<pairwise_did>",
 	"proofRequest":{
@@ -728,7 +758,7 @@ Problem report for the proof protocol. See [Problem report common](#Attributes) 
 
 ```json
 {
-    "@type": "vs.service/proof/0.1/problem-report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/problem-report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -750,7 +780,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "vs.service/proof/0.1/status",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/status",
     "@id": <uuid>
     "~thread": {
         "thid": <thid>,
@@ -787,7 +817,7 @@ Initiates the process to onboard a new user
 
 ```json
 {
-    "@type": "vs.service/enroll/0.1/new-enrollment",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/new-enrollment",
     "@id": <uuid>,
     "connectionDetail":{
         "sourceId": "CONN_iAmAConnId",
@@ -833,7 +863,7 @@ Problem report for the enroll protocol. See [Problem report common](#Attributes)
 
 ```json
 {
-    "@type": "vs.service/enroll/0.1/problem-report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/problem-report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -856,7 +886,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "vs.service/enroll/0.1/status",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/status",
     "@id": <uuid>
     "~thread": {
         "thid": <thid>,

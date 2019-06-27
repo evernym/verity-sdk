@@ -1,3 +1,7 @@
+/*
+ * COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.
+ * Adapted from https://hc.apache.org/httpcomponents-core-ga/httpcore/examples/org/apache/http/examples/HttpFileServer.java
+ */
 package com.evernym.sdk.example;
 
 import java.io.IOException;

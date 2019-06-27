@@ -18,9 +18,9 @@ import org.json.JSONObject;
 public class Schema extends Protocol {
 
     // Message type definitions
-    public static String WRITE_SCHEMA_MESSAGE_TYPE = "vs.service/schema/0.1/write";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/schema/0.1/problem-report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/schema/0.1/status";
+    public static String WRITE_SCHEMA_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/write";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/problem-report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/status";
 
     // Status Definitions
     public static Integer WRITE_SUCCESSFUL_STATUS = 0;

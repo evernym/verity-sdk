@@ -8,18 +8,18 @@
 // import { PackUnpack } from 'pack-unpack'
 
 // export type enrollProtocols =
-// | 'vs.service/enroll/0.1/new-enrollment'
-// | 'vs.service/enroll/0.1/problem-report'
-// | 'vs.service/enroll/0.1/status'
+// | 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/new-enrollment'
+// | 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/problem-report'
+// | 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/status'
 
 // export type commonProtocols =
-// | 'vs.service/common/0.1/check-status'
-// | 'vs.service/common/0.1/invite-request'
-// | 'vs.service/common/0.1/invite-response'
-// | 'vs.service/common/0.1/problem-report'
+// | 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/check-status'
+// | 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/invite-request'
+// | 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/invite-response'
+// | 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/problem-report'
 
 // export interface INewEnrollmentMessage extends IAgentMessage {
-//     '@type': 'vs.service/enroll/0.1/new-enrollment'
+//     '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/new-enrollment'
 //     '@id': string
 //     connectionDetail: {
 //         sourceId: string,
@@ -34,7 +34,7 @@
 // }
 
 // export interface IEnrollStatusMessage {
-//         '@type': 'vs.service/enroll/0.1/status'
+//         '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/status'
 //         '@id': string
 //         '~thread': {
 //             thid: string,
@@ -65,7 +65,7 @@
 //     message: INewEnrollmentMessage, reportNo: StateType, responseHandle: Response,
 //                                      keypair: KeyPair, APK: Uint8Array) {
 //     const statusReport: IEnrollStatusMessage = {
-//         '@type': 'vs.service/enroll/0.1/status',
+//         '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/status',
 //         '@id': uuid(),
 //         '~thread': {
 //             thid: message['@id']

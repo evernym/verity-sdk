@@ -5,9 +5,9 @@ import { Agency, IAgencyConfig } from '../..'
 import { generateProblemReport } from '../../utils/problem-reports'
 
 export type CredentialDefProtocolTypes =
-| 'vs.service/cred-def/0.1/write'
-| 'vs.service/cred-def/0.1/problem-report'
-| 'vs.service/cred-def/0.1/status'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/write'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/problem-report'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/status'
 
 export interface ICredWriteMessage extends IAgentMessage {
     'schemaId': string
@@ -21,7 +21,7 @@ export class CredentialDef extends Protocol {
 
     public router(message: ICredWriteMessage) {
         switch (message['@type']) {
-            case 'vs.service/cred-def/0.1/write':
+            case 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/write':
                 this.writeCredDef(message)
                 return true
             default: return false
@@ -30,10 +30,14 @@ export class CredentialDef extends Protocol {
 
     private async writeCredDef(message: ICredWriteMessage) {
         try {
+            let revocationDetails = {}
+            if (message.revocation_details) {
+                revocationDetails = message.revocation_details
+            }
             const credDef = await vcx.CredentialDef.create({
-                name: 'dummyCredDef',
+                name: message.name,
                 paymentHandle: 0,
-                revocationDetails: {},
+                revocationDetails,
                 schemaId: message.schemaId,
                 sourceId: uuid(),
             })
@@ -48,7 +52,7 @@ export class CredentialDef extends Protocol {
         } catch (e) {
             console.error('Failed to write credDef: ', e.message)
             Agency.postResponse(generateProblemReport(
-                'vs.service/cred-def/0.1/problem-report',
+                'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/problem-report',
                 'Failed to write credential definition to ledger',
                 message['@id']),
                 this.config,
@@ -58,7 +62,7 @@ export class CredentialDef extends Protocol {
 
     private generateStatusReport(status: number, statusMessage: string, message: ICredWriteMessage, content?: any) {
         let msg = {
-            '@type': 'vs.service/cred-def/0.1/status',
+            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/status',
             '@id': uuid(),
             '~thread': {
                 pthid: message['@id'],

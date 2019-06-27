@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+__copyright__ = "COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC."
+
 import asyncio
 import base64
 import json

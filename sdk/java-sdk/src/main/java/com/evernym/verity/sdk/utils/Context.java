@@ -60,7 +60,7 @@ public class Context {
     public byte[] getUpdateWebhookMessage() throws InterruptedException, ExecutionException, IndyException {
         /*
             {
-                "@type": "vs.service/common/0.1/update_com_method",
+                "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/update_com_method",
                 "@id": <uuid>,
                 "comMethod": {
                     "id": "webhook",
