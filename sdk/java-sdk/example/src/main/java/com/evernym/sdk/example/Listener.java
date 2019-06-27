@@ -1,3 +1,6 @@
+/*
+ * Adapted from https://hc.apache.org/httpcomponents-core-ga/httpcore/examples/org/apache/http/examples/HttpFileServer.java
+ */
 package com.evernym.sdk.example;
 
 import java.io.IOException;

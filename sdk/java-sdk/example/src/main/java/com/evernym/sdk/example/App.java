@@ -1,3 +1,6 @@
+/*
+ * COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.
+ */
 package com.evernym.sdk.example;
 
 import java.io.IOException;

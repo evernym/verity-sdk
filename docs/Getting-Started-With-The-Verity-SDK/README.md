@@ -103,3 +103,5 @@ vagrant ssh
 	![Connect.Me Developer Mode Switch](https://i.postimg.cc/pTrdMszg/IMG-0116.png)
 
 12. Scan the QR code with Connect.Me. You will then receive a Connection Invite, Challenge Question, Credential Offer, Credential and Proof Request in that order, demonstrating all of the protocols currently supported by the Verity SDK.
+
+© 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.

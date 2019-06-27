@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+##########################################################
+# COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC. #
+##########################################################
+
 import asyncio
 import base64
 import json

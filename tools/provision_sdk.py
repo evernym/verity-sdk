@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-# Provided by The Python Standard Library
+
+##########################################################
+# COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC. #
+##########################################################
+
 import json
 import argparse
 import asyncio
