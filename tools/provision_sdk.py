@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-##########################################################
-# COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC. #
-##########################################################
+__copyright__ = "COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC."
 
 import json
 import argparse
