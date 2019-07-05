@@ -639,6 +639,7 @@ Send a credential to a user
 	"connectionId": "<pairwise_did>",
 	"credentialData":{
         "id": <uuid>,
+        "name": "Diploma",
         "credDefId": "did:sov:abcdefg12345",
         "credentialValues": {
             "name": "Joe Smith",
@@ -655,6 +656,7 @@ Send a credential to a user
 * `connectionId` is the id of the connection to whom you want to send the credential
 * `credentialData`
 	* `id` unique UUID of the credential
+	* `name` name of the credential. eg: Driver's License
 	* `credDefId` Credential Definition ID of credential being sent
 	* `credentialValues` key-value pairs of credential attribute fields with the specified params defined in the credential definition
 
