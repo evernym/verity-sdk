@@ -1,4 +1,4 @@
- package com.evernym.verity.sdk.handlers;
+package com.evernym.verity.sdk.handlers;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
