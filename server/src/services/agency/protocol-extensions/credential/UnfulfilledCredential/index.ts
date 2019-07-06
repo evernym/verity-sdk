@@ -63,7 +63,7 @@ export class UnfulfiledCredential {
 
     private generateStatusReport(status: number, statusMessage: string) {
         return {
-            '@type': 'vs.service/credential/0.1/status',
+            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/status',
             '@id': uuid(),
             'message': statusMessage,
             status,

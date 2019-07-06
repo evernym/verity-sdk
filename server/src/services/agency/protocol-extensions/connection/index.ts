@@ -4,8 +4,8 @@ import { NewConnection } from './newConnection'
 
 export type ConnectionProtocolTypes =
 | 'did:sov:123456789abcdefghi1234;spec/connecting/0.6/CREATE_CONNECTION'
-| 'vs.service/connect/0.1/problem-report'
-| 'vs.service/connect/0.1/status'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connect/0.1/problem-report'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connect/0.1/status'
 
 export class Connection extends Protocol {
 

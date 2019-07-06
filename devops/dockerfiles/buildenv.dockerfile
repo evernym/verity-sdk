@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install -y \
     python-dev \
     maven \
     openssh-client \
-    git
+    git \
+    plantuml \
+    python3-pip
 
 # Install python3.6
 RUN add-apt-repository ppa:jonathonf/python-3.6 && \
@@ -30,5 +32,6 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
 RUN npm i -g typescript tslint
 
 # Install python dependencies
-RUN python3.6 -m pip install --upgrade pip
-RUN python3.6 -m pip install requests==2.20.0 python3-indy==1.8.1 python3-wrapper-vcx==0.2.4
+RUN pip3 install --upgrade pip
+RUN pip3 install requests==2.21.0 python3-indy==1.9.0 python3-wrapper-vcx==0.3.0
+

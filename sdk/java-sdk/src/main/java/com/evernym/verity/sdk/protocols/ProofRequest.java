@@ -15,22 +15,43 @@ import org.json.JSONObject;
 public class ProofRequest extends Protocol {
 
     // Message Type Definitions
-    public static String PROOF_REQUEST_MESSAGE_TYPE = "vs.service/proof/0.1/request";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/proof/0.1/problem-report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/proof/0.1/status";
+    public static String PROOF_REQUEST_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/request";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/problem-report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/proof/0.1/status";
 
     // Status Definitions
     public static Integer PROOF_REQUEST_SENT_STATUS = 0;
     public static Integer PROOF_RECEIVED_STATUS = 1;
 
+    private String connectionId;
     private String name;
     private JSONArray proofAttrs;
-    private String connectionId;
+    private JSONObject revocationInterval;
 
-    public ProofRequest(String name, JSONArray proofAttrs, String connectionId) {
+    /**
+     * Initializes the proof request object
+     * @param connectionId The connectionId the proof request will be sent to
+     * @param name The name of the proof request
+     * @param proofAttrs The requested attributes of the proof request
+     */
+    public ProofRequest(String connectionId, String name, JSONArray proofAttrs) {
+        this.connectionId = connectionId;
         this.name = name;
         this.proofAttrs = proofAttrs;
+    }
+
+    /**
+     * Initializes the proof request object with a revocation interval
+     * @param connectionId The connectionId the proof request will be sent to
+     * @param name The name of the proof request
+     * @param proofAttrs The requested attributes of the proof request
+     * @param revocationInterval The proof request revocation interval
+     */
+    public ProofRequest(String connectionId, String name, JSONArray proofAttrs, JSONObject revocationInterval) {
         this.connectionId = connectionId;
+        this.name = name;
+        this.proofAttrs = proofAttrs;
+        this.revocationInterval = revocationInterval;
     }
 
     @Override
@@ -39,10 +60,13 @@ public class ProofRequest extends Protocol {
         message.put("@type", ProofRequest.PROOF_REQUEST_MESSAGE_TYPE);
         message.put("@id", this.id);
         message.put("connectionId", this.connectionId);
-        JSONObject proof = new JSONObject();
-        proof.put("name", this.name);
-        proof.put("proofAttrs", proofAttrs);
-        message.put("proof", proof);
+        JSONObject proofRequest = new JSONObject();
+        proofRequest.put("name", this.name);
+        proofRequest.put("proofAttrs", proofAttrs);
+        if (this.revocationInterval != null) {
+            proofRequest.put("revocationInterval", this.revocationInterval);
+        }
+        message.put("proofRequest", proofRequest);
         return message.toString();
     }
 

@@ -1,7 +1,6 @@
 package com.evernym.verity.sdk.protocols;
 
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.Context;
@@ -16,15 +15,14 @@ public class Connection extends Protocol {
 
     // Message type definitions
     public static String NEW_CONNECTION_MESSAGE_TYPE = "did:sov:123456789abcdefghi1234;spec/connecting/0.6/CREATE_CONNECTION";
-    public static String ACCEPT_INVITATION_MESSAGE_TYPE = "vs.service/connection/0.1/accept_invite";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/connection/0.1/problem_report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/connection/0.1/status";
+//    public static String ACCEPT_INVITATION_MESSAGE_TYPE = "did:sov:123456789abcdefghi1234;spec/connecting/0.6/ACCEPT_CONN_REQ";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/problem_report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/status";
     
     // Status definitions
     public static Integer AWAITING_RESPONSE_STATUS = 0;
     public static Integer ACCEPTED_BY_USER_STATUS = 1;
 
-    private String acceptInviteMessageId;
     private String sourceId;
     private String phoneNumber = null;
     private boolean usePublicDid = false;
@@ -41,6 +39,17 @@ public class Connection extends Protocol {
     }
 
     /**
+    * Create connection without a phone number that uses a public DID.
+    * @param sourceId required param that sets an id of the connection
+    * @param usePublicDid optional param that indicates the connection invite should use the institution's public DID.
+    */
+    public Connection(String sourceId, boolean usePublicDid) {
+        super();
+        this.sourceId = sourceId;
+        this.usePublicDid = usePublicDid;
+    }
+
+    /**
     * Create connection with phone number
     * @param sourceId required param that sets an id of the connection
     * @param phoneNo optional param that sets the sms phone number for an identity holder 
@@ -52,7 +61,7 @@ public class Connection extends Protocol {
     }
 
     /**
-    * Create connection with phone number
+    * Create connection with phone number that uses a public DID
     * @param sourceId required param that sets an id of the connection
     * @param phoneNo optional param that sets the sms phone number for an identity holder 
     * @param usePublicDid optional param that indicates the connection invite should use the institution's public DID.
@@ -90,18 +99,5 @@ public class Connection extends Protocol {
      */
     public void create(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
         this.sendMessage(context);
-    }
-
-    public String acceptInvitationMessageToString(String inviteDetails) {
-        JSONObject message = new JSONObject();
-        message.put("@id", this.acceptInviteMessageId);
-        message.put("@type", Connection.ACCEPT_INVITATION_MESSAGE_TYPE);
-        message.put("invitationDetails", new JSONObject(inviteDetails));
-        return message.toString();
-    }
-
-    public void acceptInvitation(Context context, String inviteDetails) throws IOException, InterruptedException, ExecutionException, IndyException {
-        this.acceptInviteMessageId = UUID.randomUUID().toString();
-        this.sendMessage(context, acceptInvitationMessageToString(inviteDetails));
     }
 }

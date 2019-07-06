@@ -1,8 +1,5 @@
 package com.evernym.verity.sdk.protocols;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
 
@@ -10,12 +7,15 @@ import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class CredentialTest {
 
     @Test
     public void basicCredDefTest() throws Exception {
+        Context context = null;
         try {
-            Context context = TestHelpers.getConfig();
+            context = TestHelpers.getConfig();
 
             String connectionId = "...someConnectionId...";
             String credDefId = "...someCredDefId...";
@@ -32,13 +32,14 @@ public class CredentialTest {
             assertEquals(credDefId, unpackedCredentialMessage.getJSONObject("credentialData").getString("credDefId"));
             assertEquals(credentialValues.toString(), unpackedCredentialMessage.getJSONObject("credentialData").getJSONObject("credentialValues").toString());
             assertEquals(price, unpackedCredentialMessage.getJSONObject("credentialData").getInt("price"));
-
-            context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
-            assertTrue(false);
+            fail();
             throw e;
         } finally {
+            if(context != null) {
+                context.closeWallet();
+            }
             String walletConfig = new JSONObject().put("id", "java_test_wallet").toString();
             String walletCredentials = new JSONObject().put("key", "12345").toString();
             Wallet.deleteWallet(walletConfig, walletCredentials).get();

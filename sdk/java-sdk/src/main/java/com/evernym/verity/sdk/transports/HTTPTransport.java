@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 /**
  * Support for sending messages using the HTTP transport
@@ -31,8 +32,7 @@ public class HTTPTransport extends Transport {
         HttpResponse response = httpClient.execute(request);
         Integer statusCode = response.getStatusLine().getStatusCode();
         if(statusCode > 399) {
-            System.out.println("statusCode: " + statusCode);
-            throw new IOException("Request failed!");
+            throw new IOException("Request failed! - " + statusCode + " - " + EntityUtils.toString(response.getEntity()));
         }
     }
 }

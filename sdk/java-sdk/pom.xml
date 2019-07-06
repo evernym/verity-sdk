@@ -6,7 +6,7 @@
 
   <groupId>com.evernym.verity.sdk</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>0.14-SNAPSHOT</version>
+  <version>0.18-SNAPSHOT</version>
 
   <name>java-sdk</name>
   <!-- FIXME change it to the project's website -->

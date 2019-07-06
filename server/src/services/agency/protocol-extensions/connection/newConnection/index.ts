@@ -16,13 +16,23 @@ export class NewConnection {
 
     public async connect() {
         this.myConnection = await vcx.Connection.create({ id: this.message.sourceId })
-        let data: string
-        if (this.message.phoneNo) {
-            data = `{"connection_type":"SMS","phone":"${this.message.phoneNo}"}`
-        } else {
-            data = '{"connection_type":"QR"}'
+        const data = {
+            connection_type: '',
+            phone: null,
+            use_public_did: false,
         }
-        await this.myConnection.connect({ data })
+
+        if (this.message.phoneNo) {
+            data.connection_type = 'SMS'
+            data.phone = this.message.phoneNo
+        } else {
+            data.connection_type = 'QR'
+        }
+        if (this.message.usePublicDid) {
+            data.use_public_did = this.message.usePublicDid
+        }
+
+        await this.myConnection.connect({data: JSON.stringify(data)})
         const inviteDetails = await this.myConnection.inviteDetails(true)
         const report = this.generateStatusReport(0, 'Awaiting response', inviteDetails)
         Agency.postResponse(report, this.config)
@@ -50,7 +60,7 @@ export class NewConnection {
     private generateStatusReport(status: number, statusMessage: string, content?: string) {
         return {
             '@id': uuid(),
-            '@type': 'vs.service/connection/0.1/status',
+            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/status',
             'message': statusMessage,
             status,
             '~thread': {

@@ -5,9 +5,9 @@ import { Agency, IAgencyConfig } from '../..'
 import { generateProblemReport } from '../../utils/problem-reports'
 
 export type SchemaProtocolTypes =
-| 'vs.service/schema/0.1/write'
-| 'vs.service/schema/0.1/problem-report'
-| 'vs.service/schema/0.1/status'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/write'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/problem-report'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/status'
 
 export interface ISchemaMessage extends IAgentMessage {
     schema: {
@@ -25,7 +25,7 @@ export class Schema extends Protocol {
 
     public router(message: ISchemaMessage) {
         switch (message['@type']) {
-            case 'vs.service/schema/0.1/write':
+            case 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/write':
                 this.writeSchema(message)
                 return true
             default: return false
@@ -45,7 +45,7 @@ export class Schema extends Protocol {
         } catch (e) {
             console.error(e)
             Agency.postResponse(generateProblemReport(
-                'vs.service/schema/0.1/problem-report',
+                'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/problem-report',
                 'failed to write schema to ledger',
                 message['@id']), this.config)
         }
@@ -53,7 +53,7 @@ export class Schema extends Protocol {
 
     private generateStatusReport(status: number, statusMessage: string, message: ISchemaMessage, content?: any) {
         let msg = {
-            '@type': 'vs.service/schema/0.1/status',
+            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/status',
             '@id': uuid(),
             '~thread': {
                 pthid: message['@id'],

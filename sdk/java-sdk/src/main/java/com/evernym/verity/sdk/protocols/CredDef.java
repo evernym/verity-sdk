@@ -16,22 +16,68 @@ import org.json.JSONObject;
 public class CredDef extends Protocol {
 
     // Message Type Definitions
-    public static String WRITE_CRED_DEF_MESSAGE_TYPE = "vs.service/cred-def/0.1/write";
-    public static String PROBLEM_REPORT_MESSAGE_TYPE = "vs.service/cred-def/0.1/problem-report";
-    public static String STATUS_MESSAGE_TYPE = "vs.service/cred-def/0.1/status";
+    public static String WRITE_CRED_DEF_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/write";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/problem-report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/cred-def/0.1/status";
 
     // Status Definitions
     public static Integer WRITE_SUCCESSFUL_STATUS = 0;
 
+    private String name;
     private String schemaId;
+    private String tag;
+    private JSONObject revocationDetails;
 
     /**
-     * Creates a CredDef from a given schemaId.
-     * @param schemaId
+     * Initializes the CredDef object
+     * @param name The name of the new credential definition
+     * @param schemaId The id of the schema this credential definition will be based on
      */
-    public CredDef(String schemaId) {
+    public CredDef(String name, String schemaId) {
         super();
+        this.name = name;
         this.schemaId = schemaId;
+    }
+
+    /**
+     * Initializes the CredDef object
+      * @param name The name of the new credential definition
+     * @param schemaId The id of the schema this credential definition will be based on
+     * @param tag An optional tag for the credential definition
+     */
+    public CredDef(String name, String schemaId, String tag) {
+        super();
+        this.name = name;
+        this.schemaId = schemaId;
+        this.tag = tag;
+    }
+
+    /**
+     * Initializes the CredDef object
+     * @param name The name of the new credential definition
+     * @param schemaId The id of the schema this credential definition will be based on
+     * @param revocationDetails the revocationDetails object defining revocation support. See libvcx documentation for more details.
+     */
+    public CredDef(String name, String schemaId, JSONObject revocationDetails) {
+        super();
+        this.name = name;
+        this.schemaId = schemaId;
+        this.revocationDetails = revocationDetails;
+    }
+
+    /**
+     * Initializes the CredDef object
+     * @param name The name of the new credential definition
+     * @param schemaId The id of the schema this credential definition will be based on
+     * @param tag An optional tag for the credential definition
+     * @param revocationDetails the revocationDetails object defining revocation support. See libvcx documentation for more details.
+     */
+    public CredDef(String name, String schemaId, String tag, JSONObject revocationDetails) {
+        super();
+        this.name = name;
+        this.schemaId = schemaId;
+        this.tag = tag;
+        this.revocationDetails = revocationDetails;
     }
 
     @Override
@@ -39,7 +85,14 @@ public class CredDef extends Protocol {
         JSONObject message = new JSONObject();
         message.put("@type", CredDef.WRITE_CRED_DEF_MESSAGE_TYPE);
         message.put("@id", this.id);
+        message.put("name", this.name);
         message.put("schemaId", this.schemaId);
+        if(this.tag != null) {
+            message.put("tag", this.tag);
+        }
+        if(this.revocationDetails != null) {
+            message.put("revocationDetails", this.revocationDetails);
+        }
         return message.toString();
     }
 

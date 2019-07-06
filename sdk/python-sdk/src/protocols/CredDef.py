@@ -10,4 +10,5 @@ class CredDef(Protocol):
   # Status Definitions
   WRITE_SUCCESSFUL_STATUS = 0
 
+  name: str
   schemaId: str

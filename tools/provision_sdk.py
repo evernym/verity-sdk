@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-# Provided by The Python Standard Library
+
+__copyright__ = "COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC."
+
 import json
 import argparse
 import asyncio
@@ -85,7 +87,7 @@ async def register_agent(args):
 
     """
     create_agent_response = {
-        "@type": "vs.service/provision/1.0/create_agent_response",
+        "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/create_agent_response",
         "withPairwiseDID": None,
         "withPairwiseDIDVerKey": None
     }
