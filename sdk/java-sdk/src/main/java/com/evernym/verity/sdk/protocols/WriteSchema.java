@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.Context;
 
+import com.evernym.verity.sdk.utils.Util;
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +38,7 @@ public class WriteSchema extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public WriteSchema(String name, String version, String ...attrs) {
-        super(MSG_FAMILY, MSG_FAMILY_VERSION);
+        super();
         this.name = name;
         this.version = version;
         this.attrs = attrs;
@@ -45,10 +46,22 @@ public class WriteSchema extends Protocol {
         defineMessages();
     }
 
+    public static String getMessageType(String msgName) {
+        return Util.getMessageType(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION, msgName);
+    }
+
+    public static String getProblemReportMessageType() {
+        return Util.getProblemReportMessageType(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION);
+    }
+
+    public static String getStatusMessageType() {
+        return Util.getStatusMessageType(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION);
+    }
+
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", this.getMessageType(WriteSchema.WRITE_SCHEMA));
+        message.put("@type", WriteSchema.getMessageType(WriteSchema.WRITE_SCHEMA));
         message.put("@id", WriteSchema.getNewId());
         JSONObject schema = new JSONObject();
         schema.put("name", this.name);

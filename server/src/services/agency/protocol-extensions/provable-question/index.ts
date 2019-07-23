@@ -7,9 +7,9 @@ import { Agency, IAgencyConfig } from '../..'
 import { generateProblemReport } from '../../utils/problem-reports'
 
 export type ProvableQuestionProtocolTypes =
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/question'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/problem-report'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/status'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question-answer/0.1/question'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question-answer/0.1/problem-report'
+| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question-answer/0.1/status'
 
 interface IProvableQuestion extends IAgentMessage {
     'connectionId': string,
@@ -31,7 +31,7 @@ export class ProvableQuestion extends Protocol {
 
     public router(message: IProvableQuestion) {
         switch (message['@type']) {
-            case 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/question':
+            case 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question-answer/0.1/question':
                 console.log('new provable question')
                 this.newQuestion(message)
                 return true
@@ -43,7 +43,7 @@ export class ProvableQuestion extends Protocol {
         const connection = Agency.inMemDB.getConnection(message.connectionId)
         if (!connection) {
             Agency.postResponse(generateProblemReport(
-                'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/problem-report',
+                'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question-answer/0.1/problem-report',
                 `No connection with id \"${message.connectionId}\"`,
                 message['@id']),
                 this.config,
@@ -104,7 +104,7 @@ export class ProvableQuestion extends Protocol {
                         }
                     }
                     Agency.postResponse(generateProblemReport(
-                        'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/problem-report',
+                        'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question-answer/0.1/problem-report',
                         'Matching valid response not found',
                         message['@id']),
                         this.config,
@@ -112,7 +112,7 @@ export class ProvableQuestion extends Protocol {
                 } else {
                     console.log('Signature validation failed')
                     Agency.postResponse(generateProblemReport(
-                        'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/problem-report',
+                        'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question-answer/0.1/problem-report',
                         'Signature validation failed',
                         message['@id']),
                         this.config,
@@ -126,7 +126,7 @@ export class ProvableQuestion extends Protocol {
     private generateStatusReport(status: number, messageId: string, statusMessage: string, content?: string) {
         return {
             '@id': uuid(),
-            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question/0.1/status',
+            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/question-answer/0.1/status',
             'message': statusMessage,
             status,
             '~thread': {

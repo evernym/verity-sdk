@@ -18,7 +18,7 @@ public class ConnectingTest {
     public void testGetMessageType() {
         Connecting connecting = new Connecting("none");
         String msgName = "msg name";
-        assertEquals(Protocol.getMessageTypeComplete("connecting", "0.1", msgName), connecting.getMessageType(msgName));
+        assertEquals(Util.getMessageType("connecting", "0.1", msgName), Connecting.getMessageType(msgName));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ConnectingTest {
 
     private void testMessages(Connecting connecting) {
         JSONObject msg = connecting.messages.getJSONObject(Connecting.CREATE_CONNECTION);
-        assertEquals(msg.getString("@type"), connecting.getMessageType(Connecting.CREATE_CONNECTION));
+        assertEquals(msg.getString("@type"), Connecting.getMessageType(Connecting.CREATE_CONNECTION));
         assertNotNull(msg.getString("@id"));
         assertEquals(msg.getJSONObject("connectionDetail").getString("sourceId"), connecting.sourceId);
         if(connecting.phoneNumber != null)
@@ -76,7 +76,7 @@ public class ConnectingTest {
             connecting.disableHTTPSend();
             byte[] message = connecting.connect(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(connecting.getMessageType(Connecting.CREATE_CONNECTION), unpackedMessage.getString("@type"));
+            assertEquals(Connecting.getMessageType(Connecting.CREATE_CONNECTION), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

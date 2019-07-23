@@ -13,7 +13,7 @@ class SomeProtocol extends Protocol {
   private static String MSG_FAMILY_VERSION = "9.9.9";
 
   SomeProtocol() {
-    super(MSG_FAMILY, MSG_FAMILY_VERSION);
+    super();
   }
 
   @Override
@@ -33,27 +33,5 @@ public class ProtocolTest {
     assertEquals(unpackedMessage.getString("hello"), "world");
 
     TestHelpers.cleanup(context);
-  }
-
-  @Test
-  public void testGetMessageTypeComplete() {
-    String msgType = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/status";
-    assertEquals(msgType, Protocol.getMessageTypeComplete("credential", "0.1", "status"));
-  }
-
-  @Test
-  public void testGetMessageType() {
-    SomeProtocol someProtocol = new SomeProtocol();
-    assertEquals(Protocol.getMessageTypeComplete("some-protocol", "9.9.9", "some-message"), someProtocol.getMessageType("some-message"));
-  }
-
-  @Test
-  public void testGetProblemReportMessageType() {
-
-  }
-
-  @Test
-  public void testGetStatusMessageType() {
-
   }
 }

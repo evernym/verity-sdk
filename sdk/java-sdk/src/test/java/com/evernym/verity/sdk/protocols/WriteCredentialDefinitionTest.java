@@ -24,7 +24,7 @@ public class WriteCredentialDefinitionTest {
     public void testGetMessageType() {
         WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId, tag, revocationDetails);
         String msgName = "msg name";
-        assertEquals(Protocol.getMessageTypeComplete("cred-def", "0.1", msgName), writeCredDef.getMessageType(msgName));
+        assertEquals(Util.getMessageType("cred-def", "0.1", msgName), WriteCredentialDefinition.getMessageType(msgName));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class WriteCredentialDefinitionTest {
 
     private void testMessages(WriteCredentialDefinition writeCredDef) {
         JSONObject msg = writeCredDef.messages.getJSONObject(WriteCredentialDefinition.WRITE_CRED_DEF);
-        assertEquals(writeCredDef.getMessageType("write"), msg.getString("@type"));
+        assertEquals(WriteCredentialDefinition.getMessageType("write"), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(name, msg.getString("name"));
         assertEquals(schemaId, msg.getString("schemaId"));
@@ -89,7 +89,7 @@ public class WriteCredentialDefinitionTest {
             writeCredDef.disableHTTPSend();
             byte[] message = writeCredDef.write(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(writeCredDef.getMessageType(WriteCredentialDefinition.WRITE_CRED_DEF), unpackedMessage.getString("@type"));
+            assertEquals(WriteCredentialDefinition.getMessageType(WriteCredentialDefinition.WRITE_CRED_DEF), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

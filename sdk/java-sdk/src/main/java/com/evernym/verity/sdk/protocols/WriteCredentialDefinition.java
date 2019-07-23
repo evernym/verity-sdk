@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.Context;
 
+import com.evernym.verity.sdk.utils.Util;
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
 
@@ -68,7 +69,7 @@ public class WriteCredentialDefinition extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public WriteCredentialDefinition(String name, String schemaId, String tag, JSONObject revocationDetails) {
-        super(MSG_FAMILY, MSG_FAMILY_VERSION);
+        super();
         this.name = name;
         this.schemaId = schemaId;
         this.tag = tag;
@@ -77,10 +78,22 @@ public class WriteCredentialDefinition extends Protocol {
         defineMessages();
     }
 
+    public static String getMessageType(String msgName) {
+        return Util.getMessageType(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION, msgName);
+    }
+
+    public static String getProblemReportMessageType() {
+        return Util.getProblemReportMessageType(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION);
+    }
+
+    public static String getStatusMessageType() {
+        return Util.getStatusMessageType(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION);
+    }
+
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", this.getMessageType(WriteCredentialDefinition.WRITE_CRED_DEF));
+        message.put("@type", WriteCredentialDefinition.getMessageType(WriteCredentialDefinition.WRITE_CRED_DEF));
         message.put("@id", WriteCredentialDefinition.getNewId());
         message.put("name", this.name);
         message.put("schemaId", this.schemaId);

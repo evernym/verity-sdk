@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.Context;
 
+import com.evernym.verity.sdk.utils.Util;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.bouncycastle.jcajce.provider.digest.SHA3.DigestSHA3;
 import org.bouncycastle.util.encoders.Hex;
@@ -47,7 +48,7 @@ public class QuestionAnswer extends Protocol {
     @SuppressWarnings("WeakerAccess")
     public QuestionAnswer(String connectionId, String notificationTitle, String questionText, String questionDetail,
             String[] validResponses) {
-        super(MSG_FAMILY, MSG_FAMILY_VERSION);
+        super();
         this.connectionId = connectionId;
         this.notificationTitle = notificationTitle;
         this.questionText = questionText;
@@ -55,6 +56,18 @@ public class QuestionAnswer extends Protocol {
         this.validResponses = formatValidResponses(questionText, validResponses);
 
         defineMessages();
+    }
+
+    public static String getMessageType(String msgName) {
+        return Util.getMessageType(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION, msgName);
+    }
+
+    public static String getProblemReportMessageType() {
+        return Util.getProblemReportMessageType(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION);
+    }
+
+    public static String getStatusMessageType() {
+        return Util.getStatusMessageType(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION);
     }
 
     private JSONArray formatValidResponses(String questionText, String[] validResponses) {
@@ -71,7 +84,7 @@ public class QuestionAnswer extends Protocol {
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", this.getMessageType(QuestionAnswer.QUESTION));
+        message.put("@type", QuestionAnswer.getMessageType(QuestionAnswer.QUESTION));
         message.put("@id", QuestionAnswer.getNewId());
         message.put("connectionId", this.connectionId);
             JSONObject question = new JSONObject();

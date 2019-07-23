@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.Context;
 
+import com.evernym.verity.sdk.utils.Util;
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
 
@@ -40,7 +41,7 @@ public class IssueCredential extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public IssueCredential(String connectionId, String credentialName, String credDefId, JSONObject credentialValues, Integer price) {
-        super(MSG_FAMILY, MSG_FAMILY_VERSION);
+        super();
         this.connectionId = connectionId;
         this.credentialName = credentialName;
         this.credDefId = credDefId;
@@ -49,10 +50,22 @@ public class IssueCredential extends Protocol {
         defineMessages();
     }
 
+    public static String getMessageType(String msgName) {
+        return Util.getMessageType(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, msgName);
+    }
+
+    public static String getProblemReportMessageType() {
+        return Util.getProblemReportMessageType(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION);
+    }
+
+    public static String getStatusMessageType() {
+        return Util.getStatusMessageType(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION);
+    }
+
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", this.getMessageType(IssueCredential.ISSUE_CREDENTIAL));
+        message.put("@type", IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL));
         message.put("@id", IssueCredential.getNewId());
         message.put("connectionId", this.connectionId);
             JSONObject credentialData = new JSONObject();

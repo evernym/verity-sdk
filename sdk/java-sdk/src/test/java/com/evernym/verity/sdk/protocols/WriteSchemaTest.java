@@ -20,7 +20,7 @@ public class WriteSchemaTest {
     public void testGetMessageType() {
         WriteSchema writeSchema = new WriteSchema(schemaName, schemaVersion, attr1, attr2);
         String msgName = "msg name";
-        assertEquals(Protocol.getMessageTypeComplete("schema", "0.1", msgName), writeSchema.getMessageType(msgName));
+        assertEquals(Util.getMessageType("schema", "0.1", msgName), WriteSchema.getMessageType(msgName));
     }
 
     @Test
@@ -35,7 +35,7 @@ public class WriteSchemaTest {
 
     private void testMessages(WriteSchema writeSchema) {
         JSONObject msg = writeSchema.messages.getJSONObject(WriteSchema.WRITE_SCHEMA);
-        assertEquals(writeSchema.getMessageType("write"), msg.getString("@type"));
+        assertEquals(WriteSchema.getMessageType("write"), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(schemaName, msg.getJSONObject("schema").getString("name"));
         assertEquals(schemaVersion, msg.getJSONObject("schema").getString("version"));
@@ -53,7 +53,7 @@ public class WriteSchemaTest {
             writeSchema.disableHTTPSend();
             byte[] message = writeSchema.write(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(writeSchema.getMessageType(WriteSchema.WRITE_SCHEMA), unpackedMessage.getString("@type"));
+            assertEquals(WriteSchema.getMessageType(WriteSchema.WRITE_SCHEMA), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

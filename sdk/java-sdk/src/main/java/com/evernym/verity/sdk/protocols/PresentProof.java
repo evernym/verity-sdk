@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.Context;
 
+import com.evernym.verity.sdk.utils.Util;
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,7 +50,7 @@ public class PresentProof extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public PresentProof(String connectionId, String name, JSONArray proofAttrs, JSONObject revocationInterval) {
-        super(MSG_FAMILY, MSG_FAMILY_VERSION);
+        super();
         this.connectionId = connectionId;
         this.name = name;
         this.proofAttrs = proofAttrs;
@@ -57,10 +58,22 @@ public class PresentProof extends Protocol {
         defineMessages();
     }
 
+    public static String getMessageType(String msgName) {
+        return Util.getMessageType(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION, msgName);
+    }
+
+    public static String getProblemReportMessageType() {
+        return Util.getProblemReportMessageType(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION);
+    }
+
+    public static String getStatusMessageType() {
+        return Util.getStatusMessageType(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION);
+    }
+
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", this.getMessageType(PresentProof.PROOF_REQUEST));
+        message.put("@type", PresentProof.getMessageType(PresentProof.PROOF_REQUEST));
         message.put("@id", PresentProof.getNewId());
         message.put("connectionId", this.connectionId);
             JSONObject proofRequest = new JSONObject();

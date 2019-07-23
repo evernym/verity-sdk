@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.Context;
 
+import com.evernym.verity.sdk.utils.Util;
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
 
@@ -65,17 +66,29 @@ public class Connecting extends Protocol {
     */
     @SuppressWarnings("WeakerAccess")
     public Connecting(String sourceId, String phoneNo, boolean usePublicDid) {
-        super(MSG_FAMILY, MSG_FAMILY_VERSION);
+        super();
         this.sourceId = sourceId;
         this.phoneNumber = phoneNo;
         this.usePublicDid = usePublicDid;
         defineMessages();
     }
 
+    public static String getMessageType(String msgName) {
+        return Util.getMessageType(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, msgName);
+    }
+
+    public static String getProblemReportMessageType() {
+        return Util.getProblemReportMessageType(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION);
+    }
+
+    public static String getStatusMessageType() {
+        return Util.getStatusMessageType(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION);
+    }
+
     @Override
     protected void defineMessages() {
         JSONObject createConnectionMessage = new JSONObject();
-        createConnectionMessage.put("@type", this.getMessageType(Connecting.CREATE_CONNECTION));
+        createConnectionMessage.put("@type", Connecting.getMessageType(Connecting.CREATE_CONNECTION));
         createConnectionMessage.put("@id", Connecting.getNewId());
             JSONObject connectionDetail = new JSONObject();
             connectionDetail.put("sourceId", this.sourceId);

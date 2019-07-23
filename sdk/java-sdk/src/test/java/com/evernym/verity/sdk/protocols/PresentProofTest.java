@@ -21,7 +21,7 @@ public class PresentProofTest {
     public void testGetMessageType() {
         PresentProof presentProof = new PresentProof(connectionId, proofRequestName, proofAttrs, revocationInterval);
         String msgName = "msg name";
-        assertEquals(Protocol.getMessageTypeComplete("present-proof", "0.1", msgName), presentProof.getMessageType(msgName));
+        assertEquals(Util.getMessageType("present-proof", "0.1", msgName), PresentProof.getMessageType(msgName));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class PresentProofTest {
 
     private void testMessages(PresentProof presentProof) {
         JSONObject msg = presentProof.messages.getJSONObject(PresentProof.PROOF_REQUEST);
-        assertEquals(presentProof.getMessageType("request"), msg.getString("@type"));
+        assertEquals(PresentProof.getMessageType("request"), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(connectionId, msg.getString("connectionId"));
         assertEquals(proofRequestName, msg.getJSONObject("proofRequest").getString("name"));
@@ -64,7 +64,7 @@ public class PresentProofTest {
             presentProof.disableHTTPSend();
             byte [] message = presentProof.request(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(presentProof.getMessageType(PresentProof.PROOF_REQUEST), unpackedMessage.getString("@type"));
+            assertEquals(PresentProof.getMessageType(PresentProof.PROOF_REQUEST), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

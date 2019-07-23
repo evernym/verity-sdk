@@ -27,7 +27,7 @@ public class IssueCredentialTest {
     public void testGetMessageType() {
         IssueCredential issueCredential = new IssueCredential(connectionId, credentialName, credDefId, credentialValues, price);
         String msgName = "msg name";
-        assertEquals(Protocol.getMessageTypeComplete("issue-credential", "0.1", msgName), issueCredential.getMessageType(msgName));
+        assertEquals(Util.getMessageType("issue-credential", "0.1", msgName), IssueCredential.getMessageType(msgName));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class IssueCredentialTest {
 
     private void testMessages(IssueCredential issueCredential) {
         JSONObject msg = issueCredential.messages.getJSONObject(IssueCredential.ISSUE_CREDENTIAL);
-        assertEquals(issueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), msg.getString("@type"));
+        assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(connectionId, msg.getString("connectionId"));
         assertNotNull(msg.getJSONObject("credentialData").getString("id"));
@@ -62,7 +62,7 @@ public class IssueCredentialTest {
             issueCredential.disableHTTPSend();
             byte [] message = issueCredential.issue(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(issueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), unpackedMessage.getString("@type"));
+            assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

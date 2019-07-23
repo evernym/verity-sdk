@@ -12,6 +12,7 @@ import org.json.JSONObject;
  * Static helper functions used for packaging and unpackaging messages
  */
 public class Util {
+    private static String MESSAGE_TYPE_DID = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw";
 
     public static byte[] packMessageForVerity(Wallet walletHandle,
                                               String message,
@@ -88,5 +89,17 @@ public class Util {
         JSONObject unpackedOnceMessage = unpackMessage(context, message);
         byte[] unpackedOnceMessageMessage = unpackedOnceMessage.getJSONObject("@msg").toString().getBytes();
         return unpackMessage(context, unpackedOnceMessageMessage);
+    }
+
+    public static String getMessageType(String msgFamily, String msgFamilyVersion, String msgName) {
+        return Util.MESSAGE_TYPE_DID + ";spec/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
+    }
+
+    public static String getProblemReportMessageType(String msgFamily, String msgFamilyVersion) {
+        return Util.getMessageType(msgFamily, msgFamilyVersion, "problem-report");
+    }
+
+    public static String getStatusMessageType(String msgFamily, String msgFamilyVersion) {
+        return Util.getMessageType(msgFamily, msgFamilyVersion, "status");
     }
 }

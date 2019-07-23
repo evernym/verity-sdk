@@ -21,7 +21,7 @@ public class QuestionAnswerTest {
     public void testGetMessageType() {
         QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, notificationTitle, questionText, questionDetail, validResponses);
         String msgName = "msg name";
-        assertEquals(Protocol.getMessageTypeComplete("question-answer", "0.1", msgName), questionAnswer.getMessageType(msgName));
+        assertEquals(Util.getMessageType("question-answer", "0.1", msgName), QuestionAnswer.getMessageType(msgName));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class QuestionAnswerTest {
 
     private void testMessages(QuestionAnswer questionAnswer) {
         JSONObject msg = questionAnswer.messages.getJSONObject(QuestionAnswer.QUESTION);
-        assertEquals(questionAnswer.getMessageType("question"), msg.getString("@type"));
+        assertEquals(QuestionAnswer.getMessageType("question"), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(connectionId, msg.getString("connectionId"));
         assertEquals(notificationTitle, msg.getJSONObject("question").getString("notification_title"));
@@ -61,7 +61,7 @@ public class QuestionAnswerTest {
             questionAnswer.disableHTTPSend();
             byte[] message = questionAnswer.ask(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(questionAnswer.getMessageType(QuestionAnswer.QUESTION), unpackedMessage.getString("@type"));
+            assertEquals(QuestionAnswer.getMessageType(QuestionAnswer.QUESTION), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

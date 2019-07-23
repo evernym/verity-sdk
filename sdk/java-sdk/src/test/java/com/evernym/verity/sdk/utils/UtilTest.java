@@ -29,4 +29,10 @@ public class UtilTest {
             TestHelpers.cleanup(context);
         }
     }
+
+    @Test
+    public void testGetMessageTypeComplete() {
+        String msgType = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/status";
+        assertEquals(msgType, Util.getMessageType("credential", "0.1", "status"));
+    }
 }

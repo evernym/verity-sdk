@@ -16,17 +16,12 @@ import org.json.JSONObject;
  * The base class for all protocols
  */
 public abstract class Protocol {
-    private String MSG_FAMILY;
-    private String MSG_FAMILY_VERSION;
-    static private String MESSAGE_TYPE_DID = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw";
     private boolean sendDisabled = false;
 
     JSONObject messages;
 
     @SuppressWarnings("WeakerAccess")
-    public Protocol(String msgFamily, String msgFamilyVersion) {
-        this.MSG_FAMILY = msgFamily;
-        this.MSG_FAMILY_VERSION = msgFamilyVersion;
+    public Protocol() {
         messages = new JSONObject();
     }
     
@@ -67,22 +62,6 @@ public abstract class Protocol {
 
     static String getNewId() {
         return UUID.randomUUID().toString();
-    }
-
-    static String getMessageTypeComplete(String msgFamily, String msgFamilyVersion, String msgName) {
-        return Protocol.MESSAGE_TYPE_DID + ";spec/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
-    }
-
-    String getMessageType(String msgName) {
-        return Protocol.getMessageTypeComplete(this.MSG_FAMILY, this.MSG_FAMILY_VERSION, msgName);
-    }
-
-    protected String getProblemReportMessageType() {
-        return getMessageType("problem-report");
-    }
-
-    protected String getStatusMessageType() {
-        return getMessageType("status");
     }
 
     protected abstract void defineMessages();
