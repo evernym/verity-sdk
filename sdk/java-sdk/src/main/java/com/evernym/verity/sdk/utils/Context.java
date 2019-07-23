@@ -17,15 +17,26 @@ import org.json.JSONObject;
  * It should be initialized the config output by the tools/provision_sdk.py script.
  */
 public class Context {
-    protected String walletName;
-    protected String walletKey;
-    protected String verityUrl;
-    protected String verityPublicVerkey;
-    protected String verityPairwiseDID;
-    protected String verityPairwiseVerkey;
-    protected String sdkPairwiseVerkey;
-    protected String webhookUrl;
-    protected Wallet walletHandle;
+    String walletName;
+    String walletKey;
+    private String verityUrl;
+    private String verityPublicVerkey;
+    private String verityPairwiseDID;
+    private String verityPairwiseVerkey;
+    private String sdkPairwiseVerkey;
+    String webhookUrl;
+
+    public String getWalletConfig() {
+        return walletConfig;
+    }
+
+    public String getWalletCredentials() {
+        return walletCredentials;
+    }
+
+    private String walletConfig;
+    private String walletCredentials;
+    private Wallet walletHandle;
 
     /**
      * Initialize the Context object
@@ -45,9 +56,9 @@ public class Context {
         this.verityPairwiseVerkey = config.getString("verityPairwiseVerkey");
         this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
         this.webhookUrl = config.getString("webhookUrl");
-        String walletConfig = new JSONObject().put("id", walletName).toString();
-        String walletCredentials = new JSONObject().put("key", walletKey).toString();
-        walletHandle = Wallet.openWallet(walletConfig, walletCredentials).get();
+        this.walletConfig = new JSONObject().put("id", walletName).toString();
+        this.walletCredentials = new JSONObject().put("key", walletKey).toString();
+        this.walletHandle = Wallet.openWallet(this.walletConfig, this.walletCredentials).get();
     }
 
     /**
@@ -77,7 +88,7 @@ public class Context {
         comMethod.put("type", 2);
         comMethod.put("value", this.webhookUrl);
         message.put("comMethod", comMethod);
-        return MessagePackaging.packMessageForVerity(this, message.toString());
+        return Util.packMessageForVerity(this, message);
     }
 
     /**
@@ -89,7 +100,6 @@ public class Context {
      * @throws IndyException when there are issues with encryption and decryption
      */
     public void sendUpdateWebhookMessage(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
-        // Later we can switch on transport type
         Transport transport = new HTTPTransport();
         transport.sendMessage(context.getVerityUrl(), getUpdateWebhookMessage());
     }
@@ -102,6 +112,11 @@ public class Context {
      */
     public void closeWallet() throws InterruptedException, ExecutionException, IndyException {
         walletHandle.closeWallet().get();
+        walletHandle = null;
+    }
+
+    public boolean walletIsOpen() {
+        return walletHandle != null;
     }
 
     public String getVerityUrl() {

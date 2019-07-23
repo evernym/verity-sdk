@@ -7,18 +7,27 @@ import java.util.concurrent.ExecutionException;
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.transports.Transport;
 import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.MessagePackaging;
+import com.evernym.verity.sdk.utils.Util;
 
 import org.hyperledger.indy.sdk.IndyException;
+import org.json.JSONObject;
 
 /**
  * The base class for all protocols
  */
 public abstract class Protocol {
-    protected String id;
+    private String MSG_FAMILY;
+    private String MSG_FAMILY_VERSION;
+    static private String MESSAGE_TYPE_DID = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw";
+    private boolean sendDisabled = false;
 
-    public Protocol() {
-        this.id = UUID.randomUUID().toString();
+    JSONObject messages;
+
+    @SuppressWarnings("WeakerAccess")
+    public Protocol(String msgFamily, String msgFamilyVersion) {
+        this.MSG_FAMILY = msgFamily;
+        this.MSG_FAMILY_VERSION = msgFamilyVersion;
+        messages = new JSONObject();
     }
     
     /**
@@ -29,22 +38,9 @@ public abstract class Protocol {
      * @throws ExecutionException when there are issues with encryption and decryption
      * @throws IndyException when there are issues with encryption and decryption
      */
-    public byte[] getMessage(Context context) throws InterruptedException, ExecutionException, IndyException {
-        return MessagePackaging.packMessageForVerity(context, toString());
-    }
-
-    /**
-     * Encrypts and sends the default message to Verity
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
-     */
-    public void sendMessage(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
-        // Later we can switch on context.getVerityProtocol
-        Transport transport = new HTTPTransport();
-        transport.sendMessage(context.getVerityUrl(), getMessage(context));
+    @SuppressWarnings("WeakerAccess")
+    public static byte[] getMessage(Context context, JSONObject message) throws InterruptedException, ExecutionException, IndyException {
+        return Util.packMessageForVerity(context, message);
     }
 
     /**
@@ -56,11 +52,38 @@ public abstract class Protocol {
      * @throws ExecutionException when there are issues with encryption and decryption
      * @throws IndyException when there are issues with encryption and decryption
      */
-    public void sendMessage(Context context, String message) throws IOException, InterruptedException, ExecutionException, IndyException {
-        // Later we can switch on context.getVerityProtocol
-        Transport transport = new HTTPTransport();
-        transport.sendMessage(context.getVerityUrl(), MessagePackaging.packMessageForVerity(context, message));
+    byte[] send(Context context, JSONObject message) throws IOException, InterruptedException, ExecutionException, IndyException {
+        byte[] messageToSend = Util.packMessageForVerity(context, message);
+        if(! sendDisabled) {
+            Transport transport = new HTTPTransport();
+            transport.sendMessage(context.getVerityUrl(), messageToSend);
+        }
+        return messageToSend;
     }
 
-    public abstract String toString();
+    void disableHTTPSend() {
+        sendDisabled = true;
+    }
+
+    static String getNewId() {
+        return UUID.randomUUID().toString();
+    }
+
+    static String getMessageTypeComplete(String msgFamily, String msgFamilyVersion, String msgName) {
+        return Protocol.MESSAGE_TYPE_DID + ";spec/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
+    }
+
+    String getMessageType(String msgName) {
+        return Protocol.getMessageTypeComplete(this.MSG_FAMILY, this.MSG_FAMILY_VERSION, msgName);
+    }
+
+    protected String getProblemReportMessageType() {
+        return getMessageType("problem-report");
+    }
+
+    protected String getStatusMessageType() {
+        return getMessageType("status");
+    }
+
+    protected abstract void defineMessages();
 }

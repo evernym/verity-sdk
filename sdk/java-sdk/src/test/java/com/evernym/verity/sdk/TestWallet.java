@@ -9,10 +9,10 @@ import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 
 public class TestWallet {
-    String verityPublicVerkey;
-    String verityPairwiseVerkey;
-    String sdkPairwiseVerkey;
-    String verityPairwiseDID;
+    private String verityPublicVerkey;
+    private String verityPairwiseVerkey;
+    private String sdkPairwiseVerkey;
+    private String verityPairwiseDID;
 
     public TestWallet(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
         String walletConfig = new JSONObject().put("id", walletName).toString();

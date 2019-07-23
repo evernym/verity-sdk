@@ -3,7 +3,7 @@ package com.evernym.verity.sdk.handlers;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import com.evernym.verity.sdk.utils.MessagePackaging;
+import com.evernym.verity.sdk.utils.Util;
 import com.evernym.verity.sdk.utils.Context;
 
 import org.hyperledger.indy.sdk.IndyException;
@@ -61,7 +61,7 @@ public class Handlers {
      * @throws IndyException when there are issues with encryption and decryption
      */
     public void handleMessage(Context context, byte[] rawMessage) throws InterruptedException, ExecutionException, IndyException {
-        JSONObject message = MessagePackaging.unpackMessageFromVerity(context, rawMessage);
+        JSONObject message = Util.unpackMessage(context, rawMessage);
         boolean handled = false;
         for(MessageHandler messageHandler: messageHandlers) {
             if(messageHandler.handles(message)) {

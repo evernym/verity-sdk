@@ -1,19 +1,19 @@
 package com.evernym.verity.sdk;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-import com.evernym.verity.sdk.utils.MessagePackaging;
 import com.evernym.verity.sdk.utils.Context;
 
 import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.crypto.Crypto;
+import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 
 public class TestHelpers {
     
-    public static Context getConfig() throws InterruptedException, ExecutionException, IndyException {
-        String walletName = "java_test_wallet";
-        String walletKey = "12345";
+    public static Context getContext() throws InterruptedException, ExecutionException, IndyException {
+        String walletName = UUID.randomUUID().toString();
+        String walletKey = UUID.randomUUID().toString();
         String webhookUrl = "http://localhost:3000";
         String verityUrl = "http://localhost:3000";
         TestWallet testWallet = new TestWallet(walletName, walletKey);
@@ -29,9 +29,12 @@ public class TestHelpers {
         return new Context(config.toString());
     }
 
-    public static JSONObject unpackMessage(Context context, byte[] message) throws InterruptedException, ExecutionException, IndyException {
-        byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(context.getWalletHandle(), message).get();
-        String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
-        return MessagePackaging.unpackForwardMsg(context, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
+    public static void cleanup(Context context) throws Exception {
+        if(context != null) {
+            if(context.walletIsOpen()) {
+                context.closeWallet();
+            }
+            Wallet.deleteWallet(context.getWalletConfig(), context.getWalletCredentials()).get();
+        }
     }
 }

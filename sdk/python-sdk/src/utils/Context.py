@@ -3,16 +3,40 @@ import json
 from indy import wallet
 
 class Context:
-  async def __init__(self, config):
+
+  wallet_name: str
+  wallet_key: str
+  verity_url: str
+  verity_public_verkey: str
+  verity_pairwise_did: str
+  verity_pairwise_verkey: str
+  sdk_pairwise_verkey: str
+  endpoint_url: str
+  wallet_config: str
+  wallet_credentials: str
+  wallet_handle: int
+  wallet_closed: bool
+
+  @classmethod
+  async def create(cls, config):
+    context = cls()
     config = json.loads(config)
-    self.wallet_name = config['walletName']
-    self.wallet_key = config['walletKey']
-    self.verity_url = config['verityUrl']
-    self.verity_public_verkey = config['verityPublicVerkey']
-    self.verity_pairwise_did = config['verityPairwiseDID']
-    self.verity_pairwise_verkey = config['verityPairwiseVerkey']
-    self.sdk_pairwise_verkey = config['sdkPairwiseVerkey']
-    self.webhook_url = config['webhookUrl']
-    wallet_config = json.dumps({'id': self.wallet_name})
-    wallet_credentials = json.dumps({'key': self.wallet_key})
-    self.wallet_handle = await wallet.open_wallet(wallet_config, wallet_credentials)
+
+    context.wallet_name = config['walletName']
+    context.wallet_key = config['walletKey']
+    context.verity_url = config['verityUrl']
+    context.verity_public_verkey = config['verityPublicVerkey']
+    context.verity_pairwise_did = config['verityPairwiseDID']
+    context.verity_pairwise_verkey = config['verityPairwiseVerkey']
+    context.sdk_pairwise_verkey = config['sdkPairwiseVerkey']
+    context.endpoint_url = config['endpointUrl']
+    context.wallet_config = json.dumps({'id': config['walletName']})
+    context.wallet_credentials = json.dumps({'key': config['walletKey']})
+    context.wallet_handle = await wallet.open_wallet(context.wallet_config, context.wallet_credentials)
+    context.wallet_closed = False
+
+    return context
+
+  async def close_wallet(self):
+    await wallet.close_wallet(self.wallet_handle)
+    wallet_closed = True

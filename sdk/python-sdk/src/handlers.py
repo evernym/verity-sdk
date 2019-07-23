@@ -1,6 +1,6 @@
 from typing import Callable, Dict, List, Optional
 
-from src.utils import Context, unpack_message_from_verity
+from src.utils import Context, unpack_message
 
 def is_problem_report(message_type: str) -> bool:
   return message_type.split('/')[3] == 'problem-report'
@@ -10,7 +10,11 @@ class Handler():
   message_status: Optional[int]
   message_handler: Callable[[Dict], None]
 
-  def __init__(self, message_type: str, message_status: Optional[int], message_handler: Callable[[Dict], None]):
+  def __init__(
+          self,
+          message_type: str,
+          message_status: Optional[int],
+          message_handler: Callable[[Dict], None]):
     self.message_type = message_type
     self.message_status = message_status
     self.message_handler = message_handler
@@ -36,7 +40,11 @@ class Handlers():
     self.default_handler = None
     self.problem_report_handler = None
 
-  def add_handler(self, message_type: str, message_status: int, message_handler: Callable[[Dict], None]):
+  def add_handler(
+          self,
+          message_type: str,
+          message_status: int,
+          message_handler: Callable[[Dict], None]):
     self.handlers.append(Handler(message_type, message_status, message_handler))
 
   def add_default_handler(self, handler: Callable[[Dict], None]):
@@ -45,8 +53,8 @@ class Handlers():
   def add_problem_report_handler(self, handler: Callable[[Dict], None]):
     self.problem_report_handler = handler
 
-  async def handle_message(self, context: Context, raw_message: bytearray):
-    message: Dict = await unpack_message_from_verity(context, raw_message)
+  async def handle_message(self, context: Context, raw_message: bytes):
+    message: Dict = await unpack_message(context, raw_message)
     handled: bool = False
 
     for handler in self.handlers:
