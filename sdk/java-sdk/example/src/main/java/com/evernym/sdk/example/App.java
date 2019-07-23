@@ -24,7 +24,6 @@ public class App {
     private static String connectionId;
     private static String credDefId;
     private static Context context;
-    private static Connecting connecting;
     private static QuestionAnswer questionAnswer;
     private static WriteSchema writeSchema;
     private static WriteCredentialDefinition writeCredDef;
@@ -42,13 +41,13 @@ public class App {
             context.sendUpdateWebhookMessage(context); // The SDK lets Verity know what its endpoint is
 
             // Create a new connection (initiates the daisy-chained flow of Connecting, QuestionAnswer, Credential, Proof)
-            connecting = new Connecting("my institution id", true); // Note that Connecting also supports a phone number in the constructor. See javadocs.
+            Connecting connecting = new Connecting("my institution id", true); // Note that Connecting also supports a phone number in the constructor. See javadocs.
             connecting.connect(context); // Send the connection create message to Verity
 
             handlers = new Handlers();
 
             // Handler for getting invite details (connection awaiting response)
-            handlers.addHandler(connecting.getStatusMessageType(), Connecting.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Connecting.getStatusMessageType(), Connecting.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
                 try {
                     JSONObject inviteDetails = new JSONObject(message.getString("content"));
                     System.out.print("Invite Details: ");
@@ -60,7 +59,7 @@ public class App {
             });
 
             // Handler for Connecting Accepted message
-            handlers.addHandler(connecting.getStatusMessageType(), Connecting.INVITE_ACCEPTED_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Connecting.getStatusMessageType(), Connecting.INVITE_ACCEPTED_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Connecting Accepted!!!");
 
@@ -78,7 +77,7 @@ public class App {
             });
 
             // Handler for Question Answered message
-            handlers.addHandler(questionAnswer.getStatusMessageType(), QuestionAnswer.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
+            handlers.addHandler(QuestionAnswer.getStatusMessageType(), QuestionAnswer.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
 
@@ -94,7 +93,7 @@ public class App {
             });
 
             // Handler for Schema write successful status
-            handlers.addHandler(writeSchema.getStatusMessageType(), WriteSchema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
+            handlers.addHandler(WriteSchema.getStatusMessageType(), WriteSchema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
                     String credDefName = "My test credential definition";
                     String schemaId = message.getString("content");
@@ -109,7 +108,7 @@ public class App {
             });
 
             // Handler for Cred Def write successful status
-            handlers.addHandler(writeCredDef.getStatusMessageType(), WriteCredentialDefinition.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
+            handlers.addHandler(WriteCredentialDefinition.getStatusMessageType(), WriteCredentialDefinition.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
                     // Issue a credential to Alice
                     credDefId = message.getString("content");
@@ -125,7 +124,7 @@ public class App {
             });
 
             // Handler for Credential Offer Accepted message
-            handlers.addHandler(issueCredential.getStatusMessageType(), IssueCredential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+            handlers.addHandler(IssueCredential.getStatusMessageType(), IssueCredential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("User accepted the credential offer. Verity should now be sending the Credential");
                 } catch(Exception ex) {
@@ -134,7 +133,7 @@ public class App {
             });
 
             // Handler for Credential Accepted message
-            handlers.addHandler(issueCredential.getStatusMessageType(), IssueCredential.CREDENTIAL_SENT_TO_USER_STATUS, (JSONObject message) -> {
+            handlers.addHandler(IssueCredential.getStatusMessageType(), IssueCredential.CREDENTIAL_SENT_TO_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("User accepted the credential");
 
@@ -151,7 +150,7 @@ public class App {
             });
 
             // Handler for Proof Received message
-            handlers.addHandler(presentProof.getStatusMessageType(), PresentProof.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
+            handlers.addHandler(PresentProof.getStatusMessageType(), PresentProof.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
                 System.out.println("Proof Accepted!");
                 System.out.println(message.toString());
                 System.exit(0);
