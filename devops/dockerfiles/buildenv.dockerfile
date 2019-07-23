@@ -33,5 +33,5 @@ RUN npm i -g typescript tslint
 
 # Install python dependencies
 RUN pip3 install --upgrade pip
-RUN pip3 install requests==2.21.0 python3-indy==1.9.0 python3-wrapper-vcx==0.3.0
+RUN pip3 install requests==2.21.0 python3-indy==1.9.0 python3-wrapper-vcx==0.3.0 pylint
 
