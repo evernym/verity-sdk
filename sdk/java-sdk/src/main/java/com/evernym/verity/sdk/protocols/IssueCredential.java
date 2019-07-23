@@ -1,7 +1,6 @@
 package com.evernym.verity.sdk.protocols;
 
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.utils.Context;
