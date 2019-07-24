@@ -1,7 +1,7 @@
 import pytest
 
 from src.protocols.QuestionAnswer import QuestionAnswer
-from src.utils import unpack_forward_message
+from src.utils import unpack_forward_message, MESSAGE_TYPE_DID
 from src.utils.Context import Context
 from test.test_utils import get_test_config, send_stub, cleanup
 
@@ -48,7 +48,7 @@ async def test_ask():
     msg = await question_answer.ask(context)
     msg = await unpack_forward_message(context, msg)
 
-    assert msg['@type'] == "{};spec/question-answer/0.1/question".format(QuestionAnswer.MESSAGE_TYPE_DID)
+    assert msg['@type'] == "{};spec/question-answer/0.1/question".format(MESSAGE_TYPE_DID)
     assert msg['@id']
     assert msg['connectionId'] == connection_id
     assert msg['question']['notification_title'] == notification_title

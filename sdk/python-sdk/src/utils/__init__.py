@@ -5,6 +5,7 @@ from uuid import uuid4
 
 from src.utils import Context
 
+MESSAGE_TYPE_DID = 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw'
 
 def prepare_forward_message(did: str, message: bytes) -> str:
   return json.dumps({
@@ -52,3 +53,15 @@ async def unpack_message(context: Context, message: bytes) -> Dict:
 
 def uuid() -> str:
   return str(uuid4())
+
+
+def get_message_type(msg_family: str, msg_family_version: str, msg_name: str) -> str:
+  return "{};spec/{}/{}/{}".format(MESSAGE_TYPE_DID, msg_family, msg_family_version, msg_name)
+
+
+def get_problem_report_message_type(msg_family: str, msg_family_version: str) -> str:
+  return get_message_type(msg_family, msg_family_version, "problem-report")
+
+
+def get_status_message_type(msg_family: str, msg_family_version: str) -> str:
+  return get_message_type(msg_family, msg_family_version, "status")

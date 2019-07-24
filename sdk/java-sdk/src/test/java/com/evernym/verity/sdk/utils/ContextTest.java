@@ -17,7 +17,7 @@ public class ContextTest {
     public void shouldCorrectlyParseConfig() throws Exception {
         String walletName = UUID.randomUUID().toString();
         String walletKey = "12345";
-        String webhookUrl = "http://localhost:4000";
+        String endpointUrl = "http://localhost:4000";
         String verityUrl = "http://localhost:3000";
         String walletConfig = new JSONObject().put("id", walletName).toString();
         String walletCredentials = new JSONObject().put("key", walletKey).toString();
@@ -33,7 +33,7 @@ public class ContextTest {
             config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
-            config.put("webhookUrl", webhookUrl);
+            config.put("endpointUrl", endpointUrl);
             context = new Context(config.toString());
             assertEquals(walletName, context.walletName);
             assertEquals(walletKey, context.walletKey);
@@ -42,7 +42,7 @@ public class ContextTest {
             assertEquals(testWallet.getVerityPairwiseVerkey(), context.getVerityPairwiseVerkey());
             assertEquals(testWallet.getVerityPairwiseDID(), context.getVerityPairwiseDID());
             assertEquals(testWallet.getSdkPairwiseVerkey(), context.getSdkPairwiseVerkey());
-            assertEquals(webhookUrl, context.webhookUrl);
+            assertEquals(endpointUrl, context.webhookUrl);
             assertEquals(walletConfig, context.getWalletConfig());
             assertEquals(walletCredentials, context.getWalletCredentials());
             assertNotNull(context.getWalletHandle());
@@ -60,7 +60,7 @@ public class ContextTest {
     public void shouldGenerateCorrectUpdateWebhookMessage() throws Exception {
         String walletName = UUID.randomUUID().toString();
         String walletKey = "12345";
-        String webhookUrl = "http://localhost:4000";
+        String endpointUrl = "http://localhost:4000";
         String verityUrl = "http://localhost:3000";
         try {
             TestWallet testWallet = new TestWallet(walletName, walletKey);
@@ -72,14 +72,14 @@ public class ContextTest {
             config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
-            config.put("webhookUrl", webhookUrl);
+            config.put("endpointUrl", endpointUrl);
             Context context = new Context(config.toString());
             byte[] updateWebhookMessage = context.getUpdateWebhookMessage();
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, updateWebhookMessage);
             assertEquals("did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD", unpackedMessage.getString("@type"));
             assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("id"));
             assertEquals(2, unpackedMessage.getJSONObject("comMethod").getInt("type"));
-            assertEquals(webhookUrl, unpackedMessage.getJSONObject("comMethod").getString("value"));
+            assertEquals(endpointUrl, unpackedMessage.getJSONObject("comMethod").getString("value"));
             context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();

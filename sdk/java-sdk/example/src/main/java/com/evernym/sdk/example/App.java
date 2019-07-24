@@ -68,7 +68,7 @@ public class App {
                     String notificationTitle = "Challenge Question";
                     String questionText = "Hi Alice, how are you today?";
                     String questionDetail = " ";
-                    String[] validResponses = {"Great!", "Not so good"};
+                    String[] validResponses = {"Great!", "Not so good."};
                     questionAnswer = new QuestionAnswer(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
                     questionAnswer.ask(context);
                 } catch(Exception ex) {
@@ -84,7 +84,7 @@ public class App {
                     // Write a Schema and Cred Def to the ledger in preparation for issuing
                     // This step will likely be done manually by the institution, and not on a regular basis
                     String schemaName = "My test schema";
-                    String schemaVersion = getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString();
+                    String schemaVersion = getRandomVersion();
                     writeSchema = new WriteSchema(schemaName, schemaVersion, "name", "degree");
                     writeSchema.write(context);
                 } catch(Exception ex) {
@@ -126,7 +126,7 @@ public class App {
             // Handler for Credential Offer Accepted message
             handlers.addHandler(IssueCredential.getStatusMessageType(), IssueCredential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
-                    System.out.println("User accepted the credential offer. Verity should now be sending the Credential");
+                    System.out.println("User has accepted the credential offer. Verity is now sending the Credential");
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
@@ -190,6 +190,10 @@ public class App {
 
     private static void writeInviteDetailsFile(JSONObject data) throws IOException {
         Files.write(FileSystems.getDefault().getPath("inviteDetails.json"), data.toString().getBytes());
+    }
+
+    private static String getRandomVersion() {
+        return getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString();
     }
 
     private static Integer getRandomInt(int min, int max) {

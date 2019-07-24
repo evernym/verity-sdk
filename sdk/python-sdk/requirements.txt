@@ -3,3 +3,4 @@ python3-indy==1.8.2
 requests==2.22.0
 pylint==2.3.1
 pylint-quotes==0.2.1
+pytest-parallel==0.0.9

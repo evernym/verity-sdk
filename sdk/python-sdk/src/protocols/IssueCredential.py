@@ -1,4 +1,4 @@
-from src.utils import Context
+from src.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
 from src.protocols.Protocol import Protocol
 
 class IssueCredential(Protocol):
@@ -8,10 +8,10 @@ class IssueCredential(Protocol):
     # Messages
     ISSUE_CREDENTIAL = 'issue-credential'
 
-    class STATUS():
-        OFFER_SENT_TO_USER = 0
-        OFFER_ACCEPTED_BY_USER = 1
-        CREDENTIAL_SENT_TO_USER = 2
+    # Status
+    OFFER_SENT_TO_USER_STATUS = 0
+    OFFER_ACCEPTED_BY_USER_STATUS = 1
+    CREDENTIAL_SENT_TO_USER_STATUS = 2
 
     connection_id: str
     name: str
@@ -31,7 +31,7 @@ class IssueCredential(Protocol):
     def define_messages(self):
         self.messages = {
             self.ISSUE_CREDENTIAL: {
-                '@type': self.get_message_type(self.ISSUE_CREDENTIAL),
+                '@type': IssueCredential.get_message_type(self.ISSUE_CREDENTIAL),
                 '@id': self.get_new_id(),
                 'connectionId': self.connection_id,
                 'credentialData': {
@@ -43,6 +43,18 @@ class IssueCredential(Protocol):
                 },
             }
         }
+
+    @staticmethod
+    def get_message_type(msg_name: str) -> str:
+        return get_message_type(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, msg_name)
+
+    @staticmethod
+    def get_problem_report_message_type() -> str:
+        return get_problem_report_message_type(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION)
+
+    @staticmethod
+    def get_status_message_type() -> str:
+        return get_status_message_type(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION)
 
     async def issue(self, context: Context) -> bytes:
         return await self.send(context, self.messages[self.ISSUE_CREDENTIAL])

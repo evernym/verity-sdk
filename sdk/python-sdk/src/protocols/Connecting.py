@@ -1,5 +1,4 @@
-
-from src.utils import Context
+from src.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
 from src.protocols.Protocol import Protocol
 
 
@@ -10,9 +9,9 @@ class Connecting(Protocol):
     # Messages
     CREATE_CONNECTION = 'CREATE_CONNECTION'
 
-    class STATUS():
-        AWAITING_RESPONSE = 0
-        INVITE_ACCEPTED = 1
+    # Status
+    AWAITING_RESPONSE_STATUS = 0
+    INVITE_ACCEPTED_STATUS = 1
 
     source_id: str
     phone_number: str
@@ -25,11 +24,10 @@ class Connecting(Protocol):
 
         self.define_messages()
 
-
     def define_messages(self):
         self.messages = {
             self.CREATE_CONNECTION: {
-                '@type': self.get_message_type(self.CREATE_CONNECTION),
+                '@type': Connecting.get_message_type(self.CREATE_CONNECTION),
                 '@id': self.get_new_id(),
                 'connectionDetail': {
                     'sourceId': self.source_id,
@@ -39,6 +37,17 @@ class Connecting(Protocol):
             }
         }
 
+    @staticmethod
+    def get_message_type(msg_name: str) -> str:
+        return get_message_type(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, msg_name)
+
+    @staticmethod
+    def get_problem_report_message_type() -> str:
+        return get_problem_report_message_type(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION)
+
+    @staticmethod
+    def get_status_message_type() -> str:
+        return get_status_message_type(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION)
 
     async def connect(self, context: Context) -> bytes:
         return await self.send(context, self.messages[self.CREATE_CONNECTION])

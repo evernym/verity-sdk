@@ -1,6 +1,6 @@
 import pytest
 
-from src.utils import unpack_forward_message
+from src.utils import unpack_forward_message, MESSAGE_TYPE_DID
 from src.utils.Context import Context
 from src.protocols.WriteSchema import WriteSchema
 from ..test_utils import get_test_config, send_stub, cleanup
@@ -26,7 +26,7 @@ async def test_write():
   msg = await writeSchema.write(context)
   msg = await unpack_forward_message(context, msg)
 
-  assert msg['@type'] == "{};spec/schema/0.1/write".format(WriteSchema.MESSAGE_TYPE_DID)
+  assert msg['@type'] == "{};spec/schema/0.1/write".format(MESSAGE_TYPE_DID)
   assert msg['@id']
   assert msg['schema']['name'] == schema_name
   assert msg['schema']['version'] == schema_version
@@ -37,16 +37,16 @@ async def test_write():
 
 def test_get_message_type():
   writeSchema = WriteSchema(schema_name, schema_version, attrs[0], attrs[1], attrs[2])
-  assert writeSchema.get_message_type("message_name") == "{};spec/schema/0.1/message_name".format(WriteSchema.MESSAGE_TYPE_DID)
+  assert writeSchema.get_message_type("message_name") == "{};spec/schema/0.1/message_name".format(MESSAGE_TYPE_DID)
 
 
 def test_get_problem_report_message_type():
   writeSchema = WriteSchema(schema_name, schema_version, attrs[0], attrs[1], attrs[2])
-  assert writeSchema.get_problem_report_message_type() == "{};spec/schema/0.1/problem-report".format(WriteSchema.MESSAGE_TYPE_DID)
+  assert writeSchema.get_problem_report_message_type() == "{};spec/schema/0.1/problem-report".format(MESSAGE_TYPE_DID)
 
 
 def test_get_status_message_type():
   writeSchema = WriteSchema(schema_name, schema_version, attrs[0], attrs[1], attrs[2])
-  assert writeSchema.get_status_message_type() == "{};spec/schema/0.1/status".format(WriteSchema.MESSAGE_TYPE_DID)
+  assert writeSchema.get_status_message_type() == "{};spec/schema/0.1/status".format(MESSAGE_TYPE_DID)
 
 

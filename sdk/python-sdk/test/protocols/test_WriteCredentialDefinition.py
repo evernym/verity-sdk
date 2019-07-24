@@ -1,7 +1,7 @@
 import pytest
 
 from src.protocols.WriteCredentialDefinition import WriteCredentialDefinition
-from src.utils import unpack_forward_message
+from src.utils import unpack_forward_message, MESSAGE_TYPE_DID
 from src.utils.Context import Context
 from test.test_utils import get_test_config, send_stub, cleanup
 
@@ -28,7 +28,7 @@ async def test_write():
     msg = await writeCredDef.write(context)
     msg = await unpack_forward_message(context, msg)
 
-    assert msg['@type'] == "{};spec/cred-def/0.1/write".format(WriteCredentialDefinition.MESSAGE_TYPE_DID)
+    assert msg['@type'] == "{};spec/cred-def/0.1/write".format(MESSAGE_TYPE_DID)
     assert msg['@id']
     assert msg['name'] == name
     assert msg['schemaId'] == schema_id

@@ -5,7 +5,8 @@ import pytest
 from indy import did, wallet
 
 from src.protocols.Protocol import Protocol
-from src.utils import prepare_forward_message, pack_message_for_verity, unpack_forward_message
+from src.utils import prepare_forward_message, pack_message_for_verity, unpack_forward_message, get_message_type, \
+  get_problem_report_message_type, MESSAGE_TYPE_DID, get_status_message_type
 from src.utils.Context import Context
 
 
@@ -85,3 +86,18 @@ async def test_pack_message_for_verity_and_unpack_forward_message():
   assert unpacked_message['hello'] == 'world'
 
   await cleanup(context)
+
+
+def test_get_message_type():
+  msg_type: str = 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/status'
+  assert get_message_type('credential', '0.1', 'status') == msg_type
+
+
+def test_get_problem_report_message_type():
+  assert get_problem_report_message_type('credential', '0.1') == \
+         '{};spec/credential/0.1/problem-report'.format(MESSAGE_TYPE_DID)
+
+
+def test_get_status_message_type():
+  assert get_status_message_type('credential', '0.1') ==\
+         '{};spec/credential/0.1/status'.format(MESSAGE_TYPE_DID)

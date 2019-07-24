@@ -8,7 +8,6 @@ class Protocol:
 
   MSG_FAMILY = "none"
   MSG_FAMILY_VERSION = "0.0.0"
-  MESSAGE_TYPE_DID = 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw'
 
   class STATUS():
     pass
@@ -28,19 +27,6 @@ class Protocol:
   @staticmethod
   def get_new_id():
     return uuid()
-
-  @staticmethod
-  def get_message_type_complete(msg_family: str, msg_family_version: str, msg_name: str) -> str:
-    return "{};spec/{}/{}/{}".format(Protocol.MESSAGE_TYPE_DID, msg_family, msg_family_version, msg_name)
-
-  def get_message_type(self, msg_name: str) -> str:
-    return Protocol.get_message_type_complete(self.MSG_FAMILY, self.MSG_FAMILY_VERSION, msg_name)
-
-  def get_problem_report_message_type(self) -> str:
-    return self.get_message_type("problem-report")
-
-  def get_status_message_type(self) -> str:
-    return self.get_message_type("status")
 
   @abc.abstractmethod
   def define_messages(self):

@@ -110,7 +110,7 @@ async def register_agent(args):
         "verityPairwiseDID": their_did,
         "verityPairwiseVerkey": their_verkey,
         "sdkPairwiseVerkey": my_verkey,
-        "webhookUrl": "http://localhost:4000" # TODO: Should eventually be "<CHANGE ME>"
+        "endpointUrl": "http://localhost:4000" # TODO: Should eventually be "<CHANGE ME>"
     }
 
     ## Print sdk config (admin will place in config file)

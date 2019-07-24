@@ -1,5 +1,5 @@
 from typing import List
-from src.utils import Context, uuid
+from src.utils import Context, uuid, get_message_type, get_problem_report_message_type, get_status_message_type
 from src.protocols.Protocol import Protocol
 
 class WriteSchema(Protocol):
@@ -9,8 +9,8 @@ class WriteSchema(Protocol):
   # Messages
   WRITE_SCHEMA = "write"
 
-  class STATUS():
-    WRITE_SUCCESSFUL = 0
+  # Status
+  WRITE_SUCCESSFUL_STATUS = 0
 
   # Data members
   name: str
@@ -26,7 +26,7 @@ class WriteSchema(Protocol):
   def define_messages(self):
     self.messages = {
       self.WRITE_SCHEMA: {
-        '@type': self.get_message_type(self.WRITE_SCHEMA),
+        '@type': WriteSchema.get_message_type(self.WRITE_SCHEMA),
         '@id': self.get_new_id(),
         'schema': {
           'name': self.name,
@@ -35,6 +35,18 @@ class WriteSchema(Protocol):
         }
       }
     }
+
+  @staticmethod
+  def get_message_type(msg_name: str) -> str:
+    return get_message_type(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION, msg_name)
+
+  @staticmethod
+  def get_problem_report_message_type() -> str:
+    return get_problem_report_message_type(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION)
+
+  @staticmethod
+  def get_status_message_type() -> str:
+    return get_status_message_type(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION)
 
   async def write(self, context: Context) -> bytes:
     return await self.send(context, self.messages[self.WRITE_SCHEMA])

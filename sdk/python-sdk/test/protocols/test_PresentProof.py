@@ -1,7 +1,7 @@
 import pytest
 
 from src.protocols.PresentProof import PresentProof
-from src.utils import unpack_forward_message
+from src.utils import unpack_forward_message, MESSAGE_TYPE_DID
 from src.utils.Context import Context
 from test.test_utils import get_test_config, send_stub, cleanup
 
@@ -29,7 +29,7 @@ async def test_request():
     msg = await presentProof.request(context)
     msg = await unpack_forward_message(context, msg)
 
-    assert msg['@type'] == "{};spec/present-proof/0.1/request".format(PresentProof.MESSAGE_TYPE_DID)
+    assert msg['@type'] == "{};spec/present-proof/0.1/request".format(MESSAGE_TYPE_DID)
     assert msg['@id']
     assert msg['connectionId'] == connection_id
     assert msg['proofRequest']['name'] == name

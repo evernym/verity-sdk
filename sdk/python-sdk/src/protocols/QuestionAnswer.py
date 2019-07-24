@@ -2,7 +2,7 @@ from typing import List
 from secrets import token_bytes
 from hashlib import sha3_256
 
-from src.utils import Context, uuid
+from src.utils import Context, uuid, get_message_type, get_problem_report_message_type, get_status_message_type
 from src.protocols.Protocol import Protocol
 
 
@@ -14,9 +14,9 @@ class QuestionAnswer(Protocol):
     # Messages
     QUESTION = 'question'
 
-    class STATUS():
-        QUESTION_SENT = 0
-        QUESTION_ANSWERED = 1
+    # Status
+    QUESTION_SENT_STATUS = 0
+    QUESTION_ANSWERED_STATUS = 1
 
     connection_id: str
     notification_title: str
@@ -33,23 +33,6 @@ class QuestionAnswer(Protocol):
 
         self.define_messages()
 
-    def define_messages(self):
-        self.messages = {
-            self.QUESTION: {
-                '@type': self.get_message_type(self.QUESTION),
-                '@id': self.get_new_id(),
-                'connectionId': self.connection_id,
-                'question': {
-                    'notification_title': self.notification_title,
-                    'question_text': self.question_text,
-                    'question_detail': self.question_detail,
-                    'valid_responses': self.valid_responses,
-                    '@timing': None, # TODO add support for @timing
-                    'external_links': None # TODO add support for external_links
-                }
-            }
-        }
-
     # TODO: If Verity is just sending the response back, it should be adding the nonce field as well
     @staticmethod
     def format_valid_responses(question_text, valid_responses) -> List[dict]:
@@ -64,6 +47,35 @@ class QuestionAnswer(Protocol):
             formatted_valid_responses.append(formatted_valid_response)
 
         return formatted_valid_responses
+
+    def define_messages(self):
+        self.messages = {
+            self.QUESTION: {
+                '@type': QuestionAnswer.get_message_type(self.QUESTION),
+                '@id': self.get_new_id(),
+                'connectionId': self.connection_id,
+                'question': {
+                    'notification_title': self.notification_title,
+                    'question_text': self.question_text,
+                    'question_detail': self.question_detail,
+                    'valid_responses': self.valid_responses,
+                    '@timing': None, # TODO add support for @timing
+                    'external_links': None # TODO add support for external_links
+                }
+            }
+        }
+
+    @staticmethod
+    def get_message_type(msg_name: str) -> str:
+        return get_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION, msg_name)
+
+    @staticmethod
+    def get_problem_report_message_type() -> str:
+        return get_problem_report_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION)
+
+    @staticmethod
+    def get_status_message_type() -> str:
+        return get_status_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION)
 
     @staticmethod
     def get_nonce(question_text: str, valid_response: str) -> str:

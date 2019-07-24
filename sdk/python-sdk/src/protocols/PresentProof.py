@@ -1,5 +1,5 @@
 from typing import List
-from src.utils import Context
+from src.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
 from src.protocols.Protocol import Protocol
 
 class PresentProof(Protocol):
@@ -9,9 +9,9 @@ class PresentProof(Protocol):
     # Messages
     PROOF_REQUEST = 'request'
 
-    class STATUS():
-        PROOF_REQUEST_SENT = 0
-        PROOF_RECEIVED = 1
+    # Status
+    PROOF_REQUEST_SENT_STATUS = 0
+    PROOF_RECEIVED_STATUS = 1
 
     connection_id: str
     name: str
@@ -28,7 +28,7 @@ class PresentProof(Protocol):
     def define_messages(self):
         self.messages = {
             self.PROOF_REQUEST: {
-                '@type': self.get_message_type(self.PROOF_REQUEST),
+                '@type': PresentProof.get_message_type(self.PROOF_REQUEST),
                 '@id': self.get_new_id(),
                 'connectionId': self.connection_id,
                 'proofRequest': {
@@ -38,6 +38,18 @@ class PresentProof(Protocol):
                 }
             }
         }
+
+    @staticmethod
+    def get_message_type(msg_name: str) -> str:
+        return get_message_type(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION, msg_name)
+
+    @staticmethod
+    def get_problem_report_message_type() -> str:
+        return get_problem_report_message_type(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION)
+
+    @staticmethod
+    def get_status_message_type() -> str:
+        return get_status_message_type(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION)
 
     async def request(self, context: Context) -> bytes:
         return await self.send(context, self.messages[self.PROOF_REQUEST])
