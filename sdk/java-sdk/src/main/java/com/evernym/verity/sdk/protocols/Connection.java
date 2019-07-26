@@ -1,12 +1,11 @@
 package com.evernym.verity.sdk.protocols;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
-
-import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * Builds and sends a new encrypted agent message for the Connection protocol.
@@ -93,11 +92,10 @@ public class Connection extends Protocol {
      * Sends the connection create message to Verity
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
+     * @throws WalletException when there are issues with encryption and decryption
+     * @throws UndefinedContextException when the context don't have enough information for this operation
      */
-    public void create(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
+    public void create(Context context) throws IOException, UndefinedContextException, WalletException {
         this.sendMessage(context);
     }
 }

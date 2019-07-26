@@ -1,18 +1,17 @@
 package com.evernym.verity.sdk.protocols;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
-
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.bouncycastle.jcajce.provider.digest.SHA3.DigestSHA3;
 import org.bouncycastle.util.encoders.Hex;
-import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 /**
  * Builds and sends a new encrypted agent message for the Question protocol.
@@ -89,11 +88,10 @@ public class Question extends Protocol {
      * Sends the question message to Verity
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
+     * @throws WalletException when there are issues with encryption and decryption
+     * @throws UndefinedContextException when the context don't have enough information for this operation
      */
-    public void ask(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
+    public void ask(Context context) throws IOException, UndefinedContextException, WalletException {
         this.sendMessage(context);
     }
 }
