@@ -10,11 +10,9 @@ export type SchemaProtocolTypes =
 | 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/status'
 
 export interface ISchemaMessage extends IAgentMessage {
-    schema: {
-        name: string,
-        version: string,
-        attrNames: string[],
-    }
+    name: string,
+    version: string,
+    attrNames: string[],
 }
 
 export class Schema extends Protocol {
@@ -37,7 +35,11 @@ export class Schema extends Protocol {
             const schema = await vcx.Schema.create({
                 sourceId: uuid(),
                 paymentHandle: 0,
-                data: message.schema,
+                data: {
+                    name: message.name,
+                    version: message.version,
+                    attrNames: message.attrNames
+                },
             })
             Agency.postResponse(this.generateStatusReport(
                 0, 'Successfully wrote schema to ledger', message, schema.schemaId), this.config)
