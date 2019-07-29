@@ -1,6 +1,10 @@
 package com.evernym.verity.sdk.utils;
 
-import com.evernym.verity.sdk.exceptions.*;
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletCloseException;
+import com.evernym.verity.sdk.exceptions.WalletClosedException;
+import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.exceptions.WalletOpenException;
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.transports.Transport;
 import org.hyperledger.indy.sdk.IndyException;
