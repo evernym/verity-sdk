@@ -18,8 +18,8 @@ public class Schema extends Protocol {
 
     // Message type definitions
     public static String WRITE_SCHEMA_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/write-schema/0.1.0/write";
-//    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/write-schema/0.1/problem-report";
-//    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/write-schema/0.1/status";
+    public static String PROBLEM_REPORT_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/write-schema/0.1.0/problem-report";
+    public static String STATUS_MESSAGE_TYPE = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/write-schema/0.1.0/status";
 
     // Status Definitions
     public static Integer WRITE_SUCCESSFUL_STATUS = 0;
