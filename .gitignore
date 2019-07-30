@@ -13,7 +13,6 @@ tools/vcx_client_config.json
 **/inviteDetails.json
 .DS_Store
 out
-java-sdk.iml
 
 # Created by https://www.gitignore.io/api/rust,linux,python,java,node.js,javascript,vscode
 # Edit at https://www.gitignore.io/?templates=rust,linux,python,java,node.js,javascript,vscode
