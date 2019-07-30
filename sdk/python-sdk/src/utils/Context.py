@@ -39,4 +39,4 @@ class Context:
 
   async def close_wallet(self):
     await wallet.close_wallet(self.wallet_handle)
-    wallet_closed = True
+    self.wallet_closed = True

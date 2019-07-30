@@ -1,13 +1,15 @@
 from typing import List
-from src.utils import Context, uuid, get_message_type, get_problem_report_message_type, get_status_message_type
+
 from src.protocols.Protocol import Protocol
+from src.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
+
 
 class WriteSchema(Protocol):
-  MSG_FAMILY = "schema"
-  MSG_FAMILY_VERSION = "0.1"
+  MSG_FAMILY = 'schema'
+  MSG_FAMILY_VERSION = '0.1'
 
   # Messages
-  WRITE_SCHEMA = "write"
+  WRITE_SCHEMA = 'write'
 
   # Status
   WRITE_SUCCESSFUL_STATUS = 0

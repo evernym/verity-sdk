@@ -1,13 +1,13 @@
-
 from src.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
 from src.protocols.Protocol import Protocol
+
 
 class WriteCredentialDefinition(Protocol):
   MSG_FAMILY = 'cred-def'
   MSG_FAMILY_VERSION = '0.1'
 
   # Messages
-  WRITE_CRED_DEF = "write"
+  WRITE_CRED_DEF = 'write'
 
   # Status
   WRITE_SUCCESSFUL_STATUS = 0
@@ -39,11 +39,13 @@ class WriteCredentialDefinition(Protocol):
 
   @staticmethod
   def get_message_type(msg_name: str) -> str:
-    return get_message_type(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION, msg_name)
+    return get_message_type(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION,
+                            msg_name)
 
   @staticmethod
   def get_problem_report_message_type() -> str:
-    return get_problem_report_message_type(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION)
+    return get_problem_report_message_type(WriteCredentialDefinition.MSG_FAMILY,
+                                           WriteCredentialDefinition.MSG_FAMILY_VERSION)
 
   @staticmethod
   def get_status_message_type() -> str:

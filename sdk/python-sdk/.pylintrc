@@ -217,7 +217,7 @@ contextmanager-decorators=contextlib.contextmanager
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=120
 
 # Regexp for a line that is allowed to be longer than the limit.
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$
@@ -335,7 +335,7 @@ int-import-graph=
 known-standard-library=
 
 # Force import order to recognize a module as part of a third party library.
-known-third-party=enchant
+known-third-party=src,test # Hack. Not really 3rd party imports but fixes linting issues because pylint thinks src and test are from standard library.
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists
@@ -368,7 +368,7 @@ max-statements=50
 max-parents=7
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=10
+max-attributes=12
 
 # Minimum number of public methods for a class (see R0903).
 min-public-methods=0

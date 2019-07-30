@@ -1,11 +1,12 @@
 import json
 from typing import Dict
-from indy import crypto
 from uuid import uuid4
+from indy import crypto
 
 from src.utils import Context
 
 MESSAGE_TYPE_DID = 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw'
+
 
 def prepare_forward_message(did: str, message: bytes) -> str:
   return json.dumps({
@@ -38,7 +39,7 @@ async def unpack_forward_message(context: Context, message: bytes) -> Dict:
   unpacked_once_message = await unpack_message(context, message)
   return await unpack_message(
     context,
-    json.dumps(unpacked_once_message["@msg"]).encode('utf-8')
+    json.dumps(unpacked_once_message['@msg']).encode('utf-8')
   )
 
 
@@ -56,12 +57,12 @@ def uuid() -> str:
 
 
 def get_message_type(msg_family: str, msg_family_version: str, msg_name: str) -> str:
-  return "{};spec/{}/{}/{}".format(MESSAGE_TYPE_DID, msg_family, msg_family_version, msg_name)
+  return '{};spec/{}/{}/{}'.format(MESSAGE_TYPE_DID, msg_family, msg_family_version, msg_name)
 
 
 def get_problem_report_message_type(msg_family: str, msg_family_version: str) -> str:
-  return get_message_type(msg_family, msg_family_version, "problem-report")
+  return get_message_type(msg_family, msg_family_version, 'problem-report')
 
 
 def get_status_message_type(msg_family: str, msg_family_version: str) -> str:
-  return get_message_type(msg_family, msg_family_version, "status")
+  return get_message_type(msg_family, msg_family_version, 'status')

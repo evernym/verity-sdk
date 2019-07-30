@@ -1,13 +1,12 @@
 import abc
-import json
 
 from src.utils import Context, pack_message_for_verity, uuid
 from src.transports import send_message
 
-class Protocol:
 
-  MSG_FAMILY = "none"
-  MSG_FAMILY_VERSION = "0.0.0"
+class Protocol:
+  MSG_FAMILY = 'none'
+  MSG_FAMILY_VERSION = '0.0.0'
 
   class STATUS():
     pass
@@ -31,4 +30,3 @@ class Protocol:
   @abc.abstractmethod
   def define_messages(self):
     pass
-
