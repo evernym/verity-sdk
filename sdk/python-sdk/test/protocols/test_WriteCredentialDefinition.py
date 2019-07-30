@@ -29,7 +29,7 @@ async def test_write():
   msg = await writeCredDef.write(context)
   msg = await unpack_forward_message(context, msg)
 
-  assert msg['@type'] == '{};spec/cred-def/0.1/write'.format(MESSAGE_TYPE_DID)
+  assert msg['@type'] == '{};spec/write-cred-def/0.1/write'.format(MESSAGE_TYPE_DID)
   assert msg['@id']
   assert msg['name'] == name
   assert msg['schemaId'] == schema_id

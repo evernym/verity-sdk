@@ -27,25 +27,25 @@ async def test_write():
   msg = await write_schema.write(context)
   msg = await unpack_forward_message(context, msg)
 
-  assert msg['@type'] == '{};spec/schema/0.1/write'.format(MESSAGE_TYPE_DID)
+  assert msg['@type'] == '{};spec/write-schema/0.1/write'.format(MESSAGE_TYPE_DID)
   assert msg['@id']
-  assert msg['schema']['name'] == schema_name
-  assert msg['schema']['version'] == schema_version
-  assert msg['schema']['attrNames'] == list(attrs)
+  assert msg['name'] == schema_name
+  assert msg['version'] == schema_version
+  assert msg['attrNames'] == list(attrs)
 
   await cleanup(context)
 
 
 def test_get_message_type():
   writeSchema = WriteSchema(schema_name, schema_version, attrs[0], attrs[1], attrs[2])
-  assert writeSchema.get_message_type('message_name') == '{};spec/schema/0.1/message_name'.format(MESSAGE_TYPE_DID)
+  assert writeSchema.get_message_type('message_name') == '{};spec/write-schema/0.1/message_name'.format(MESSAGE_TYPE_DID)
 
 
 def test_get_problem_report_message_type():
   writeSchema = WriteSchema(schema_name, schema_version, attrs[0], attrs[1], attrs[2])
-  assert writeSchema.get_problem_report_message_type() == '{};spec/schema/0.1/problem-report'.format(MESSAGE_TYPE_DID)
+  assert writeSchema.get_problem_report_message_type() == '{};spec/write-schema/0.1/problem-report'.format(MESSAGE_TYPE_DID)
 
 
 def test_get_status_message_type():
   writeSchema = WriteSchema(schema_name, schema_version, attrs[0], attrs[1], attrs[2])
-  assert writeSchema.get_status_message_type() == '{};spec/schema/0.1/status'.format(MESSAGE_TYPE_DID)
+  assert writeSchema.get_status_message_type() == '{};spec/write-schema/0.1/status'.format(MESSAGE_TYPE_DID)

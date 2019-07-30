@@ -23,7 +23,7 @@ class UpdateEndpoint(Protocol):
         '@id': UpdateEndpoint.get_new_id(),
         'comMethod': {
           'id': 'webhook',
-          'type': 'webhook',
+          'type': 2, # FIXME: What does this magic number mean? What is it?
           'value': self.context.endpoint_url
         }
       }

@@ -5,7 +5,7 @@ from src.utils import Context, get_message_type, get_problem_report_message_type
 
 
 class WriteSchema(Protocol):
-  MSG_FAMILY = 'schema'
+  MSG_FAMILY = 'write-schema'
   MSG_FAMILY_VERSION = '0.1'
 
   # Messages
@@ -30,11 +30,9 @@ class WriteSchema(Protocol):
       self.WRITE_SCHEMA: {
         '@type': WriteSchema.get_message_type(self.WRITE_SCHEMA),
         '@id': self.get_new_id(),
-        'schema': {
-          'name': self.name,
-          'version': self.version,
-          'attrNames': self.attrs
-        }
+        'name': self.name,
+        'version': self.version,
+        'attrNames': self.attrs
       }
     }
 

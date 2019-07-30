@@ -144,7 +144,7 @@ public final class Context {
         message.put("@id", UUID.randomUUID().toString());
         JSONObject comMethod = new JSONObject();
         comMethod.put("id", "webhook");
-        comMethod.put("type", 2);
+        comMethod.put("type", 2); // FIXME: What does this magic number mean? Why 2?
         comMethod.put("value", this.endpointUrl);
         message.put("comMethod", comMethod);
         return Util.packMessageForVerity(this, message);

@@ -3,7 +3,7 @@ from src.protocols.Protocol import Protocol
 
 
 class WriteCredentialDefinition(Protocol):
-  MSG_FAMILY = 'cred-def'
+  MSG_FAMILY = 'write-cred-def'
   MSG_FAMILY_VERSION = '0.1'
 
   # Messages
