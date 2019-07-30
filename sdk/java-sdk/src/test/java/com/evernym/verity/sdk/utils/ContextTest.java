@@ -1,7 +1,6 @@
 package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.TestWallet;
-
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
@@ -17,27 +16,28 @@ public class ContextTest {
         String walletKey = "12345";
         String webhookUrl = "http://localhost:4000";
         String verityUrl = "http://localhost:3000";
-        try {
-            TestWallet testWallet = new TestWallet(walletName, walletKey);
+        try(TestWallet testWallet = new TestWallet(walletName, walletKey)) {
             JSONObject config = new JSONObject();
             config.put("walletName", walletName);
             config.put("walletKey", walletKey);
             config.put("verityUrl", verityUrl);
+            config.put("verityPublicDID", testWallet.getVerityPublicDID());
             config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
             config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
+            config.put("sdkPairwiseDID", testWallet.getSdkPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
             config.put("webhookUrl", webhookUrl);
             Context context = new Context(config.toString());
-            assertEquals(walletName, context.walletName);
-            assertEquals(walletKey, context.walletKey);
-            assertEquals(verityUrl, context.getVerityUrl());
-            assertEquals(testWallet.getVerityPublicVerkey(), context.getVerityPublicVerkey());
-            assertEquals(testWallet.getVerityPairwiseVerkey(), context.getVerityPairwiseVerkey());
-            assertEquals(testWallet.getVerityPairwiseDID(), context.getVerityPairwiseDID());
-            assertEquals(testWallet.getSdkPairwiseVerkey(), context.getSdkPairwiseVerkey());
-            assertEquals(webhookUrl, context.webhookUrl);
-            assertNotNull(context.getWalletHandle());
+            assertEquals(walletName, context.walletName());
+            assertEquals(walletKey, context.walletKey());
+            assertEquals(verityUrl, context.verityUrl());
+            assertEquals(testWallet.getVerityPublicVerkey(), context.verityPublicVerkey());
+            assertEquals(testWallet.getVerityPairwiseVerkey(), context.verityPairwiseVerkey());
+            assertEquals(testWallet.getVerityPairwiseDID(), context.verityPairwiseDID());
+            assertEquals(testWallet.getSdkPairwiseVerkey(), context.sdkPairwiseVerkey());
+            assertEquals(webhookUrl, context.webhookUrl());
+            assertNotNull(context.walletHandle());
 
             context.closeWallet();
         } catch(Exception e) {
@@ -46,7 +46,6 @@ public class ContextTest {
         } finally {
             String walletConfig = new JSONObject().put("id", walletName).toString();
             String walletCredentials = new JSONObject().put("key", walletKey).toString();
-            Wallet.deleteWallet(walletConfig, walletCredentials).get();
         }
     }
 
@@ -62,14 +61,16 @@ public class ContextTest {
             config.put("walletName", walletName);
             config.put("walletKey", walletKey);
             config.put("verityUrl", verityUrl);
+            config.put("verityPublicDID", testWallet.getVerityPublicDID());
             config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
             config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
+            config.put("sdkPairwiseDID", testWallet.getSdkPairwiseDID());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
             config.put("webhookUrl", webhookUrl);
             Context context = new Context(config.toString());
             byte[] updateWebhookMessage = context.getUpdateWebhookMessage();
-            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(context.getWalletHandle(), updateWebhookMessage).get();
+            byte[] partiallyUnpackedMessageJWE = Crypto.unpackMessage(context.walletHandle(), updateWebhookMessage).get();
             String partiallyUnpackedMessage = new JSONObject(new String(partiallyUnpackedMessageJWE)).getString("message");
             JSONObject unpackedMessage = MessagePackaging.unpackForwardMsg(context, new JSONObject(partiallyUnpackedMessage).getJSONObject("@msg"));
             assertEquals("did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD", unpackedMessage.getString("@type"));

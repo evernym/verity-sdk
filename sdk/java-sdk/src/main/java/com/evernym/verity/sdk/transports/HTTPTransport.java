@@ -1,7 +1,5 @@
 package com.evernym.verity.sdk.transports;
 
-import java.io.IOException;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -9,14 +7,38 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
+
 /**
  * Support for sending messages using the HTTP transport
  */
 public class HTTPTransport extends Transport {
-    CloseableHttpClient httpClient;
+    private CloseableHttpClient httpClient;
 
     public HTTPTransport() {
         this.httpClient = HttpClientBuilder.create().build();
+    }
+
+    private CloseableHttpClient client() {
+        return httpClient;
+    }
+
+    private HttpPost buildRequest(String url, byte[] message) {
+        HttpPost request = new HttpPost(url);
+        request.setEntity(new ByteArrayEntity(message));
+        request.setHeader("Content-Type", "application/octet-stream");
+        return request;
+    }
+
+    private HttpResponse transportMessage(HttpPost request) throws IOException {
+        HttpResponse response = client().execute(request);
+        int statusCode = response.getStatusLine().getStatusCode();
+        if(statusCode > 399) {
+            throw new IOException("Request failed! - " + statusCode + " - " + EntityUtils.toString(response.getEntity()));
+        }
+        else {
+            return response;
+        }
     }
 
     /**
@@ -26,13 +48,21 @@ public class HTTPTransport extends Transport {
      * @throws IOException when the HTTP library fails to post to the url
      */
     public void sendMessage(String url, byte[] message) throws IOException {
-        HttpPost request = new HttpPost(url);
-        request.setEntity(new ByteArrayEntity(message));
-        request.setHeader("Content-Type", "application/octet-stream");
-        HttpResponse response = httpClient.execute(request);
-        Integer statusCode = response.getStatusLine().getStatusCode();
-        if(statusCode > 399) {
-            throw new IOException("Request failed! - " + statusCode + " - " + EntityUtils.toString(response.getEntity()));
-        }
+        HttpPost request = buildRequest(url, message);
+
+        transportMessage(request);
+    }
+    /**
+     * Send an encrypted agent message to a specified endpoint
+     * @param url the url where the message will be POSTed to
+     * @param message the encrypted agent message
+     * @throws IOException when the HTTP library fails to post to the url
+     */
+    public byte[] sendSyncMessage(String url, byte[] message) throws IOException {
+        HttpPost request = buildRequest(url, message);
+
+        HttpResponse resp = transportMessage(request);
+
+        return EntityUtils.toByteArray(resp.getEntity());
     }
 }

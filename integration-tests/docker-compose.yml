@@ -49,4 +49,7 @@ services:
       sed 's/localhost:4000/integration-tests:4000/g' -i sdk/java-sdk/example/verityConfig.json &&
       cd sdk/java-sdk/ && mvn package -DskipTests && cd - &&
       cd sdk/java-sdk/example && mvn package && cd - &&
-      ./sdk/java-sdk/devops/integration_tests.sh autorespond"
+      ./sdk/java-sdk/devops/integration_tests.sh autorespond &&
+      cd sdk/java-sdk/ && mvn clean && cd - &&
+      cd sdk/java-sdk/example/ && mvn clean"
+  

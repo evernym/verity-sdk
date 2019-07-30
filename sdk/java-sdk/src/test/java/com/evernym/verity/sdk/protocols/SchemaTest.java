@@ -2,12 +2,12 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
-
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class SchemaTest {
 
@@ -24,8 +24,8 @@ public class SchemaTest {
             Schema schema = new Schema(schemaName, schemaVersion, attr1, attr2);
             JSONObject unpackedMessage = TestHelpers.unpackMessage(context, schema.getMessage(context));
             assertEquals(schema.toString(), unpackedMessage.toString());
-            assertEquals(attr1, unpackedMessage.getJSONObject("schema").getJSONArray("attrNames").get(0));
-            assertEquals(attr2, unpackedMessage.getJSONObject("schema").getJSONArray("attrNames").get(1));
+            assertEquals(attr1, unpackedMessage.getJSONArray("attrNames").get(0));
+            assertEquals(attr2, unpackedMessage.getJSONArray("attrNames").get(1));
         } catch(Exception e) {
             e.printStackTrace();
             fail();
