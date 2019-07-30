@@ -32,5 +32,7 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
 RUN npm i -g typescript tslint
 
 # Install python dependencies
-RUN python3 -m pip install requests==2.21.0 python3-indy==1.9.0 python3-wrapper-vcx==0.3.0 pylint==2.3.1 pylint-quotes==0.2.1
+RUN python3 -m pip install requests==2.21.0 python3-indy==1.9.0 python3-wrapper-vcx==0.3.0
+RUN python3.6 -m pip install requests==2.21.0 python3-indy==1.9.0 python3-wrapper-vcx==0.3.0 pylint==2.3.1 pylint-quotes==0.2.1
+
 
