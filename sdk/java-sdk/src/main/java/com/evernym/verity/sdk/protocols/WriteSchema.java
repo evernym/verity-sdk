@@ -5,7 +5,6 @@ import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
 
 import com.evernym.verity.sdk.utils.Util;
-import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
