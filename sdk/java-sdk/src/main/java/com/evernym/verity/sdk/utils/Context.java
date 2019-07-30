@@ -24,7 +24,7 @@ public class Context {
     private String verityPairwiseDID;
     private String verityPairwiseVerkey;
     private String sdkPairwiseVerkey;
-    String webhookUrl;
+    String endpointUrl;
 
     public String getWalletConfig() {
         return walletConfig;
@@ -55,7 +55,7 @@ public class Context {
         this.verityPairwiseDID = config.getString("verityPairwiseDID");
         this.verityPairwiseVerkey = config.getString("verityPairwiseVerkey");
         this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
-        this.webhookUrl = config.getString("endpointUrl");
+        this.endpointUrl = config.getString("endpointUrl");
         this.walletConfig = new JSONObject().put("id", walletName).toString();
         this.walletCredentials = new JSONObject().put("key", walletKey).toString();
         this.walletHandle = Wallet.openWallet(this.walletConfig, this.walletCredentials).get();
@@ -86,7 +86,7 @@ public class Context {
         JSONObject comMethod = new JSONObject();
         comMethod.put("id", "webhook");
         comMethod.put("type", 2);
-        comMethod.put("value", this.webhookUrl);
+        comMethod.put("value", this.endpointUrl);
         message.put("comMethod", comMethod);
         return Util.packMessageForVerity(this, message);
     }

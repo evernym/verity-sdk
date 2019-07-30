@@ -42,7 +42,7 @@ public class ContextTest {
             assertEquals(testWallet.getVerityPairwiseVerkey(), context.getVerityPairwiseVerkey());
             assertEquals(testWallet.getVerityPairwiseDID(), context.getVerityPairwiseDID());
             assertEquals(testWallet.getSdkPairwiseVerkey(), context.getSdkPairwiseVerkey());
-            assertEquals(endpointUrl, context.webhookUrl);
+            assertEquals(endpointUrl, context.endpointUrl);
             assertEquals(walletConfig, context.getWalletConfig());
             assertEquals(walletCredentials, context.getWalletCredentials());
             assertNotNull(context.getWalletHandle());
@@ -62,6 +62,7 @@ public class ContextTest {
         String walletKey = "12345";
         String endpointUrl = "http://localhost:4000";
         String verityUrl = "http://localhost:3000";
+        Context context = null;
         try {
             TestWallet testWallet = new TestWallet(walletName, walletKey);
             JSONObject config = new JSONObject();
@@ -73,10 +74,10 @@ public class ContextTest {
             config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
             config.put("endpointUrl", endpointUrl);
-            Context context = new Context(config.toString());
+            context = new Context(config.toString());
             byte[] updateWebhookMessage = context.getUpdateWebhookMessage();
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, updateWebhookMessage);
-            assertEquals("did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD", unpackedMessage.getString("@type"));
+            assertEquals("did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/configs/0.6/UPDATE_COM_METHOD", unpackedMessage.getString("@type"));
             assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("id"));
             assertEquals(2, unpackedMessage.getJSONObject("comMethod").getInt("type"));
             assertEquals(endpointUrl, unpackedMessage.getJSONObject("comMethod").getString("value"));
@@ -85,9 +86,7 @@ public class ContextTest {
             e.printStackTrace();
             fail();
         } finally {
-            String walletConfig = new JSONObject().put("id", walletName).toString();
-            String walletCredentials = new JSONObject().put("key", walletKey).toString();
-            Wallet.deleteWallet(walletConfig, walletCredentials).get();
+            TestHelpers.cleanup(context);
         }
     }
 

@@ -14,7 +14,7 @@ public class TestHelpers {
     public static Context getContext() throws InterruptedException, ExecutionException, IndyException {
         String walletName = UUID.randomUUID().toString();
         String walletKey = UUID.randomUUID().toString();
-        String webhookUrl = "http://localhost:3000";
+        String endpointUrl = "http://localhost:3000";
         String verityUrl = "http://localhost:3000";
         TestWallet testWallet = new TestWallet(walletName, walletKey);
         JSONObject config = new JSONObject();
@@ -25,7 +25,7 @@ public class TestHelpers {
         config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
         config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
         config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
-        config.put("webhookUrl", webhookUrl);
+        config.put("endpointUrl", endpointUrl);
         return new Context(config.toString());
     }
 
