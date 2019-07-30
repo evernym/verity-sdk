@@ -38,7 +38,7 @@ export class Schema extends Protocol {
                 data: {
                     name: message.name,
                     version: message.version,
-                    attrNames: message.attrNames
+                    attrNames: message.attrNames,
                 },
             })
             Agency.postResponse(this.generateStatusReport(
