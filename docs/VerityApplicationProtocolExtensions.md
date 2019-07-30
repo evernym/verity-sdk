@@ -9,70 +9,70 @@ This document outlines the various definitions, message formatting, and message 
 
 <a id="tableofcontents"></a>
 ## Table of Contents
-- [Verity Application Protocol Extensions Doc](#Verity-Application-Protocol-Extensions-Doc)
-  - [Overview](#Overview)
-  - [Table of Contents](#Table-of-Contents)
-  - [Global definitions and helpers](#Global-definitions-and-helpers)
-    - [JSON and DID Comms](#JSON-and-DID-Comms)
-      - [Generating attributes](#Generating-attributes)
-    - [Roles](#Roles)
-  - [Common](#Common)
-    - [Check Status](#Check-Status)
-      - [Attributes](#Attributes)
-    - [Invite Request](#Invite-Request)
-      - [Attributes](#Attributes-1)
-    - [Invite Response](#Invite-Response)
-      - [Attributes](#Attributes-2)
-    - [Problem Report](#Problem-Report)
-      - [Attributes](#Attributes-3)
-    - [Update Communication Method](#Update-Communication-Method)
-      - [Attributes](#Attributes-4)
-  - [Connection](#Connection)
-    - [New Connection](#New-Connection)
-      - [Attributes](#Attributes-5)
-      - [Notes](#Notes)
-    - [Problem Report](#Problem-Report-1)
-    - [Status](#Status)
-      - [Attributes](#Attributes-6)
-  - [Provable Question](#Provable-Question)
-    - [Ask Question](#Ask-Question)
-      - [Attributes](#Attributes-7)
-      - [Notes](#Notes-1)
-    - [Problem Report](#Problem-Report-2)
-    - [Status](#Status-1)
-      - [Attributes](#Attributes-8)
-      - [Notes](#Notes-2)
-  - [Schema](#Schema)
-    - [Write Schema](#Write-Schema)
-      - [Attributes](#Attributes-9)
-    - [Problem Report](#Problem-Report-3)
-    - [Status](#Status-2)
-      - [Attributes](#Attributes-10)
-  - [Credential Definition](#Credential-Definition)
-    - [Write Credential Definition](#Write-Credential-Definition)
-      - [Attributes](#Attributes-11)
-    - [Problem Report](#Problem-Report-4)
-    - [Status](#Status-3)
-      - [Attributes](#Attributes-12)
-  - [Credential](#Credential)
-    - [Credential](#Credential-1)
-      - [Attributes](#Attributes-13)
-    - [Problem Report](#Problem-Report-5)
-    - [Status](#Status-4)
-      - [Attributes](#Attributes-14)
-  - [Proof](#Proof)
-    - [Proof Request](#Proof-Request)
-      - [Attributes](#Attributes-15)
-    - [Problem Report](#Problem-Report-6)
-    - [Status](#Status-5)
-      - [Attributes](#Attributes-16)
-  - [Enroll](#Enroll)
-    - [New Enrollment](#New-Enrollment)
-      - [Attributes](#Attributes-17)
-      - [Notes](#Notes-3)
-    - [Problem Report](#Problem-Report-7)
-    - [Status](#Status-6)
-      - [Attributes](#Attributes-18)
+- [Verity Application Protocol Extensions Doc](#verity-application-protocol-extensions-doc)
+  - [Overview](#overview)
+  - [Table of Contents](#table-of-contents)
+  - [Global definitions and helpers](#global-definitions-and-helpers)
+    - [JSON and DID Comms](#json-and-did-comms)
+      - [Generating attributes](#generating-attributes)
+    - [Roles](#roles)
+  - [Common](#common)
+    - [Check Status](#check-status)
+      - [Attributes](#attributes)
+    - [Invite Request](#invite-request)
+      - [Attributes](#attributes-1)
+    - [Invite Response](#invite-response)
+      - [Attributes](#attributes-2)
+    - [Problem Report](#problem-report)
+      - [Attributes](#attributes-3)
+    - [Update Communication Method](#update-communication-method)
+      - [Attributes](#attributes-4)
+  - [Connection](#connection)
+    - [New Connection](#new-connection)
+      - [Attributes](#attributes-5)
+      - [Notes](#notes)
+    - [Problem Report](#problem-report-1)
+    - [Status](#status)
+      - [Attributes](#attributes-6)
+  - [Provable Question](#provable-question)
+    - [Ask Question](#ask-question)
+      - [Attributes](#attributes-7)
+      - [Notes](#notes-1)
+    - [Problem Report](#problem-report-2)
+    - [Status](#status-1)
+      - [Attributes](#attributes-8)
+      - [Notes](#notes-2)
+  - [Schema](#schema)
+    - [Write Schema](#write-schema)
+      - [Attributes](#attributes-9)
+    - [Problem Report](#problem-report-3)
+    - [Status](#status-2)
+      - [Attributes](#attributes-10)
+  - [Credential Definition](#credential-definition)
+    - [Write Credential Definition](#write-credential-definition)
+      - [Attributes](#attributes-11)
+    - [Problem Report](#problem-report-4)
+    - [Status](#status-3)
+      - [Attributes](#attributes-12)
+  - [Credential](#credential)
+    - [Credential](#credential-1)
+      - [Attributes](#attributes-13)
+    - [Problem Report](#problem-report-5)
+    - [Status](#status-4)
+      - [Attributes](#attributes-14)
+  - [Proof](#proof)
+    - [Proof Request](#proof-request)
+      - [Attributes](#attributes-15)
+    - [Problem Report](#problem-report-6)
+    - [Status](#status-5)
+      - [Attributes](#attributes-16)
+  - [Enroll](#enroll)
+    - [New Enrollment](#new-enrollment)
+      - [Attributes](#attributes-17)
+      - [Notes](#notes-3)
+    - [Problem Report](#problem-report-7)
+    - [Status](#status-6)
+      - [Attributes](#attributes-18)
 
 
 <a id="global-defs"></a>
@@ -466,17 +466,15 @@ Tells Verity to write a new schema to the ledger on behalf of the enterprise.
 
 ```json
 {
-	"@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/schema/0.1/write",
-	"@id": <uuid>,
-	"schema": {
-		"name": <schema name>,
-		"version": <schema version>,
-		"attrNames": [
-			"name",
-			"age",
-			...
-		]
-	}
+    "@type": "vs.service/schema/0.1/write",
+    "@id": <uuid>,
+    "name": <schema name>,
+    "version": <schema version>,
+    "attrNames": [
+        "name",
+        "age",
+        ...
+    ]
 }
 ```
 

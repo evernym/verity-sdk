@@ -1,13 +1,12 @@
 package com.evernym.verity.sdk.handlers;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.utils.Context;
+import org.json.JSONObject;
 
 import com.evernym.verity.sdk.utils.Util;
-import com.evernym.verity.sdk.utils.Context;
 
-import org.hyperledger.indy.sdk.IndyException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 /**
  * Stores an array of message handlers that are used when receiving an inbound message
@@ -56,11 +55,9 @@ public class Handlers {
      * Calls all of the handlers that support handling of this particular message type and message status
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @param rawMessage the raw bytes received from Verity
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
+     * @throws WalletException when there are issues with encryption and decryption
      */
-    public void handleMessage(Context context, byte[] rawMessage) throws InterruptedException, ExecutionException, IndyException {
+    public void handleMessage(Context context, byte[] rawMessage) throws WalletException {
         JSONObject message = Util.unpackMessage(context, rawMessage);
         boolean handled = false;
         for(MessageHandler messageHandler: messageHandlers) {

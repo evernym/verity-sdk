@@ -1,14 +1,14 @@
 package com.evernym.verity.sdk.protocols;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
 
 import com.evernym.verity.sdk.utils.Util;
-import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
@@ -90,11 +90,10 @@ public class PresentProof extends Protocol {
      * Sends the proof request message to Verity
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
+     * @throws WalletException when there are issues with encryption and decryption
+     * @throws UndefinedContextException when the context don't have enough information for this operation
      */
-    public byte[] request(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
+    public byte[] request(Context context) throws IOException, UndefinedContextException, WalletException {
         return this.send(context, this.messages.getJSONObject(PresentProof.PROOF_REQUEST));
     }
 }

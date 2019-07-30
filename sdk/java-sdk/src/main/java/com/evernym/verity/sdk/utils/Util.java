@@ -1,12 +1,14 @@
 package com.evernym.verity.sdk.utils;
 
-import java.util.concurrent.ExecutionException;
-
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Static helper functions used for packaging and unpackaging messages
@@ -15,18 +17,24 @@ public class Util {
     private static String MESSAGE_TYPE_DID = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw";
 
     public static byte[] packMessageForVerity(Wallet walletHandle,
-                                              String message,
+                                              JSONObject message,
                                               String pairwiseRemoteDID,
                                               String pairwiseRemoteVerkey,
                                               String pairwiseLocalVerkey,
                                               String publicVerkey
-    ) throws InterruptedException, ExecutionException, IndyException {
+    ) throws WalletException {
+        try {
+            String pairwiseReceiver = new JSONArray(new String[]{pairwiseRemoteVerkey}).toString();
+            String verityReceiver = new JSONArray(new String[]{publicVerkey}).toString();
 
-        String pairwiseReceiver = new JSONArray(new String[]{pairwiseRemoteVerkey}).toString();
-        String verityReceiver = new JSONArray(new String[]{publicVerkey}).toString();
-        byte[] agentMessage = Crypto.packMessage(walletHandle, pairwiseReceiver, pairwiseLocalVerkey, message.getBytes()).get();
-        String innerFwd = prepareForwardMessage(pairwiseRemoteDID, agentMessage);
-        return Crypto.packMessage(walletHandle, verityReceiver, null, innerFwd.getBytes()).get();
+            byte[] agentMessage = Crypto.packMessage(walletHandle, pairwiseReceiver, pairwiseLocalVerkey, message.toString().getBytes()).get();
+
+            String innerFwd = prepareForwardMessage(pairwiseRemoteDID, agentMessage);
+
+            return Crypto.packMessage(walletHandle, verityReceiver, null, innerFwd.getBytes()).get();
+        } catch (IndyException | InterruptedException | ExecutionException e) {
+            throw new WalletException("Unable to pack messages", e);
+        }
     }
 
     /**
@@ -34,18 +42,18 @@ public class Util {
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @param message the message being sent
      * @return Encrypted message ready to be sent to the verity
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
+     * @throws WalletException when there are issues with encryption and decryption
+     * @throws UndefinedContextException when the context don't have enough information for this operation
      */
-    public static byte[] packMessageForVerity(Context context, JSONObject message) throws InterruptedException, ExecutionException, IndyException {
+    public static byte[] packMessageForVerity(Context context, JSONObject message) throws UndefinedContextException, WalletException {
+        Wallet handle = context.walletHandle();
         return packMessageForVerity(
-                context.getWalletHandle(),
-                message.toString(),
-                context.getVerityPairwiseDID(),
-                context.getVerityPairwiseVerkey(),
-                context.getSdkPairwiseVerkey(),
-                context.getVerityPublicVerkey()
+                handle,
+                message,
+                context.verityPairwiseDID(),
+                context.verityPairwiseVerkey(),
+                context.sdkPairwiseVerkey(),
+                context.verityPublicVerkey()
         );
     }
 
@@ -56,7 +64,7 @@ public class Util {
      */
     private static String prepareForwardMessage(String DID, byte[] message) {
         JSONObject fwdMessage = new JSONObject();
-        fwdMessage.put("@type", "did:sov:123456789abcdefghi1234;spec/routing/0.6/FWD");
+        fwdMessage.put("@type", "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/routing/1.0/FWD");
         fwdMessage.put("@fwd", DID);
         fwdMessage.put("@msg", new JSONObject(new String(message)));
         return fwdMessage.toString();
@@ -67,13 +75,16 @@ public class Util {
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @param message the message received from the Evernym verity
      * @return an unencrypted String message
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
+     * @throws WalletException when there are issues with encryption and decryption
      */
-    public static JSONObject unpackMessage(Context context, byte[] message) throws InterruptedException, ExecutionException, IndyException {
-        byte[] jwe = Crypto.unpackMessage(context.getWalletHandle(), message).get();
-        return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
+    public static JSONObject unpackMessage(Context context, byte[] message) throws WalletException {
+        try {
+            byte[] jwe = Crypto.unpackMessage(context.walletHandle(), message).get();
+            return new JSONObject(new JSONObject(new String(jwe)).getString("message"));
+        }
+        catch (IndyException | InterruptedException | ExecutionException e) {
+            throw new WalletException("Unable to unpack message", e);
+        }
     }
 
     /**
@@ -81,11 +92,9 @@ public class Util {
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @param message the message received from the Evernym verity
      * @return an unencrypted String message
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
+     * @throws WalletException when there are issues with encryption and decryption
      */
-    public static JSONObject unpackForwardMessage(Context context, byte[] message) throws InterruptedException, ExecutionException, IndyException {
+    public static JSONObject unpackForwardMessage(Context context, byte[] message) throws WalletException {
         JSONObject unpackedOnceMessage = unpackMessage(context, message);
         byte[] unpackedOnceMessageMessage = unpackedOnceMessage.getJSONObject("@msg").toString().getBytes();
         return unpackMessage(context, unpackedOnceMessageMessage);

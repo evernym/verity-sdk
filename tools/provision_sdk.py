@@ -37,7 +37,7 @@ async def send_msg(url, my_wallet, message_json, agency_did, agency_verkey, my_v
     agency_message = await crypto.pack_message(my_wallet, json.dumps(message_json), [agency_verkey], my_verkey)
 
     forward_msg = {
-        "@type":"did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD",
+        "@type":"did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/routing/1.0/FWD",
         "@fwd":agency_did,
         "@msg":json.loads(agency_message.decode('utf-8'))
     }
@@ -76,7 +76,7 @@ async def register_agent(args):
 
 
     def buildMsgTypePrefix(familyName, msgName):
-        return 'did:sov:123456789abcdefghi1234;spec/{}/0.6/{}'.format(familyName, msgName)
+        return 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/{}/0.6/{}'.format(familyName, msgName)
 
     ## Form messages
     create_agent = {
@@ -106,9 +106,11 @@ async def register_agent(args):
         "walletName": args.wallet_name,
         "walletKey": args.WALLET_KEY,
         "verityUrl": "{}/agency/msg".format(args.AGENCY_URL),
+        "verityPublicDID": agency_info['DID'],
         "verityPublicVerkey": agency_info['verKey'],
         "verityPairwiseDID": their_did,
         "verityPairwiseVerkey": their_verkey,
+        "sdkPairwiseDID": my_did,
         "sdkPairwiseVerkey": my_verkey,
         "endpointUrl": "http://localhost:4000" # TODO: Should eventually be "<CHANGE ME>"
     }

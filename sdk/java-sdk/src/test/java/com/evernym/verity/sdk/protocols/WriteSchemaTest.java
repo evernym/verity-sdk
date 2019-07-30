@@ -37,10 +37,10 @@ public class WriteSchemaTest {
         JSONObject msg = writeSchema.messages.getJSONObject(WriteSchema.WRITE_SCHEMA);
         assertEquals(WriteSchema.getMessageType("write"), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
-        assertEquals(schemaName, msg.getJSONObject("schema").getString("name"));
-        assertEquals(schemaVersion, msg.getJSONObject("schema").getString("version"));
-        assertEquals(attr1, msg.getJSONObject("schema").getJSONArray("attrNames").getString(0));
-        assertEquals(attr2, msg.getJSONObject("schema").getJSONArray("attrNames").getString(1));
+        assertEquals(schemaName, msg.getString("name"));
+        assertEquals(schemaVersion, msg.getString("version"));
+        assertEquals(attr1, msg.getJSONArray("attrNames").getString(0));
+        assertEquals(attr2, msg.getJSONArray("attrNames").getString(1));
 
     }
 

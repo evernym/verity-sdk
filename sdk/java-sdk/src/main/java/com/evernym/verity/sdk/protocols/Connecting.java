@@ -3,10 +3,13 @@ package com.evernym.verity.sdk.protocols;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
 
 import com.evernym.verity.sdk.utils.Util;
 import org.hyperledger.indy.sdk.IndyException;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -100,14 +103,19 @@ public class Connecting extends Protocol {
 
     /**
      * Sends the connection create message to Verity
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws InterruptedException when there are issues with encryption and decryption
-     * @throws ExecutionException when there are issues with encryption and decryption
-     * @throws IndyException when there are issues with encryption and decryption
+     * 
+     * @param context an instance of Context configured with the results of the
+     *                provision_sdk.py script
+     * @throws WalletException
+     * @throws UndefinedContextException
+     * @throws JSONException
+     * @throws IOException               when the HTTP library fails to post to the agency endpoint
+     * @throws InterruptedException      when there are issues with encryption and decryption
+     * @throws ExecutionException        when there are issues with encryption and decryption
+     * @throws IndyException             when there are issues with encryption and decryption
      */
     @SuppressWarnings("WeakerAccess")
-    public byte[] connect(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
+    public byte[] connect(Context context) throws IOException, UndefinedContextException, WalletException {
         return this.send(context, this.messages.getJSONObject(Connecting.CREATE_CONNECTION));
     }
 }

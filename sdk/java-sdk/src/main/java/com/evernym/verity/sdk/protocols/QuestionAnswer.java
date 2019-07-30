@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
 
 import com.evernym.verity.sdk.utils.Util;
@@ -114,7 +116,7 @@ public class QuestionAnswer extends Protocol {
      * @throws IndyException when there are issues with encryption and decryption
      */
     @SuppressWarnings("WeakerAccess")
-    public byte[] ask(Context context) throws IOException, InterruptedException, ExecutionException, IndyException {
+    public byte[] ask(Context context) throws IOException, UndefinedContextException, WalletException {
         return this.send(context, this.messages.getJSONObject(QuestionAnswer.QUESTION));
     }
 }
