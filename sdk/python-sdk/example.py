@@ -39,7 +39,7 @@ async def example():
 
     # write to file for integration tests
     with open('example/inviteDetails.json', 'w') as outfile:
-      json.dump(invite_details, outfile)
+      outfile.write(invite_details)
 
   # You can also add handlers like this
   # handlers.add_handler(Connecting.get_status_message_type(), Connecting.AWAITING_RESPONSE_STATUS, print_invite_details)
