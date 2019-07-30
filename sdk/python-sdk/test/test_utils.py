@@ -5,8 +5,9 @@ import pytest
 from indy import did, wallet
 
 from src.protocols.Protocol import Protocol
-from src.utils import prepare_forward_message, pack_message_for_verity, unpack_forward_message, get_message_type, \
-  get_problem_report_message_type, MESSAGE_TYPE_DID, get_status_message_type
+from src.utils import prepare_forward_message, pack_message_for_verity, \
+  unpack_forward_message, get_message_type, get_problem_report_message_type, \
+  MESSAGE_TYPE_DID, get_status_message_type
 from src.utils.Context import Context
 
 

@@ -79,4 +79,3 @@ class AddHandler():
 
   def __call__(self, handler, *args, **kwargs):
     self.handlers.add_handler(self.message_type, self.message_status, handler)
-
