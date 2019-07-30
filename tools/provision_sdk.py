@@ -37,7 +37,7 @@ async def send_msg(url, my_wallet, message_json, agency_did, agency_verkey, my_v
     agency_message = await crypto.pack_message(my_wallet, json.dumps(message_json), [agency_verkey], my_verkey)
 
     forward_msg = {
-        "@type":"did:sov:123456789abcdefghi1234;spec/routing/0.6/FWD",
+        "@type":"did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD",
         "@fwd":agency_did,
         "@msg":json.loads(agency_message.decode('utf-8'))
     }
