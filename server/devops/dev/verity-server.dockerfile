@@ -81,6 +81,6 @@ RUN sed -i 's/"institution_name": "<CHANGE_ME>"/"institution_name": "test"/g' /e
 RUN sed -i 's/"institution_logo_url": "<CHANGE_ME>"/"institution_logo_url": "https:\/\/robohash.org\/verity-server"/g' /etc/verity-server/vcxconfig.json
 RUN sed -i '9 a "payment_method": "null",' /etc/verity-server/vcxconfig.json
 
-RUN npm install -g nodemon
+RUN npm install -g nodemon typescript ts-node
 
 EXPOSE 8080

@@ -2,8 +2,13 @@ package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.TestWallet;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
+import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.junit.Test;
+
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -12,8 +17,8 @@ public class ContextBuilderTest {
 
     @Test
     public void simpleBuild() throws Exception {
-        String walletName = "test1";
-        String walletKey = "test1";
+        String walletName = UUID.randomUUID().toString();
+        String walletKey = UUID.randomUUID().toString();
         try (TestWallet testWallet = new TestWallet(walletName, walletKey)) {
             Context c = new ContextBuilder()
                     .walletName(walletName)
@@ -27,8 +32,8 @@ public class ContextBuilderTest {
 
     @Test
     public void multiBuild() throws Exception {
-        String walletName = "test1";
-        String walletKey = "test1";
+        String walletName = UUID.randomUUID().toString();
+        String walletKey = UUID.randomUUID().toString();
         try (TestWallet testWallet = new TestWallet(walletName, walletKey)) {
             Context c = new ContextBuilder()
                     .walletName(walletName)
@@ -47,8 +52,8 @@ public class ContextBuilderTest {
 
     @Test
     public void multiClosedBuild() throws Exception {
-        String walletName = "test1";
-        String walletKey = "test1";
+        String walletName = UUID.randomUUID().toString();
+        String walletKey = UUID.randomUUID().toString();
         try (TestWallet testWallet = new TestWallet(walletName, walletKey)) {
             Context c = new ContextBuilder()
                     .walletName(walletName)
@@ -67,9 +72,9 @@ public class ContextBuilderTest {
     }
 
     @Test
-    public void fromScratch() throws Exception {
-        String walletName = "test1";
-        String walletKey = "test1";
+    public void fromScratch() throws WalletException, UndefinedContextException {
+        String walletName = UUID.randomUUID().toString();
+        String walletKey = UUID.randomUUID().toString();
         try (TestWallet testWallet = new TestWallet(walletName, walletKey)) {
             Did testDid = new Did("CV65RFpeCtPu82hNF9i61G", "7G3LhXFKXKTMv7XGx1Qc9wqkMbwcU2iLBHL8x1JXWWC2");
 

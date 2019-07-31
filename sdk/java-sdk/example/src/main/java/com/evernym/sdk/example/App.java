@@ -7,43 +7,43 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 
-import com.evernym.verity.sdk.protocols.Connection;
-import com.evernym.verity.sdk.protocols.CredDef;
-import com.evernym.verity.sdk.protocols.Credential;
+import com.evernym.verity.sdk.protocols.*;
 import com.evernym.verity.sdk.handlers.Handlers;
-import com.evernym.verity.sdk.protocols.ProofRequest;
-import com.evernym.verity.sdk.protocols.Question;
-import com.evernym.verity.sdk.protocols.Schema;
 import com.evernym.verity.sdk.utils.Context;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class App {
-    static Integer port = 4000;
-    static String connectionId;
-    static Context context;
-    static String credDefId;
-    static Credential credential;
-    static Handlers handlers;
+    private static Integer port = 4000;
+    private static String connectionId;
+    private static String credDefId;
+    private static Context context;
+    private static QuestionAnswer questionAnswer;
+    private static WriteSchema writeSchema;
+    private static WriteCredentialDefinition writeCredDef;
+    private static IssueCredential issueCredential;
+    private static PresentProof presentProof;
+    private static Handlers handlers;
 
     public static void main( String[] args ) {
         try {
-            // NOTE: You must provision against Verity using the provision-sdk.py script before running this example. 
+            // NOTE: You must provision against Verity using the provision-sdk.py script before running this example.
                 // The output of that script should be stored in verityConfig.json
 
             startListening(); // The example app stands up an endpoint to listen for messages from Verity
             context = new Context(readConfigFile("verityConfig.json"));
-            context.sendUpdateWebhookMessage(context); // The SDK lets Verity know what its endpoint is
+            UpdateEndpoint updateEndpoint = new UpdateEndpoint(context);
+            updateEndpoint.update(); // The SDK lets Verity know what its endpoint is
 
-            // Create a new connection (initiates the daisy-chained flow of Connection, Question, Credential, Proof)
-            Connection connection = new Connection("my institution id", true); // Note that Connection also supports a phone number in the constructor. See javadocs.
-            connection.create(context); // Send the connection create message to Verity
+            // Create a new connection (initiates the daisy-chained flow of Connecting, QuestionAnswer, Credential, Proof)
+            Connecting connecting = new Connecting("my institution id", true); // Note that Connecting also supports a phone number in the constructor. See javadocs.
+            connecting.connect(context); // Send the connection create message to Verity
 
             handlers = new Handlers();
 
             // Handler for getting invite details (connection awaiting response)
-            handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
+            handlers.addHandler(Connecting.getStatusMessageType(), Connecting.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
                 try {
                     JSONObject inviteDetails = new JSONObject(message.getString("content"));
                     System.out.print("Invite Details: ");
@@ -54,81 +54,82 @@ public class App {
                 }
             });
 
-            // Handler for Connection Accepted message
-            handlers.addHandler(Connection.STATUS_MESSAGE_TYPE, Connection.ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+            // Handler for Connecting Accepted message
+            handlers.addHandler(Connecting.getStatusMessageType(), Connecting.INVITE_ACCEPTED_STATUS, (JSONObject message) -> {
                 try {
-                    System.out.println("Connection Accepted!!!");
+                    System.out.println("Connecting Accepted!!!");
 
                     // Now that the connection has been accepted, let's send Alice a Question.
                     App.connectionId = message.getString("content");
                     String notificationTitle = "Challenge Question";
                     String questionText = "Hi Alice, how are you today?";
                     String questionDetail = " ";
-                    String[] validResponses = {"Great!", "Not so good"};
-                    Question provableQuestion = new Question(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
-                    provableQuestion.ask(context);
+                    String[] validResponses = {"Great!", "Not so good."};
+                    questionAnswer = new QuestionAnswer(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
+                    questionAnswer.ask(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Question Answered message
-            handlers.addHandler(Question.STATUS_MESSAGE_TYPE, Question.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
+            handlers.addHandler(QuestionAnswer.getStatusMessageType(), QuestionAnswer.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("Question Answered: \"" + message.getString("content") + "\"");
 
                     // Write a Schema and Cred Def to the ledger in preparation for issuing
                     // This step will likely be done manually by the institution, and not on a regular basis
                     String schemaName = "My test schema";
-                    String schemaVersion = getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString();
-                    Schema schema = new Schema(schemaName, schemaVersion, "name", "degree");
-                    schema.write(context);
+                    String schemaVersion = getRandomVersion();
+                    writeSchema = new WriteSchema(schemaName, schemaVersion, "name", "degree");
+                    writeSchema.write(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Schema write successful status
-            handlers.addHandler(Schema.STATUS_MESSAGE_TYPE, Schema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
+            handlers.addHandler(WriteSchema.getStatusMessageType(), WriteSchema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
                     String credDefName = "My test credential definition";
                     String schemaId = message.getString("content");
                     String credDefTag = "latest";
                     JSONObject revocationDetails = new JSONObject();
                     revocationDetails.put("support_revocation", false);
-                    CredDef credDef = new CredDef(credDefName, schemaId, credDefTag, revocationDetails);
-                    credDef.write(context);
+                    writeCredDef = new WriteCredentialDefinition(credDefName, schemaId, credDefTag, revocationDetails);
+                    writeCredDef.write(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Cred Def write successful status
-            handlers.addHandler(CredDef.STATUS_MESSAGE_TYPE, CredDef.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
+            handlers.addHandler(WriteCredentialDefinition.getStatusMessageType(), WriteCredentialDefinition.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
                 try {
                     // Issue a credential to Alice
                     credDefId = message.getString("content");
+                    String credentialName = "Degree";
                     JSONObject credentialValues = new JSONObject();
                     credentialValues.put("name", "Joe Smith");
                     credentialValues.put("degree", "Bachelors");
-                    credential = new Credential(connectionId, credDefId, credentialValues, 0);
-                    credential.send(context);
+                    issueCredential = new IssueCredential(connectionId, credentialName, credDefId, credentialValues, 0);
+                    issueCredential.issue(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Credential Offer Accepted message
-            handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+            handlers.addHandler(IssueCredential.getStatusMessageType(), IssueCredential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
                 try {
-                    System.out.println("User accepted the credential offer. Verity should now be sending the Credential");
+                    System.out.println("User has accepted the credential offer. Verity is now sending the Credential");
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Credential Accepted message
-            handlers.addHandler(Credential.STATUS_MESSAGE_TYPE, Credential.CREDENTIAL_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
+            handlers.addHandler(IssueCredential.getStatusMessageType(), IssueCredential.CREDENTIAL_SENT_TO_USER_STATUS, (JSONObject message) -> {
                 try {
                     System.out.println("User accepted the credential");
 
@@ -137,15 +138,15 @@ public class App {
                     JSONArray proofAttrs = new JSONArray();
                     proofAttrs.put(getProofAttr("name", credDefId.split(":")[0]));
                     JSONObject revocationInterval = new JSONObject();
-                    ProofRequest proofRequest = new ProofRequest(connectionId, proofRequestName, proofAttrs, revocationInterval);
-                    proofRequest.send(context);
+                    presentProof = new PresentProof(connectionId, proofRequestName, proofAttrs, revocationInterval);
+                    presentProof.request(context);
                 } catch(Exception ex) {
                     ex.printStackTrace();
                 }
             });
 
             // Handler for Proof Received message
-            handlers.addHandler(ProofRequest.STATUS_MESSAGE_TYPE, ProofRequest.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
+            handlers.addHandler(PresentProof.getStatusMessageType(), PresentProof.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
                 System.out.println("Proof Accepted!");
                 System.out.println(message.toString());
                 System.exit(0);
@@ -187,8 +188,12 @@ public class App {
         Files.write(FileSystems.getDefault().getPath("inviteDetails.json"), data.toString().getBytes());
     }
 
+    private static String getRandomVersion() {
+        return getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString();
+    }
+
     private static Integer getRandomInt(int min, int max) {
-        return new Integer((int)(Math.random() * ((max - min) + 1)) + min);
+        return (int)(Math.random() * ((max - min) + 1)) + min;
     }
 
     // Builds JSON object for proof requested attributes

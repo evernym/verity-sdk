@@ -6,7 +6,7 @@
 
   <groupId>com.evernym.verity.sdk</groupId>
   <artifactId>java-sdk</artifactId>
-  <version>0.20-SNAPSHOT</version>
+  <version>0.21-SNAPSHOT</version>
 
   <name>java-sdk</name>
   <!-- FIXME change it to the project's website -->
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.8.0-beta4</version>
+      <version>1.7.26</version>
     </dependency>
     <!-- Uncomment to enable logging -->
     <!-- <dependency>
@@ -80,11 +80,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.3</version>
-      </plugin>
     </plugins>
   </reporting>
 
@@ -108,6 +103,10 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
+          <configuration>
+            <parallel>all</parallel>
+            <useUnlimitedThreads>true</useUnlimitedThreads>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>

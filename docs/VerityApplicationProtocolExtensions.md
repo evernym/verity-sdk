@@ -268,7 +268,7 @@ Initiates the process to connect with a user
 
 ```json
 {
-    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/new_connection",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connecting/0.1/new_connection",
     "@id": <uuid>,
     "connectionDetail":{
         "sourceId": "CONN_iAmAConnId",
@@ -300,7 +300,7 @@ Problem report for the connection protocol. See [Problem report common](#Attribu
 
 ```json
 {
-    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/problem_report",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connecting/0.1/problem_report",
     "@id": <uuid>,
     "~thread": {
         "pthid": <pthid>
@@ -322,7 +322,7 @@ Verity generated message that gives human readable indications of the current st
 
 ```json
 {
-    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connection/0.1/status",
+    "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connecting/0.1/status",
     "@id": <uuid>
     "~thread": {
         "thid": <pthid>,
@@ -339,7 +339,6 @@ Verity generated message that gives human readable indications of the current st
 * `status` enum that resolves to one of 2 states:
     * `0` awaiting response. (invite details in content and invite has been sent if phoneNo defined)
     * `1` invite was accepted by the user (connectionId in content)
-    * `2` connection invite accepted by verity on your behalf
 * `message` **optional** message relating to the status
 * `content` **optional** content field associated with the status
 
@@ -632,11 +631,12 @@ Send a credential to a user
 
 ```json
 {
-    "@type": "vs.service/credential/0.1/credential",
-    "@id": <uuid>,
-    "connectionId": "<pairwise_did>",
-    "credentialData":{
+	"@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/issue-credential/0.1/issue-credential",
+	"@id": <uuid>,
+	"connectionId": "<pairwise_did>",
+	"credentialData":{
         "id": <uuid>,
+        "name": "Diploma",
         "credDefId": "did:sov:abcdefg12345",
         "credentialValues": {
             "name": "Joe Smith",
@@ -653,6 +653,7 @@ Send a credential to a user
 * `connectionId` is the id of the connection to whom you want to send the credential
 * `credentialData`
 	* `id` unique UUID of the credential
+	* `name` name of the credential. eg: Driver's License
 	* `credDefId` Credential Definition ID of credential being sent
 	* `credentialValues` key-value pairs of credential attribute fields with the specified params defined in the credential definition
 
@@ -703,7 +704,6 @@ Verity generated message that gives human readable indications of the current st
     * `0` Offer sent to user
     * `1` Offer accepted by user
     * `2` Credential sent to user
-    * `3` Credential accepted by user
 * `message` **optional** message relating to the status
 
 ---

@@ -3,16 +3,12 @@ package com.evernym.verity.sdk.utils;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletCloseException;
 import com.evernym.verity.sdk.exceptions.WalletClosedException;
-import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
-import com.evernym.verity.sdk.transports.HTTPTransport;
-import com.evernym.verity.sdk.transports.Transport;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.Wallet;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -30,7 +26,7 @@ public final class Context {
     final private String verityPairwiseVerkey;
     final private String sdkPairwiseDID;
     final private String sdkPairwiseVerkey;
-    final private String webhookUrl;
+    final private String endpointUrl;
     final private Wallet walletHandle;
 
 
@@ -46,7 +42,7 @@ public final class Context {
         String verityPairwiseVerkey,
         String sdkPairwiseDID,
         String sdkPairwiseVerkey,
-        String webhookUrl
+        String endpointUrl
     ) throws WalletOpenException {
         this.walletName = walletName;
         this.walletKey = walletKey;
@@ -57,7 +53,7 @@ public final class Context {
         this.verityPairwiseVerkey = verityPairwiseVerkey;
         this.sdkPairwiseDID = sdkPairwiseDID;
         this.sdkPairwiseVerkey = sdkPairwiseVerkey;
-        this.webhookUrl = webhookUrl;
+        this.endpointUrl = endpointUrl;
         this.walletHandle = openWallet();
     }
 
@@ -71,7 +67,7 @@ public final class Context {
             String verityPairwiseVerkey,
             String sdkPairwiseDID,
             String sdkPairwiseVerkey,
-            String webhookUrl,
+            String endpointUrl,
             Wallet handle
     ) throws WalletOpenException {
         if (handle == null) {
@@ -87,18 +83,18 @@ public final class Context {
         this.verityPairwiseVerkey = verityPairwiseVerkey;
         this.sdkPairwiseDID = sdkPairwiseDID;
         this.sdkPairwiseVerkey = sdkPairwiseVerkey;
-        this.webhookUrl = webhookUrl;
+        this.endpointUrl = endpointUrl;
         this.walletHandle = handle;
     }
 
     /**
      * Initialize the Context object
+     * 
      * @param configJson the config output by the tools/provision_sdk.py script
-     * @throws InterruptedException when the wallet does not exist or Indy is unable to open it.
-     * @throws ExecutionException when the wallet does not exist or Indy is unable to open it.
-     * @throws IndyException when the wallet does not exist or Indy is unable to open it.
+     * @throws WalletOpenException when libindy is unable to open the wallet
+     * @throws JSONException when attributes are missing from the configuration JSON
      */
-    public Context(String configJson) throws WalletOpenException {
+    public Context(String configJson) throws WalletOpenException, JSONException {
         // TODO: Validate config
         JSONObject config = new JSONObject(configJson);
         this.walletName = config.getString("walletName");
@@ -110,59 +106,23 @@ public final class Context {
         this.verityPairwiseVerkey = config.getString("verityPairwiseVerkey");
         this.sdkPairwiseDID = config.getString("sdkPairwiseDID");
         this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
-        this.webhookUrl = config.getString("webhookUrl");
+        this.endpointUrl = config.getString("endpointUrl");
         this.walletHandle = openWallet();
     }
 
-    /**
-     * Builds and encrypts the message to let Verity know what the SDK's endpoint is
-     * @return the encrypted message, ready to be POSTed to the agency endpoint
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
-     */
-    public byte[] getUpdateWebhookMessage() throws WalletException, UndefinedContextException {
-        /*
-            {
-                "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/update_com_method",
-                "@id": <uuid>,
-                "comMethod": {
-                    "id": "webhook",
-                    "type": "webhook"
-                    "value": <new webhook>
-                }
-            }
-        */
-        JSONObject message = new JSONObject();
-        message.put("@type", "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD");
-        message.put("@id", UUID.randomUUID().toString());
-        JSONObject comMethod = new JSONObject();
-        comMethod.put("id", "webhook");
-        comMethod.put("type", 2);
-        comMethod.put("value", this.webhookUrl);
-        message.put("comMethod", comMethod);
-        return MessagePackaging.packMessageForVerity(this, message.toString());
+    public String walletConfig() throws JSONException, UndefinedContextException {
+        return new JSONObject().put("id", walletName()).toString();
     }
 
-    /**
-     * Sends a message to Verity to let it know what the SDK's endpoint is.
-     * @param context
-     * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
-     */
-    public void sendUpdateWebhookMessage(Context context) throws IOException, UndefinedContextException, WalletException {
-        // Later we can switch on transport type
-        Transport transport = new HTTPTransport();
-        transport.sendMessage(context.verityUrl(), getUpdateWebhookMessage());
+    public String walletCredentials() throws JSONException, UndefinedContextException {
+        return new JSONObject().put("key", walletKey()).toString();
     }
 
-    private Wallet openWallet() throws WalletOpenException {
-        String walletConfig = new JSONObject().put("id", walletName).toString();
-        String walletCredentials = new JSONObject().put("key", walletKey).toString();
+    private Wallet openWallet() throws WalletOpenException, JSONException {
         try {
-            return Wallet.openWallet(walletConfig, walletCredentials).get();
+            return Wallet.openWallet(walletConfig(), walletCredentials()).get();
         }
-        catch (IndyException | ExecutionException | InterruptedException e){
+        catch (IndyException | ExecutionException | InterruptedException | UndefinedContextException e){
             throw new WalletOpenException(e);
         }
     }
@@ -228,8 +188,8 @@ public final class Context {
         return throwIfNull(sdkPairwiseVerkey, "sdkPairwiseVerkey");
     }
 
-    public String webhookUrl() throws UndefinedContextException {
-        return throwIfNull(webhookUrl, "webhookUrl");
+    public String endpointUrl() throws UndefinedContextException {
+        return throwIfNull(endpointUrl, "endpointUrl");
     }
 
     public Wallet walletHandle() throws WalletClosedException {
@@ -237,6 +197,10 @@ public final class Context {
             throw new WalletClosedException();
         }
         return walletHandle;
+    }
+
+    public boolean walletIsClosed() {
+        return walletClosedFlag;
     }
 
     public ContextBuilder toContextBuilder() {
@@ -250,7 +214,7 @@ public final class Context {
         if(verityPairwiseVerkey != null) rtn.verityPairwiseVerkey(verityPairwiseVerkey);
         if(sdkPairwiseDID != null) rtn.sdkPairwiseDID(sdkPairwiseDID);
         if(sdkPairwiseVerkey != null) rtn.sdkPairwiseVerkey(sdkPairwiseVerkey);
-        if(webhookUrl != null) rtn.webhookUrl(webhookUrl);
+        if(endpointUrl != null) rtn.endpointUrl(endpointUrl);
 
         if (!walletClosedFlag) {
             rtn.walletHandle(walletHandle);

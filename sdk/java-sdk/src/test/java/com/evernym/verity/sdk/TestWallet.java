@@ -1,5 +1,6 @@
 package com.evernym.verity.sdk;
 
+import com.evernym.verity.sdk.exceptions.WalletException;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.did.Did;
 import org.hyperledger.indy.sdk.did.DidResults;
@@ -18,23 +19,27 @@ public class TestWallet implements AutoCloseable {
     private final String walletCredentials;
     private final String walletConfig;
 
-    public TestWallet(String walletName, String walletKey) throws InterruptedException, ExecutionException, IndyException {
-        walletConfig = new JSONObject().put("id", walletName).toString();
-        walletCredentials = new JSONObject().put("key", walletKey).toString();
-        Wallet.createWallet(walletConfig, walletCredentials).get();
-        Wallet walletHandle = Wallet.openWallet(walletConfig, walletCredentials).get();
-        
-        DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-        this.verityPublicDID = theirResult.getDid();
-        this.verityPublicVerkey = theirResult.getVerkey();
-        DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-        this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
-        this.verityPairwiseDID = theirPairwiseResult.getDid();
-        DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-        this.sdkPairwiseDID = myPairwiseResult.getDid();
-        this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
+    public TestWallet(String walletName, String walletKey) throws WalletException {
+        try {
+            walletConfig = new JSONObject().put("id", walletName).toString();
+            walletCredentials = new JSONObject().put("key", walletKey).toString();
+            Wallet.createWallet(walletConfig, walletCredentials).get();
+            Wallet walletHandle = Wallet.openWallet(walletConfig, walletCredentials).get();
 
-        walletHandle.closeWallet().get();
+            DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
+            this.verityPublicDID = theirResult.getDid();
+            this.verityPublicVerkey = theirResult.getVerkey();
+            DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
+            this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
+            this.verityPairwiseDID = theirPairwiseResult.getDid();
+            DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
+            this.sdkPairwiseDID = myPairwiseResult.getDid();
+            this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
+
+            walletHandle.closeWallet().get();
+        } catch (InterruptedException | ExecutionException | IndyException e) {
+            throw new WalletException("Failed to initialize TestWallet", e);
+        }
     }
 
     public String getVerityPublicDID() {
@@ -62,7 +67,11 @@ public class TestWallet implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
-        Wallet.deleteWallet(walletConfig, walletCredentials).get();
+    public void close() throws WalletException {
+        try {
+            Wallet.deleteWallet(walletConfig, walletCredentials).get();
+        } catch (IndyException | ExecutionException | InterruptedException e) {
+            throw new WalletException("Failed to close TestWallet", e);
+        }
     }
 }

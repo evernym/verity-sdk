@@ -88,7 +88,7 @@ export class Agency {
         try {
             const details = await this.unpackForwardMessage(message)
             console.log(details)
-            if (details['@type'] === 'did:sov:123456789abcdefghi1234;spec/agent-provisioning/0.6/CREATE_AGENT') {
+            if (details['@type'] === 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/agent-provisioning/0.6/CREATE_AGENT') {
                 const response = await this.connect(details)
                 res.send(response)
             } else {

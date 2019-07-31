@@ -1,11 +1,12 @@
- package com.evernym.verity.sdk.handlers;
+package com.evernym.verity.sdk.handlers;
 
- import com.evernym.verity.sdk.exceptions.WalletException;
- import com.evernym.verity.sdk.utils.Context;
- import com.evernym.verity.sdk.utils.MessagePackaging;
- import org.json.JSONObject;
+import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.utils.Context;
+import org.json.JSONObject;
 
- import java.util.ArrayList;
+import com.evernym.verity.sdk.utils.Util;
+
+import java.util.ArrayList;
 
 /**
  * Stores an array of message handlers that are used when receiving an inbound message
@@ -57,7 +58,7 @@ public class Handlers {
      * @throws WalletException when there are issues with encryption and decryption
      */
     public void handleMessage(Context context, byte[] rawMessage) throws WalletException {
-        JSONObject message = MessagePackaging.unpackMessageFromVerity(context, rawMessage);
+        JSONObject message = Util.unpackMessage(context, rawMessage);
         boolean handled = false;
         for(MessageHandler messageHandler: messageHandlers) {
             if(messageHandler.handles(message)) {
@@ -74,7 +75,7 @@ public class Handlers {
         }
     }
 
-    protected static boolean isProblemReport(String messageType) {
+    static boolean isProblemReport(String messageType) {
         return messageType.split("/")[3].equals("problem-report");
     }
     

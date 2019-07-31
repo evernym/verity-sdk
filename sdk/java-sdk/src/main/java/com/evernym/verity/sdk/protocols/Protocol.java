@@ -5,8 +5,9 @@ import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.transports.Transport;
 import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.MessagePackaging;
+import com.evernym.verity.sdk.utils.Util;
 
+import org.json.JSONObject;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -14,10 +15,13 @@ import java.util.UUID;
  * The base class for all protocols
  */
 public abstract class Protocol {
-    protected String id;
+    private boolean sendDisabled = false;
 
+    JSONObject messages;
+
+    @SuppressWarnings("WeakerAccess")
     public Protocol() {
-        this.id = UUID.randomUUID().toString();
+        messages = new JSONObject();
     }
     
     /**
@@ -27,21 +31,9 @@ public abstract class Protocol {
      * @throws WalletException when there are issues with encryption and decryption
      * @throws UndefinedContextException when the context don't have enough information for this operation
      */
-    public byte[] getMessage(Context context) throws WalletException, UndefinedContextException {
-        return MessagePackaging.packMessageForVerity(context, toString());
-    }
-
-    /**
-     * Encrypts and sends the default message to Verity
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
-     */
-    public void sendMessage(Context context) throws IOException, UndefinedContextException, WalletException {
-        // Later we can switch on context.getVerityProtocol
-        Transport transport = new HTTPTransport();
-        transport.sendMessage(context.verityUrl(), getMessage(context));
+    @SuppressWarnings("WeakerAccess")
+    public static byte[] getMessage(Context context, JSONObject message) throws UndefinedContextException, WalletException {
+        return Util.packMessageForVerity(context, message);
     }
 
     /**
@@ -52,11 +44,28 @@ public abstract class Protocol {
      * @throws WalletException when there are issues with encryption and decryption
      * @throws UndefinedContextException when the context don't have enough information for this operation
      */
-    public void sendMessage(Context context, String message) throws IOException, UndefinedContextException, WalletException {
-        // Later we can switch on context.getVerityProtocol
-        Transport transport = new HTTPTransport();
-        transport.sendMessage(context.verityUrl(), MessagePackaging.packMessageForVerity(context, message));
+    byte[] send(Context context, JSONObject message) throws IOException, UndefinedContextException, WalletException {
+        byte[] messageToSend = Util.packMessageForVerity(context, message);
+        if(! sendDisabled) {
+            Transport transport = new HTTPTransport();
+            transport.sendMessage(context.verityUrl(), messageToSend);
+        }
+        return messageToSend;
     }
 
-    public abstract String toString();
+    void disableHTTPSend() {
+        sendDisabled = true;
+    }
+
+    static String getNewId() {
+        return UUID.randomUUID().toString();
+    }
+
+    public void sendMessage(Context context, JSONObject message) throws IOException, UndefinedContextException, WalletException {
+        // Later we can switch on context.getVerityProtocol
+        Transport transport = new HTTPTransport();
+        transport.sendMessage(context.verityUrl(), Util.packMessageForVerity(context, message));
+    }
+
+    protected abstract void defineMessages();
 }

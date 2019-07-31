@@ -59,7 +59,7 @@ public class ContextBuilder {
     private final String verityPairwiseVerkey = "verityPairwiseVerkey";
     private final String sdkPairwiseDID = "sdkPairwiseDID";
     private final String sdkPairwiseVerkey = "sdkPairwiseVerkey";
-    private final String webhookUrl = "webhookUrl";
+    private final String endpointUrl = "endpointUrl";
 
     public ContextBuilder() {}
 
@@ -77,7 +77,7 @@ public class ContextBuilder {
     public ContextBuilder verityPairwiseVerkey(String val) {return putElement(verityPairwiseVerkey, val);}
     public ContextBuilder sdkPairwiseDID(String val) {return putElement(sdkPairwiseDID, val);}
     public ContextBuilder sdkPairwiseVerkey(String val) {return putElement(sdkPairwiseVerkey, val);}
-    public ContextBuilder webhookUrl(String val) {return putElement(webhookUrl, val);}
+    public ContextBuilder endpointUrl(String val) {return putElement(endpointUrl, val);}
     ContextBuilder walletHandle(Wallet val) {
         walletHandle = val;
         return this;
@@ -100,7 +100,7 @@ public class ContextBuilder {
                     elements.get(verityPairwiseVerkey),
                     elements.get(sdkPairwiseDID),
                     elements.get(sdkPairwiseVerkey),
-                    elements.get(webhookUrl)
+                    elements.get(endpointUrl)
             );
         }
         else {
@@ -114,7 +114,7 @@ public class ContextBuilder {
                     elements.get(verityPairwiseVerkey),
                     elements.get(sdkPairwiseDID),
                     elements.get(sdkPairwiseVerkey),
-                    elements.get(webhookUrl),
+                    elements.get(endpointUrl),
                     walletHandle
             );
         }
