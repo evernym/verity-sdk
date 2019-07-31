@@ -168,7 +168,7 @@ upload_to_pypi:
   when: on_success
   only:
     refs:
-      - "python-sdk@spencer.holman/verity-sdk"
+      - "master@dev/verity/verity-sdk"
     changes:
       - sdk/python-sdk/*
 
