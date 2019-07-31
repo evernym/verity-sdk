@@ -1,15 +1,12 @@
 package com.evernym.verity.sdk.protocols;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
 
 import com.evernym.verity.sdk.utils.Util;
-import org.hyperledger.indy.sdk.IndyException;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**

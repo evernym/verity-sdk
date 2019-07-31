@@ -3,17 +3,12 @@ package com.evernym.verity.sdk.utils;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletCloseException;
 import com.evernym.verity.sdk.exceptions.WalletClosedException;
-import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
-import com.evernym.verity.sdk.transports.HTTPTransport;
-import com.evernym.verity.sdk.transports.Transport;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 /**
