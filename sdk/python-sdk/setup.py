@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="verity-sdk",
-    version="0.0.1",
+    version="0.0.2",
     author="Evernym, Inc.",
     author_email="spencer.holman@evernym.com",
     description="The official Python SDK for Evernym's Verity",
