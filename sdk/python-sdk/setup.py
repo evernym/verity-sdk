@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.0.1",
     author="Evernym, Inc.",
     author_email="spencer.holman@evernym.com",
-    description="The official Python SDK for Verity",
+    description="The official Python SDK for Evernym's Verity",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),

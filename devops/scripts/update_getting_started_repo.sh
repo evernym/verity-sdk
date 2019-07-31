@@ -28,6 +28,7 @@ sed -i 's/package com.evernym.sdk.example;/package com.mycompany.app;/g' $TEMP_D
 # Update python/
 cp sdk/python-sdk/example.py $TEMP_DIR/python/.
 cat sdk/python-sdk/example/requirements.txt >> $TEMP_DIR/python/requirements.txt
+echo -e '\n' >> $TEMP_DIR/python/requirements.txt
 cat $TEMP_DIR/tools/requirements.txt >> $TEMP_DIR/python/requirements.txt
 
 # Generate and add Flow Diagram

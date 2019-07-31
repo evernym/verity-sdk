@@ -172,7 +172,7 @@ upload_to_pypi:
   when: on_success
   only:
     refs:
-      - "python-sdk-deploy-test@spencer.holman/verity-sdk"
+      - "python-sdk@spencer.holman/verity-sdk"
     changes:
       - sdk/python-sdk/*
 
