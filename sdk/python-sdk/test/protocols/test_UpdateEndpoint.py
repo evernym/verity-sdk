@@ -25,9 +25,9 @@ async def test_write():
   assert msg['comMethod']['id'] == 'webhook'
   assert msg['comMethod']['type'] == 2
   assert msg['comMethod']['value'] == context.endpoint_url
-  
+
   await cleanup(context)
-  
+
 def test_get_message_type():
   assert UpdateEndpoint.get_message_type('message_name') == '{};spec/configs/0.6/message_name'.format(MESSAGE_TYPE_DID)
 
