@@ -1,6 +1,6 @@
 from typing import Callable, List, Optional, Coroutine, Any
 
-from src.utils import Context, unpack_message
+from verity_sdk.utils import Context, unpack_message
 
 
 def is_problem_report(message_type: str) -> bool:

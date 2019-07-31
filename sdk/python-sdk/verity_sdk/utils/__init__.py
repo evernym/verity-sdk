@@ -3,7 +3,7 @@ from typing import Dict
 from uuid import uuid4
 from indy import crypto
 
-from src.utils import Context
+from verity_sdk.utils import Context
 
 MESSAGE_TYPE_DID = 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw'
 

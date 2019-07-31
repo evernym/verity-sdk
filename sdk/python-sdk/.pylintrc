@@ -217,7 +217,7 @@ contextmanager-decorators=contextlib.contextmanager
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=120
+max-line-length=150
 
 # Regexp for a line that is allowed to be longer than the limit.
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$
@@ -335,7 +335,7 @@ int-import-graph=
 known-standard-library=
 
 # Force import order to recognize a module as part of a third party library.
-known-third-party=src,test # Hack. Not really 3rd party imports but fixes linting issues because pylint thinks src and test are from standard library.
+known-third-party=verity_sdk,test # Hack. Not really 3rd party imports but fixes linting issues because pylint thinks src and test are from standard library.
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists

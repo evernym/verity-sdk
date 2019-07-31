@@ -1,6 +1,6 @@
 import pytest
 
-from src.handlers import is_problem_report, Handlers, AddHandler
+from verity_sdk.handlers import is_problem_report, Handlers, AddHandler
 
 
 def test_is_problem_report():

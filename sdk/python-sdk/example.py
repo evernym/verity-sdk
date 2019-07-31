@@ -1,3 +1,6 @@
+
+__copyright__ = "COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC."
+
 import asyncio
 import json
 import random
@@ -5,15 +8,15 @@ import sys
 
 from aiohttp import web
 
-from src.handlers import Handlers, AddHandler
-from src.protocols.Connecting import Connecting
-from src.protocols.IssueCredential import IssueCredential
-from src.protocols.PresentProof import PresentProof
-from src.protocols.QuestionAnswer import QuestionAnswer
-from src.protocols.UpdateEndpoint import UpdateEndpoint
-from src.protocols.WriteCredentialDefinition import WriteCredentialDefinition
-from src.protocols.WriteSchema import WriteSchema
-from src.utils.Context import Context
+from verity_sdk.handlers import Handlers, AddHandler
+from verity_sdk.protocols.Connecting import Connecting
+from verity_sdk.protocols.IssueCredential import IssueCredential
+from verity_sdk.protocols.PresentProof import PresentProof
+from verity_sdk.protocols.QuestionAnswer import QuestionAnswer
+from verity_sdk.protocols.UpdateEndpoint import UpdateEndpoint
+from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
+from verity_sdk.protocols.WriteSchema import WriteSchema
+from verity_sdk.utils.Context import Context
 
 context = None
 handlers = Handlers()

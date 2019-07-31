@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from src.transports import send_message
+from verity_sdk.transports import send_message
 
 def test_send_message_passes():
   send_message('https://jsonplaceholder.typicode.com/posts', b'Hello, world!')

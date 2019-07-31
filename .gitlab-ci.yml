@@ -102,9 +102,10 @@ unit-tests-and-syntax:
   script:
     - cd sdk/java-sdk/ && mvn pmd:check && mvn pmd:cpd-check && cd - # Java SDK linting
     - cd sdk/java-sdk/ && mvn test && cd - # Java SDK unit tests
-    - cd sdk/python-sdk/ && python3.6 -m pylint --load-plugins pylint_quotes src test && cd - # Python SDK linting
+    - cd sdk/python-sdk/ && make lint && cd - # Python SDK linting
     - cd sdk/python-sdk/ && pytest && cd - # Python SDK unit tests
     - cd server && npm run lint && cd - # Mock Verity linting
+
 make_jar:
   stage: build
   image: $CI_REGISTRY_IMAGE/buildenv:latest
@@ -116,6 +117,18 @@ make_jar:
   artifacts:
     paths:
       - sdk/java-sdk/target/java-sdk*.jar
+    expire_in: 1 week
+
+build_python_sdk:
+  stage: build
+  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  extends: .tags
+  script:
+    - cd sdk/python-sdk/
+    - make build
+  artifacts:
+    paths:
+      - sdk/python-sdk/dist/*
     expire_in: 1 week
 
 verity-server-image-docker-build:
@@ -149,12 +162,28 @@ upload_to_maven:
     changes:
       - sdk/java-sdk/*
 
+upload_to_pypi:
+  stage: deploy
+  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  extends: .tags
+  script:
+    - cd sdk/python-sdk/
+    - make upload
+  dependencies:
+    - build_python_sdk
+  when: on_success
+  only:
+    refs:
+      - "python-sdk-deploy-test@spencer.holman/verity-sdk"
+    changes:
+      - sdk/python-sdk/*
+
 update_getting_started_guide:
   stage: deploy
   image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
   script:
-    - ./devops/scripts/update_getting_started_repo.sh
+    - ./devops/scripts/update_getting_started_repo.sh git@github.com:evernym/Getting-Started-With-The-Verity-SDK.git
   dependencies:
   when: on_success
   only:

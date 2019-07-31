@@ -1,8 +1,8 @@
 import pytest
 
-from src.protocols.Connecting import Connecting
-from src.utils import unpack_forward_message, MESSAGE_TYPE_DID
-from src.utils.Context import Context
+from verity_sdk.protocols.Connecting import Connecting
+from verity_sdk.utils import unpack_forward_message, MESSAGE_TYPE_DID
+from verity_sdk.utils.Context import Context
 from test.test_utils import get_test_config, send_stub, cleanup
 
 source_id = '12345'
