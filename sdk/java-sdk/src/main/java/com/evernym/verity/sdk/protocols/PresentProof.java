@@ -89,9 +89,9 @@ public class PresentProof extends Protocol {
     /**
      * Sends the proof request message to Verity
      * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws IOException               when the HTTP library fails to post to the agency endpoint
+     * @throws UndefinedContextException when the context doesn't have enough information for this operation
      * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
      */
     public byte[] request(Context context) throws IOException, UndefinedContextException, WalletException {
         return this.send(context, this.messages.getJSONObject(PresentProof.PROOF_REQUEST));

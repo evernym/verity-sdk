@@ -96,14 +96,8 @@ public final class Context {
      * Initialize the Context object
      * 
      * @param configJson the config output by the tools/provision_sdk.py script
-     * @throws UndefinedContextException
-     * @throws JSONException
-     * @throws InterruptedException      when the wallet does not exist or Indy is
-     *                                   unable to open it.
-     * @throws ExecutionException        when the wallet does not exist or Indy is
-     *                                   unable to open it.
-     * @throws IndyException             when the wallet does not exist or Indy is
-     *                                   unable to open it.
+     * @throws WalletOpenException when libindy is unable to open the wallet
+     * @throws JSONException when attributes are missing from the configuration JSON
      */
     public Context(String configJson) throws WalletOpenException, JSONException {
         // TODO: Validate config
@@ -119,48 +113,6 @@ public final class Context {
         this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
         this.endpointUrl = config.getString("endpointUrl");
         this.walletHandle = openWallet();
-    }
-
-    /**
-     * Builds and encrypts the message to let Verity know what the SDK's endpoint is
-     * @return the encrypted message, ready to be POSTed to the agency endpoint
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
-     */
-    public byte[] getUpdateWebhookMessage() throws WalletException, UndefinedContextException {
-        /*
-            {
-                "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/update_com_method",
-                "@id": <uuid>,
-                "comMethod": {
-                    "id": "webhook",
-                    "type": "webhook"
-                    "value": <new webhook>
-                }
-            }
-        */
-        JSONObject message = new JSONObject();
-        message.put("@type", "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/configs/0.6/UPDATE_COM_METHOD");
-        message.put("@id", UUID.randomUUID().toString());
-        JSONObject comMethod = new JSONObject();
-        comMethod.put("id", "webhook");
-        comMethod.put("type", 2); // FIXME: What does this magic number mean? Why 2?
-        comMethod.put("value", this.endpointUrl);
-        message.put("comMethod", comMethod);
-        return Util.packMessageForVerity(this, message);
-    }
-
-    /**
-     * Sends a message to Verity to let it know what the SDK's endpoint is.
-     * @param context
-     * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
-     */
-    public void sendUpdateWebhookMessage(Context context) throws IOException, UndefinedContextException, WalletException {
-        // Later we can switch on transport type
-        Transport transport = new HTTPTransport();
-        transport.sendMessage(context.verityUrl(), getUpdateWebhookMessage());
     }
 
     public String walletConfig() throws JSONException, UndefinedContextException {

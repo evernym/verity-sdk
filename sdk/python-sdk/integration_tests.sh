@@ -6,7 +6,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $SCRIPT_DIR
 python3.6 ./example.py &
 my_pid=$!
-sleep 30 # Wait for invitation details to be written to file
+sleep 10 # Wait for invitation details to be written to file
 cd $SCRIPT_DIR/../../tools/
 
 # POST invite details to autoresponder

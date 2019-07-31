@@ -7,13 +7,8 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 
-import com.evernym.verity.sdk.protocols.Connecting;
-import com.evernym.verity.sdk.protocols.WriteCredentialDefinition;
-import com.evernym.verity.sdk.protocols.IssueCredential;
+import com.evernym.verity.sdk.protocols.*;
 import com.evernym.verity.sdk.handlers.Handlers;
-import com.evernym.verity.sdk.protocols.PresentProof;
-import com.evernym.verity.sdk.protocols.QuestionAnswer;
-import com.evernym.verity.sdk.protocols.WriteSchema;
 import com.evernym.verity.sdk.utils.Context;
 
 import org.json.JSONArray;
@@ -38,7 +33,8 @@ public class App {
 
             startListening(); // The example app stands up an endpoint to listen for messages from Verity
             context = new Context(readConfigFile("verityConfig.json"));
-            context.sendUpdateWebhookMessage(context); // The SDK lets Verity know what its endpoint is
+            UpdateEndpoint updateEndpoint = new UpdateEndpoint(context);
+            updateEndpoint.update(); // The SDK lets Verity know what its endpoint is
 
             // Create a new connection (initiates the daisy-chained flow of Connecting, QuestionAnswer, Credential, Proof)
             Connecting connecting = new Connecting("my institution id", true); // Note that Connecting also supports a phone number in the constructor. See javadocs.

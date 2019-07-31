@@ -51,40 +51,5 @@ public class ContextTest {
         }
     }
 
-    @Test
-    public void shouldGenerateCorrectUpdateWebhookMessage() {
-        String walletName = UUID.randomUUID().toString();
-        String walletKey = "12345";
-        String endpointUrl = "http://localhost:4000";
-        String verityUrl = "http://localhost:3000";
-        Context context = null;
-        try {
-            TestWallet testWallet = new TestWallet(walletName, walletKey);
-            JSONObject config = new JSONObject();
-            config.put("walletName", walletName);
-            config.put("walletKey", walletKey);
-            config.put("verityUrl", verityUrl);
-            config.put("verityPublicDID", testWallet.getVerityPublicDID());
-            config.put("verityPublicVerkey", testWallet.getVerityPublicVerkey());
-            config.put("verityPairwiseDID", testWallet.getVerityPairwiseDID());
-            config.put("verityPairwiseVerkey", testWallet.getVerityPairwiseVerkey());
-            config.put("sdkPairwiseDID", testWallet.getSdkPairwiseDID());
-            config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
-            config.put("endpointUrl", endpointUrl);
-            context = new Context(config.toString());
-            byte[] updateWebhookMessage = context.getUpdateWebhookMessage();
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, updateWebhookMessage);
-            assertEquals("did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/configs/0.6/UPDATE_COM_METHOD", unpackedMessage.getString("@type"));
-            assertEquals("webhook", unpackedMessage.getJSONObject("comMethod").getString("id"));
-            assertEquals(2, unpackedMessage.getJSONObject("comMethod").getInt("type"));
-            assertEquals(endpointUrl, unpackedMessage.getJSONObject("comMethod").getString("value"));
-            context.closeWallet();
-            testWallet.close();
-        } catch(Exception e) {
-            e.printStackTrace();
-            fail();
-        }
-    }
-
     // TODO: Add more robust tests with bad configs.
 }

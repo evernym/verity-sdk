@@ -32,7 +32,7 @@ async def test_request():
   msg = await unpack_forward_message(context, msg)
 
   assert msg['@type'] == '{};spec/present-proof/0.1/request'.format(MESSAGE_TYPE_DID)
-  assert msg['@id']
+  assert msg['@id'] is not None
   assert msg['connectionId'] == connection_id
   assert msg['proofRequest']['name'] == name
   assert msg['proofRequest']['proofAttrs'] == proof_attrs

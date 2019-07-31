@@ -75,7 +75,7 @@ public class Handlers {
         }
     }
 
-    protected static boolean isProblemReport(String messageType) {
+    static boolean isProblemReport(String messageType) {
         return messageType.split("/")[3].equals("problem-report");
     }
     

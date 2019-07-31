@@ -35,7 +35,7 @@ async def test_issue():
   msg = await unpack_forward_message(context, msg)
 
   assert msg['@type'] == '{};spec/issue-credential/0.1/issue-credential'.format(MESSAGE_TYPE_DID)
-  assert msg['@id']
+  assert msg['@id'] is not None
   assert msg['connectionId'] == connection_id
   assert msg['credentialData']['id']
   assert msg['credentialData']['name'] == name

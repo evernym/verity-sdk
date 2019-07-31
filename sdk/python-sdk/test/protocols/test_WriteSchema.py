@@ -28,7 +28,7 @@ async def test_write():
   msg = await unpack_forward_message(context, msg)
 
   assert msg['@type'] == '{};spec/write-schema/0.1/write'.format(MESSAGE_TYPE_DID)
-  assert msg['@id']
+  assert msg['@id'] is not None
   assert msg['name'] == schema_name
   assert msg['version'] == schema_version
   assert msg['attrNames'] == list(attrs)

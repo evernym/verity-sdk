@@ -18,7 +18,6 @@ public class WriteSchemaTest {
 
     @Test
     public void testGetMessageType() {
-        WriteSchema writeSchema = new WriteSchema(schemaName, schemaVersion, attr1, attr2);
         String msgName = "msg name";
         assertEquals(Util.getMessageType("write-schema", "0.1", msgName), WriteSchema.getMessageType(msgName));
     }

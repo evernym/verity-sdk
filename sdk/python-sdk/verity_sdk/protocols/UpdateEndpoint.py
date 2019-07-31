@@ -17,13 +17,15 @@ class UpdateEndpoint(Protocol):
     self.define_messages()
 
   def define_messages(self):
+    COM_METHOD_TYPE = 2
+
     self.messages = {
       self.UPDATE_ENDPOINT: {
         '@type': UpdateEndpoint.get_message_type(self.UPDATE_ENDPOINT),
         '@id': UpdateEndpoint.get_new_id(),
         'comMethod': {
           'id': 'webhook',
-          'type': 2, # FIXME: What does this magic number mean? What is it?
+          'type': COM_METHOD_TYPE,
           'value': self.context.endpoint_url
         }
       }

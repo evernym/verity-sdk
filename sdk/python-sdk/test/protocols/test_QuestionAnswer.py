@@ -49,7 +49,7 @@ async def test_ask():
   msg = await unpack_forward_message(context, msg)
 
   assert msg['@type'] == '{};spec/question-answer/0.1/question'.format(MESSAGE_TYPE_DID)
-  assert msg['@id']
+  assert msg['@id'] is not None
   assert msg['connectionId'] == connection_id
   assert msg['question']['notification_title'] == notification_title
   assert msg['question']['question_text'] == question_text

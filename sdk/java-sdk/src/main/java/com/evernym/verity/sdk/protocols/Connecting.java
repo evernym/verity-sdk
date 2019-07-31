@@ -106,13 +106,9 @@ public class Connecting extends Protocol {
      * 
      * @param context an instance of Context configured with the results of the
      *                provision_sdk.py script
-     * @throws WalletException
-     * @throws UndefinedContextException
-     * @throws JSONException
      * @throws IOException               when the HTTP library fails to post to the agency endpoint
-     * @throws InterruptedException      when there are issues with encryption and decryption
-     * @throws ExecutionException        when there are issues with encryption and decryption
-     * @throws IndyException             when there are issues with encryption and decryption
+     * @throws UndefinedContextException when the context doesn't have enough information for this operation
+     * @throws WalletException when there are issues with encryption and decryption
      */
     @SuppressWarnings("WeakerAccess")
     public byte[] connect(Context context) throws IOException, UndefinedContextException, WalletException {

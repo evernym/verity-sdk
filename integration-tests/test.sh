@@ -1,9 +1,12 @@
 #!/bin/bash
 
-docker-compose rm -sf # Force remove all running containers to make sure old containers aren't being reused.
+docker-compose rm -sf
 docker-compose build
 docker-compose run --rm --name integration-tests java-integration-tests
+JAVA_STATUS=$?
+docker-compose rm -sf
 docker-compose run --rm --name integration-tests python-integration-tests
-STATUS=$?
-docker-compose rm -sf # Cleanup
-exit $STATUS
+PYTHON_STATUS=$?
+docker-compose rm -sf
+
+! (( $JAVA_STATUS || $PYTHON_STATUS ))
