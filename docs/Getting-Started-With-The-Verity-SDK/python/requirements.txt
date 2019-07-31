@@ -1,1 +1,2 @@
-verity-sdk==0.0.1
+verity-sdk==0.0.2
+

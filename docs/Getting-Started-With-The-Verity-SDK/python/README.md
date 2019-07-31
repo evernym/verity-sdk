@@ -3,7 +3,7 @@
 
 ## Running the Example Python Application (Ubuntu 16.04)
 
-These steps target the x86-64 architecture running Ubuntu 16.04. If you want to run this inside a fresh VM, install [vagrant](https://www.vagrantup.com/) and (in an empty folder) run:
+These steps target the x86-64 architecture running Ubuntu 16.04. If you want to run this inside a fresh VM, install [vagrant](https://www.vagrantup.com/) and in an empty folder run:
 
 ```sh
 vagrant init ubuntu/xenial64
@@ -22,13 +22,13 @@ vagrant ssh
 
     ```sh
     sudo apt-get update
-    sudo apt-get install docker.io
+    sudo apt-get install -y docker.io
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88
     sudo add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial master"
     sudo apt-get update
-    sudo apt-get install libindy=1.9.0~1122
-    add-apt-repository ppa:jonathonf/python-3.6
-    apt-get update && apt-get install -y python3.6 python3-pip
+    sudo apt-get install -y libindy=1.9.0~1122
+    sudo add-apt-repository ppa:jonathonf/python-3.6
+    sudo apt-get update && sudo apt-get install -y python3.6 python3-pip
     ```
 	
 3. You will need to be a Trust Anchor on the Sovrin Test Ledger to run this example. Use the `tools/new_did.py` script to create a new DID and then email the DID and VerKey to [support@sovrin.org](mailto:support@sovrin.org) asking for that DID to be written to the Staging Net. You should received a response within 12 hours on a weekday (often much sooner!).
@@ -66,7 +66,7 @@ vagrant ssh
 
     ```sh
     cd python/
-    python3.6 -m pip install -r requirements.txt
+    python3.6 -m pip install -r requirements.txt --user
     python3.6 example.py
     ```
 	
