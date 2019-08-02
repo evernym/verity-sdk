@@ -25,7 +25,7 @@ export class UnfulfiledCredential {
             attr: this.message.credentialData.credentialValues,
             credDefHandle: this.myCredentialDef.handle,
             sourceId: uuid(),
-            credentialName: this.message.credentialData.credDefId,
+            credentialName: this.message.credentialData.name,
             price: this.message.credentialData.price.toString(),
         }
         this.credential = await vcx.IssuerCredential.create(offerMsg)

@@ -13,6 +13,7 @@ export interface ICredential extends IAgentMessage {
     'connectionId': string,
     'credentialData': {
         'id': string,
+        'name': string,
         'credDefId': string,
         'credentialValues': {
             [key: string]: string,
