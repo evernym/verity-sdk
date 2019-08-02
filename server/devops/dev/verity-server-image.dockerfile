@@ -13,4 +13,3 @@ RUN rm -rf ~/.indy_client
 
 RUN chmod u+x ./devops/dev/verity-entrypoint.sh
 ENTRYPOINT ["./devops/dev/verity-entrypoint.sh"]
-
