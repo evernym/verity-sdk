@@ -32,7 +32,7 @@ public class UtilTest {
 
     @Test
     public void testGetMessageTypeComplete() {
-        String msgType = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/status";
+        String msgType = "did:sov:123456789abcdefghi1234;spec/credential/0.1/status";
         assertEquals(msgType, Util.getMessageType("credential", "0.1", "status"));
     }
 }

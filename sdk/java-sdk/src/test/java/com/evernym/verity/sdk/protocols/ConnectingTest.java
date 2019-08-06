@@ -18,7 +18,7 @@ public class ConnectingTest {
     public void testGetMessageType() {
         Connecting connecting = new Connecting("none");
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("connecting", "0.1", msgName), Connecting.getMessageType(msgName));
+        assertEquals(Util.getMessageType("connecting", "0.6", msgName), Connecting.getMessageType(msgName));
     }
 
     @Test
@@ -61,10 +61,10 @@ public class ConnectingTest {
         JSONObject msg = connecting.messages.getJSONObject(Connecting.CREATE_CONNECTION);
         assertEquals(msg.getString("@type"), Connecting.getMessageType(Connecting.CREATE_CONNECTION));
         assertNotNull(msg.getString("@id"));
-        assertEquals(msg.getJSONObject("connectionDetail").getString("sourceId"), connecting.sourceId);
+        assertEquals(msg.getString("sourceId"), connecting.sourceId);
         if(connecting.phoneNumber != null)
-            assertEquals(msg.getJSONObject("connectionDetail").getString("phoneNo"), connecting.phoneNumber);
-        assertEquals(msg.getJSONObject("connectionDetail").getBoolean("usePublicDid"), connecting.usePublicDid);
+            assertEquals(msg.getString("phoneNo"), connecting.phoneNumber);
+        assertEquals(msg.getBoolean("usePublicDid"), connecting.usePublicDid);
     }
 
     @Test

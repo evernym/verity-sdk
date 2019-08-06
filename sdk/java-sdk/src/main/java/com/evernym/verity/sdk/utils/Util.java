@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
  * Static helper functions used for packaging and unpackaging messages
  */
 public class Util {
-    private static String MESSAGE_TYPE_DID = "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw";
+    private static String MESSAGE_TYPE_DID = "did:sov:123456789abcdefghi1234";
 
     public static byte[] packMessageForVerity(Wallet walletHandle,
                                               JSONObject message,

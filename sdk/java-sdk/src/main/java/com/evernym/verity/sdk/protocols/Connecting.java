@@ -15,7 +15,7 @@ import org.json.JSONObject;
 public class Connecting extends Protocol {
 
     private static String MSG_FAMILY = "connecting";
-    private static String MSG_FAMILY_VERSION = "0.1";
+    private static String MSG_FAMILY_VERSION = "0.6";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
@@ -90,11 +90,9 @@ public class Connecting extends Protocol {
         JSONObject createConnectionMessage = new JSONObject();
         createConnectionMessage.put("@type", Connecting.getMessageType(Connecting.CREATE_CONNECTION));
         createConnectionMessage.put("@id", Connecting.getNewId());
-            JSONObject connectionDetail = new JSONObject();
-            connectionDetail.put("sourceId", this.sourceId);
-            connectionDetail.put("phoneNo", this.phoneNumber);
-            connectionDetail.put("usePublicDid", this.usePublicDid);
-            createConnectionMessage.put("connectionDetail", connectionDetail);
+        createConnectionMessage.put("sourceId", this.sourceId);
+        createConnectionMessage.put("phoneNo", this.phoneNumber);
+        createConnectionMessage.put("usePublicDid", this.usePublicDid);
         this.messages.put(Connecting.CREATE_CONNECTION, createConnectionMessage);
     }
 
