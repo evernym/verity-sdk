@@ -106,9 +106,10 @@ integration-tests:
   stage: test
   image: docker:latest
   tags:
-    - spencer-laptop
+    - spencer-laptop # TODO: We either need to have a privileged runner in gitlab or rewrite the integration tests using services and figure out DNS resolution from service to container.
   services:
     - docker:dind
+  when: manual
   script:
     - sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose # Move to image
     - cd integration-tests && ./test.sh
