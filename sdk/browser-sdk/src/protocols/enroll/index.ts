@@ -7,7 +7,7 @@ import { makeid } from '../../utils/common.ts'
 export type CB = (data: any) => void
 
 export interface INewEnrollmentMessage extends IAgentMessage {
-    '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/new-enrollment'
+    '@type': 'did:sov:123456789abcdefghi1234;spec/enroll/0.1/new-enrollment'
     '@id': string
     connectionDetail: {
         sourceId: string,
@@ -33,15 +33,15 @@ export interface IAgentMessage {
 }
 
 export type enrollProtocols =
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/new-enrollment'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/problem-report'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/status'
+| 'did:sov:123456789abcdefghi1234;spec/enroll/0.1/new-enrollment'
+| 'did:sov:123456789abcdefghi1234;spec/enroll/0.1/problem-report'
+| 'did:sov:123456789abcdefghi1234;spec/enroll/0.1/status'
 
 export type commonProtocols =
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/check-status'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/invite-request'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/invite-response'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/problem-report'
+| 'did:sov:123456789abcdefghi1234;spec/common/0.1/check-status'
+| 'did:sov:123456789abcdefghi1234;spec/common/0.1/invite-request'
+| 'did:sov:123456789abcdefghi1234;spec/common/0.1/invite-response'
+| 'did:sov:123456789abcdefghi1234;spec/common/0.1/problem-report'
 
 export type protocols =
 | commonProtocols
@@ -75,7 +75,7 @@ export class Enroll {
 
             const enrollment: INewEnrollmentMessage = {
                 '@id': uuid(),
-                '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/new-enrollment',
+                '@type': 'did:sov:123456789abcdefghi1234;spec/enroll/0.1/new-enrollment',
                 'connectionDetail': {
                     phoneNo,
                     sourceId: `conn_${makeid()}`,

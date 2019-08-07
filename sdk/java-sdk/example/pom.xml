@@ -26,9 +26,9 @@
     <dependency>
       <groupId>com.evernym.verity.sdk</groupId>
       <artifactId>sdk</artifactId>
-      <version>0.21</version>
+      <version>0.22</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/../target/java-sdk-0.21-SNAPSHOT.jar</systemPath>
+      <systemPath>${project.basedir}/../target/java-sdk-0.22-SNAPSHOT.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>

@@ -4,7 +4,7 @@ from verity_sdk.protocols.Protocol import Protocol
 
 class Connecting(Protocol):
   MSG_FAMILY = 'connecting'
-  MSG_FAMILY_VERSION = '0.1'
+  MSG_FAMILY_VERSION = '0.6'
 
   # Messages
   CREATE_CONNECTION = 'CREATE_CONNECTION'
@@ -29,11 +29,9 @@ class Connecting(Protocol):
       self.CREATE_CONNECTION: {
         '@type': Connecting.get_message_type(self.CREATE_CONNECTION),
         '@id': self.get_new_id(),
-        'connectionDetail': {
-          'sourceId': self.source_id,
-          'phoneNo': self.phone_number,
-          'usePublicDid': self.use_public_did
-        }
+        'sourceId': self.source_id,
+        'phoneNo': self.phone_number,
+        'usePublicDid': self.use_public_did
       }
     }
 

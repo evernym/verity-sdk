@@ -27,10 +27,10 @@ async def test_connect():
   msg = await connecting.connect(context)
   msg = await unpack_forward_message(context, msg)
 
-  assert msg['@type'] == '{};spec/connecting/0.1/CREATE_CONNECTION'.format(MESSAGE_TYPE_DID)
+  assert msg['@type'] == '{};spec/connecting/0.6/CREATE_CONNECTION'.format(MESSAGE_TYPE_DID)
   assert msg['@id'] is not None
-  assert msg['connectionDetail']['sourceId'] == source_id
-  assert msg['connectionDetail']['phoneNo'] == phone_number
-  assert msg['connectionDetail']['usePublicDid'] == use_public_did
+  assert msg['sourceId'] == source_id
+  assert msg['phoneNo'] == phone_number
+  assert msg['usePublicDid'] == use_public_did
 
   await cleanup(context)

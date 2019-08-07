@@ -132,7 +132,7 @@ verity-server-image-docker-build:
   stage: dependent-docker-images
   only:
     changes:
-      - server/*
+      - server/
   dependencies:
     - verity-server-docker-build
   variables:

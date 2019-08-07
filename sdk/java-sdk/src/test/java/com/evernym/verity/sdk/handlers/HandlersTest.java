@@ -9,7 +9,7 @@ public class HandlersTest {
 
     @Test
     public void testIsProblemReport() {
-        assertTrue(Handlers.isProblemReport("did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/problem-report"));
-        assertFalse(Handlers.isProblemReport("did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/other-msg"));
+        assertTrue(Handlers.isProblemReport("did:sov:123456789abcdefghi1234;spec/enroll/0.1/problem-report"));
+        assertFalse(Handlers.isProblemReport("did:sov:123456789abcdefghi1234;spec/enroll/0.1/other-msg"));
     }
 }

@@ -64,7 +64,7 @@ public class Util {
      */
     private static String prepareForwardMessage(String DID, byte[] message) {
         JSONObject fwdMessage = new JSONObject();
-        fwdMessage.put("@type", "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/routing/1.0/FWD");
+        fwdMessage.put("@type", "did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD");
         fwdMessage.put("@fwd", DID);
         fwdMessage.put("@msg", new JSONObject(new String(message)));
         return fwdMessage.toString();

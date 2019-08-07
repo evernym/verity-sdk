@@ -9,7 +9,7 @@
 
 //         const message: INewEnrollmentMessage = {
 //             '@id': '12345',
-//             '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/enroll/0.1/new-enrollment',
+//             '@type': 'did:sov:123456789abcdefghi1234;spec/enroll/0.1/new-enrollment',
 //             'connectionDetail': {
 //                 phoneNo: '8888888888',
 //                 sourceId: 'CONN_TEST_ID',

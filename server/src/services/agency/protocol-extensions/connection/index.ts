@@ -3,9 +3,9 @@ import { IAgencyConfig } from '../..'
 import { NewConnection } from './newConnection'
 
 export type ConnectionProtocolTypes =
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connecting/0.1/CREATE_CONNECTION'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connecting/0.1/problem-report'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connecting/0.1/status'
+| 'did:sov:123456789abcdefghi1234;spec/connecting/0.6/CREATE_CONNECTION'
+| 'did:sov:123456789abcdefghi1234;spec/connecting/0.6/problem-report'
+| 'did:sov:123456789abcdefghi1234;spec/connecting/0.6/status'
 
 export class Connection extends Protocol {
 
@@ -15,7 +15,7 @@ export class Connection extends Protocol {
 
     public router(message: IAgentMessage) {
         switch (message['@type']) {
-            case 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connecting/0.1/CREATE_CONNECTION':
+            case 'did:sov:123456789abcdefghi1234;spec/connecting/0.6/CREATE_CONNECTION':
                 const myConnection = new NewConnection(message, this.config)
                 myConnection.connect()
                 return true

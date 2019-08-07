@@ -7,12 +7,12 @@ import { Protocol } from './protocol-extensions'
 import { generateProblemReport } from './utils/problem-reports'
 
 export type AgencyMessageTypes =
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/connect'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/connect_response'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/create_agent'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/create_agent_response'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/signup'
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/signup_response'
+| 'did:sov:123456789abcdefghi1234;spec/provision/1.0/connect'
+| 'did:sov:123456789abcdefghi1234;spec/provision/1.0/connect_response'
+| 'did:sov:123456789abcdefghi1234;spec/provision/1.0/create_agent'
+| 'did:sov:123456789abcdefghi1234;spec/provision/1.0/create_agent_response'
+| 'did:sov:123456789abcdefghi1234;spec/provision/1.0/signup'
+| 'did:sov:123456789abcdefghi1234;spec/provision/1.0/signup_response'
 
 export interface IAgencyConfig {
     myDID: string,
@@ -88,7 +88,7 @@ export class Agency {
         try {
             const details = await this.unpackForwardMessage(message)
             console.log(details)
-            if (details['@type'] === 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/agent-provisioning/0.6/CREATE_AGENT') {
+            if (details['@type'] === 'did:sov:123456789abcdefghi1234;spec/agent-provisioning/0.6/CREATE_AGENT') {
                 const response = await this.connect(details)
                 res.send(response)
             } else {
@@ -103,7 +103,7 @@ export class Agency {
 
                             // This isn't going to work before the updateComMethod message.
                             Agency.postResponse(generateProblemReport(
-                                'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/problem-report',
+                                'did:sov:123456789abcdefghi1234;spec/common/0.1/problem-report',
                                 `Not a supported message type! ${details['@type']}`,
                                 details['@id'],
                             ), this.config)
@@ -121,7 +121,7 @@ export class Agency {
      * GET for my did & verkey
      * new agent message CONNECT with:
      * {
-     * @type: 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/connect'
+     * @type: 'did:sov:123456789abcdefghi1234;spec/provision/1.0/connect'
      * fromDID: string
      * fromDIDVerKey: string
      * }
@@ -129,7 +129,7 @@ export class Agency {
      * this.config.fromDID = { fromDID }
      *
      * connect_response = {
-     *   "@type":'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/connect_response',
+     *   "@type":'did:sov:123456789abcdefghi1234;spec/provision/1.0/connect_response',
      *   "withPairwiseDID": this.config.myDID,
      *  "withPairwiseDIDVerKey": this.config.myVerkey
      * }
@@ -139,7 +139,7 @@ export class Agency {
         this.config.fromVK = message['fromDIDVerKey']
         this.config.fromDID = message['fromDID']
         const connectResponse = {
-            ['@type']: 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/connect_response',
+            ['@type']: 'did:sov:123456789abcdefghi1234;spec/provision/1.0/connect_response',
             withPairwiseDID: this.config.myDID,
             withPairwiseDIDVerKey: this.config.myVerkey,
         }
@@ -150,17 +150,17 @@ export class Agency {
     /**
      * SIGNUP
      *  {
-     *  “@type”: 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/signup'
+     *  “@type”: 'did:sov:123456789abcdefghi1234;spec/provision/1.0/signup'
      *  }
      *
      * RESPONSE
      * {
-     *  “@type”: 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/signup_response'
+     *  “@type”: 'did:sov:123456789abcdefghi1234;spec/provision/1.0/signup_response'
      * }
      */
     public signup() {
         const connectResponse = {
-            ['@type']: 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/signup_response',
+            ['@type']: 'did:sov:123456789abcdefghi1234;spec/provision/1.0/signup_response',
         }
         const response = Agency.packMsg(connectResponse, this.config)
         return response
@@ -169,18 +169,18 @@ export class Agency {
     /**
      * PROVISION
      * {
-     *    “@type”: 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/create_agent'
+     *    “@type”: 'did:sov:123456789abcdefghi1234;spec/provision/1.0/create_agent'
      * }
      *
      * Response: {
-     *   “@type”: 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/create_agent_response',
+     *   “@type”: 'did:sov:123456789abcdefghi1234;spec/provision/1.0/create_agent_response',
      *   "withPairwiseDID": this.config.myDID,
      *   "withPairwiseDIDVerKey": this.config.myVerkey
      * }
      */
     public createAgent() {
         const connectResponse = {
-            ['@type']: 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/create_agent_response',
+            ['@type']: 'did:sov:123456789abcdefghi1234;spec/provision/1.0/create_agent_response',
             withPairwiseDID: this.config.myDID,
             withPairwiseDIDVerKey: this.config.myVerkey,
         }
