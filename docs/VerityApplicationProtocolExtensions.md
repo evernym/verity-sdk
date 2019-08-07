@@ -278,10 +278,9 @@ Initiates the process to connect with a user
 
 #### Attributes
 
-* `connectionDetail` contains:
-    * `id` unique identifier for the connection, mapping to the enterprise connection
-    * `phoneNo` **optional** *string* connection sms
-    * `usePublicDid` **optional** *boolean* indicates that the connection invite should use the public DID
+* `id` unique identifier for the connection, mapping to the enterprise connection
+* `phoneNo` **optional** *string* connection sms
+* `usePublicDid` **optional** *boolean* indicates that the connection invite should use the public DID
 
 #### Notes
 
