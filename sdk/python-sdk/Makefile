@@ -4,8 +4,9 @@ pytest:
 lint:
 	python3 -m pylint --load-plugins pylint_quotes verity_sdk test
 
-build:
+build-artifacts:
 	python3 setup.py sdist bdist_wheel
 
 upload:
+	make build-artifacts
 	python3 -m twine upload dist/*
