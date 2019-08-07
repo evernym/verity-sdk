@@ -133,7 +133,7 @@ build_python_sdk:
   extends: .tags
   script:
     - cd sdk/python-sdk/
-    - make build
+    - make build-artifacts
   artifacts:
     paths:
       - sdk/python-sdk/dist/*
@@ -181,8 +181,6 @@ upload_to_pypi:
   only:
     refs:
       - "master@dev/verity/verity-sdk"
-    changes:
-      - sdk/python-sdk/
 
 update_getting_started_guide:
   stage: deploy
