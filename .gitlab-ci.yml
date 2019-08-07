@@ -182,7 +182,7 @@ upload_to_pypi:
     refs:
       - "master@dev/verity/verity-sdk"
     changes:
-      - sdk/python-sdk/*
+      - sdk/python-sdk/
 
 update_getting_started_guide:
   stage: deploy
