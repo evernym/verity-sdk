@@ -37,7 +37,7 @@ async def send_msg(url, my_wallet, message_json, agency_did, agency_verkey, my_v
     agency_message = await crypto.pack_message(my_wallet, json.dumps(message_json), [agency_verkey], my_verkey)
 
     forward_msg = {
-        "@type":"did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/routing/1.0/FWD",
+        "@type":"did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD",
         "@fwd":agency_did,
         "@msg":json.loads(agency_message.decode('utf-8'))
     }
@@ -76,7 +76,7 @@ async def register_agent(args):
 
 
     def buildMsgTypePrefix(familyName, msgName):
-        return 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/{}/0.6/{}'.format(familyName, msgName)
+        return 'did:sov:123456789abcdefghi1234;spec/{}/0.6/{}'.format(familyName, msgName)
 
     ## Form messages
     create_agent = {
@@ -87,7 +87,7 @@ async def register_agent(args):
 
     """
     create_agent_response = {
-        "@type": "did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/provision/1.0/create_agent_response",
+        "@type": "did:sov:123456789abcdefghi1234;spec/provision/1.0/create_agent_response",
         "withPairwiseDID": None,
         "withPairwiseDIDVerKey": None
     }

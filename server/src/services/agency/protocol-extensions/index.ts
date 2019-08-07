@@ -18,7 +18,7 @@ export interface IAgentMessage {
 }
 
 export type BasicProtocolTypes =
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/common/0.1/problem-report'
+| 'did:sov:123456789abcdefghi1234;spec/common/0.1/problem-report'
 
 export type ProtocolTypes =
 | BasicProtocolTypes

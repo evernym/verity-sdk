@@ -2,7 +2,7 @@ import { IAgentMessage, Protocol } from '..'
 import { Agency, IAgencyConfig } from '../..'
 
 export type ConfigurationProtocolTypes =
-| 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/configs/0.6/UPDATE_COM_METHOD'
+| 'did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD'
 
 export class Configuration extends Protocol {
 
@@ -12,7 +12,7 @@ export class Configuration extends Protocol {
 
     public router(message: IAgentMessage, agency: Agency) {
         switch (message['@type']) {
-            case 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/configs/0.6/UPDATE_COM_METHOD':
+            case 'did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD':
                 this.updateComMethod(message, agency)
                 console.log('updated config: ', this.config)
                 return true

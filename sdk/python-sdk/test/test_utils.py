@@ -90,7 +90,7 @@ async def test_pack_message_for_verity_and_unpack_forward_message():
 
 
 def test_get_message_type():
-  msg_type: str = 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/credential/0.1/status'
+  msg_type: str = 'did:sov:123456789abcdefghi1234;spec/credential/0.1/status'
   assert get_message_type('credential', '0.1', 'status') == msg_type
 
 

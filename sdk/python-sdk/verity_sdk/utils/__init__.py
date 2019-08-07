@@ -5,7 +5,7 @@ from indy import crypto
 
 from verity_sdk.utils import Context
 
-MESSAGE_TYPE_DID = 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw'
+MESSAGE_TYPE_DID = 'did:sov:123456789abcdefghi1234'
 
 
 def prepare_forward_message(did: str, message: bytes) -> str:

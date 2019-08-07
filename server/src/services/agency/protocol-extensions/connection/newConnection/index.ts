@@ -15,21 +15,21 @@ export class NewConnection {
     }
 
     public async connect() {
-        this.myConnection = await vcx.Connection.create({ id: this.message.connectionDetail.sourceId })
+        this.myConnection = await vcx.Connection.create({ id: this.message.sourceId })
         const data = {
             connection_type: '',
             phone: null,
             use_public_did: false,
         }
 
-        if (this.message.connectionDetail.phoneNo) {
+        if (this.message.phoneNo) {
             data.connection_type = 'SMS'
-            data.phone = this.message.connectionDetail.phoneNo
+            data.phone = this.message.phoneNo
         } else {
             data.connection_type = 'QR'
         }
-        if (this.message.connectionDetail.usePublicDid) {
-            data.use_public_did = this.message.connectionDetail.usePublicDid
+        if (this.message.usePublicDid) {
+            data.use_public_did = this.message.usePublicDid
         }
 
         await this.myConnection.connect({data: JSON.stringify(data)})
@@ -45,12 +45,12 @@ export class NewConnection {
             await this.myConnection.updateState()
             this.state = await this.myConnection.getState()
             if (this.state === vcx.StateType.Accepted) {
-                Agency.inMemDB.setConnection(this.message.connectionDetail.sourceId, this.myConnection)
+                Agency.inMemDB.setConnection(this.message.sourceId, this.myConnection)
                 const statusReport = this.generateStatusReport(
                     1,
                     'invite accepted!',
                     // FIXME: This should be the pairwise DID, not the given sourceId.
-                    this.message.connectionDetail.sourceId)
+                    this.message.sourceId)
                 Agency.postResponse(statusReport, this.config)
             } else {
                 this.updateState()
@@ -60,7 +60,7 @@ export class NewConnection {
     private generateStatusReport(status: number, statusMessage: string, content?: string) {
         return {
             '@id': uuid(),
-            '@type': 'did:sov:d8xBkXpPgvyR=d=xUzi42=PBbw;spec/connecting/0.1/status',
+            '@type': 'did:sov:123456789abcdefghi1234;spec/connecting/0.6/status',
             'message': statusMessage,
             status,
             '~thread': {

@@ -50,7 +50,7 @@
 stages:
   - docker-images
   - dependent-docker-images
-  - unit-tests
+  - test
   - build
   - deploy
 
@@ -96,11 +96,23 @@ autorespond-docker-build:
     DOCKER_PREP_COMMAND: sed 's~FROM buildenv~FROM $CI_REGISTRY_IMAGE/buildenv~g' -i devops/dockerfiles/auto-respond-client.dockerfile
 
 unit-tests-and-syntax:
-  stage: unit-tests
+  stage: test
   image: $CI_REGISTRY_IMAGE/buildenv:latest
   extends: .tags
   script:
     - ./devops/scripts/unit_tests_and_syntax.sh
+
+integration-tests:
+  stage: test
+  image: docker:latest
+  tags:
+    - spencer-laptop # TODO: We either need to have a privileged runner in gitlab or rewrite the integration tests using services and figure out DNS resolution from service to container.
+  services:
+    - docker:dind
+  when: manual
+  script:
+    - sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose # Move to image
+    - cd integration-tests && ./test.sh
 
 make_jar:
   stage: build
@@ -132,7 +144,7 @@ verity-server-image-docker-build:
   stage: dependent-docker-images
   only:
     changes:
-      - server/*
+      - server/
   dependencies:
     - verity-server-docker-build
   variables:
