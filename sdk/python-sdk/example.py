@@ -31,7 +31,7 @@ async def example():
   connection_id: str
   cred_def_id: str
 
-  connecting: Connecting = Connecting("my institution id", use_public_did=True)
+  connecting: Connecting = Connecting("my institution id", include_public_did=True)
   await connecting.connect(context)
 
   @AddHandler(handlers, message_type=Connecting.get_status_message_type(),
