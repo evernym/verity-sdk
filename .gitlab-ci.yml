@@ -74,8 +74,6 @@ verity-server-docker-build:
   only:
     changes:
       - server/devops/dev/verity-server.dockerfile
-    refs:
-      - "master"
   variables:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server.dockerfile'
     DOCKER_IMAGE_NAME: 'verity-server'
