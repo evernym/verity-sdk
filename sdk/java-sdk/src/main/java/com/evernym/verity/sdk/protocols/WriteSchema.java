@@ -19,7 +19,7 @@ import java.io.IOException;
 public class WriteSchema extends Protocol {
 
     private static String MSG_FAMILY = "write-schema";
-    private static String MSG_FAMILY_VERSION = "0.1";
+    private static String MSG_FAMILY_VERSION = "0.1.0";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
