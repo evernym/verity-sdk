@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-# Adding packages to run curl (including ssl) 
+# Adding packages to run curl (including ssl) #
 RUN apt-get update -y && apt-get install -y ca-certificates curl software-properties-common
 
 # Adding evernym ca cert
