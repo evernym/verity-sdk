@@ -199,10 +199,11 @@ upload_to_pypi:
     - make upload
   dependencies:
     - build_python_sdk
-  when: on_success
   only:
     refs:
       - "master@dev/verity/verity-sdk"
+    changes:
+      - sdk/python-sdk
 
 update_getting_started_guide:
   stage: deploy
