@@ -48,7 +48,6 @@ async def truncate_invite_details(invite_details: dict):
     'id': invite_details['connReqId'],
     'sm': invite_details['statusMsg'],
     't': invite_details['targetName'],
-    'threadId': invite_details['threadId'],
     'version': invite_details['version'],
     's': {
       'n': invite_details['senderDetail']['name'],
