@@ -111,4 +111,38 @@ public class Util {
     public static String getStatusMessageType(String msgFamily, String msgFamilyVersion) {
         return Util.getMessageType(msgFamily, msgFamilyVersion, "status");
     }
+
+    public static JSONObject truncateInviteDetails(JSONObject inviteDetails) {
+        JSONObject truncatedInviteDetails = new JSONObject();
+        truncatedInviteDetails.put("id", inviteDetails.getString("connReqId"));
+        truncatedInviteDetails.put("sc", inviteDetails.getString("statusCode"));
+        truncatedInviteDetails.put("sm", inviteDetails.getString("statusMsg"));
+        truncatedInviteDetails.put("t", inviteDetails.getString("targetName"));
+        truncatedInviteDetails.put("version", inviteDetails.getString("version"));
+        truncatedInviteDetails.put("threadId", inviteDetails.getString("threadId"));
+            JSONObject s = new JSONObject();
+            JSONObject senderDetail = inviteDetails.getJSONObject("senderDetail");
+            if(senderDetail.has("publicDID")) {
+                s.put("publicDID", senderDetail.getString("publicDID"));
+            }
+            s.put("n", senderDetail.getString("name"));
+            s.put("d", senderDetail.getString("DID"));
+            s.put("l", senderDetail.getString("logoUrl"));
+            s.put("v", senderDetail.getString("verKey"));
+                JSONObject dp = new JSONObject();
+                JSONObject dlgProof = senderDetail.getJSONObject("agentKeyDlgProof");
+                dp.put("d", dlgProof.getString("agentDID"));
+                dp.put("k", dlgProof.getString("agentDelegatedKey"));
+                dp.put("s", dlgProof.getString("signature"));
+            s.put("dp", dp);
+        truncatedInviteDetails.put("s", s);
+            JSONObject sa = new JSONObject();
+            JSONObject senderAgencyDetail = inviteDetails.getJSONObject("senderAgencyDetail");
+            sa.put("d", senderAgencyDetail.getString("DID"));
+            sa.put("e", senderAgencyDetail.getString("endpoint"));
+            sa.put("v", senderAgencyDetail.getString("verKey"));
+        truncatedInviteDetails.put("sa", sa);
+
+        return truncatedInviteDetails;
+    }
 }
