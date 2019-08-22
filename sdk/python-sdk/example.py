@@ -38,7 +38,7 @@ async def example():
 
   @AddHandler(handlers, message_type="did:sov:123456789abcdefghi1234;spec/connecting/0.6/CONN_REQUEST_RESP")
   async def print_invite_details(msg: dict) -> None:
-    invite_details = await truncate_invite_details(msg['inviteDetail'])
+    invite_details = truncate_invite_details(msg['inviteDetail'])
     print('Invite Details: {}'.format(json.dumps(invite_details)))
 
     # write to file for integration tests
