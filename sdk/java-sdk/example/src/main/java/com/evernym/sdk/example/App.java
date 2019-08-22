@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import com.evernym.verity.sdk.protocols.*;
 import com.evernym.verity.sdk.handlers.Handlers;
 import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,7 +46,7 @@ public class App {
             // Handler for getting invite details (connection awaiting response)
             handlers.addHandler(Connecting.getStatusMessageType(), Connecting.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
                 try {
-                    JSONObject inviteDetails = new JSONObject(message.getString("content"));
+                    JSONObject inviteDetails = Util.truncateInviteDetails(message.getString("content"));
                     System.out.print("Invite Details: ");
                     System.out.println(inviteDetails.toString());
                     writeInviteDetailsFile(inviteDetails); // For integration tests

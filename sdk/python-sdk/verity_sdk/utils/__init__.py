@@ -42,6 +42,33 @@ async def unpack_forward_message(context: Context, message: bytes) -> Dict:
     json.dumps(unpacked_once_message['@msg']).encode('utf-8')
   )
 
+def truncate_invite_details(invite_details: dict):
+  truncated_invite_details = {
+    'sc': invite_details['statusCode'],
+    'id': invite_details['connReqId'],
+    'sm': invite_details['statusMsg'],
+    't': invite_details['targetName'],
+    'version': invite_details['version'],
+    's': {
+      'n': invite_details['senderDetail']['name'],
+      'd': invite_details['senderDetail']['DID'],
+      'l': invite_details['senderDetail']['logoUrl'],
+      'v': invite_details['senderDetail']['verKey'],
+      'dp': {
+        'd': invite_details['senderDetail']['agentKeyDlgProof']['agentDID'],
+        'k': invite_details['senderDetail']['agentKeyDlgProof']['agentDelegatedKey'],
+        's': invite_details['senderDetail']['agentKeyDlgProof']['signature']
+      },
+    },
+    'sa': {
+      'd': invite_details['senderAgencyDetail']['DID'],
+      'e': invite_details['senderAgencyDetail']['endpoint'],
+      'v': invite_details['senderAgencyDetail']['verKey']
+    }
+  }
+
+  if 'publicDID' in invite_details['senderDetail']:
+    truncated_invite_details['s']['publicDID'] = invite_details['senderDetail']['publicDID']
 
 async def unpack_message(context: Context, message: bytes) -> Dict:
   jwe: bytes = await crypto.unpack_message(

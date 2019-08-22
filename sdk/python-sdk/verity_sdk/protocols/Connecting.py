@@ -15,12 +15,12 @@ class Connecting(Protocol):
 
   source_id: str
   phone_number: str
-  use_public_did: bool
+  include_public_did: bool
 
-  def __init__(self, source_id: str, phone_number: str = None, use_public_did: bool = False):
+  def __init__(self, source_id: str, phone_number: str = None, include_public_did: bool = False):
     self.source_id = source_id
     self.phone_number = phone_number
-    self.use_public_did = use_public_did
+    self.include_public_did = include_public_did
 
     self.define_messages()
 
@@ -31,7 +31,7 @@ class Connecting(Protocol):
         '@id': self.get_new_id(),
         'sourceId': self.source_id,
         'phoneNo': self.phone_number,
-        'usePublicDid': self.use_public_did
+        'usePublicDid': self.include_public_did
       }
     }
 
