@@ -45,7 +45,7 @@
         Tw6APXtEnjfD2H8HOpOX/7ef4gWK0O1Q7A==
         -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
     - eval $DOCKER_PREP_COMMAND
-    - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_TAG
+    - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
 
 stages:
   - docker-images
@@ -58,44 +58,68 @@ stages:
   tags:
     - docker
 
-buildenv-docker-build:
+.buildenv-docker-build:
   extends: .kaniko-build
-  only:
-    changes:
-      - devops/dockerfiles/buildenv.dockerfile
   variables:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/buildenv.dockerfile'
     DOCKER_IMAGE_NAME: 'buildenv'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR'
     DOCKER_PREP_COMMAND: 'echo none'
 
-verity-server-docker-build:
-  extends: .kaniko-build
+buildenv-docker-build:
+  extends: .buildenv-docker-build
   only:
     changes:
-      - server/devops/dev/verity-server.dockerfile
+      - devops/dockerfiles/buildenv.dockerfile
+
+buildenv-docker-build-manual:
+  extends: .buildenv-docker-build
+  when: manual
+
+.verity-server-docker-build:
+  extends: .kaniko-build
   variables:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server.dockerfile'
     DOCKER_IMAGE_NAME: 'verity-server'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
     DOCKER_PREP_COMMAND: 'echo none'
 
-autorespond-docker-build:
-  extends: .kaniko-build
-  stage: dependent-docker-images
+verity-server-docker-build:
+  extends: .verity-server-docker-build
   only:
     changes:
-      - devops/dockerfiles/buildenv.dockerfile
-      - devops/dockerfiles/auto-respond-client.dockerfile
+      - server/devops/dev/verity-server.dockerfile
+    refs:
+      - "master"
+
+verity-server-docker-build-manual:
+  extends: .verity-server-docker-build
+  when: manual
+
+.autorespond-docker-build:
+  extends: .kaniko-build
+  stage: dependent-docker-images
   variables:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/auto-respond-client.dockerfile'
     DOCKER_IMAGE_NAME: 'autorespond'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR'
     DOCKER_PREP_COMMAND: sed 's~FROM buildenv~FROM $CI_REGISTRY_IMAGE/buildenv~g' -i devops/dockerfiles/auto-respond-client.dockerfile
 
+autorespond-docker-build:
+  extends: .autorespond-docker-build
+  only:
+    changes:
+      - devops/dockerfiles/buildenv.dockerfile
+      - devops/dockerfiles/auto-respond-client.dockerfile
+
+
+autorespond-docker-build-manual:
+  extends: .autorespond-docker-build
+  when: manual
+
 unit-tests-and-syntax:
   stage: test
-  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   extends: .tags
   script:
     - ./devops/scripts/unit_tests_and_syntax.sh
@@ -114,7 +138,7 @@ integration-tests:
 
 make_jar:
   stage: build
-  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   extends: .tags
   script:
     - sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' sdk/java-sdk/pom.xml
@@ -127,7 +151,7 @@ make_jar:
 
 build_python_sdk:
   stage: build
-  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   extends: .tags
   script:
     - cd sdk/python-sdk/
@@ -153,7 +177,7 @@ verity-server-image-docker-build:
 
 upload_to_maven:
   stage: deploy
-  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   extends: .tags
   script:
     - ./devops/scripts/maven/upload.sh
@@ -168,21 +192,22 @@ upload_to_maven:
 
 upload_to_pypi:
   stage: deploy
-  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   extends: .tags
   script:
     - cd sdk/python-sdk/
     - make upload
   dependencies:
     - build_python_sdk
-  when: on_success
   only:
     refs:
       - "master@dev/verity/verity-sdk"
+    changes:
+      - sdk/python-sdk
 
 update_getting_started_guide:
   stage: deploy
-  image: $CI_REGISTRY_IMAGE/buildenv:latest
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   extends: .tags
   script:
     - ./devops/scripts/update_getting_started_repo.sh git@github.com:evernym/Getting-Started-With-The-Verity-SDK.git
