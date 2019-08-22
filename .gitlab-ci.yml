@@ -111,7 +111,7 @@ autorespond-docker-build:
     changes:
       - devops/dockerfiles/buildenv.dockerfile
       - devops/dockerfiles/auto-respond-client.dockerfile
-
+      - tools/vcx-client-auto-respond.py
 
 autorespond-docker-build-manual:
   extends: .autorespond-docker-build
@@ -166,7 +166,7 @@ verity-server-image-docker-build:
   stage: dependent-docker-images
   only:
     changes:
-      - server/
+      - server/**/*
   dependencies:
     - verity-server-docker-build
   variables:
@@ -188,7 +188,7 @@ upload_to_maven:
     refs:
       - "master@dev/verity/verity-sdk"
     changes:
-      - sdk/java-sdk/*
+      - sdk/java-sdk/**/*
 
 upload_to_pypi:
   stage: deploy
@@ -203,7 +203,7 @@ upload_to_pypi:
     refs:
       - "master@dev/verity/verity-sdk"
     changes:
-      - sdk/python-sdk
+      - sdk/python-sdk/**/*
 
 update_getting_started_guide:
   stage: deploy
