@@ -43,7 +43,7 @@ async def unpack_forward_message(context: Context, message: bytes) -> Dict:
   )
 
 async def truncate_invite_details(invite_details: dict):
-  return {
+  truncated_invite_details = {
     'sc': invite_details['statusCode'],
     'id': invite_details['connReqId'],
     'sm': invite_details['statusMsg'],
@@ -67,6 +67,8 @@ async def truncate_invite_details(invite_details: dict):
     }
   }
 
+  if 'publicDID' in invite_details['senderDetail']:
+    truncated_invite_details['s']['publicDID'] = invite_details['senderDetail']['publicDID']
 async def unpack_message(context: Context, message: bytes) -> Dict:
   jwe: bytes = await crypto.unpack_message(
     context.wallet_handle,

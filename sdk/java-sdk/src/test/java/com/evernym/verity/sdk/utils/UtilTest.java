@@ -92,5 +92,6 @@ public class UtilTest {
                 "}");
 
         assertEquals(truncatedInviteDetails.toString(), truncateInviteDetails(inviteDetails).toString());
+        assertEquals(truncatedInviteDetails.toString(), truncateInviteDetails(inviteDetails.toString()).toString());
     }
 }

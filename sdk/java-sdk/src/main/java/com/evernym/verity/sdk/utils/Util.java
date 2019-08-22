@@ -112,6 +112,10 @@ public class Util {
         return Util.getMessageType(msgFamily, msgFamilyVersion, "status");
     }
 
+    public static JSONObject truncateInviteDetails(String inviteDetails) {
+        return truncateInviteDetails(new JSONObject(inviteDetails));
+    }
+
     public static JSONObject truncateInviteDetails(JSONObject inviteDetails) {
         JSONObject truncatedInviteDetails = new JSONObject();
         truncatedInviteDetails.put("id", inviteDetails.getString("connReqId"));

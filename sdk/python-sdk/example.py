@@ -17,7 +17,7 @@ from verity_sdk.protocols.UpdateEndpoint import UpdateEndpoint
 from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
 from verity_sdk.protocols.WriteSchema import WriteSchema
 from verity_sdk.utils.Context import Context
-from verity_sdk.utils import truncate_invite_details
+from verity_sdk.utils import truncate_invite_details, uuid
 
 context = None
 handlers = Handlers()
@@ -32,12 +32,11 @@ async def example():
   connection_id: str
   cred_def_id: str
 
-  sourceId = format("%d.%d.%d" % (random.randint(1,101),random.randint(1,101),random.randint(1,101)))
-  connecting: Connecting = Connecting(sourceId, include_public_did=True)
+  source_id = uuid()
+  connecting: Connecting = Connecting(source_id, include_public_did=True)
   await connecting.connect(context)
 
-  #@AddHandler(handlers, message_type=Connecting.get_status_message_type(), message_status=Connecting.AWAITING_RESPONSE_STATUS)
-  @AddHandler(handlers, message_type="did:sov:123456789abcdefghi1234;spec/connecting/0.6/CONN_REQUEST_RESP",message_status=None)
+  @AddHandler(handlers, message_type="did:sov:123456789abcdefghi1234;spec/connecting/0.6/CONN_REQUEST_RESP")
   async def print_invite_details(msg: dict) -> None:
     invite_details = await truncate_invite_details(msg['inviteDetail'])
     print('Invite Details: {}'.format(json.dumps(invite_details)))
