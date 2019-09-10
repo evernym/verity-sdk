@@ -17,7 +17,7 @@ import java.io.IOException;
 public class WriteCredentialDefinition extends Protocol {
 
     private static String MSG_FAMILY = "write-cred-def";
-    private static String MSG_FAMILY_VERSION = "0.1";
+    private static String MSG_FAMILY_VERSION = "0.6";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
