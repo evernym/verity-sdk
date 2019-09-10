@@ -21,7 +21,7 @@ public class QuestionAnswerTest {
     public void testGetMessageType() {
         QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, notificationTitle, questionText, questionDetail, validResponses);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("question-answer", "0.1", msgName), QuestionAnswer.getMessageType(msgName));
+        assertEquals(Util.getMessageType("question-answer", "1.0", msgName), QuestionAnswer.getMessageType(msgName));
     }
 
     @Test

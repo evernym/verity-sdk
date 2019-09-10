@@ -21,7 +21,7 @@ public class PresentProofTest {
     public void testGetMessageType() {
         PresentProof presentProof = new PresentProof(connectionId, proofRequestName, proofAttrs, revocationInterval);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("present-proof", "0.1", msgName), PresentProof.getMessageType(msgName));
+        assertEquals(Util.getMessageType("present-proof", "0.6", msgName), PresentProof.getMessageType(msgName));
     }
 
     @Test
