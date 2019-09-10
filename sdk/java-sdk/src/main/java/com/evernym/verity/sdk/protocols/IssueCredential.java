@@ -19,32 +19,30 @@ public class IssueCredential extends Protocol {
 
     // Messages
     @SuppressWarnings("WeakerAccess")
-    public static String ISSUE_CREDENTIAL = "issue-credential";
+    public static String ISSUE = "issue";
 
     // Status definitions
     public static Integer OFFER_SENT_STATUS = 0;
     public static Integer OFFER_ACCEPTED_BY_USER_STATUS = 1;
     public static Integer CREDENTIAL_SENT_TO_USER_STATUS = 2;
 
-    String connectionId;
     String credentialName;
-    String credDefId;
+    String serializedCredDef;
     JSONObject credentialValues;
-    Integer price;
+    String price;
 
     /**
      * Creates a new credential
-     * @param connectionId The pairwise DID of the connection you would like to send the Credential to.
-     * @param credDefId The credDefId of the credential definition being used
+     * @param credentialName The name of credential.
+     * @param serializedCredDef The credDefId of the credential definition being used
      * @param credentialValues key-value pairs of credential attribute fields with the specified params defined in the credential definition
      * @param price The cost of the credential for the user.
      */
     @SuppressWarnings("WeakerAccess")
-    public IssueCredential(String connectionId, String credentialName, String credDefId, JSONObject credentialValues, Integer price) {
+    public IssueCredential(String credentialName, String serializedCredDef, JSONObject credentialValues, String price) {
         super();
-        this.connectionId = connectionId;
         this.credentialName = credentialName;
-        this.credDefId = credDefId;
+        this.serializedCredDef = serializedCredDef;
         this.credentialValues = credentialValues;
         this.price = price;
         defineMessages();
@@ -65,17 +63,16 @@ public class IssueCredential extends Protocol {
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL));
+        message.put("@type", IssueCredential.getMessageType(IssueCredential.ISSUE));
         message.put("@id", IssueCredential.getNewId());
-        message.put("connectionId", this.connectionId);
             JSONObject credentialData = new JSONObject();
             credentialData.put("id", IssueCredential.getNewId());
             credentialData.put("name", this.credentialName);
-            credentialData.put("credDefId", this.credDefId);
+            credentialData.put("serializedCredDef", this.serializedCredDef);
             credentialData.put("credentialValues", this.credentialValues);
             credentialData.put("price", this.price);
             message.put("credentialData", credentialData);
-        this.messages.put(IssueCredential.ISSUE_CREDENTIAL, message);
+        this.messages.put(IssueCredential.ISSUE, message);
     }
 
     /**
@@ -87,6 +84,6 @@ public class IssueCredential extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public byte[] issue(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(IssueCredential.ISSUE_CREDENTIAL));
+        return this.send(context, this.messages.getJSONObject(IssueCredential.ISSUE));
     }
 }
