@@ -24,7 +24,7 @@ public class WriteCredentialDefinitionTest {
     public void testGetMessageType() {
         WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId, tag, revocationDetails);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("write-cred-def", "0.1", msgName), WriteCredentialDefinition.getMessageType(msgName));
+        assertEquals(Util.getMessageType("write-cred-def", "0.6", msgName), WriteCredentialDefinition.getMessageType(msgName));
     }
 
     @Test

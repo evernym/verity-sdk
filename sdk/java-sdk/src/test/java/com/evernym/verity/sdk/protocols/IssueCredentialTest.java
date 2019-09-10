@@ -27,7 +27,7 @@ public class IssueCredentialTest {
     public void testGetMessageType() {
         IssueCredential issueCredential = new IssueCredential(connectionId, credentialName, credDefId, credentialValues, price);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("issue-credential", "0.1", msgName), IssueCredential.getMessageType(msgName));
+        assertEquals(Util.getMessageType("issue-credential", "0.6", msgName), IssueCredential.getMessageType(msgName));
     }
 
     @Test

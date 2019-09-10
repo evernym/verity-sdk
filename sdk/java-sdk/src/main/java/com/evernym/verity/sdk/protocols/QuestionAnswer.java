@@ -21,7 +21,7 @@ import org.json.JSONObject;
 public class QuestionAnswer extends Protocol {
 
     final private static String MSG_FAMILY = "question-answer";
-    final private static String MSG_FAMILY_VERSION = "0.1";
+    final private static String MSG_FAMILY_VERSION = "1.0";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
