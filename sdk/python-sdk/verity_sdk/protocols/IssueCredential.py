@@ -15,13 +15,13 @@ class IssueCredential(Protocol):
   CREDENTIAL_SENT_TO_USER_STATUS = 2
 
   name: str
-  serialized_cred_def: str
+  cred_def_id: str
   credential_values: dict
   price: str
 
-  def __init__(self, name: str, serialized_cred_def: str, credential_values: dict, price: str):
+  def __init__(self, name: str, cred_def_id: str, credential_values: dict, price: str):
     self.name = name
-    self.serialized_cred_def = serialized_cred_def
+    self.cred_def_id = cred_def_id
     self.credential_values = credential_values
     self.price = price
 
@@ -35,7 +35,7 @@ class IssueCredential(Protocol):
         'credentialData': {
           'id': self.get_new_id(),
           'name': self.name,
-          'serializedCredDefId': self.serialized_cred_def,
+          'credDefId': self.cred_def_id,
           'credentialValues': self.credential_values,
           'price': self.price
         },

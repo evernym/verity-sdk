@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class IssueCredentialTest {
 
     private String credentialName = "Bachelors Degree";
-    private String serializedCredDef = "...someCredDefSerializedData...";
+    private String credDefId = "...someCredDefId...";
     private JSONObject credentialValues = new JSONObject();
     private String price = "3";
 
@@ -24,16 +24,16 @@ public class IssueCredentialTest {
 
     @Test
     public void testGetMessageType() {
-        IssueCredential issueCredential = new IssueCredential(credentialName, serializedCredDef, credentialValues, price);
+        IssueCredential issueCredential = new IssueCredential(credentialName, credDefId, credentialValues, price);
         String msgName = "msg name";
         assertEquals(Util.getMessageType("issue-credential", "0.1", msgName), IssueCredential.getMessageType(msgName));
     }
 
     @Test
     public void testConstructor() {
-        IssueCredential issueCredential = new IssueCredential(credentialName, serializedCredDef, credentialValues, price);
+        IssueCredential issueCredential = new IssueCredential(credentialName, credDefId, credentialValues, price);
         assertEquals(credentialName, issueCredential.credentialName);
-        assertEquals(serializedCredDef, issueCredential.serializedCredDef);
+        assertEquals(credDefId, issueCredential.credDefId);
         assertEquals(credentialValues.toString(), issueCredential.credentialValues.toString());
         assert price == issueCredential.price;
         testMessages(issueCredential);
@@ -45,7 +45,7 @@ public class IssueCredentialTest {
         assertNotNull(msg.getString("@id"));
         assertNotNull(msg.getJSONObject("credentialData").getString("id"));
         assertEquals(credentialName, msg.getJSONObject("credentialData").getString("name"));
-        assertEquals(serializedCredDef, msg.getJSONObject("credentialData").getString("serializedCredDef"));
+        assertEquals(credDefId, msg.getJSONObject("credentialData").getString("credDefId"));
         assertEquals(credentialValues.toString(), msg.getJSONObject("credentialData").getJSONObject("credentialValues").toString());
         assertEquals(price, msg.getJSONObject("credentialData").getString("price"));
     }
@@ -55,7 +55,7 @@ public class IssueCredentialTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            IssueCredential issueCredential = new IssueCredential(credentialName, serializedCredDef, credentialValues, price);
+            IssueCredential issueCredential = new IssueCredential(credentialName, credDefId, credentialValues, price);
             issueCredential.disableHTTPSend();
             byte [] message = issueCredential.issue(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);

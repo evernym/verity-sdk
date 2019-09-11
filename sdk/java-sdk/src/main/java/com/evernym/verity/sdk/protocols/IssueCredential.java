@@ -27,22 +27,22 @@ public class IssueCredential extends Protocol {
     public static Integer CREDENTIAL_SENT_TO_USER_STATUS = 2;
 
     String credentialName;
-    String serializedCredDef;
+    String credDefId;
     JSONObject credentialValues;
     String price;
 
     /**
      * Creates a new credential
      * @param credentialName The name of credential.
-     * @param serializedCredDef The credDefId of the credential definition being used
+     * @param credDefId The credDefId of the credential definition being used
      * @param credentialValues key-value pairs of credential attribute fields with the specified params defined in the credential definition
      * @param price The cost of the credential for the user.
      */
     @SuppressWarnings("WeakerAccess")
-    public IssueCredential(String credentialName, String serializedCredDef, JSONObject credentialValues, String price) {
+    public IssueCredential(String credentialName, String credDefId, JSONObject credentialValues, String price) {
         super();
         this.credentialName = credentialName;
-        this.serializedCredDef = serializedCredDef;
+        this.credDefId = credDefId;
         this.credentialValues = credentialValues;
         this.price = price;
         defineMessages();
@@ -68,7 +68,7 @@ public class IssueCredential extends Protocol {
             JSONObject credentialData = new JSONObject();
             credentialData.put("id", IssueCredential.getNewId());
             credentialData.put("name", this.credentialName);
-            credentialData.put("serializedCredDef", this.serializedCredDef);
+            credentialData.put("credDefId", this.credDefId);
             credentialData.put("credentialValues", this.credentialValues);
             credentialData.put("price", this.price);
             message.put("credentialData", credentialData);
