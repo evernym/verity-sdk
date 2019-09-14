@@ -8,29 +8,29 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class IssuerIdentityTest {
+public class IssuerSetupTest {
 
     @Test
     public void testGetMessageType() {
         String msgName = "msg name";
 
         String expectedType = Util.getMessageType(
-                IssuerIdentity.MSG_FAMILY,
-                IssuerIdentity.MSG_FAMILY_VERSION,
+                IssuerSetup.MSG_FAMILY,
+                IssuerSetup.MSG_FAMILY_VERSION,
                 msgName);
 
-        assertEquals(expectedType, IssuerIdentity.getMessageType(msgName));
+        assertEquals(expectedType, IssuerSetup.getMessageType(msgName));
     }
 
     @Test
     public void testConstructor() {
-        IssuerIdentity p = new IssuerIdentity();
+        IssuerSetup p = new IssuerSetup();
         testMessages(p);
     }
 
-    private void testMessages(IssuerIdentity p) {
-        JSONObject msg = p.messages.getJSONObject(IssuerIdentity.CREATE);
-        assertEquals(IssuerIdentity.getMessageType("create"), msg.getString("@type"));
+    private void testMessages(IssuerSetup p) {
+        JSONObject msg = p.messages.getJSONObject(IssuerSetup.CREATE);
+        assertEquals(IssuerSetup.getMessageType("create"), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
     }
 
@@ -39,11 +39,11 @@ public class IssuerIdentityTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            IssuerIdentity writeSchema = new IssuerIdentity();
+            IssuerSetup writeSchema = new IssuerSetup();
             writeSchema.disableHTTPSend();
             byte[] message = writeSchema.create(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(IssuerIdentity.getMessageType(IssuerIdentity.CREATE), unpackedMessage.getString("@type"));
+            assertEquals(IssuerSetup.getMessageType(IssuerSetup.CREATE), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();
