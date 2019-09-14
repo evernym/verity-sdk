@@ -8,14 +8,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class IssuerIdentity extends Protocol {
+public class IssuerSetup extends Protocol {
 
     public static String CREATE = "create";
 
-    public static String MSG_FAMILY = "issuer-identity";
+    public static String MSG_FAMILY = "issuer-setup";
     public static String MSG_FAMILY_VERSION = "0.6";
 
-    public IssuerIdentity() {
+    public IssuerSetup() {
         super();
 
         defineMessages();
@@ -24,9 +24,9 @@ public class IssuerIdentity extends Protocol {
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", IssuerIdentity.getMessageType(IssuerIdentity.CREATE));
-        message.put("@id", IssuerIdentity.getNewId());
-        this.messages.put(IssuerIdentity.CREATE, message);
+        message.put("@type", IssuerSetup.getMessageType(IssuerSetup.CREATE));
+        message.put("@id", IssuerSetup.getNewId());
+        this.messages.put(IssuerSetup.CREATE, message);
     }
 
     public static String getMessageType(String msgName) {
@@ -34,6 +34,6 @@ public class IssuerIdentity extends Protocol {
     }
 
     public byte[] create(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(IssuerIdentity.CREATE));
+        return this.send(context, this.messages.getJSONObject(IssuerSetup.CREATE));
     }
 }
