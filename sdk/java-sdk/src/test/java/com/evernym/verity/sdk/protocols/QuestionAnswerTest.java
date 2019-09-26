@@ -2,7 +2,6 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -27,7 +26,7 @@ public class QuestionAnswerTest {
     @Test
     public void testConstructor() {
         QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, notificationTitle, questionText, questionDetail, validResponses);
-        assertEquals(connectionId, questionAnswer.connectionId);
+        assertEquals(connectionId, questionAnswer.forRelationship);
         assertEquals(notificationTitle, questionAnswer.notificationTitle);
         assertEquals(questionText, questionAnswer.questionText);
         assertEquals(questionDetail, questionAnswer.questionDetail);
@@ -39,10 +38,10 @@ public class QuestionAnswerTest {
     }
 
     private void testMessages(QuestionAnswer questionAnswer) {
-        JSONObject msg = questionAnswer.messages.getJSONObject(QuestionAnswer.QUESTION);
-        assertEquals(QuestionAnswer.getMessageType("question"), msg.getString("@type"));
+        JSONObject msg = questionAnswer.messages.getJSONObject(QuestionAnswer.ASK_QUESTION);
+        assertEquals(QuestionAnswer.getMessageType("ask-question"), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
-        assertEquals(connectionId, msg.getString("connectionId"));
+        assertEquals(connectionId, msg.getString("~for_relationship"));
         assertEquals(notificationTitle, msg.getJSONObject("question").getString("notification_title"));
         assertEquals(questionText, msg.getJSONObject("question").getString("question_text"));
         assertEquals(questionDetail, msg.getJSONObject("question").getString("question_detail"));
@@ -61,7 +60,7 @@ public class QuestionAnswerTest {
             questionAnswer.disableHTTPSend();
             byte[] message = questionAnswer.ask(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(QuestionAnswer.getMessageType(QuestionAnswer.QUESTION), unpackedMessage.getString("@type"));
+            assertEquals(QuestionAnswer.getMessageType(QuestionAnswer.ASK_QUESTION), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();
