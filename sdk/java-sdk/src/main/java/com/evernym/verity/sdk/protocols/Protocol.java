@@ -6,8 +6,8 @@ import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.transports.Transport;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
-
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.UUID;
 
@@ -16,6 +16,16 @@ import java.util.UUID;
  */
 public abstract class Protocol {
     private boolean sendDisabled = false;
+
+    // Currently a static threadId but that don't allow for re-entrant use-cases
+    private UUID threadId = UUID.randomUUID();
+
+    protected JSONObject addThread(JSONObject msg) {
+        JSONObject threadBlock = new JSONObject();
+        threadBlock.put("thid", threadId.toString());
+        msg.put("~thread", threadBlock);
+        return msg;
+    }
 
     JSONObject messages;
 
