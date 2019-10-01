@@ -11,44 +11,39 @@ import static org.junit.Assert.*;
 public class QuestionAnswerTest {
 
     private String connectionId = "abcd12345";
-    private String notificationTitle = "Challenge Question";
     private String questionText = "Question text";
     private String questionDetail = "Optional question detail";
     private String[] validResponses = {"Yes", "No"};
 
     @Test
     public void testGetMessageType() {
-        QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, notificationTitle, questionText, questionDetail, validResponses);
+        QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, questionText, questionDetail, validResponses);
         String msgName = "msg name";
         assertEquals(Util.getMessageType("questionanswer", "1.0", msgName), QuestionAnswer.getMessageType(msgName));
     }
 
     @Test
     public void testConstructor() {
-        QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, notificationTitle, questionText, questionDetail, validResponses);
+        QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, questionText, questionDetail, validResponses);
         assertEquals(connectionId, questionAnswer.forRelationship);
-        assertEquals(notificationTitle, questionAnswer.notificationTitle);
         assertEquals(questionText, questionAnswer.questionText);
         assertEquals(questionDetail, questionAnswer.questionDetail);
-        assertEquals(validResponses[0], questionAnswer.validResponses.getJSONObject(0).getString("text"));
-        assertNotNull(questionAnswer.validResponses.getJSONObject(0).getString("nonce"));
-        assertEquals(validResponses[1], questionAnswer.validResponses.getJSONObject(1).getString("text"));
-        assertNotNull(questionAnswer.validResponses.getJSONObject(1).getString("nonce"));
+        assertEquals(validResponses.length, questionAnswer.validResponses.length);
         testMessages(questionAnswer);
     }
 
     private void testMessages(QuestionAnswer questionAnswer) {
         JSONObject msg = questionAnswer.messages.getJSONObject(QuestionAnswer.ASK_QUESTION);
+
+        msg = new JSONObject(msg.toString());
+
         assertEquals(QuestionAnswer.getMessageType("ask-question"), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(connectionId, msg.getString("~for_relationship"));
-        assertEquals(notificationTitle, msg.getJSONObject("question").getString("notification_title"));
-        assertEquals(questionText, msg.getJSONObject("question").getString("question_text"));
-        assertEquals(questionDetail, msg.getJSONObject("question").getString("question_detail"));
-        assertEquals(validResponses[0], msg.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("text"));
-        assertNotNull(msg.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(0).getString("nonce"));
-        assertEquals(validResponses[1], msg.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("text"));
-        assertNotNull(msg.getJSONObject("question").getJSONArray("valid_responses").getJSONObject(1).getString("nonce"));
+        assertEquals(questionText, msg.getString("text"));
+        assertEquals(questionDetail, msg.getString("detail"));
+        assertEquals(validResponses[0], msg.getJSONArray("valid_responses").getString(0));
+        assertNotNull(msg.getJSONArray("valid_responses"));
     }
 
     @Test
@@ -56,7 +51,7 @@ public class QuestionAnswerTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, notificationTitle, questionText, questionDetail, validResponses);
+            QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, questionText, questionDetail, validResponses);
             questionAnswer.disableHTTPSend();
             byte[] message = questionAnswer.ask(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);

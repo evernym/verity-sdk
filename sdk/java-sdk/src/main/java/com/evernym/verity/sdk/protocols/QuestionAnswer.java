@@ -31,10 +31,9 @@ public class QuestionAnswer extends Protocol {
     public static Integer QUESTION_ANSWERED_STATUS = 1;
 
     String forRelationship;
-    String notificationTitle;
     String questionText;
     String questionDetail;
-    JSONArray validResponses;
+    String[] validResponses;
 
     /**
      * Create a new Question object
@@ -45,14 +44,13 @@ public class QuestionAnswer extends Protocol {
      * @param validResponses The possible responses. See the Verity Protocol documentation for more information on how Connect.Me will render these options.
      */
     @SuppressWarnings("WeakerAccess")
-    public QuestionAnswer(String forRelationship, String notificationTitle, String questionText, String questionDetail,
+    public QuestionAnswer(String forRelationship, String questionText, String questionDetail,
                           String[] validResponses) {
         super();
         this.forRelationship = forRelationship;
-        this.notificationTitle = notificationTitle;
         this.questionText = questionText;
         this.questionDetail = questionDetail;
-        this.validResponses = formatValidResponses(questionText, validResponses);
+        this.validResponses = validResponses;
 
         defineMessages();
     }
@@ -69,17 +67,6 @@ public class QuestionAnswer extends Protocol {
         return Util.getStatusMessageType(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION);
     }
 
-    private JSONArray formatValidResponses(String questionText, String[] validResponses) {
-        JSONArray formattedValidResponses = new JSONArray();
-        for (String validResponseString : validResponses) {
-            JSONObject validResponse = new JSONObject();
-            validResponse.put("text", validResponseString);
-            validResponse.put("nonce", getHashedMessage(questionText, validResponseString));
-            formattedValidResponses.put(validResponse);
-        }
-        return formattedValidResponses;
-    }
-
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
@@ -87,12 +74,9 @@ public class QuestionAnswer extends Protocol {
         message.put("@id", QuestionAnswer.getNewId());
         addThread(message);
         message.put("~for_relationship", this.forRelationship);
-            JSONObject question = new JSONObject();
-            question.put("notification_title", this.notificationTitle);
-            question.put("question_text", this.questionText);
-            question.put("question_detail", this.questionDetail);
-            question.put("valid_responses", this.validResponses);
-            message.put("question", question);
+        message.put("text", this.questionText);
+        message.put("detail", this.questionDetail);
+        message.put("valid_responses", this.validResponses);
         this.messages.put(QuestionAnswer.ASK_QUESTION, message);
     }
 
