@@ -28,7 +28,7 @@ public class QuestionAnswer extends Protocol {
     String questionText;
     String questionDetail;
     String[] validResponses;
-    Boolean signatureRequired;
+    private boolean signatureRequired;
 
     /**
      * Create a new Question object
@@ -45,6 +45,7 @@ public class QuestionAnswer extends Protocol {
         this(forRelationship, questionText, questionDetail, validResponses, true);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public QuestionAnswer(String forRelationship,
                           String questionText,
                           String questionDetail,
@@ -83,6 +84,7 @@ public class QuestionAnswer extends Protocol {
         message.put("text", this.questionText);
         message.put("detail", this.questionDetail);
         message.put("valid_responses", this.validResponses);
+        message.put("signature_required", this.signatureRequired);
         this.messages.put(QuestionAnswer.ASK_QUESTION, message);
     }
 

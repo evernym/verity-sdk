@@ -14,6 +14,7 @@ public class QuestionAnswerTest {
     private String questionText = "Question text";
     private String questionDetail = "Optional question detail";
     private String[] validResponses = {"Yes", "No"};
+    private boolean requireSignature = true;
 
     @Test
     public void testGetMessageType() {
@@ -24,7 +25,13 @@ public class QuestionAnswerTest {
 
     @Test
     public void testConstructor() {
-        QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, questionText, questionDetail, validResponses);
+        QuestionAnswer questionAnswer = new QuestionAnswer(
+                connectionId,
+                questionText,
+                questionDetail,
+                validResponses,
+                requireSignature
+        );
         assertEquals(connectionId, questionAnswer.forRelationship);
         assertEquals(questionText, questionAnswer.questionText);
         assertEquals(questionDetail, questionAnswer.questionDetail);
@@ -43,6 +50,7 @@ public class QuestionAnswerTest {
         assertEquals(questionText, msg.getString("text"));
         assertEquals(questionDetail, msg.getString("detail"));
         assertEquals(validResponses[0], msg.getJSONArray("valid_responses").getString(0));
+        assertEquals(requireSignature, msg.getBoolean("signature_required"));
         assertNotNull(msg.getJSONArray("valid_responses"));
     }
 
