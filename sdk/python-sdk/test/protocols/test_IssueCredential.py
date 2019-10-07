@@ -6,7 +6,7 @@ from verity_sdk.utils import unpack_forward_message, MESSAGE_TYPE_DID
 from verity_sdk.utils.Context import Context
 from test.test_utils import get_test_config, send_stub, cleanup
 
-connection_id = 'connection id'
+for_relationship = 'some_did'
 name = 'degree'
 cred_def_id = '12345'
 credential_values = {
@@ -14,13 +14,13 @@ credential_values = {
   'degree': 'Bachelors',
   'gpa': '3.67'
 }
-price = 5
+price = '5'
 
 
 def test_init():
-  issueCredential = IssueCredential(connection_id, name, cred_def_id, credential_values, price)
+  issueCredential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
 
-  assert issueCredential.connection_id == connection_id
+  assert issueCredential.for_relationship == for_relationship
   assert issueCredential.name == name
   assert issueCredential.cred_def_id == cred_def_id
   assert json.dumps(issueCredential.credential_values) == json.dumps(credential_values)
@@ -29,14 +29,21 @@ def test_init():
 @pytest.mark.asyncio
 async def test_issue():
   context = await Context.create(await get_test_config())
-  issueCredential = IssueCredential(connection_id, name, cred_def_id, credential_values, price)
+  issueCredential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
   issueCredential.send = send_stub
   msg = await issueCredential.issue(context)
   msg = await unpack_forward_message(context, msg)
 
-  assert msg['@type'] == '{};spec/issue-credential/0.1/issue-credential'.format(MESSAGE_TYPE_DID)
+  assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    MESSAGE_TYPE_DID,
+    IssueCredential.MSG_FAMILY,
+    IssueCredential.MSG_FAMILY_VERSION,
+    IssueCredential.ISSUE
+  )
   assert msg['@id'] is not None
-  assert msg['connectionId'] == connection_id
+  assert msg['~for_relationship'] == for_relationship
+  assert msg['~thread'] is not None
+  assert msg['~thread']['thid'] is not None
   assert msg['credentialData']['id']
   assert msg['credentialData']['name'] == name
   assert msg['credentialData']['credDefId'] == cred_def_id

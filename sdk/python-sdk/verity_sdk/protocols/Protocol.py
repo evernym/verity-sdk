@@ -12,6 +12,7 @@ class Protocol:
     pass
 
   messages: dict
+  thread_id: str = uuid()
 
   @staticmethod
   async def get_message(context: Context, message: dict) -> bytes:
@@ -30,3 +31,8 @@ class Protocol:
   @abc.abstractmethod
   def define_messages(self):
     pass
+
+  def get_thread_block(self) -> dict:
+    return {
+      'thid': self.thread_id
+    }

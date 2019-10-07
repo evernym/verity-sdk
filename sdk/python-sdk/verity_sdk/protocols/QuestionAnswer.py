@@ -53,6 +53,7 @@ class QuestionAnswer(Protocol):
       self.QUESTION: {
         '@type': QuestionAnswer.get_message_type(self.QUESTION),
         '@id': self.get_new_id(),
+        '~thread': self.get_thread_block(),
         'connectionId': self.connection_id,
         'question': {
           'notification_title': self.notification_title,

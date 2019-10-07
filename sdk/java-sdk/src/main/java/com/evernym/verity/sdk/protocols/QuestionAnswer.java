@@ -28,6 +28,7 @@ public class QuestionAnswer extends Protocol {
     String questionText;
     String questionDetail;
     String[] validResponses;
+    private boolean signatureRequired;
 
     /**
      * Create a new Question object
@@ -37,13 +38,26 @@ public class QuestionAnswer extends Protocol {
      * @param validResponses The possible responses. See the Verity Protocol documentation for more information on how Connect.Me will render these options.
      */
     @SuppressWarnings("WeakerAccess")
-    public QuestionAnswer(String forRelationship, String questionText, String questionDetail,
+    public QuestionAnswer(String forRelationship,
+                          String questionText,
+                          String questionDetail,
                           String[] validResponses) {
+        this(forRelationship, questionText, questionDetail, validResponses, true);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public QuestionAnswer(String forRelationship,
+                          String questionText,
+                          String questionDetail,
+                          String[] validResponses,
+                          Boolean signatureRequired
+    ) {
         super();
         this.forRelationship = forRelationship;
         this.questionText = questionText;
         this.questionDetail = questionDetail;
         this.validResponses = validResponses;
+        this.signatureRequired = signatureRequired;
 
         defineMessages();
     }
@@ -70,6 +84,7 @@ public class QuestionAnswer extends Protocol {
         message.put("text", this.questionText);
         message.put("detail", this.questionDetail);
         message.put("valid_responses", this.validResponses);
+        message.put("signature_required", this.signatureRequired);
         this.messages.put(QuestionAnswer.ASK_QUESTION, message);
     }
 
