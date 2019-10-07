@@ -20,4 +20,4 @@ async def test_get_message():
 async def test_get_thread_block():
   protocol = Protocol()
   block = protocol.get_thread_block()
-  assert block.['thid'] is not None
+  assert block['thid'] is not None
