@@ -73,7 +73,7 @@ class Handlers():
 # Enables handler registration decorator @AddHandler(handlers, message_type, message_status)
 class AddHandler():
 
-  def __init__(self, handlers: Handlers, message_type: str, message_status: int):
+  def __init__(self, handlers: Handlers, message_type: str, message_status: int = None):
     self.handlers = handlers
     self.message_type = message_type
     self.message_status = message_status

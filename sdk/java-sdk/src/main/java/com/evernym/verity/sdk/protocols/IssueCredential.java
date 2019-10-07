@@ -15,7 +15,7 @@ import org.json.JSONObject;
 public class IssueCredential extends Protocol {
 
     private static String MSG_FAMILY = "issue-credential";
-    private static String MSG_FAMILY_VERSION = "0.1";
+    private static String MSG_FAMILY_VERSION = "0.6";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
