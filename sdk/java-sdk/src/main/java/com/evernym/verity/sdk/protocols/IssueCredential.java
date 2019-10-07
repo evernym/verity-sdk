@@ -67,6 +67,7 @@ public class IssueCredential extends Protocol {
         JSONObject message = new JSONObject();
         message.put("@type", IssueCredential.getMessageType(IssueCredential.ISSUE));
         message.put("@id", IssueCredential.getNewId());
+        addThread(message);
         message.put("~for_relationship", this.forRelationship);
             JSONObject credentialData = new JSONObject();
             credentialData.put("id", IssueCredential.getNewId());

@@ -42,6 +42,8 @@ async def test_issue():
   )
   assert msg['@id'] is not None
   assert msg['~for_relationship'] == for_relationship
+  assert msg['~thread'] is not None
+  assert msg['~thread']['thid'] is not None
   assert msg['credentialData']['id']
   assert msg['credentialData']['name'] == name
   assert msg['credentialData']['credDefId'] == cred_def_id

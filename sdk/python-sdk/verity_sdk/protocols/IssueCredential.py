@@ -35,6 +35,7 @@ class IssueCredential(Protocol):
         '@type': IssueCredential.get_message_type(self.ISSUE),
         '@id': self.get_new_id(),
         '~for_relationship': self.for_relationship,
+        '~thread': self.get_thread_block(),
         'credentialData': {
           'id': self.get_new_id(),
           'name': self.name,

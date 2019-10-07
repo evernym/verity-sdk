@@ -45,6 +45,7 @@ public class IssueCredentialTest {
         JSONObject msg = issueCredential.messages.getJSONObject(IssueCredential.ISSUE);
         assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
         assertEquals(forRelationship, msg.getString("~for_relationship"));
         assertNotNull(msg.getJSONObject("credentialData").getString("id"));
         assertEquals(credentialName, msg.getJSONObject("credentialData").getString("name"));

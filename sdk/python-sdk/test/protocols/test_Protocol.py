@@ -15,3 +15,8 @@ async def test_get_message():
   unpacked_message = json.dumps(await unpack_forward_message(context, packed_message))
   assert json.dumps(message) == unpacked_message
   await cleanup(context)
+
+@pytest.mark.asyncio
+  protocol = Protocol()
+  block = protocol.get_thread_block()
+  assert block.['thid'] is not None
