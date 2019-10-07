@@ -14,12 +14,14 @@ class IssueCredential(Protocol):
   OFFER_ACCEPTED_BY_USER_STATUS = 1
   CREDENTIAL_SENT_TO_USER_STATUS = 2
 
+  for_relationship: str
   name: str
   cred_def_id: str
   credential_values: dict
   price: str
 
-  def __init__(self, name: str, cred_def_id: str, credential_values: dict, price: str):
+  def __init__(self, for_relationship: str, name: str, cred_def_id: str, credential_values: dict, price: str):
+    self.for_relationship = for_relationship
     self.name = name
     self.cred_def_id = cred_def_id
     self.credential_values = credential_values
@@ -32,6 +34,7 @@ class IssueCredential(Protocol):
       self.ISSUE: {
         '@type': IssueCredential.get_message_type(self.ISSUE),
         '@id': self.get_new_id(),
+        '~for_relationship', self.for_relationship,
         'credentialData': {
           'id': self.get_new_id(),
           'name': self.name,

@@ -26,6 +26,7 @@ public class IssueCredential extends Protocol {
     public static Integer OFFER_ACCEPTED_BY_USER_STATUS = 1;
     public static Integer CREDENTIAL_SENT_TO_USER_STATUS = 2;
 
+    String forRelationship;
     String credentialName;
     String credDefId;
     JSONObject credentialValues;
@@ -39,8 +40,9 @@ public class IssueCredential extends Protocol {
      * @param price The cost of the credential for the user.
      */
     @SuppressWarnings("WeakerAccess")
-    public IssueCredential(String credentialName, String credDefId, JSONObject credentialValues, String price) {
+    public IssueCredential(String forRelationship, String credentialName, String credDefId, JSONObject credentialValues, String price) {
         super();
+        this.forRelationship = forRelationship;
         this.credentialName = credentialName;
         this.credDefId = credDefId;
         this.credentialValues = credentialValues;
@@ -65,6 +67,7 @@ public class IssueCredential extends Protocol {
         JSONObject message = new JSONObject();
         message.put("@type", IssueCredential.getMessageType(IssueCredential.ISSUE));
         message.put("@id", IssueCredential.getNewId());
+        message.put("~for_relationship", this.forRelationship);
             JSONObject credentialData = new JSONObject();
             credentialData.put("id", IssueCredential.getNewId());
             credentialData.put("name", this.credentialName);

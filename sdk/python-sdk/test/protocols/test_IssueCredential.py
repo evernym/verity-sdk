@@ -6,6 +6,7 @@ from verity_sdk.utils import unpack_forward_message, MESSAGE_TYPE_DID
 from verity_sdk.utils.Context import Context
 from test.test_utils import get_test_config, send_stub, cleanup
 
+for_relationship = 'some_did'
 name = 'degree'
 cred_def_id = '12345'
 credential_values = {
@@ -17,8 +18,9 @@ price = '5'
 
 
 def test_init():
-  issueCredential = IssueCredential(name, cred_def_id, credential_values, price)
+  issueCredential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
 
+  assert issueCredential.for_relationship == for_relationship
   assert issueCredential.name == name
   assert issueCredential.cred_def_id == cred_def_id
   assert json.dumps(issueCredential.credential_values) == json.dumps(credential_values)
@@ -27,7 +29,7 @@ def test_init():
 @pytest.mark.asyncio
 async def test_issue():
   context = await Context.create(await get_test_config())
-  issueCredential = IssueCredential(name, cred_def_id, credential_values, price)
+  issueCredential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
   issueCredential.send = send_stub
   msg = await issueCredential.issue(context)
   msg = await unpack_forward_message(context, msg)
@@ -39,6 +41,7 @@ async def test_issue():
     IssueCredential.ISSUE
   )
   assert msg['@id'] is not None
+  assert msg['~for_relationship'] == for_relationship
   assert msg['credentialData']['id']
   assert msg['credentialData']['name'] == name
   assert msg['credentialData']['credDefId'] == cred_def_id
