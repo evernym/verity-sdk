@@ -19,7 +19,8 @@ public class IssueCredential extends Protocol {
 
     // Messages
     @SuppressWarnings("WeakerAccess")
-    public static String ISSUE = "issue";
+    public static String OFFER_CREDENTIAL = "send-offer";
+    public static String ISSUE_CREDENTIAL = "issue-credential";
 
     // Status definitions
     public static Integer OFFER_SENT_STATUS = 0;
@@ -64,19 +65,36 @@ public class IssueCredential extends Protocol {
 
     @Override
     protected void defineMessages() {
-        JSONObject message = new JSONObject();
-        message.put("@type", IssueCredential.getMessageType(IssueCredential.ISSUE));
-        message.put("@id", IssueCredential.getNewId());
-        addThread(message);
-        message.put("~for_relationship", this.forRelationship);
-            JSONObject credentialData = new JSONObject();
-            credentialData.put("id", IssueCredential.getNewId());
-            credentialData.put("name", this.credentialName);
-            credentialData.put("credDefId", this.credDefId);
-            credentialData.put("credentialValues", this.credentialValues);
-            credentialData.put("price", this.price);
-            message.put("credentialData", credentialData);
-        this.messages.put(IssueCredential.ISSUE, message);
+        JSONObject offerMessage = new JSONObject();
+        offerMessage.put("@type", IssueCredential.getMessageType(IssueCredential.OFFER_CREDENTIAL));
+        offerMessage.put("@id", IssueCredential.getNewId());
+        addThread(offerMessage);
+        offerMessage.put("~for_relationship", this.forRelationship);
+        offerMessage.put("name", this.credentialName);
+        offerMessage.put("credDefId", this.credDefId);
+        offerMessage.put("credentialValues", this.credentialValues);
+        offerMessage.put("price", this.price);
+        this.messages.put(IssueCredential.OFFER_CREDENTIAL, offerMessage);
+
+        JSONObject issueMessage = new JSONObject();
+        issueMessage.put("@type", IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL));
+        issueMessage.put("@id", IssueCredential.getNewId());
+        addThread(issueMessage);
+        issueMessage.put("~for_relationship", this.forRelationship);
+        this.messages.put(IssueCredential.ISSUE_CREDENTIAL, issueMessage);
+    }
+
+
+    /**
+     * Sends the credential message to the connection
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @throws IOException               when the HTTP library fails to post to the agency endpoint
+     * @throws UndefinedContextException when the context doesn't have enough information for this operation
+     * @throws WalletException when there are issues with encryption and decryption
+     */
+    @SuppressWarnings("WeakerAccess")
+    public byte[] offerCredential(Context context) throws IOException, UndefinedContextException, WalletException {
+        return this.send(context, this.messages.getJSONObject(IssueCredential.OFFER_CREDENTIAL));
     }
 
     /**
@@ -87,7 +105,7 @@ public class IssueCredential extends Protocol {
      * @throws WalletException when there are issues with encryption and decryption
      */
     @SuppressWarnings("WeakerAccess")
-    public byte[] issue(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(IssueCredential.ISSUE));
+    public byte[] issueCredential(Context context) throws IOException, UndefinedContextException, WalletException {
+        return this.send(context, this.messages.getJSONObject(IssueCredential.ISSUE_CREDENTIAL));
     }
 }

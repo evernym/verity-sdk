@@ -7,7 +7,8 @@ class IssueCredential(Protocol):
   MSG_FAMILY_VERSION = '0.1'
 
   # Messages
-  ISSUE = 'issue'
+  OFFER_CREDENTIAL = 'send-offer'
+  ISSUE_CREDENTIAL = 'issue-credential'
 
   # Status
   OFFER_SENT_TO_USER_STATUS = 0
@@ -31,18 +32,21 @@ class IssueCredential(Protocol):
 
   def define_messages(self):
     self.messages = {
-      self.ISSUE: {
-        '@type': IssueCredential.get_message_type(self.ISSUE),
+      self.OFFER_CREDENTIAL: {
+        '@type': IssueCredential.get_message_type(self.OFFER_CREDENTIAL),
         '@id': self.get_new_id(),
         '~for_relationship': self.for_relationship,
         '~thread': self.get_thread_block(),
-        'credentialData': {
-          'id': self.get_new_id(),
-          'name': self.name,
-          'credDefId': self.cred_def_id,
-          'credentialValues': self.credential_values,
-          'price': self.price
-        },
+        'name': self.name,
+        'credDefId': self.cred_def_id,
+        'credentialValues': self.credential_values,
+        'price': self.price
+      },
+      self.ISSUE_CREDENTIAL: {
+        '@type': IssueCredential.get_message_type(self.ISSUE_CREDENTIAL),
+        '@id': self.get_new_id(),
+        '~for_relationship': self.for_relationship,
+        '~thread': self.get_thread_block(),
       }
     }
 
@@ -58,5 +62,8 @@ class IssueCredential(Protocol):
   def get_status_message_type() -> str:
     return get_status_message_type(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION)
 
-  async def issue(self, context: Context) -> bytes:
-    return await self.send(context, self.messages[self.ISSUE])
+  async def offer_credential(self, context: Context) -> bytes:
+    return await self.send(context, self.messages[self.OFFER_CREDENTIAL])
+
+  async def issue_credential(self, context: Context) -> bytes:
+    return await self.send(context, self.messages[self.ISSUE_CREDENTIAL])

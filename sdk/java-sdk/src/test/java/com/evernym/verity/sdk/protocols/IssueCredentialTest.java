@@ -42,16 +42,21 @@ public class IssueCredentialTest {
     }
 
     private void testMessages(IssueCredential issueCredential) {
-        JSONObject msg = issueCredential.messages.getJSONObject(IssueCredential.ISSUE);
-        assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE), msg.getString("@type"));
-        assertNotNull(msg.getString("@id"));
-        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
-        assertEquals(forRelationship, msg.getString("~for_relationship"));
-        assertNotNull(msg.getJSONObject("credentialData").getString("id"));
-        assertEquals(credentialName, msg.getJSONObject("credentialData").getString("name"));
-        assertEquals(credDefId, msg.getJSONObject("credentialData").getString("credDefId"));
-        assertEquals(credentialValues.toString(), msg.getJSONObject("credentialData").getJSONObject("credentialValues").toString());
-        assertEquals(price, msg.getJSONObject("credentialData").getString("price"));
+        JSONObject offerMsg = issueCredential.messages.getJSONObject(IssueCredential.OFFER_CREDENTIAL);
+        assertEquals(IssueCredential.getMessageType(IssueCredential.OFFER_CREDENTIAL), offerMsg.getString("@type"));
+        assertNotNull(offerMsg.getString("@id"));
+        assertNotNull(offerMsg.getJSONObject("~thread").getString("thid"));
+        assertEquals(forRelationship, offerMsg.getString("~for_relationship"));
+        assertEquals(credentialName, offerMsg.getString("name"));
+        assertEquals(credDefId, offerMsg.getString("credDefId"));
+        assertEquals(credentialValues.toString(), offerMsg.getJSONObject("credentialValues").toString());
+        assertEquals(price, offerMsg.getString("price"));
+
+        JSONObject issueMsg = issueCredential.messages.getJSONObject(IssueCredential.ISSUE_CREDENTIAL);
+        assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), issueMsg.getString("@type"));
+        assertNotNull(issueMsg.getString("@id"));
+        assertNotNull(issueMsg.getJSONObject("~thread").getString("thid"));
+        assertEquals(forRelationship, issueMsg.getString("~for_relationship"));
     }
 
     @Test
@@ -61,9 +66,12 @@ public class IssueCredentialTest {
             context = TestHelpers.getContext();
             IssueCredential issueCredential = new IssueCredential(forRelationship, credentialName, credDefId, credentialValues, price);
             issueCredential.disableHTTPSend();
-            byte [] message = issueCredential.issue(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE), unpackedMessage.getString("@type"));
+            byte [] offerMsg = issueCredential.offerCredential(context);
+            JSONObject unpackedOfferMessage = Util.unpackForwardMessage(context, offerMsg);
+            assertEquals(IssueCredential.getMessageType(IssueCredential.OFFER_CREDENTIAL), unpackedOfferMessage.getString("@type"));
+            byte [] issueMsg = issueCredential.issueCredential(context);
+            JSONObject unpackedIssueMessage = Util.unpackForwardMessage(context, issueMsg);
+            assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), unpackedIssueMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();
