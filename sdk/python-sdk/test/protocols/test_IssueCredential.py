@@ -27,29 +27,49 @@ def test_init():
 
 
 @pytest.mark.asyncio
-async def test_issue():
+async def test_offer_credential():
   context = await Context.create(await get_test_config())
   issueCredential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
   issueCredential.send = send_stub
-  msg = await issueCredential.issue(context)
+  msg = await issueCredential.offer_credential(context)
   msg = await unpack_forward_message(context, msg)
 
   assert msg['@type'] == '{};spec/{}/{}/{}'.format(
     MESSAGE_TYPE_DID,
     IssueCredential.MSG_FAMILY,
     IssueCredential.MSG_FAMILY_VERSION,
-    IssueCredential.ISSUE
+    IssueCredential.OFFER_CREDENTIAL
   )
   assert msg['@id'] is not None
   assert msg['~for_relationship'] == for_relationship
   assert msg['~thread'] is not None
   assert msg['~thread']['thid'] is not None
-  assert msg['credentialData']['id']
-  assert msg['credentialData']['name'] == name
-  assert msg['credentialData']['credDefId'] == cred_def_id
-  assert msg['credentialData']['credentialValues']['name'] == credential_values['name']
-  assert msg['credentialData']['credentialValues']['degree'] == credential_values['degree']
-  assert msg['credentialData']['credentialValues']['gpa'] == credential_values['gpa']
-  assert msg['credentialData']['price'] == price
+  assert msg['name'] == name
+  assert msg['credDefId'] == cred_def_id
+  assert msg['credentialValues']['name'] == credential_values['name']
+  assert msg['credentialValues']['degree'] == credential_values['degree']
+  assert msg['credentialValues']['gpa'] == credential_values['gpa']
+  assert msg['price'] == price
+
+  await cleanup(context)
+
+@pytest.mark.asyncio
+async def test_issue_credential():
+  context = await Context.create(await get_test_config())
+  issueCredential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
+  issueCredential.send = send_stub
+  msg = await issueCredential.issue_credential(context)
+  msg = await unpack_forward_message(context, msg)
+
+  assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    MESSAGE_TYPE_DID,
+    IssueCredential.MSG_FAMILY,
+    IssueCredential.MSG_FAMILY_VERSION,
+    IssueCredential.ISSUE_CREDENTIAL
+  )
+  assert msg['@id'] is not None
+  assert msg['~for_relationship'] == for_relationship
+  assert msg['~thread'] is not None
+  assert msg['~thread']['thid'] is not None
 
   await cleanup(context)
