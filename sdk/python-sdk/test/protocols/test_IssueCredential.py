@@ -73,3 +73,24 @@ async def test_issue_credential():
   assert msg['~thread']['thid'] is not None
 
   await cleanup(context)
+
+@pytest.mark.asyncio
+async def test_status():
+  context = await Context.create(await get_test_config())
+  issueCredential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
+  issueCredential.send = send_stub
+  msg = await issueCredential.status(context)
+  msg = await unpack_forward_message(context, msg)
+
+  assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    MESSAGE_TYPE_DID,
+    IssueCredential.MSG_FAMILY,
+    IssueCredential.MSG_FAMILY_VERSION,
+    IssueCredential.GET_STATUS
+  )
+  assert msg['@id'] is not None
+  assert msg['~for_relationship'] == for_relationship
+  assert msg['~thread'] is not None
+  assert msg['~thread']['thid'] is not None
+
+  await cleanup(context)

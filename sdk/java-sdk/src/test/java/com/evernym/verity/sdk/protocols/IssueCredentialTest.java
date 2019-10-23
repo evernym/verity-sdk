@@ -57,6 +57,12 @@ public class IssueCredentialTest {
         assertNotNull(issueMsg.getString("@id"));
         assertNotNull(issueMsg.getJSONObject("~thread").getString("thid"));
         assertEquals(forRelationship, issueMsg.getString("~for_relationship"));
+
+        JSONObject statusMsg = issueCredential.messages.getJSONObject(IssueCredential.GET_STATUS);
+        assertEquals(IssueCredential.getMessageType(IssueCredential.GET_STATUS), statusMsg.getString("@type"));
+        assertNotNull(statusMsg.getString("@id"));
+        assertNotNull(statusMsg.getJSONObject("~thread").getString("thid"));
+        assertEquals(forRelationship, statusMsg.getString("~for_relationship"));
     }
 
     @Test
@@ -72,6 +78,9 @@ public class IssueCredentialTest {
             byte [] issueMsg = issueCredential.issueCredential(context);
             JSONObject unpackedIssueMessage = Util.unpackForwardMessage(context, issueMsg);
             assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), unpackedIssueMessage.getString("@type"));
+            byte [] statusMsg = issueCredential.status(context);
+            JSONObject unpackedStatusMessage = Util.unpackForwardMessage(context, statusMsg);
+            assertEquals(IssueCredential.getMessageType(IssueCredential.GET_STATUS), unpackedStatusMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();
