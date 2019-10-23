@@ -46,7 +46,7 @@
         Tw6APXtEnjfD2H8HOpOX/7ef4gWK0O1Q7A==
         -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
     - eval $DOCKER_PREP_COMMAND
-    - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
+    - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME $(if [ $CI_COMMIT_REF_NAME == master ]; then echo --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:latest; fi)
 
 stages:
   - docker-images
@@ -180,7 +180,7 @@ verity-server-image-docker-build:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile'
     DOCKER_IMAGE_NAME: 'verity-server-image'
     DOCKER_CONTEXT: '$CI_PROJECT_DIR/server'
-    DOCKER_PREP_COMMAND: sed 's~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g' -i server/devops/dev/verity-server-image.dockerfile
+    DOCKER_PREP_COMMAND: sed 's~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server:$CI_COMMIT_REF_NAME~g' -i server/devops/dev/verity-server-image.dockerfile
 
 upload_to_maven:
   stage: deploy
@@ -269,5 +269,5 @@ upload_mock_verity_to_docker_hub:
         lFnjUUk49av67um43JHcinT5NFPuleZzkjaL/D8ueOrjXQDy05rwVdgmw9pXog4B
         Tw6APXtEnjfD2H8HOpOX/7ef4gWK0O1Q7A==
         -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
-    - sed "s~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server~g" -i $CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile
+    - sed "s~FROM verity-server~FROM $CI_REGISTRY_IMAGE/verity-server:$CI_COMMIT_REF_NAME~g" -i $CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile
     - /kaniko/executor --context $CI_PROJECT_DIR/server --dockerfile $CI_PROJECT_DIR/server/devops/dev/verity-server-image.dockerfile --destination evernymdev/mock-verity:latest
