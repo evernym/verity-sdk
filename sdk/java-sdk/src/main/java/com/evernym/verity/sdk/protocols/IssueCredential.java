@@ -21,6 +21,7 @@ public class IssueCredential extends Protocol {
     @SuppressWarnings("WeakerAccess")
     public static String OFFER_CREDENTIAL = "send-offer";
     public static String ISSUE_CREDENTIAL = "issue-credential";
+    public static String GET_STATUS = "get-status";
 
     // Status definitions
     public static Integer OFFER_SENT_STATUS = 0;
@@ -82,11 +83,18 @@ public class IssueCredential extends Protocol {
         addThread(issueMessage);
         issueMessage.put("~for_relationship", this.forRelationship);
         this.messages.put(IssueCredential.ISSUE_CREDENTIAL, issueMessage);
+
+        JSONObject statusMessage = new JSONObject();
+        statusMessage.put("@type", IssueCredential.getMessageType(IssueCredential.GET_STATUS));
+        statusMessage.put("@id", IssueCredential.getNewId());
+        addThread(statusMessage);
+        statusMessage.put("~for_relationship", this.forRelationship);
+        this.messages.put(IssueCredential.GET_STATUS, statusMessage);
     }
 
 
     /**
-     * Sends the credential message to the connection
+     * Sends the credential offer message to the connection
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @throws IOException               when the HTTP library fails to post to the agency endpoint
      * @throws UndefinedContextException when the context doesn't have enough information for this operation
@@ -98,7 +106,7 @@ public class IssueCredential extends Protocol {
     }
 
     /**
-     * Sends the credential message to the connection
+     * Sends the issue credential message to the connection
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      * @throws IOException               when the HTTP library fails to post to the agency endpoint
      * @throws UndefinedContextException when the context doesn't have enough information for this operation
@@ -107,5 +115,17 @@ public class IssueCredential extends Protocol {
     @SuppressWarnings("WeakerAccess")
     public byte[] issueCredential(Context context) throws IOException, UndefinedContextException, WalletException {
         return this.send(context, this.messages.getJSONObject(IssueCredential.ISSUE_CREDENTIAL));
+    }
+
+    /**
+     * Sends the get status message to the connection
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @throws IOException               when the HTTP library fails to post to the agency endpoint
+     * @throws UndefinedContextException when the context doesn't have enough information for this operation
+     * @throws WalletException when there are issues with encryption and decryption
+     */
+    @SuppressWarnings("WeakerAccess")
+    public byte[] status(Context context) throws IOException, UndefinedContextException, WalletException {
+        return this.send(context, this.messages.getJSONObject(IssueCredential.GET_STATUS));
     }
 }

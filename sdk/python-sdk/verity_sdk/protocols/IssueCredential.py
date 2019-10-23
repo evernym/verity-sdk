@@ -9,6 +9,7 @@ class IssueCredential(Protocol):
   # Messages
   OFFER_CREDENTIAL = 'send-offer'
   ISSUE_CREDENTIAL = 'issue-credential'
+  GET_STATUS = 'get-status'
 
   # Status
   OFFER_SENT_TO_USER_STATUS = 0
@@ -47,6 +48,12 @@ class IssueCredential(Protocol):
         '@id': self.get_new_id(),
         '~for_relationship': self.for_relationship,
         '~thread': self.get_thread_block(),
+      },
+      self.GET_STATUS: {
+        '@type': IssueCredential.get_message_type(self.GET_STATUS),
+        '@id': self.get_new_id(),
+        '~for_relationship': self.for_relationship,
+        '~thread': self.get_thread_block(),
       }
     }
 
@@ -67,3 +74,6 @@ class IssueCredential(Protocol):
 
   async def issue_credential(self, context: Context) -> bytes:
     return await self.send(context, self.messages[self.ISSUE_CREDENTIAL])
+
+  async def status(self, context: Context) -> bytes:
+    return await self.send(context, self.messages[self.GET_STATUS])

@@ -9,20 +9,28 @@ class PresentProof(Protocol):
 
   # Messages
   PROOF_REQUEST = 'request'
+  GET_STATUS = 'get-status'
 
   # Status
   PROOF_REQUEST_SENT_STATUS = 0
   PROOF_RECEIVED_STATUS = 1
 
-  connection_id: str
+  for_relationship: str
   name: str
   proof_attrs: List[dict]
+  proof_predicates: List[dict]
   revocation_interval: dict
 
-  def __init__(self, connection_id: str, name: str, proof_attrs: List[dict], revocation_interval: dict = None):
-    self.connection_id = connection_id
+  def __init__(self,
+               for_relationship: str,
+               name: str,
+               proof_attrs: List[dict],
+               proof_predicates: List[dict] = None,
+               revocation_interval: dict = None):
+    self.for_relationship = for_relationship
     self.name = name
     self.proof_attrs = proof_attrs
+    self.proof_predicates = proof_predicates
     self.revocation_interval = revocation_interval or {}
     self.define_messages()
 
@@ -31,12 +39,18 @@ class PresentProof(Protocol):
       self.PROOF_REQUEST: {
         '@type': PresentProof.get_message_type(self.PROOF_REQUEST),
         '@id': self.get_new_id(),
-        'connectionId': self.connection_id,
-        'proofRequest': {
-          'name': self.name,
-          'proofAttrs': self.proof_attrs,
-          'revocationInterval': self.revocation_interval
-        }
+        '~for_relationship': self.for_relationship,
+        '~thread': self.get_thread_block(),
+        'name': self.name,
+        'proofAttrs': self.proof_attrs,
+        'proofPredicates': self.proof_predicates,
+        'revocationInterval': self.revocation_interval
+      },
+      self.GET_STATUS: {
+        '@type': PresentProof.get_message_type(self.GET_STATUS),
+        '@id': self.get_new_id(),
+        '~for_relationship': self.for_relationship,
+        '~thread': self.get_thread_block(),
       }
     }
 
@@ -54,3 +68,6 @@ class PresentProof(Protocol):
 
   async def request(self, context: Context) -> bytes:
     return await self.send(context, self.messages[self.PROOF_REQUEST])
+
+  async def status(self, context: Context) -> bytes:
+    return await self.send(context, self.messages[self.GET_STATUS])

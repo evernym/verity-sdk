@@ -21,39 +21,54 @@ public class PresentProof extends Protocol {
     // Messages
     @SuppressWarnings("WeakerAccess")
     public static String PROOF_REQUEST = "request";
+    public static String GET_STATUS = "get-status";
 
     // Status Definitions
     public static Integer PROOF_REQUEST_SENT_STATUS = 0;
     public static Integer PROOF_RECEIVED_STATUS = 1;
 
-    String connectionId;
+    String forRelationship;
     String name;
     JSONArray proofAttrs;
+    JSONArray proofPredicates;
     JSONObject revocationInterval;
 
     /**
      * Initializes the proof request object
-     * @param connectionId The connectionId the proof request will be sent to
+     * @param forRelationship DID of relationship where proof request will be sent to
      * @param name The name of the proof request
      * @param proofAttrs The requested attributes of the proof request
      */
-    public PresentProof(String connectionId, String name, JSONArray proofAttrs) {
-        this(connectionId, name, proofAttrs, null);
+    public PresentProof(String forRelationship, String name, JSONArray proofAttrs) {
+        this(forRelationship, name, proofAttrs, null, null);
+    }
+
+    /**
+     * Initializes the proof request object
+     * @param forRelationship DID of relationship where proof request will be sent to
+     * @param name The name of the proof request
+     * @param proofAttrs The requested attributes of the proof request
+     * @param proofPredicates The requested predicates of the proof request
+     */
+    public PresentProof(String forRelationship, String name, JSONArray proofAttrs, JSONArray proofPredicates) {
+        this(forRelationship, name, proofAttrs, proofPredicates, null);
     }
 
     /**
      * Initializes the proof request object with a revocation interval
-     * @param connectionId The connectionId the proof request will be sent to
+     * @param forRelationship DID of relationship where proof request will be sent to
      * @param name The name of the proof request
      * @param proofAttrs The requested attributes of the proof request
+     * @param proofPredicates The requested predicates of the proof request
      * @param revocationInterval The proof request revocation interval
      */
     @SuppressWarnings("WeakerAccess")
-    public PresentProof(String connectionId, String name, JSONArray proofAttrs, JSONObject revocationInterval) {
+    public PresentProof(String forRelationship, String name, JSONArray proofAttrs, JSONArray proofPredicates, JSONObject revocationInterval) {
         super();
-        this.connectionId = connectionId;
+        this.forRelationship = forRelationship;
         this.name = name;
         this.proofAttrs = proofAttrs;
+        this.proofPredicates = proofPredicates;
         this.revocationInterval = revocationInterval;
         defineMessages();
     }
@@ -72,18 +87,25 @@ public class PresentProof extends Protocol {
 
     @Override
     protected void defineMessages() {
-        JSONObject message = new JSONObject();
-        message.put("@type", PresentProof.getMessageType(PresentProof.PROOF_REQUEST));
-        message.put("@id", PresentProof.getNewId());
-        message.put("connectionId", this.connectionId);
-            JSONObject proofRequest = new JSONObject();
-            proofRequest.put("name", this.name);
-            proofRequest.put("proofAttrs", proofAttrs);
-            if (this.revocationInterval != null) {
-                proofRequest.put("revocationInterval", this.revocationInterval);
-            }
-            message.put("proofRequest", proofRequest);
-        this.messages.put(PresentProof.PROOF_REQUEST, message);
+        JSONObject requestMsg = new JSONObject();
+        requestMsg.put("@type", PresentProof.getMessageType(PresentProof.PROOF_REQUEST));
+        requestMsg.put("@id", PresentProof.getNewId());
+        addThread(requestMsg);
+        requestMsg.put("~for_relationship", this.forRelationship);
+        requestMsg.put("name", this.name);
+        requestMsg.put("proofAttrs", proofAttrs);
+        if (this.proofPredicates != null)
+            requestMsg.put("proofPredicates", proofPredicates);
+        if (this.revocationInterval != null)
+            requestMsg.put("revocationInterval", this.revocationInterval);
+        this.messages.put(PresentProof.PROOF_REQUEST, requestMsg);
+
+        JSONObject statusMsg = new JSONObject();
+        statusMsg.put("@type", PresentProof.getMessageType(PresentProof.GET_STATUS));
+        statusMsg.put("@id", PresentProof.getNewId());
+        addThread(statusMsg);
+        statusMsg.put("~for_relationship", this.forRelationship);
+        this.messages.put(PresentProof.GET_STATUS, statusMsg);
     }
 
     /**
@@ -95,5 +117,16 @@ public class PresentProof extends Protocol {
      */
     public byte[] request(Context context) throws IOException, UndefinedContextException, WalletException {
         return this.send(context, this.messages.getJSONObject(PresentProof.PROOF_REQUEST));
+    }
+
+    /**
+     * Sends the status request message to Verity
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @throws IOException               when the HTTP library fails to post to the agency endpoint
+     * @throws UndefinedContextException when the context doesn't have enough information for this operation
+     * @throws WalletException when there are issues with encryption and decryption
+     */
+    public byte[] status(Context context) throws IOException, UndefinedContextException, WalletException {
+        return this.send(context, this.messages.getJSONObject(PresentProof.GET_STATUS));
     }
 }
