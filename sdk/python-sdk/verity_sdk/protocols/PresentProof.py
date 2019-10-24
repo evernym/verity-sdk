@@ -5,7 +5,7 @@ from verity_sdk.protocols.Protocol import Protocol
 
 class PresentProof(Protocol):
   MSG_FAMILY = 'present-proof'
-  MSG_FAMILY_VERSION = '0.1'
+  MSG_FAMILY_VERSION = '0.6'
 
   # Messages
   PROOF_REQUEST = 'request'

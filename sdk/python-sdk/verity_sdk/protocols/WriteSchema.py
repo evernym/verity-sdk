@@ -6,7 +6,7 @@ from verity_sdk.utils import Context, get_message_type, get_problem_report_messa
 
 class WriteSchema(Protocol):
   MSG_FAMILY = 'write-schema'
-  MSG_FAMILY_VERSION = '0.1'
+  MSG_FAMILY_VERSION = '0.6'
 
   # Messages
   WRITE_SCHEMA = 'write'

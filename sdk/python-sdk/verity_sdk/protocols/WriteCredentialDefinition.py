@@ -4,7 +4,7 @@ from verity_sdk.protocols.Protocol import Protocol
 
 class WriteCredentialDefinition(Protocol):
   MSG_FAMILY = 'write-cred-def'
-  MSG_FAMILY_VERSION = '0.1'
+  MSG_FAMILY_VERSION = '0.6'
 
   # Messages
   WRITE_CRED_DEF = 'write'
