@@ -4,7 +4,7 @@ from verity_sdk.protocols.Protocol import Protocol
 
 class IssueCredential(Protocol):
   MSG_FAMILY = 'issue-credential'
-  MSG_FAMILY_VERSION = '0.1'
+  MSG_FAMILY_VERSION = '0.6'
 
   # Messages
   OFFER_CREDENTIAL = 'send-offer'
