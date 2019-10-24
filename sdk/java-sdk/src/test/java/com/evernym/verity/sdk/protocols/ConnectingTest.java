@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class ConnectingTest {
     private String sourceId = "source_id";
     private String phoneNumber = "123-456-7891";
-    private boolean usePublicDid = true;
+    private boolean includePublicDID = true;
 
     @Test
     public void testGetMessageType() {
@@ -26,16 +26,16 @@ public class ConnectingTest {
         Connecting connecting = new Connecting(sourceId);
         assertEquals(sourceId, connecting.sourceId);
         assertNull(connecting.phoneNumber);
-        assertFalse(connecting.usePublicDid);
+        assertFalse(connecting.includePublicDID);
         testMessages(connecting);
     }
 
     @Test
     public void testConstructorWithSourceIdAndUsePublicDid() {
-        Connecting connecting = new Connecting(sourceId, usePublicDid);
+        Connecting connecting = new Connecting(sourceId, includePublicDID);
         assertEquals(sourceId, connecting.sourceId);
         assertNull(connecting.phoneNumber);
-        assertEquals(usePublicDid, connecting.usePublicDid);
+        assertEquals(includePublicDID, connecting.includePublicDID);
         testMessages(connecting);
     }
 
@@ -44,16 +44,16 @@ public class ConnectingTest {
         Connecting connecting = new Connecting(sourceId, phoneNumber);
         assertEquals(sourceId, connecting.sourceId);
         assertEquals(phoneNumber, connecting.phoneNumber);
-        assertFalse(connecting.usePublicDid);
+        assertFalse(connecting.includePublicDID);
         testMessages(connecting);
     }
 
     @Test
     public void testFullConstructor() {
-        Connecting connecting = new Connecting(sourceId, phoneNumber, usePublicDid);
+        Connecting connecting = new Connecting(sourceId, phoneNumber, includePublicDID);
         assertEquals(sourceId, connecting.sourceId);
         assertEquals(phoneNumber, connecting.phoneNumber);
-        assertEquals(usePublicDid, connecting.usePublicDid);
+        assertEquals(includePublicDID, connecting.includePublicDID);
         testMessages(connecting);
     }
 
@@ -64,7 +64,7 @@ public class ConnectingTest {
         assertEquals(msg.getString("sourceId"), connecting.sourceId);
         if(connecting.phoneNumber != null)
             assertEquals(msg.getString("phoneNo"), connecting.phoneNumber);
-        assertEquals(msg.getBoolean("usePublicDid"), connecting.usePublicDid);
+        assertEquals(msg.getBoolean("includePublicDID"), connecting.includePublicDID);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class ConnectingTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            Connecting connecting = new Connecting(sourceId, phoneNumber, usePublicDid);
+            Connecting connecting = new Connecting(sourceId, phoneNumber, includePublicDID);
             connecting.disableHTTPSend();
             byte[] message = connecting.connect(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);

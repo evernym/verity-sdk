@@ -31,6 +31,6 @@ async def test_connect():
   assert msg['@id'] is not None
   assert msg['sourceId'] == source_id
   assert msg['phoneNo'] == phone_number
-  assert msg['usePublicDid'] == include_public_did
+  assert msg['includePublicDID'] == include_public_did
 
   await cleanup(context)

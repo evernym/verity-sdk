@@ -27,7 +27,7 @@ public class Connecting extends Protocol {
 
     String sourceId;
     String phoneNumber = null;
-    boolean usePublicDid = false;
+    boolean includePublicDID = false;
     
     /**
     * Create connection without phone number
@@ -41,11 +41,11 @@ public class Connecting extends Protocol {
     /**
     * Create connection without a phone number that uses a public DID.
     * @param sourceId required param that sets an id of the connection
-    * @param usePublicDid optional param that indicates the connection invite should use the institution's public DID.
+    * @param includePublicDID optional param that indicates the connection invite should use the institution's public DID.
     */
     @SuppressWarnings("WeakerAccess")
-    public Connecting(String sourceId, boolean usePublicDid) {
-        this(sourceId, null, usePublicDid);
+    public Connecting(String sourceId, boolean includePublicDID) {
+        this(sourceId, null, includePublicDID);
     }
 
     /**
@@ -62,14 +62,14 @@ public class Connecting extends Protocol {
     * Create connection with phone number that uses a public DID
     * @param sourceId required param that sets an id of the connection
     * @param phoneNo optional param that sets the sms phone number for an identity holder 
-    * @param usePublicDid optional param that indicates the connection invite should use the institution's public DID.
+    * @param includePublicDID optional param that indicates the connection invite should use the institution's public DID.
     */
     @SuppressWarnings("WeakerAccess")
-    public Connecting(String sourceId, String phoneNo, boolean usePublicDid) {
+    public Connecting(String sourceId, String phoneNo, boolean includePublicDID) {
         super();
         this.sourceId = sourceId;
         this.phoneNumber = phoneNo;
-        this.usePublicDid = usePublicDid;
+        this.includePublicDID = includePublicDID;
         defineMessages();
     }
 
@@ -92,7 +92,7 @@ public class Connecting extends Protocol {
         createConnectionMessage.put("@id", Connecting.getNewId());
         createConnectionMessage.put("sourceId", this.sourceId);
         createConnectionMessage.put("phoneNo", this.phoneNumber);
-        createConnectionMessage.put("usePublicDid", this.usePublicDid);
+        createConnectionMessage.put("includePublicDID", this.includePublicDID);
         this.messages.put(Connecting.CREATE_CONNECTION, createConnectionMessage);
     }
 

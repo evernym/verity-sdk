@@ -31,7 +31,7 @@ class Connecting(Protocol):
         '@id': self.get_new_id(),
         'sourceId': self.source_id,
         'phoneNo': self.phone_number,
-        'usePublicDid': self.include_public_did
+        'includePublicDID': self.include_public_did
       }
     }
 
