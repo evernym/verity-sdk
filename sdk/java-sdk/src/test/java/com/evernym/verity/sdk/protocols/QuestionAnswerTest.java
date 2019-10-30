@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class QuestionAnswerTest {
 
-    private String connectionId = "abcd12345";
+    private String forRelationship = "abcd12345";
     private String questionText = "Question text";
     private String questionDetail = "Optional question detail";
     private String[] validResponses = {"Yes", "No"};
@@ -18,7 +18,7 @@ public class QuestionAnswerTest {
 
     @Test
     public void testGetMessageType() {
-        QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, questionText, questionDetail, validResponses);
+        QuestionAnswer questionAnswer = new QuestionAnswer(forRelationship, questionText, questionDetail, validResponses);
         String msgName = "msg name";
         assertEquals(Util.getMessageType("questionanswer", "1.0", msgName), QuestionAnswer.getMessageType(msgName));
     }
@@ -26,13 +26,13 @@ public class QuestionAnswerTest {
     @Test
     public void testConstructor() {
         QuestionAnswer questionAnswer = new QuestionAnswer(
-                connectionId,
+                forRelationship,
                 questionText,
                 questionDetail,
                 validResponses,
                 requireSignature
         );
-        assertEquals(connectionId, questionAnswer.forRelationship);
+        assertEquals(forRelationship, questionAnswer.forRelationship);
         assertEquals(questionText, questionAnswer.questionText);
         assertEquals(questionDetail, questionAnswer.questionDetail);
         assertEquals(validResponses.length, questionAnswer.validResponses.length);
@@ -44,14 +44,20 @@ public class QuestionAnswerTest {
 
         msg = new JSONObject(msg.toString());
 
-        assertEquals(QuestionAnswer.getMessageType("ask-question"), msg.getString("@type"));
+        assertEquals(QuestionAnswer.getMessageType(QuestionAnswer.ASK_QUESTION), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
-        assertEquals(connectionId, msg.getString("~for_relationship"));
+        assertEquals(forRelationship, msg.getString("~for_relationship"));
         assertEquals(questionText, msg.getString("text"));
         assertEquals(questionDetail, msg.getString("detail"));
         assertEquals(validResponses[0], msg.getJSONArray("valid_responses").getString(0));
         assertEquals(requireSignature, msg.getBoolean("signature_required"));
         assertNotNull(msg.getJSONArray("valid_responses"));
+
+        JSONObject statusMsg = questionAnswer.messages.getJSONObject(QuestionAnswer.GET_STATUS);
+        assertEquals(QuestionAnswer.getMessageType(QuestionAnswer.GET_STATUS), statusMsg.getString("@type"));
+        assertNotNull(statusMsg.getString("@id"));
+        assertNotNull(statusMsg.getJSONObject("~thread").getString("thid"));
+        assertEquals(forRelationship, statusMsg.getString("~for_relationship"));
     }
 
     @Test
@@ -59,7 +65,7 @@ public class QuestionAnswerTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            QuestionAnswer questionAnswer = new QuestionAnswer(connectionId, questionText, questionDetail, validResponses);
+            QuestionAnswer questionAnswer = new QuestionAnswer(forRelationship, questionText, questionDetail, validResponses);
             questionAnswer.disableHTTPSend();
             byte[] message = questionAnswer.ask(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);

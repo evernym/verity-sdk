@@ -19,6 +19,7 @@ public class QuestionAnswer extends Protocol {
     // Messages
     @SuppressWarnings("WeakerAccess")
     public static String ASK_QUESTION = "ask-question";
+    public static String GET_STATUS = "get-status";
 
     // Status Definitions
     public static Integer QUESTION_SENT_STATUS = 0;
@@ -86,6 +87,13 @@ public class QuestionAnswer extends Protocol {
         message.put("valid_responses", this.validResponses);
         message.put("signature_required", this.signatureRequired);
         this.messages.put(QuestionAnswer.ASK_QUESTION, message);
+
+        JSONObject statusMsg = new JSONObject();
+        statusMsg.put("@type", QuestionAnswer.getMessageType(QuestionAnswer.GET_STATUS));
+        statusMsg.put("@id", QuestionAnswer.getNewId());
+        addThread(statusMsg);
+        statusMsg.put("~for_relationship", this.forRelationship);
+        this.messages.put(QuestionAnswer.GET_STATUS, statusMsg);
     }
 
     /**
@@ -98,5 +106,16 @@ public class QuestionAnswer extends Protocol {
     @SuppressWarnings("WeakerAccess")
     public byte[] ask(Context context) throws IOException, UndefinedContextException, WalletException {
         return this.send(context, this.messages.getJSONObject(QuestionAnswer.ASK_QUESTION));
+    }
+
+    /**
+     * Sends the status request message to Verity
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @throws IOException               when the HTTP library fails to post to the agency endpoint
+     * @throws UndefinedContextException when the context doesn't have enough information for this operation
+     * @throws WalletException when there are issues with encryption and decryption
+     */
+    public byte[] status(Context context) throws IOException, UndefinedContextException, WalletException {
+        return this.send(context, this.messages.getJSONObject(QuestionAnswer.GET_STATUS));
     }
 }

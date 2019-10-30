@@ -47,3 +47,23 @@ async def test_ask():
   assert msg['signature_required'] == signature_required
 
   await cleanup(context)
+
+async def test_status():
+  context = await Context.create(await get_test_config())
+  question_answer = QuestionAnswer(for_relationship, question_text, question_detail, valid_responses, signature_required)
+  question_answer.send = send_stub
+  msg = await question_answer.status(context)
+  msg = await unpack_forward_message(context, msg)
+
+  assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    MESSAGE_TYPE_DID,
+    QuestionAnswer.MSG_FAMILY,
+    QuestionAnswer.MSG_FAMILY_VERSION,
+    QuestionAnswer.GET_STATUS
+  )
+  assert msg['@id'] is not None
+  assert msg['~for_relationship'] == for_relationship
+  assert msg['~thread'] is not None
+  assert msg['~thread']['thid'] is not None
+
+  await cleanup(context)

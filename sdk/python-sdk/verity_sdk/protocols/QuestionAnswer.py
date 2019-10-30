@@ -11,6 +11,7 @@ class QuestionAnswer(Protocol):
 
   # Messages
   ASK_QUESTION = 'ask-question'
+  GET_STATUS = 'get-status'
 
   # Status
   QUESTION_SENT_STATUS = 0
@@ -50,6 +51,12 @@ class QuestionAnswer(Protocol):
         'signature_required': self.signature_required,
         # '@timing': None,  # TODO add support for @timing
         # 'external_links': None  # TODO add support for external_links
+      },
+      self.GET_STATUS: {
+        '@type': QuestionAnswer.get_message_type(self.GET_STATUS),
+        '@id': self.get_new_id(),
+        '~for_relationship': self.for_relationship,
+        '~thread': self.get_thread_block(),
       }
     }
 
@@ -72,3 +79,6 @@ class QuestionAnswer(Protocol):
 
   async def ask(self, context: Context) -> bytes:
     return await self.send(context, self.messages[self.ASK_QUESTION])
+
+  async def status(self, context: Context) -> bytes:
+    return await self.send(context, self.messages[self.GET_STATUS])
