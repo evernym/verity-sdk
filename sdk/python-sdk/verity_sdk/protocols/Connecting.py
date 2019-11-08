@@ -8,6 +8,7 @@ class Connecting(Protocol):
 
   # Messages
   CREATE_CONNECTION = 'CREATE_CONNECTION'
+  GET_STATUS = 'get-status'
 
   # Status
   AWAITING_RESPONSE_STATUS = 0
