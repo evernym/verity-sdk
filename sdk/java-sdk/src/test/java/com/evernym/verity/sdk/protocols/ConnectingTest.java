@@ -65,6 +65,10 @@ public class ConnectingTest {
         if(connecting.phoneNumber != null)
             assertEquals(msg.getString("phoneNo"), connecting.phoneNumber);
         assertEquals(msg.getBoolean("includePublicDID"), connecting.includePublicDID);
+
+        JSONObject statusMsg = connecting.messages.getJSONObject(Connecting.GET_STATUS);
+        assertEquals(Connecting.getMessageType(Connecting.GET_STATUS), statusMsg.getString("@type"));
+        assertNotNull(statusMsg.getString("@id"));
     }
 
     @Test
@@ -77,6 +81,10 @@ public class ConnectingTest {
             byte[] message = connecting.connect(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
             assertEquals(Connecting.getMessageType(Connecting.CREATE_CONNECTION), unpackedMessage.getString("@type"));
+
+            byte [] statusMsg = connecting.status(context);
+            JSONObject unpackedStatusMessage = Util.unpackForwardMessage(context, statusMsg);
+            assertEquals(Connecting.getMessageType(Connecting.GET_STATUS), unpackedStatusMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

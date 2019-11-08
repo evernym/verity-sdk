@@ -16,7 +16,7 @@ def test_init():
   assert connecting.source_id == source_id
   assert connecting.phone_number == phone_number
   assert connecting.include_public_did == include_public_did
-  assert len(connecting.messages) == 1
+  assert len(connecting.messages) == 2
 
 
 @pytest.mark.asyncio
@@ -27,10 +27,33 @@ async def test_connect():
   msg = await connecting.connect(context)
   msg = await unpack_forward_message(context, msg)
 
-  assert msg['@type'] == '{};spec/connecting/0.6/CREATE_CONNECTION'.format(MESSAGE_TYPE_DID)
+  assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    MESSAGE_TYPE_DID,
+    Connecting.MSG_FAMILY,
+    Connecting.MSG_FAMILY_VERSION,
+    Connecting.CREATE_CONNECTION
+  )
   assert msg['@id'] is not None
   assert msg['sourceId'] == source_id
   assert msg['phoneNo'] == phone_number
   assert msg['includePublicDID'] == include_public_did
+
+  await cleanup(context)
+
+@pytest.mark.asyncio
+async def test_status():
+  context = await Context.create(await get_test_config())
+  connecting = Connecting(source_id, phone_number, include_public_did)
+  connecting.send = send_stub
+  msg = await connecting.status(context)
+  msg = await unpack_forward_message(context, msg)
+
+  assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    MESSAGE_TYPE_DID,
+    Connecting.MSG_FAMILY,
+    Connecting.MSG_FAMILY_VERSION,
+    Connecting.GET_STATUS
+  )
+  assert msg['@id'] is not None
 
   await cleanup(context)
