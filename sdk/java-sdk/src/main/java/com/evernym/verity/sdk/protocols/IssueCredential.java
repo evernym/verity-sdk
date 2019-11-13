@@ -1,19 +1,19 @@
 package com.evernym.verity.sdk.protocols;
 
-import java.io.IOException;
-
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
 public class IssueCredential extends Protocol {
 
+    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
     private static String MSG_FAMILY = "issue-credential";
     private static String MSG_FAMILY_VERSION = "0.6";
 
@@ -53,21 +53,21 @@ public class IssueCredential extends Protocol {
     }
 
     public static String getMessageType(String msgName) {
-        return Util.getMessageType(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, msgName);
+        return Util.getMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION, msgName);
     }
 
     public static String getProblemReportMessageType() {
-        return Util.getProblemReportMessageType(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION);
+        return Util.getProblemReportMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
     }
 
     public static String getStatusMessageType() {
-        return Util.getStatusMessageType(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION);
+        return Util.getStatusMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
     }
 
     @Override
     protected void defineMessages() {
         JSONObject offerMessage = new JSONObject();
-        offerMessage.put("@type", IssueCredential.getMessageType(IssueCredential.OFFER_CREDENTIAL));
+        offerMessage.put("@type", IssueCredential.getMessageType(OFFER_CREDENTIAL));
         offerMessage.put("@id", IssueCredential.getNewId());
         addThread(offerMessage);
         offerMessage.put("~for_relationship", this.forRelationship);
@@ -75,21 +75,21 @@ public class IssueCredential extends Protocol {
         offerMessage.put("credDefId", this.credDefId);
         offerMessage.put("credentialValues", this.credentialValues);
         offerMessage.put("price", this.price);
-        this.messages.put(IssueCredential.OFFER_CREDENTIAL, offerMessage);
+        this.messages.put(OFFER_CREDENTIAL, offerMessage);
 
         JSONObject issueMessage = new JSONObject();
-        issueMessage.put("@type", IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL));
+        issueMessage.put("@type", IssueCredential.getMessageType(ISSUE_CREDENTIAL));
         issueMessage.put("@id", IssueCredential.getNewId());
         addThread(issueMessage);
         issueMessage.put("~for_relationship", this.forRelationship);
-        this.messages.put(IssueCredential.ISSUE_CREDENTIAL, issueMessage);
+        this.messages.put(ISSUE_CREDENTIAL, issueMessage);
 
         JSONObject statusMessage = new JSONObject();
-        statusMessage.put("@type", IssueCredential.getMessageType(IssueCredential.GET_STATUS));
+        statusMessage.put("@type", IssueCredential.getMessageType(GET_STATUS));
         statusMessage.put("@id", IssueCredential.getNewId());
         addThread(statusMessage);
         statusMessage.put("~for_relationship", this.forRelationship);
-        this.messages.put(IssueCredential.GET_STATUS, statusMessage);
+        this.messages.put(GET_STATUS, statusMessage);
     }
 
 
@@ -102,7 +102,7 @@ public class IssueCredential extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public byte[] offerCredential(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(IssueCredential.OFFER_CREDENTIAL));
+        return this.send(context, this.messages.getJSONObject(OFFER_CREDENTIAL));
     }
 
     /**
@@ -114,7 +114,7 @@ public class IssueCredential extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public byte[] issueCredential(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(IssueCredential.ISSUE_CREDENTIAL));
+        return this.send(context, this.messages.getJSONObject(ISSUE_CREDENTIAL));
     }
 
     /**
@@ -124,8 +124,7 @@ public class IssueCredential extends Protocol {
      * @throws UndefinedContextException when the context doesn't have enough information for this operation
      * @throws WalletException when there are issues with encryption and decryption
      */
-    @SuppressWarnings("WeakerAccess")
     public byte[] status(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(IssueCredential.GET_STATUS));
+        return this.send(context, this.messages.getJSONObject(GET_STATUS));
     }
 }

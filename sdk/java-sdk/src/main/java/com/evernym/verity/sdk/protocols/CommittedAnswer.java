@@ -11,10 +11,9 @@ import java.io.IOException;
 /**
  * Builds and sends a new encrypted agent message for the Question protocol.
  */
-public class QuestionAnswer extends Protocol {
-
+public class CommittedAnswer extends Protocol {
     final private static String MSG_QUALIFIER = Util.COMMUNITY_MSG_QUALIFIER;
-    final private static String MSG_FAMILY = "questionanswer";
+    final private static String MSG_FAMILY = "committedanswer";
     final private static String MSG_FAMILY_VERSION = "1.0";
 
     // Messages
@@ -40,7 +39,7 @@ public class QuestionAnswer extends Protocol {
      * @param validResponses The possible responses. See the Verity Protocol documentation for more information on how Connect.Me will render these options.
      */
     @SuppressWarnings("WeakerAccess")
-    public QuestionAnswer(String forRelationship,
+    public CommittedAnswer(String forRelationship,
                           String questionText,
                           String questionDetail,
                           String[] validResponses) {
@@ -48,7 +47,7 @@ public class QuestionAnswer extends Protocol {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public QuestionAnswer(String forRelationship,
+    public CommittedAnswer(String forRelationship,
                           String questionText,
                           String questionDetail,
                           String[] validResponses,
@@ -79,8 +78,8 @@ public class QuestionAnswer extends Protocol {
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", QuestionAnswer.getMessageType(ASK_QUESTION));
-        message.put("@id", QuestionAnswer.getNewId());
+        message.put("@type", CommittedAnswer.getMessageType(ASK_QUESTION));
+        message.put("@id", CommittedAnswer.getNewId());
         addThread(message);
         message.put("~for_relationship", this.forRelationship);
         message.put("text", this.questionText);
@@ -90,8 +89,8 @@ public class QuestionAnswer extends Protocol {
         this.messages.put(ASK_QUESTION, message);
 
         JSONObject statusMsg = new JSONObject();
-        statusMsg.put("@type", QuestionAnswer.getMessageType(GET_STATUS));
-        statusMsg.put("@id", QuestionAnswer.getNewId());
+        statusMsg.put("@type", CommittedAnswer.getMessageType(GET_STATUS));
+        statusMsg.put("@id", CommittedAnswer.getNewId());
         addThread(statusMsg);
         statusMsg.put("~for_relationship", this.forRelationship);
         this.messages.put(GET_STATUS, statusMsg);
