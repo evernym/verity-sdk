@@ -10,8 +10,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class Provision extends Protocol {
-    private static String MSG_FAMILY = "agent-provisioning";
-    private static String MSG_FAMILY_VERSION = "0.6";
+    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    final private static String MSG_FAMILY = "agent-provisioning";
+    final private static String MSG_FAMILY_VERSION = "0.6";
 
     // Messages
     public static String CREATE_CONNECTION = "CREATE_AGENT";
@@ -30,7 +31,7 @@ public class Provision extends Protocol {
     public JSONObject createAgentMsg(Context context) throws UndefinedContextException {
         JSONObject message = new JSONObject();
         message.put("@id", Provision.getNewId());
-        message.put("@type", Util.getMessageType(MSG_FAMILY, MSG_FAMILY_VERSION, CREATE_CONNECTION));
+        message.put("@type", Util.getMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION, CREATE_CONNECTION));
         message.put("fromDID", context.sdkPairwiseDID());
         message.put("fromDIDVerKey", context.sdkPairwiseVerkey());
 

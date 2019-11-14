@@ -13,7 +13,7 @@ public class UpdateEndpointTest {
     @Test
     public void testGetMessageType() {
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("configs", "0.6", msgName), UpdateEndpoint.getMessageType(msgName));
+        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "configs", "0.6", msgName), UpdateEndpoint.getMessageType(msgName));
     }
 
     @Test

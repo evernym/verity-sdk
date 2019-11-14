@@ -3,7 +3,6 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,9 +16,9 @@ import java.io.IOException;
  */
 
 public class WriteSchema extends Protocol {
-
-    private static String MSG_FAMILY = "write-schema";
-    private static String MSG_FAMILY_VERSION = "0.6";
+    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    final private static String MSG_FAMILY = "write-schema";
+    final private static String MSG_FAMILY_VERSION = "0.6";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
@@ -47,26 +46,26 @@ public class WriteSchema extends Protocol {
     }
 
     public static String getMessageType(String msgName) {
-        return Util.getMessageType(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION, msgName);
+        return Util.getMessageType(MSG_QUALIFIER,MSG_FAMILY, MSG_FAMILY_VERSION, msgName);
     }
 
     public static String getProblemReportMessageType() {
-        return Util.getProblemReportMessageType(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION);
+        return Util.getProblemReportMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
     }
 
     public static String getStatusMessageType() {
-        return Util.getStatusMessageType(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION);
+        return Util.getStatusMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
     }
 
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", WriteSchema.getMessageType(WriteSchema.WRITE_SCHEMA));
+        message.put("@type", WriteSchema.getMessageType(WRITE_SCHEMA));
         message.put("@id", WriteSchema.getNewId());
         message.put("name", this.name);
         message.put("version", this.version);
         message.put("attrNames", new JSONArray(attrs));
-        this.messages.put(WriteSchema.WRITE_SCHEMA, message);
+        this.messages.put(WRITE_SCHEMA, message);
     }
 
 
@@ -79,7 +78,7 @@ public class WriteSchema extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public byte[] write(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(WriteSchema.WRITE_SCHEMA));
+        return this.send(context, this.messages.getJSONObject(WRITE_SCHEMA));
     }
 
 }

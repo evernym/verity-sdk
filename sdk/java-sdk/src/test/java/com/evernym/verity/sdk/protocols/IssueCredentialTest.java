@@ -2,7 +2,6 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -27,7 +26,7 @@ public class IssueCredentialTest {
     public void testGetMessageType() {
         IssueCredential issueCredential = new IssueCredential(forRelationship, credentialName, credDefId, credentialValues, price);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("issue-credential", "0.6", msgName), IssueCredential.getMessageType(msgName));
+        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "issue-credential", "0.6", msgName), IssueCredential.getMessageType(msgName));
     }
 
     @Test
@@ -37,7 +36,7 @@ public class IssueCredentialTest {
         assertEquals(credentialName, issueCredential.credentialName);
         assertEquals(credDefId, issueCredential.credDefId);
         assertEquals(credentialValues.toString(), issueCredential.credentialValues.toString());
-        assert price == issueCredential.price;
+        assert price.equals(issueCredential.price);
         testMessages(issueCredential);
     }
 
