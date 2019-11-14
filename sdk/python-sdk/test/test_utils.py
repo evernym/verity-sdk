@@ -27,14 +27,16 @@ async def get_test_config():
   wallet_credentials = json.dumps({'key': test_config['walletKey']})
   await wallet.create_wallet(wallet_config, wallet_credentials)
   wallet_handle = await wallet.open_wallet(wallet_config, wallet_credentials)
-  [_, their_public_verkey] = await did.create_and_store_my_did(wallet_handle, '{}')
+  [their_public_did, their_public_verkey] = await did.create_and_store_my_did(wallet_handle, '{}')
   [their_did, their_verkey] = await did.create_and_store_my_did(wallet_handle, '{}')
-  [_, my_verkey] = await did.create_and_store_my_did(wallet_handle, '{}')
+  [my_did, my_verkey] = await did.create_and_store_my_did(wallet_handle, '{}')
   await wallet.close_wallet(wallet_handle)
 
+  test_config['verityPublicDID'] = their_public_did
   test_config['verityPublicVerkey'] = their_public_verkey
   test_config['verityPairwiseDID'] = their_did
   test_config['verityPairwiseVerkey'] = their_verkey
+  test_config['sdkPairwiseDID'] = my_did
   test_config['sdkPairwiseVerkey'] = my_verkey
 
   return json.dumps(test_config)

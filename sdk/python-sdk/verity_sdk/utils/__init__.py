@@ -17,23 +17,35 @@ def prepare_forward_message(did: str, message: bytes) -> str:
 
 
 async def pack_message_for_verity(context: Context, message: dict) -> bytes:
+  return await pack_message_for_verity_direct(
+    wallet_handle=context.wallet_handle,
+    message=message,
+    pairwise_remote_did=context.verity_pairwise_did,
+    pairwise_remote_verkey=context.verity_pairwise_verkey,
+    pairwise_local_verkey=context.sdk_pairwise_verkey,
+    public_verkey=context.verity_public_verkey
+  )
+
+
+async def pack_message_for_verity_direct(wallet_handle: int, message: dict, pairwise_remote_did: str,
+                                         pairwise_remote_verkey: str, pairwise_local_verkey: str,
+                                         public_verkey: str) -> bytes:
   agent_message = await crypto.pack_message(
-    context.wallet_handle,
+    wallet_handle,
     json.dumps(message),
-    [context.verity_pairwise_verkey],
-    context.sdk_pairwise_verkey,
+    [pairwise_remote_verkey],
+    pairwise_local_verkey,
   )
   forward_message = prepare_forward_message(
-    context.verity_pairwise_did,
+    pairwise_remote_did,
     agent_message
   )
   return await crypto.pack_message(
-    context.wallet_handle,
+    wallet_handle,
     forward_message,
-    [context.verity_public_verkey],
+    [public_verkey],
     None
   )
-
 
 async def unpack_forward_message(context: Context, message: bytes) -> Dict:
   unpacked_once_message = await unpack_message(context, message)

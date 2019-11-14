@@ -2,14 +2,17 @@ import json
 
 from indy import wallet
 
+
 class Context:
 
   wallet_name: str
   wallet_key: str
   verity_url: str
+  verity_public_did: str
   verity_public_verkey: str
   verity_pairwise_did: str
   verity_pairwise_verkey: str
+  sdk_pairwise_did: str
   sdk_pairwise_verkey: str
   endpoint_url: str
   wallet_config: str
@@ -25,9 +28,11 @@ class Context:
     context.wallet_name = config['walletName']
     context.wallet_key = config['walletKey']
     context.verity_url = config['verityUrl']
+    context.verity_public_did = config.get('verityPublicDID')
     context.verity_public_verkey = config['verityPublicVerkey']
     context.verity_pairwise_did = config['verityPairwiseDID']
     context.verity_pairwise_verkey = config['verityPairwiseVerkey']
+    context.sdk_pairwise_did = config.get('sdkPairwiseDID')
     context.sdk_pairwise_verkey = config['sdkPairwiseVerkey']
     context.endpoint_url = config['endpointUrl']
     context.wallet_config = json.dumps({'id': config['walletName']})
