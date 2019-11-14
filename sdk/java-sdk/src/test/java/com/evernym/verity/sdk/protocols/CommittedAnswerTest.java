@@ -20,7 +20,7 @@ public class CommittedAnswerTest {
     public void testGetMessageType() {
         CommittedAnswer questionAnswer = new CommittedAnswer(forRelationship, questionText, questionDetail, validResponses);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType(Util.COMMUNITY_MSG_QUALIFIER, "committedanswer", "1.0", msgName), CommittedAnswer.getMessageType(msgName));
+        assertEquals(Util.getMessageType(Util.COMMUNITY_MSG_QUALIFIER, "committedanswer", "1.0", msgName), questionAnswer.getMessageType(msgName));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class CommittedAnswerTest {
 
         msg = new JSONObject(msg.toString());
 
-        assertEquals(CommittedAnswer.getMessageType(CommittedAnswer.ASK_QUESTION), msg.getString("@type"));
+        assertEquals(questionAnswer.getMessageType(CommittedAnswer.ASK_QUESTION), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(forRelationship, msg.getString("~for_relationship"));
         assertEquals(questionText, msg.getString("text"));
@@ -54,7 +54,7 @@ public class CommittedAnswerTest {
         assertNotNull(msg.getJSONArray("valid_responses"));
 
         JSONObject statusMsg = questionAnswer.messages.getJSONObject(CommittedAnswer.GET_STATUS);
-        assertEquals(CommittedAnswer.getMessageType(CommittedAnswer.GET_STATUS), statusMsg.getString("@type"));
+        assertEquals(questionAnswer.getMessageType(CommittedAnswer.GET_STATUS), statusMsg.getString("@type"));
         assertNotNull(statusMsg.getString("@id"));
         assertNotNull(statusMsg.getJSONObject("~thread").getString("thid"));
         assertEquals(forRelationship, statusMsg.getString("~for_relationship"));
@@ -69,7 +69,7 @@ public class CommittedAnswerTest {
             questionAnswer.disableHTTPSend();
             byte[] message = questionAnswer.ask(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(CommittedAnswer.getMessageType(CommittedAnswer.ASK_QUESTION), unpackedMessage.getString("@type"));
+            assertEquals(questionAnswer.getMessageType(CommittedAnswer.ASK_QUESTION), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

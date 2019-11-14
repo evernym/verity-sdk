@@ -14,7 +14,8 @@ import java.io.IOException;
 public class QuestionAnswer extends Protocol {
 
     final private static String MSG_QUALIFIER = Util.COMMUNITY_MSG_QUALIFIER;
-    final private static String MSG_FAMILY = "questionanswer";
+    final private String MSG_FAMILY = "questionanswer";
+    protected String family() {return MSG_FAMILY;}
     final private static String MSG_FAMILY_VERSION = "1.0";
 
     // Messages
@@ -64,22 +65,22 @@ public class QuestionAnswer extends Protocol {
         defineMessages();
     }
 
-    public static String getMessageType(String msgName) {
-        return Util.getMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION, msgName);
+    public String getMessageType(String msgName) {
+        return Util.getMessageType(MSG_QUALIFIER, family(), MSG_FAMILY_VERSION, msgName);
     }
 
-    public static String getProblemReportMessageType() {
-        return Util.getProblemReportMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
+    public String getProblemReportMessageType() {
+        return Util.getProblemReportMessageType(MSG_QUALIFIER, family(), MSG_FAMILY_VERSION);
     }
 
-    public static String getStatusMessageType() {
-        return Util.getStatusMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
+    public String getStatusMessageType() {
+        return Util.getStatusMessageType(MSG_QUALIFIER, family(), MSG_FAMILY_VERSION);
     }
 
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", QuestionAnswer.getMessageType(ASK_QUESTION));
+        message.put("@type", getMessageType(ASK_QUESTION));
         message.put("@id", QuestionAnswer.getNewId());
         addThread(message);
         message.put("~for_relationship", this.forRelationship);
@@ -90,7 +91,7 @@ public class QuestionAnswer extends Protocol {
         this.messages.put(ASK_QUESTION, message);
 
         JSONObject statusMsg = new JSONObject();
-        statusMsg.put("@type", QuestionAnswer.getMessageType(GET_STATUS));
+        statusMsg.put("@type", getMessageType(GET_STATUS));
         statusMsg.put("@id", QuestionAnswer.getNewId());
         addThread(statusMsg);
         statusMsg.put("~for_relationship", this.forRelationship);

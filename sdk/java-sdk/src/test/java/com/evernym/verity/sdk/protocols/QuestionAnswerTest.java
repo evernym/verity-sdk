@@ -20,7 +20,7 @@ public class QuestionAnswerTest {
     public void testGetMessageType() {
         QuestionAnswer questionAnswer = new QuestionAnswer(forRelationship, questionText, questionDetail, validResponses);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType(Util.COMMUNITY_MSG_QUALIFIER, "questionanswer", "1.0", msgName), QuestionAnswer.getMessageType(msgName));
+        assertEquals(Util.getMessageType(Util.COMMUNITY_MSG_QUALIFIER, "questionanswer", "1.0", msgName), questionAnswer.getMessageType(msgName));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class QuestionAnswerTest {
 
         msg = new JSONObject(msg.toString());
 
-        assertEquals(QuestionAnswer.getMessageType(QuestionAnswer.ASK_QUESTION), msg.getString("@type"));
+        assertEquals(questionAnswer.getMessageType(QuestionAnswer.ASK_QUESTION), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(forRelationship, msg.getString("~for_relationship"));
         assertEquals(questionText, msg.getString("text"));
@@ -54,7 +54,7 @@ public class QuestionAnswerTest {
         assertNotNull(msg.getJSONArray("valid_responses"));
 
         JSONObject statusMsg = questionAnswer.messages.getJSONObject(QuestionAnswer.GET_STATUS);
-        assertEquals(QuestionAnswer.getMessageType(QuestionAnswer.GET_STATUS), statusMsg.getString("@type"));
+        assertEquals(questionAnswer.getMessageType(QuestionAnswer.GET_STATUS), statusMsg.getString("@type"));
         assertNotNull(statusMsg.getString("@id"));
         assertNotNull(statusMsg.getJSONObject("~thread").getString("thid"));
         assertEquals(forRelationship, statusMsg.getString("~for_relationship"));
@@ -69,7 +69,7 @@ public class QuestionAnswerTest {
             questionAnswer.disableHTTPSend();
             byte[] message = questionAnswer.ask(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(QuestionAnswer.getMessageType(QuestionAnswer.ASK_QUESTION), unpackedMessage.getString("@type"));
+            assertEquals(questionAnswer.getMessageType(QuestionAnswer.ASK_QUESTION), unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();
