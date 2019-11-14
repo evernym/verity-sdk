@@ -3,7 +3,6 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
@@ -16,8 +15,9 @@ import java.io.IOException;
  */
 public class WriteCredentialDefinition extends Protocol {
 
-    private static String MSG_FAMILY = "write-cred-def";
-    private static String MSG_FAMILY_VERSION = "0.6";
+    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    final private static String MSG_FAMILY = "write-cred-def";
+    final private static String MSG_FAMILY_VERSION = "0.6";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
@@ -79,27 +79,40 @@ public class WriteCredentialDefinition extends Protocol {
     }
 
     public static String getMessageType(String msgName) {
-        return Util.getMessageType(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION, msgName);
+        return Util.getMessageType(
+                MSG_QUALIFIER,
+                MSG_FAMILY,
+                MSG_FAMILY_VERSION,
+                msgName
+        );
     }
 
     public static String getProblemReportMessageType() {
-        return Util.getProblemReportMessageType(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION);
+        return Util.getProblemReportMessageType(
+                MSG_QUALIFIER,
+                MSG_FAMILY,
+                MSG_FAMILY_VERSION
+        );
     }
 
     public static String getStatusMessageType() {
-        return Util.getStatusMessageType(WriteCredentialDefinition.MSG_FAMILY, WriteCredentialDefinition.MSG_FAMILY_VERSION);
+        return Util.getStatusMessageType(
+                MSG_QUALIFIER,
+                MSG_FAMILY,
+                MSG_FAMILY_VERSION
+        );
     }
 
     @Override
     protected void defineMessages() {
         JSONObject message = new JSONObject();
-        message.put("@type", WriteCredentialDefinition.getMessageType(WriteCredentialDefinition.WRITE_CRED_DEF));
+        message.put("@type", WriteCredentialDefinition.getMessageType(WRITE_CRED_DEF));
         message.put("@id", WriteCredentialDefinition.getNewId());
         message.put("name", this.name);
         message.put("schemaId", this.schemaId);
         message.put("tag", this.tag);
         message.put("revocationDetails", this.revocationDetails);
-        this.messages.put(WriteCredentialDefinition.WRITE_CRED_DEF, message);
+        this.messages.put(WRITE_CRED_DEF, message);
     }
 
     /**
@@ -111,6 +124,6 @@ public class WriteCredentialDefinition extends Protocol {
      */
     @SuppressWarnings("WeakerAccess")
     public byte[] write(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(WriteCredentialDefinition.WRITE_CRED_DEF));
+        return this.send(context, this.messages.getJSONObject(WRITE_CRED_DEF));
     }
 }

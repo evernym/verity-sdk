@@ -15,6 +15,7 @@ public class IssuerSetupTest {
         String msgName = "msg name";
 
         String expectedType = Util.getMessageType(
+                Util.EVERNYM_MSG_QUALIFIER,
                 IssuerSetup.MSG_FAMILY,
                 IssuerSetup.MSG_FAMILY_VERSION,
                 msgName);

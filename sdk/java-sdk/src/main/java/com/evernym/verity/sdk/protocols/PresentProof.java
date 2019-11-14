@@ -3,7 +3,6 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,9 +13,9 @@ import java.io.IOException;
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
 public class PresentProof extends Protocol {
-
-    private static String MSG_FAMILY = "present-proof";
-    private static String MSG_FAMILY_VERSION = "0.6";
+    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    final private static String MSG_FAMILY = "present-proof";
+    final private static String MSG_FAMILY_VERSION = "0.6";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
@@ -74,21 +73,21 @@ public class PresentProof extends Protocol {
     }
 
     public static String getMessageType(String msgName) {
-        return Util.getMessageType(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION, msgName);
+        return Util.getMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION, msgName);
     }
 
     public static String getProblemReportMessageType() {
-        return Util.getProblemReportMessageType(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION);
+        return Util.getProblemReportMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
     }
 
     public static String getStatusMessageType() {
-        return Util.getStatusMessageType(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION);
+        return Util.getStatusMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
     }
 
     @Override
     protected void defineMessages() {
         JSONObject requestMsg = new JSONObject();
-        requestMsg.put("@type", PresentProof.getMessageType(PresentProof.PROOF_REQUEST));
+        requestMsg.put("@type", PresentProof.getMessageType(PROOF_REQUEST));
         requestMsg.put("@id", PresentProof.getNewId());
         addThread(requestMsg);
         requestMsg.put("~for_relationship", this.forRelationship);
@@ -98,14 +97,14 @@ public class PresentProof extends Protocol {
             requestMsg.put("proofPredicates", proofPredicates);
         if (this.revocationInterval != null)
             requestMsg.put("revocationInterval", this.revocationInterval);
-        this.messages.put(PresentProof.PROOF_REQUEST, requestMsg);
+        this.messages.put(PROOF_REQUEST, requestMsg);
 
         JSONObject statusMsg = new JSONObject();
-        statusMsg.put("@type", PresentProof.getMessageType(PresentProof.GET_STATUS));
+        statusMsg.put("@type", PresentProof.getMessageType(GET_STATUS));
         statusMsg.put("@id", PresentProof.getNewId());
         addThread(statusMsg);
         statusMsg.put("~for_relationship", this.forRelationship);
-        this.messages.put(PresentProof.GET_STATUS, statusMsg);
+        this.messages.put(GET_STATUS, statusMsg);
     }
 
     /**
@@ -116,7 +115,7 @@ public class PresentProof extends Protocol {
      * @throws WalletException when there are issues with encryption and decryption
      */
     public byte[] request(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(PresentProof.PROOF_REQUEST));
+        return this.send(context, this.messages.getJSONObject(PROOF_REQUEST));
     }
 
     /**
@@ -127,6 +126,6 @@ public class PresentProof extends Protocol {
      * @throws WalletException when there are issues with encryption and decryption
      */
     public byte[] status(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(PresentProof.GET_STATUS));
+        return this.send(context, this.messages.getJSONObject(GET_STATUS));
     }
 }

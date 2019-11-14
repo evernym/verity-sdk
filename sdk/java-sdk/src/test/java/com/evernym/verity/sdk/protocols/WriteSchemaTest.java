@@ -2,7 +2,6 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -19,7 +18,7 @@ public class WriteSchemaTest {
     @Test
     public void testGetMessageType() {
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("write-schema", "0.6", msgName), WriteSchema.getMessageType(msgName));
+        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "write-schema", "0.6", msgName), WriteSchema.getMessageType(msgName));
     }
 
     @Test

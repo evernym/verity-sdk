@@ -2,7 +2,6 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,7 +21,12 @@ public class PresentProofTest {
     public void testGetMessageType() {
         PresentProof presentProof = new PresentProof(forRelationship, proofRequestName, proofAttrs, proofPredicates, revocationInterval);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("present-proof", "0.6", msgName), PresentProof.getMessageType(msgName));
+        assertEquals(Util.getMessageType(
+                Util.EVERNYM_MSG_QUALIFIER,
+                "present-proof",
+                "0.6",
+                msgName
+        ), PresentProof.getMessageType(msgName));
     }
 
     @Test
