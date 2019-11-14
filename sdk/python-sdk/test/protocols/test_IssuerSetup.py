@@ -1,4 +1,3 @@
-import json
 import pytest
 
 from verity_sdk.protocols.IssuerSetup import IssuerSetup
@@ -8,7 +7,7 @@ from test.test_utils import get_test_config, send_stub, cleanup
 
 
 def test_init():
-  issuerSetup = IssuerSetup()
+  IssuerSetup()
 
 @pytest.mark.asyncio
 async def test_create():

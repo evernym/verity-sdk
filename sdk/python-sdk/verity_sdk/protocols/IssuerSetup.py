@@ -16,7 +16,7 @@ class IssuerSetup(Protocol):
   def define_messages(self):
     self.messages = {
       self.CREATE: {
-        '@type': IssuerSetup.get_message_type(self.OFFER_CREDENTIAL),
+        '@type': IssuerSetup.get_message_type(self.CREATE),
         '@id': self.get_new_id(),
       }
     }
