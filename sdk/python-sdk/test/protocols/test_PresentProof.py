@@ -52,6 +52,7 @@ async def test_request():
 
   await cleanup(context)
 
+@pytest.mark.asyncio
 async def test_status():
   context = await Context.create(await get_test_config())
   presentProof = PresentProof(for_relationship, name, proof_attrs, proof_predicates, revocation_interval)

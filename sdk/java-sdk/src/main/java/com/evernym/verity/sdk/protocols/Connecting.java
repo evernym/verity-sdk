@@ -20,6 +20,7 @@ public class Connecting extends Protocol {
     // Messages
     @SuppressWarnings("WeakerAccess")
     public static String CREATE_CONNECTION = "CREATE_CONNECTION";
+    public static String GET_STATUS = "get-status";
     
     // Status definitions
     public static Integer AWAITING_RESPONSE_STATUS = 0;
@@ -93,7 +94,12 @@ public class Connecting extends Protocol {
         createConnectionMessage.put("sourceId", this.sourceId);
         createConnectionMessage.put("phoneNo", this.phoneNumber);
         createConnectionMessage.put("includePublicDID", this.includePublicDID);
-        this.messages.put(CREATE_CONNECTION, createConnectionMessage);
+        this.messages.put(Connecting.CREATE_CONNECTION, createConnectionMessage);
+
+        JSONObject statusMessage = new JSONObject();
+        statusMessage.put("@type", Connecting.getMessageType(Connecting.GET_STATUS));
+        statusMessage.put("@id", Connecting.getNewId());
+        this.messages.put(Connecting.GET_STATUS, statusMessage);
     }
 
     /**
@@ -108,5 +114,17 @@ public class Connecting extends Protocol {
     @SuppressWarnings("WeakerAccess")
     public byte[] connect(Context context) throws IOException, UndefinedContextException, WalletException {
         return this.send(context, this.messages.getJSONObject(CREATE_CONNECTION));
+    }
+
+    /**
+     * Sends the get status message to the connection
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @throws IOException               when the HTTP library fails to post to the agency endpoint
+     * @throws UndefinedContextException when the context doesn't have enough information for this operation
+     * @throws WalletException when there are issues with encryption and decryption
+     */
+    @SuppressWarnings("WeakerAccess")
+    public byte[] status(Context context) throws IOException, UndefinedContextException, WalletException {
+        return this.send(context, this.messages.getJSONObject(Connecting.GET_STATUS));
     }
 }

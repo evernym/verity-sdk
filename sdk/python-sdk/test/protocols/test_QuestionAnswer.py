@@ -48,6 +48,7 @@ async def test_ask():
 
   await cleanup(context)
 
+@pytest.mark.asyncio
 async def test_status():
   context = await Context.create(await get_test_config())
   question_answer = QuestionAnswer(for_relationship, question_text, question_detail, valid_responses, signature_required)

@@ -8,6 +8,7 @@ class Connecting(Protocol):
 
   # Messages
   CREATE_CONNECTION = 'CREATE_CONNECTION'
+  GET_STATUS = 'get-status'
 
   # Status
   AWAITING_RESPONSE_STATUS = 0
@@ -32,6 +33,10 @@ class Connecting(Protocol):
         'sourceId': self.source_id,
         'phoneNo': self.phone_number,
         'includePublicDID': self.include_public_did
+      },
+      self.GET_STATUS: {
+        '@type': Connecting.get_message_type(self.GET_STATUS),
+        '@id': self.get_new_id(),
       }
     }
 
@@ -49,3 +54,6 @@ class Connecting(Protocol):
 
   async def connect(self, context: Context) -> bytes:
     return await self.send(context, self.messages[self.CREATE_CONNECTION])
+
+  async def status(self, context: Context) -> bytes:
+    return await self.send(context, self.messages[self.GET_STATUS])
