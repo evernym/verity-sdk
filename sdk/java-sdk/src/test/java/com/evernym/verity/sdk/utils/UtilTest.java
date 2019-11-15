@@ -1,12 +1,12 @@
 package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.TestHelpers;
-
 import org.json.JSONObject;
 import org.junit.Test;
 
 import static com.evernym.verity.sdk.utils.Util.truncateInviteDetails;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UtilTest {
 
@@ -34,7 +34,7 @@ public class UtilTest {
     @Test
     public void testGetMessageTypeComplete() {
         String msgType = "did:sov:123456789abcdefghi1234;spec/credential/0.1/status";
-        assertEquals(msgType, Util.getMessageType("credential", "0.1", "status"));
+        assertEquals(msgType, Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "credential", "0.1", "status"));
     }
 
     @Test

@@ -2,7 +2,6 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
-
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -24,7 +23,7 @@ public class WriteCredentialDefinitionTest {
     public void testGetMessageType() {
         WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId, tag, revocationDetails);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("write-cred-def", "0.6", msgName), WriteCredentialDefinition.getMessageType(msgName));
+        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "write-cred-def", "0.6", msgName), WriteCredentialDefinition.getMessageType(msgName));
     }
 
     @Test

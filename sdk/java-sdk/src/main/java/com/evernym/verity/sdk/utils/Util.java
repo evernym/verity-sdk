@@ -14,7 +14,8 @@ import java.util.concurrent.ExecutionException;
  * Static helper functions used for packaging and unpackaging messages
  */
 public class Util {
-    private static String MESSAGE_TYPE_DID = "did:sov:123456789abcdefghi1234";
+    public static String EVERNYM_MSG_QUALIFIER = "did:sov:123456789abcdefghi1234";
+    public static String COMMUNITY_MSG_QUALIFIER = "did:sov:BzCbsNYhMrjHiqZDTUASHg";
 
     public static byte[] packMessageForVerity(Wallet walletHandle,
                                               JSONObject message,
@@ -100,16 +101,16 @@ public class Util {
         return unpackMessage(context, unpackedOnceMessageMessage);
     }
 
-    public static String getMessageType(String msgFamily, String msgFamilyVersion, String msgName) {
-        return Util.MESSAGE_TYPE_DID + ";spec/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
+    public static String getMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion, String msgName) {
+        return msgQualifier + ";spec/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
     }
 
-    public static String getProblemReportMessageType(String msgFamily, String msgFamilyVersion) {
-        return Util.getMessageType(msgFamily, msgFamilyVersion, "problem-report");
+    public static String getProblemReportMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion) {
+        return Util.getMessageType(msgQualifier, msgFamily, msgFamilyVersion, "problem-report");
     }
 
-    public static String getStatusMessageType(String msgFamily, String msgFamilyVersion) {
-        return Util.getMessageType(msgFamily, msgFamilyVersion, "status");
+    public static String getStatusMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion) {
+        return Util.getMessageType(msgQualifier, msgFamily, msgFamilyVersion, "status");
     }
 
     public static JSONObject truncateInviteDetails(String inviteDetails) {

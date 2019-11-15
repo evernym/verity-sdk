@@ -10,8 +10,9 @@ import java.io.IOException;
 
 public class UpdateEndpoint extends Protocol {
 
-    private static String MSG_FAMILY = "configs";
-    private static String MSG_FAMILY_VERSION = "0.6";
+    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    final private static String MSG_FAMILY = "configs";
+    final private static String MSG_FAMILY_VERSION = "0.6";
 
     // Messages
     @SuppressWarnings("WeakerAccess")
@@ -44,18 +45,18 @@ public class UpdateEndpoint extends Protocol {
     }
 
     public static String getMessageType(String msgName) {
-        return Util.getMessageType(UpdateEndpoint.MSG_FAMILY, UpdateEndpoint.MSG_FAMILY_VERSION, msgName);
+        return Util.getMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION, msgName);
     }
 
     public static String getProblemReportMessageType() {
-        return Util.getProblemReportMessageType(UpdateEndpoint.MSG_FAMILY, UpdateEndpoint.MSG_FAMILY_VERSION);
+        return Util.getProblemReportMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
     }
 
     public static String getStatusMessageType() {
-        return Util.getStatusMessageType(UpdateEndpoint.MSG_FAMILY, UpdateEndpoint.MSG_FAMILY_VERSION);
+        return Util.getStatusMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
     }
 
     public byte[] update() throws IOException, UndefinedContextException, WalletException {
-        return this.send(this.context, this.messages.getJSONObject(UpdateEndpoint.UPDATE_ENDPOINT));
+        return this.send(this.context, this.messages.getJSONObject(UPDATE_ENDPOINT));
     }
 }

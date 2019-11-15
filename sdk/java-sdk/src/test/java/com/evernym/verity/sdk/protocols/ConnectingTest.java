@@ -1,8 +1,7 @@
 package com.evernym.verity.sdk.protocols;
 
-import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.TestHelpers;
-
+import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -18,7 +17,7 @@ public class ConnectingTest {
     public void testGetMessageType() {
         Connecting connecting = new Connecting("none");
         String msgName = "msg name";
-        assertEquals(Util.getMessageType("connecting", "0.6", msgName), Connecting.getMessageType(msgName));
+        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER,"connecting", "0.6", msgName), Connecting.getMessageType(msgName));
     }
 
     @Test
