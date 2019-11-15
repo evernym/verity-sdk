@@ -1,5 +1,4 @@
 from typing import List
-from secrets import token_bytes
 
 from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
 from verity_sdk.protocols.Protocol import Protocol
