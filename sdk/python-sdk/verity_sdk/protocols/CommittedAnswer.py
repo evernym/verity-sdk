@@ -4,8 +4,8 @@ from verity_sdk.utils import Context, get_message_type, get_problem_report_messa
 from verity_sdk.protocols.Protocol import Protocol
 
 
-class QuestionAnswer(Protocol):
-  MSG_FAMILY = 'questionanswer'
+class CommittedAnswer(Protocol):
+  MSG_FAMILY = 'committedanswer'
   MSG_FAMILY_VERSION = '1.0'
 
   # Messages
@@ -39,7 +39,7 @@ class QuestionAnswer(Protocol):
   def define_messages(self):
     self.messages = {
       self.ASK_QUESTION: {
-        '@type': QuestionAnswer.get_message_type(self.ASK_QUESTION),
+        '@type': CommittedAnswer.get_message_type(self.ASK_QUESTION),
         '@id': self.get_new_id(),
         '~for_relationship': self.for_relationship,
         '~thread': self.get_thread_block(),
@@ -47,11 +47,9 @@ class QuestionAnswer(Protocol):
         'detail': self.question_detail,
         'valid_responses': self.valid_responses,
         'signature_required': self.signature_required,
-        # '@timing': None,  # TODO add support for @timing
-        # 'external_links': None  # TODO add support for external_links
       },
       self.GET_STATUS: {
-        '@type': QuestionAnswer.get_message_type(self.GET_STATUS),
+        '@type': CommittedAnswer.get_message_type(self.GET_STATUS),
         '@id': self.get_new_id(),
         '~for_relationship': self.for_relationship,
         '~thread': self.get_thread_block(),
@@ -60,15 +58,15 @@ class QuestionAnswer(Protocol):
 
   @staticmethod
   def get_message_type(msg_name: str) -> str:
-    return get_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION, msg_name)
+    return get_message_type(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION, msg_name)
 
   @staticmethod
   def get_problem_report_message_type() -> str:
-    return get_problem_report_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION)
+    return get_problem_report_message_type(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION)
 
   @staticmethod
   def get_status_message_type() -> str:
-    return get_status_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION)
+    return get_status_message_type(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION)
 
   async def ask(self, context: Context) -> bytes:
     return await self.send(context, self.messages[self.ASK_QUESTION])

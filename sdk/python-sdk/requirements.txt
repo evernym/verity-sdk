@@ -5,4 +5,5 @@ requests==2.22.0
 pylint==2.3.1
 pylint-quotes==0.2.1
 pytest==3.6.4
+pytest-mock==1.11.2
 pytest-parallel==0.0.9
