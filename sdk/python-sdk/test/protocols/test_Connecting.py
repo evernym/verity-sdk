@@ -55,5 +55,6 @@ async def test_status():
     Connecting.GET_STATUS
   )
   assert msg['@id'] is not None
+  assert msg['sourceId'] == source_id
 
   await cleanup(context)

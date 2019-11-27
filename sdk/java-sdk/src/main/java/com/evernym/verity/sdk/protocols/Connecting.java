@@ -99,6 +99,7 @@ public class Connecting extends Protocol {
         JSONObject statusMessage = new JSONObject();
         statusMessage.put("@type", Connecting.getMessageType(Connecting.GET_STATUS));
         statusMessage.put("@id", Connecting.getNewId());
+        statusMessage.put("sourceId", this.sourceId);
         this.messages.put(Connecting.GET_STATUS, statusMessage);
     }
 

@@ -68,6 +68,7 @@ public class ConnectingTest {
         JSONObject statusMsg = connecting.messages.getJSONObject(Connecting.GET_STATUS);
         assertEquals(Connecting.getMessageType(Connecting.GET_STATUS), statusMsg.getString("@type"));
         assertNotNull(statusMsg.getString("@id"));
+        assertEquals(statusMsg.getString("sourceId"), connecting.sourceId);
     }
 
     @Test
