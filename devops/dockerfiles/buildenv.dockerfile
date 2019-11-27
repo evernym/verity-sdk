@@ -28,8 +28,8 @@ RUN npm i -g typescript tslint
 # Install python3.6
 RUN add-apt-repository ppa:jonathonf/python-3.6 && \
     apt-get update && apt-get install -y \
-    python3.6 \
-    python3-pip
+    python3.6 python3.6-dev \
+    python3-pip libffi-dev libssl-dev
 RUN unlink /usr/bin/python3
 RUN ln -s /usr/bin/python3.6 /usr/bin/python3
 

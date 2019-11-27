@@ -37,6 +37,7 @@ class Connecting(Protocol):
       self.GET_STATUS: {
         '@type': Connecting.get_message_type(self.GET_STATUS),
         '@id': self.get_new_id(),
+        'sourceId': self.source_id,
       }
     }
 
