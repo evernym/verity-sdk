@@ -1,62 +1,49 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
-import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class UpdateEndpoint extends Protocol {
+public interface UpdateEndpoint extends MessageFamily {
+    String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    String MSG_FAMILY = "configs";
+    String MSG_FAMILY_VERSION = "0.6";
 
-    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
-    final private static String MSG_FAMILY = "configs";
-    final private static String MSG_FAMILY_VERSION = "0.6";
+    default String qualifier() {return MSG_QUALIFIER;}
+    default String family() {return MSG_FAMILY;}
+    default String version() {return MSG_FAMILY_VERSION;}
 
-    // Messages
-    @SuppressWarnings("WeakerAccess")
-    public static String UPDATE_ENDPOINT = "UPDATE_COM_METHOD";
+    String UPDATE_ENDPOINT = "UPDATE_COM_METHOD";
 
-    final private Context context;
-    final String endpointUrl;
-
-    public UpdateEndpoint(Context context) throws UndefinedContextException {
-        super();
-        this.context = context;
-        this.endpointUrl = this.context.endpointUrl();
-
-        defineMessages();
+    static UpdateEndpoint v0_6() {
+        return new UpdateEndpointImpl();
     }
 
-    @Override
-    protected void defineMessages() {
-        int COM_METHOD_TYPE = 2;
+    /**
+     *
+     * @param context
+     * @throws IOException
+     * @throws VerityException
+     */
+    void update(Context context) throws IOException, VerityException;
 
-        JSONObject message = new JSONObject();
-        message.put("@type", UpdateEndpoint.getMessageType(UpdateEndpoint.UPDATE_ENDPOINT));
-        message.put("@id", UpdateEndpoint.getNewId());
-            JSONObject comMethod = new JSONObject();
-            comMethod.put("id", "webhook");
-            comMethod.put("type", COM_METHOD_TYPE);
-            comMethod.put("value", this.endpointUrl);
-        message.put("comMethod", comMethod);
-        this.messages.put(UpdateEndpoint.UPDATE_ENDPOINT, message);
-    }
+    /**
+     *
+     * @param context
+     * @return
+     * @throws UndefinedContextException
+     */
+    JSONObject updateMsg(Context context) throws UndefinedContextException;
 
-    public static String getMessageType(String msgName) {
-        return Util.getMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION, msgName);
-    }
-
-    public static String getProblemReportMessageType() {
-        return Util.getProblemReportMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
-    }
-
-    public static String getStatusMessageType() {
-        return Util.getStatusMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION);
-    }
-
-    public byte[] update() throws IOException, UndefinedContextException, WalletException {
-        return this.send(this.context, this.messages.getJSONObject(UPDATE_ENDPOINT));
-    }
+    /**
+     *
+     * @param context
+     * @return
+     * @throws VerityException
+     */
+    byte[] updateMsgPacked(Context context) throws VerityException;
 }

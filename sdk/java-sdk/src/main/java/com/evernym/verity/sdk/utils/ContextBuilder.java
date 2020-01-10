@@ -2,6 +2,8 @@ package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
+import com.evernym.verity.sdk.wallet.DefaultWalletConfig;
+import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 
 import java.io.IOException;
@@ -12,31 +14,36 @@ import static com.evernym.verity.sdk.utils.VerityUtil.retrieveVerityPublicDid;
 import static com.evernym.verity.sdk.utils.WalletUtil.tryCreateWallet;
 
 public class ContextBuilder {
-
-    public static Context fromScratch(String walletKey, String verityUrl)
+    public static Context fromScratch(String walletId, String walletKey, String verityUrl)
             throws IOException, WalletException {
 
-        return fromScratch("default", walletKey, verityUrl);
+        tryCreateWallet(walletId, walletKey);
+        return scratchContext(DefaultWalletConfig.build(walletId, walletKey), verityUrl);
     }
 
-    public static Context fromScratch(String walletName, String walletKey, String verityUrl)
+    public static Context fromScratch(WalletConfig walletConfig, String verityUrl)
             throws IOException, WalletException {
-        tryCreateWallet(walletName, walletKey);
 
-        Did verityPublicDid = retrieveVerityPublicDid(verityUrl);
-
-        return _scratchContext(walletName, walletKey, verityUrl, verityPublicDid);
+        tryCreateWallet(walletConfig);
+        return scratchContext(walletConfig, verityUrl);
     }
 
-    static Context _scratchContext(String walletName, String walletKey, String verityUrl, Did verityDid)
+    protected static Context scratchContext(WalletConfig wallet, String verityUrl)
+            throws WalletException, IOException {
+
+        Did verityDid = retrieveVerityPublicDid(verityUrl);
+
+        return scratchContext(wallet, verityUrl, verityDid);
+    }
+
+    protected static Context scratchContext(WalletConfig wallet, String verityUrl, Did verityDid)
             throws WalletException {
 
         Context inter = new ContextBuilder()
                 .verityPublicDID(verityDid.did)
                 .verityPublicVerkey(verityDid.verkey)
-                .walletName(walletName)
-                .walletKey(walletKey)
-                .verityUrl(String.format("%s/agency/msg", verityUrl))
+                .walletConfig(wallet)
+                .verityUrl(verityUrl)
                 .build();
 
         Did mime = Did.createNewDid(inter.walletHandle());
@@ -48,6 +55,7 @@ public class ContextBuilder {
     }
 
     private Map<String, String> elements = new HashMap<>();
+    private WalletConfig walletConfig;
     private Wallet walletHandle = null;
 
     private final String walletName = "walletName";
@@ -68,8 +76,7 @@ public class ContextBuilder {
         return this;
     }
 
-    public ContextBuilder walletName(String val) {return putElement(walletName, val);}
-    public ContextBuilder walletKey(String val) {return putElement(walletKey, val);}
+    public ContextBuilder walletConfig(WalletConfig config) {walletConfig = config; return this;}
     public ContextBuilder verityUrl(String val) {return putElement(verityUrl, val);}
     public ContextBuilder verityPublicDID(String val) {return putElement(verityPublicDID, val);}
     public ContextBuilder verityPublicVerkey(String val) {return putElement(verityPublicVerkey, val);}
@@ -91,8 +98,7 @@ public class ContextBuilder {
     public Context build() throws WalletOpenException {
         if (walletHandle == null) {
             return new Context(
-                    elements.get(walletName),
-                    elements.get(walletKey),
+                    walletConfig,
                     elements.get(verityUrl),
                     elements.get(verityPublicDID),
                     elements.get(verityPublicVerkey),
@@ -105,8 +111,7 @@ public class ContextBuilder {
         }
         else {
             return new Context(
-                    elements.get(walletName),
-                    elements.get(walletKey),
+                    walletConfig,
                     elements.get(verityUrl),
                     elements.get(verityPublicDID),
                     elements.get(verityPublicVerkey),

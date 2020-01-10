@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.MessageFamily;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.wallet.Wallet;
@@ -99,6 +100,11 @@ public class Util {
         JSONObject unpackedOnceMessage = unpackMessage(context, message);
         byte[] unpackedOnceMessageMessage = unpackedOnceMessage.getJSONObject("@msg").toString().getBytes();
         return unpackMessage(context, unpackedOnceMessageMessage);
+    }
+
+    // FIXME move to MessageFamily interface
+    public static String getMessageType(MessageFamily f, String msgName) {
+        return getMessageType(f.qualifier(), f.family(), f.version(), msgName);
     }
 
     public static String getMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion, String msgName) {

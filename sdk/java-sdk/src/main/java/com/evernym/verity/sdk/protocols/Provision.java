@@ -2,40 +2,26 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
-import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class Provision extends Protocol {
-    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
-    final private static String MSG_FAMILY = "agent-provisioning";
-    final private static String MSG_FAMILY_VERSION = "0.6";
+public interface Provision extends MessageFamily {
+    String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    String MSG_FAMILY = "agent-provisioning";
+    String MSG_FAMILY_VERSION = "0.6";
+
+    default String qualifier() {return MSG_QUALIFIER;}
+    default String family() {return MSG_FAMILY;}
+    default String version() {return MSG_FAMILY_VERSION;}
 
     // Messages
-    public static String CREATE_CONNECTION = "CREATE_AGENT";
+    String CREATE_AGENT = "CREATE_AGENT";
 
-
-    public Provision() {
-        super();
-    }
-
-    @Override
-    protected void defineMessages() {
-        throw new UnsupportedOperationException("Context is required to build messages");
-    }
-
-
-    public JSONObject createAgentMsg(Context context) throws UndefinedContextException {
-        JSONObject message = new JSONObject();
-        message.put("@id", Provision.getNewId());
-        message.put("@type", Util.getMessageType(MSG_QUALIFIER, MSG_FAMILY, MSG_FAMILY_VERSION, CREATE_CONNECTION));
-        message.put("fromDID", context.sdkPairwiseDID());
-        message.put("fromDIDVerKey", context.sdkPairwiseVerkey());
-
-        return message;
+    static Provision v0_6() {
+        return new ProvisionImpl();
     }
 
     /**
@@ -46,30 +32,7 @@ public class Provision extends Protocol {
      * @throws UndefinedContextException when the context don't have enough information for this operation
      * @return new Context with provisioned details
      */
-    public Context provisionSdk(Context context) throws IOException, UndefinedContextException, WalletException {
-        byte[] msg = Util.packMessageForVerity(
-                context.walletHandle(),
-                createAgentMsg(context),
-                context.verityPublicDID(),
-                context.verityPublicVerkey(),
-                context.sdkPairwiseVerkey(),
-                context.verityPublicVerkey()
-        );
-        HTTPTransport transport = new HTTPTransport();
-        byte[] respBytes = transport.sendSyncMessage(context.verityUrl(), msg);
-
-        JSONObject resp = Util.unpackMessage(context, respBytes);
-        String verityPairwiseDID = resp.getString("withPairwiseDID");
-        String verityPairwiseVerKey = resp.getString("withPairwiseDIDVerKey");
-
-        return context.toContextBuilder()
-                .verityPairwiseDID(verityPairwiseDID)
-                .verityPairwiseVerkey(verityPairwiseVerKey)
-                .build();
-    }
-
-    @Override
-    public String toString() {
-        return "";
-    } // TODO figure what this should be
+    Context provisionSdk(Context context) throws IOException, UndefinedContextException, WalletException;
+    JSONObject provisionSdkMsg(Context context) throws UndefinedContextException;
+    byte[]  provisionSdkMsgPacked(Context context) throws UndefinedContextException, WalletException;
 }

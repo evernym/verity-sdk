@@ -1,6 +1,7 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
@@ -13,106 +14,45 @@ import java.io.IOException;
  * write a new Credential Definition to the ledger on behalf of the 
  * SDK/enterprise.
  */
-public class WriteCredentialDefinition extends Protocol {
+public interface WriteCredentialDefinition extends MessageFamily {
+    String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    String MSG_FAMILY = "write-cred-def";
+    String MSG_FAMILY_VERSION = "0.6";
 
-    final private static String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
-    final private static String MSG_FAMILY = "write-cred-def";
-    final private static String MSG_FAMILY_VERSION = "0.6";
+    default String qualifier() {return MSG_QUALIFIER;}
+    default String family() {return MSG_FAMILY;}
+    default String version() {return MSG_FAMILY_VERSION;}
 
-    // Messages
-    @SuppressWarnings("WeakerAccess")
-    public static String WRITE_CRED_DEF = "write";
+    String WRITE_CRED_DEF = "write";
 
-    // Status Definitions
-    public static Integer WRITE_SUCCESSFUL_STATUS = 0;
-
-    String name;
-    protected String schemaId;
-    String tag;
-    JSONObject revocationDetails;
-
-    /**
-     * Initializes the CredDef object
-     * @param name The name of the new credential definition
-     * @param schemaId The id of the schema this credential definition will be based on
-     */
-    public WriteCredentialDefinition(String name, String schemaId) {
-        this(name, schemaId, null, null);
+    static WriteCredentialDefinition v0_6(String name, String schemaId) {
+        return new WriteCredentialDefinitionImpl(name, schemaId);
     }
 
-    /**
-     * Initializes the CredDef object
-      * @param name The name of the new credential definition
-     * @param schemaId The id of the schema this credential definition will be based on
-     * @param tag An optional tag for the credential definition
-     */
-    public WriteCredentialDefinition(String name, String schemaId, String tag) {
-        this(name, schemaId, tag, null);
+    static WriteCredentialDefinition v0_6(String name, String schemaId, String tag) {
+        return new WriteCredentialDefinitionImpl(name, schemaId, tag);
     }
 
-    /**
-     * Initializes the CredDef object
-     * @param name The name of the new credential definition
-     * @param schemaId The id of the schema this credential definition will be based on
-     * @param revocationDetails the revocationDetails object defining revocation support. See libvcx documentation for more details.
-     */
-    public WriteCredentialDefinition(String name, String schemaId, JSONObject revocationDetails) {
-        this(name, schemaId, null, revocationDetails);
+    static WriteCredentialDefinition v0_6(String name, String schemaId, JSONObject revocationDetails) {
+        return new WriteCredentialDefinitionImpl(name, schemaId, revocationDetails);
     }
 
-    /**
-     * Initializes the CredDef object
-     * @param name The name of the new credential definition
-     * @param schemaId The id of the schema this credential definition will be based on
-     * @param tag An optional tag for the credential definition
-     * @param revocationDetails the revocationDetails object defining revocation support. See libvcx documentation for more details.
-     */
-    @SuppressWarnings("WeakerAccess")
-    public WriteCredentialDefinition(String name, String schemaId, String tag, JSONObject revocationDetails) {
-        super();
-        this.name = name;
-        this.schemaId = schemaId;
-        this.tag = tag;
-        this.revocationDetails = revocationDetails;
-
-        defineMessages();
+    static WriteCredentialDefinition v0_6(String name, String schemaId, String tag, JSONObject revocationDetails) {
+        return new WriteCredentialDefinitionImpl(name,schemaId, tag, revocationDetails);
     }
 
-    public static String getMessageType(String msgName) {
-        return Util.getMessageType(
-                MSG_QUALIFIER,
-                MSG_FAMILY,
-                MSG_FAMILY_VERSION,
-                msgName
-        );
+    static JSONObject disabledRegistryDetails() {
+        JSONObject json = new JSONObject();
+        json.put("support_revocation", false);
+        return json;
     }
 
-    public static String getProblemReportMessageType() {
-        return Util.getProblemReportMessageType(
-                MSG_QUALIFIER,
-                MSG_FAMILY,
-                MSG_FAMILY_VERSION
-        );
-    }
-
-    public static String getStatusMessageType() {
-        return Util.getStatusMessageType(
-                MSG_QUALIFIER,
-                MSG_FAMILY,
-                MSG_FAMILY_VERSION
-        );
-    }
-
-    @Override
-    protected void defineMessages() {
-        JSONObject message = new JSONObject();
-        message.put("@type", WriteCredentialDefinition.getMessageType(WRITE_CRED_DEF));
-        message.put("@id", WriteCredentialDefinition.getNewId());
-        message.put("name", this.name);
-        message.put("schemaId", this.schemaId);
-        message.put("tag", this.tag);
-        message.put("revocationDetails", this.revocationDetails);
-        this.messages.put(WRITE_CRED_DEF, message);
+    static JSONObject revocationRegistryDetails(String tailsFile, int totalCredentials) {
+        JSONObject json = new JSONObject();
+        json.put("support_revocation", true);
+        json.put("tails_file", tailsFile);
+        json.put("max_creds", totalCredentials);
+        return json;
     }
 
     /**
@@ -122,8 +62,21 @@ public class WriteCredentialDefinition extends Protocol {
      * @throws UndefinedContextException when the context doesn't have enough information for this operation
      * @throws WalletException when there are issues with encryption and decryption
      */
-    @SuppressWarnings("WeakerAccess")
-    public byte[] write(Context context) throws IOException, UndefinedContextException, WalletException {
-        return this.send(context, this.messages.getJSONObject(WRITE_CRED_DEF));
-    }
+    void write(Context context) throws IOException, VerityException;
+
+    /**
+     *
+     * @param context
+     * @return
+     * @throws UndefinedContextException
+     */
+    JSONObject writeMsg(Context context) throws UndefinedContextException;
+
+    /**
+     *
+     * @param context
+     * @return
+     * @throws VerityException
+     */
+    byte[] writeMsgPacked(Context context) throws VerityException;
 }

@@ -3,12 +3,10 @@ package com.evernym.verity.sdk.utils;
 import com.evernym.verity.sdk.TestWallet;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
-import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.junit.Test;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -17,16 +15,17 @@ public class ContextBuilderTest {
 
     @Test
     public void simpleBuild() throws Exception {
+        String verkey1 = "9Wkz2i7yxrVSDFCBRzXDsaXnLMVFh7ZP3xv2ujPtaUJd";
         String walletName = UUID.randomUUID().toString();
         String walletKey = UUID.randomUUID().toString();
         try (TestWallet testWallet = new TestWallet(walletName, walletKey)) {
             Context c = new ContextBuilder()
-                    .walletName(walletName)
-                    .walletKey(walletKey)
+                    .walletConfig(testWallet)
+                    .sdkPairwiseVerkey(verkey1)
                     .build();
 
             c.closeWallet();
-            assertEquals(walletName, c.walletName());
+            assertEquals(verkey1, c.sdkPairwiseVerkey());
         }
     }
 
@@ -36,8 +35,7 @@ public class ContextBuilderTest {
         String walletKey = UUID.randomUUID().toString();
         try (TestWallet testWallet = new TestWallet(walletName, walletKey)) {
             Context c = new ContextBuilder()
-                    .walletName(walletName)
-                    .walletKey(walletKey)
+                    .walletConfig(testWallet)
                     .build();
 
             Wallet test = c.walletHandle();
@@ -45,6 +43,7 @@ public class ContextBuilderTest {
             Context c2 = c.toContextBuilder()
                     .verityUrl("http://example.com")
                     .build();
+
             assert(c.walletHandle() == c2.walletHandle()); // Same wallet handle
             c2.closeWallet();
         }
@@ -56,8 +55,7 @@ public class ContextBuilderTest {
         String walletKey = UUID.randomUUID().toString();
         try (TestWallet testWallet = new TestWallet(walletName, walletKey)) {
             Context c = new ContextBuilder()
-                    .walletName(walletName)
-                    .walletKey(walletKey)
+                    .walletConfig(testWallet)
                     .build();
 
             Wallet test = c.walletHandle();
@@ -79,7 +77,7 @@ public class ContextBuilderTest {
             Did testDid = new Did("CV65RFpeCtPu82hNF9i61G", "7G3LhXFKXKTMv7XGx1Qc9wqkMbwcU2iLBHL8x1JXWWC2");
 
 
-            Context c = ContextBuilder._scratchContext(walletName, walletKey, "http://wwww.example.com", testDid);
+            Context c = ContextBuilder.scratchContext(testWallet, "http://wwww.example.com", testDid);
 
             c.sdkPairwiseDID();
             c.sdkPairwiseVerkey();

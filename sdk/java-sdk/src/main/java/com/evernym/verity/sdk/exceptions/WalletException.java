@@ -1,6 +1,6 @@
 package com.evernym.verity.sdk.exceptions;
 
-public class WalletException extends Exception {
+public class WalletException extends VerityException {
     public WalletException(String message, Throwable cause) {
         super(message, cause);
     }

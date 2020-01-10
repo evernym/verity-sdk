@@ -1,6 +1,7 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
@@ -114,7 +115,7 @@ public class PresentProof extends Protocol {
      * @throws UndefinedContextException when the context doesn't have enough information for this operation
      * @throws WalletException when there are issues with encryption and decryption
      */
-    public byte[] request(Context context) throws IOException, UndefinedContextException, WalletException {
+    public byte[] request(Context context) throws IOException, VerityException {
         return this.send(context, this.messages.getJSONObject(PROOF_REQUEST));
     }
 
@@ -125,7 +126,7 @@ public class PresentProof extends Protocol {
      * @throws UndefinedContextException when the context doesn't have enough information for this operation
      * @throws WalletException when there are issues with encryption and decryption
      */
-    public byte[] status(Context context) throws IOException, UndefinedContextException, WalletException {
+    public byte[] status(Context context) throws IOException, VerityException {
         return this.send(context, this.messages.getJSONObject(GET_STATUS));
     }
 }

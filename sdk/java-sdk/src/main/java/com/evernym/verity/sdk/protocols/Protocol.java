@@ -1,10 +1,12 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.transports.Transport;
 import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.DbcUtil;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
@@ -18,20 +20,27 @@ public abstract class Protocol {
     private boolean sendDisabled = false;
 
     // Currently a static threadId but that don't allow for re-entrant use-cases
-    private UUID threadId = UUID.randomUUID();
+    private final String threadId;
 
     protected JSONObject addThread(JSONObject msg) {
         JSONObject threadBlock = new JSONObject();
-        threadBlock.put("thid", threadId.toString());
+        threadBlock.put("thid", threadId);
         msg.put("~thread", threadBlock);
         return msg;
     }
 
-    JSONObject messages;
+    protected JSONObject messages;
 
-    @SuppressWarnings("WeakerAccess")
-    public Protocol() {
+
+    public Protocol(String threadId) {
+        DbcUtil.requireNotNull(threadId);
+
+        this.threadId = threadId;
         messages = new JSONObject();
+    }
+
+    public Protocol() {
+        this(UUID.randomUUID().toString());
     }
     
     /**
@@ -54,8 +63,8 @@ public abstract class Protocol {
      * @throws WalletException when there are issues with encryption and decryption
      * @throws UndefinedContextException when the context don't have enough information for this operation
      */
-    byte[] send(Context context, JSONObject message) throws IOException, UndefinedContextException, WalletException {
-        byte[] messageToSend = Util.packMessageForVerity(context, message);
+    protected byte[] send(Context context, JSONObject message) throws IOException, VerityException {
+        byte[] messageToSend = packMsg(context, message);
         if(! sendDisabled) {
             Transport transport = new HTTPTransport();
             transport.sendMessage(context.verityUrl(), messageToSend);
@@ -63,11 +72,15 @@ public abstract class Protocol {
         return messageToSend;
     }
 
+    protected byte[] packMsg(Context context, JSONObject message) throws VerityException {
+        return Util.packMessageForVerity(context, message);
+    }
+
     void disableHTTPSend() {
         sendDisabled = true;
     }
 
-    static String getNewId() {
+    public static String getNewId() {
         return UUID.randomUUID().toString();
     }
 
