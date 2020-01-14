@@ -14,6 +14,12 @@ module.exports = class Context {
     walletCredentials;
     walletHandle;
 
+    constructor() {
+        if(arguments.length != 0) {
+            throw new Error("Invalid arguments to Context constructor. Context should be created with `await Context.create(config)`.")
+        }
+    }
+
     static async create(configString) {
         const config = JSON.parse(configString)
         Context.validateConfig(config)
