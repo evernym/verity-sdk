@@ -15,7 +15,12 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "mocha": "^7.0.0",
     "standard": "^14.3.1"
+  },
+  "dependencies": {
+    "indy-sdk": "^1.14.1-dev-1427",
+    "request-promise-native": "^1.0.8"
   }
 }

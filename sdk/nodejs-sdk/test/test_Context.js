@@ -1,20 +1,51 @@
-const expect = require('chai').expect
+"use strict";
+const chai = require('chai')
+const expect = chai.expect
+chai.use(require('chai-as-promised'))
 const Context = require('../src/Context')
+const utils = require('../src/utils')
 
 describe('Context', () => {
-    it('should have all attributes from configurationString', () => {
-        config = {
-            walletName: 'test-wallet',
-            walletKey: 'wallet-key'
-        }
-        context = new Context(JSON.stringify(config))
-        expect(context.walletName).to.equal(config.walletName)
-        expect(context.walletKey).to.equal(config.walletKey)
-    })
 
-    it('should validate configuration', () => {
-        validConfig = {
-            
+    const testConfig = {
+        verityUrl: 'http://localhost:8081',
+        verityPublicDID: '3pjVfGmNysjiS5FiGPaa3F',
+        verityPublicVerkey: '2YEuuFaKV3gvbuCUVKGwWxXdiPtHvocV2VNJ7LK9knn1',
+        verityPairwiseDID: 'LQYTvDVJpUF76aqBoPnq2p',
+        verityPairwiseVerkey: 'BaTcmxFB6SdXh2xMhjc8thzh4P37jNbvx8QVHXeN2b5R',
+        sdkPairwiseDID: '5wEFMRrGhJUpXegY1eYxdK',
+        sdkPairwiseVerkey: '3h1FAFLNLaqyknzzE9xBrchQQC1XkLERWZuyr3ACWyy9',
+        endpointUrl: 'http://localhost:4002',
+        walletName: utils.newId(),
+        walletKey: '12345'
+    }
+
+    function getTestConfig() {
+        return JSON.parse(JSON.stringify(testConfig))
+    }
+
+    it('should accept valid configuration and contain all data', async () => {
+        const config = getTestConfig()
+        const context = await Context.create(JSON.stringify(config))
+        expect(context.verityUrl).to.equal(config.verityUrl)
+        expect(context.verityPublicDID).to.equal(config.verityPublicDID)
+        expect(context.verityPublicVerkey).to.equal(config.verityPublicVerkey)
+        expect(context.verityPairwiseDID).to.equal(config.verityPairwiseDID)
+        expect(context.verityPairwiseVerkey).to.equal(config.verityPairwiseVerkey)
+        expect(context.sdkPairwiseDID).to.equal(config.sdkPairwiseDID)
+        expect(context.sdkPairwiseVerkey).to.equal(config.sdkPairwiseVerkey)
+        expect(context.endpointUrl).to.equal(config.endpointUrl)
+        expect(context.walletConfig).to.equal(JSON.stringify({id: config.walletName}))
+        expect(context.walletCredentials).to.equal(JSON.stringify({key: config.walletKey}))
+        expect(context.walletHandle).to.be.a('number')
+        await context.deleteWallet()
+    }).timeout(5000)
+
+    it('should reject invalid configuration', async () => {
+        for(let key in testConfig) {
+            const config = getTestConfig()
+            delete config[key]
+            await expect(Context.create(JSON.stringify(config))).to.be.rejectedWith(Error, 'Invalid Context Configuration: missing attribute "' + key + '"')
         }
     })
 })
