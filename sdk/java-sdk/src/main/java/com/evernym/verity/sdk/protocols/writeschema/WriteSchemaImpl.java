@@ -1,8 +1,9 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.protocols.writeschema;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,12 +33,6 @@ public class WriteSchemaImpl extends Protocol implements WriteSchema {
         this.attrs = attrs;
     }
 
-    @Override
-    protected void defineMessages() {
-        throw new UnsupportedOperationException("DO NOT USE");
-    }
-
-
     /**
      * Sends the write request message to Verity
      * @param context an instance of Context configured with the results of the provision_sdk.py script
@@ -47,7 +42,7 @@ public class WriteSchemaImpl extends Protocol implements WriteSchema {
      */
     @SuppressWarnings("WeakerAccess")
     public void write(Context context) throws IOException, VerityException {
-        this.send(context, writeMsg(context));
+        send(context, writeMsg(context));
     }
 
     @Override
@@ -63,7 +58,7 @@ public class WriteSchemaImpl extends Protocol implements WriteSchema {
 
     @Override
     public byte[] writeMsgPacked(Context context) throws VerityException {
-        return this.packMsg(context, writeMsg(context));
+        return packMsg(context, writeMsg(context));
     }
 
 }

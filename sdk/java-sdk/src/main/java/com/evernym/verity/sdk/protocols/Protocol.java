@@ -17,9 +17,16 @@ import java.util.UUID;
  * The base class for all protocols
  */
 public abstract class Protocol {
-    private boolean sendDisabled = false;
+    public Protocol(String threadId) {
+        DbcUtil.requireNotNull(threadId);
 
-    // Currently a static threadId but that don't allow for re-entrant use-cases
+        this.threadId = threadId;
+    }
+
+    public Protocol() {
+        this(UUID.randomUUID().toString());
+    }
+
     private final String threadId;
 
     protected JSONObject addThread(JSONObject msg) {
@@ -27,32 +34,6 @@ public abstract class Protocol {
         threadBlock.put("thid", threadId);
         msg.put("~thread", threadBlock);
         return msg;
-    }
-
-    protected JSONObject messages;
-
-
-    public Protocol(String threadId) {
-        DbcUtil.requireNotNull(threadId);
-
-        this.threadId = threadId;
-        messages = new JSONObject();
-    }
-
-    public Protocol() {
-        this(UUID.randomUUID().toString());
-    }
-    
-    /**
-     * Packs the connection message for the verity
-     * @param context an instance of Context that has been initialized with your wallet and key details
-     * @return Encrypted connection message ready to be sent to the verity
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
-     */
-    @SuppressWarnings("WeakerAccess")
-    public static byte[] getMessage(Context context, JSONObject message) throws UndefinedContextException, WalletException {
-        return Util.packMessageForVerity(context, message);
     }
 
     /**
@@ -65,19 +46,20 @@ public abstract class Protocol {
      */
     protected byte[] send(Context context, JSONObject message) throws IOException, VerityException {
         byte[] messageToSend = packMsg(context, message);
-        if(! sendDisabled) {
-            Transport transport = new HTTPTransport();
-            transport.sendMessage(context.verityUrl(), messageToSend);
-        }
+        Transport transport = new HTTPTransport();
+        transport.sendMessage(context.verityUrl(), messageToSend);
         return messageToSend;
     }
 
-    protected byte[] packMsg(Context context, JSONObject message) throws VerityException {
+    /**
+     * Packs the connection message for the verity
+     * @param context an instance of Context that has been initialized with your wallet and key details
+     * @return Encrypted connection message ready to be sent to the verity
+     * @throws WalletException when there are issues with encryption and decryption
+     * @throws UndefinedContextException when the context don't have enough information for this operation
+     */
+    protected static byte[] packMsg(Context context, JSONObject message) throws VerityException {
         return Util.packMessageForVerity(context, message);
-    }
-
-    void disableHTTPSend() {
-        sendDisabled = true;
     }
 
     public static String getNewId() {
@@ -85,10 +67,7 @@ public abstract class Protocol {
     }
 
     public void sendMessage(Context context, JSONObject message) throws IOException, UndefinedContextException, WalletException {
-        // Later we can switch on context.getVerityProtocol
         Transport transport = new HTTPTransport();
         transport.sendMessage(context.verityUrl(), Util.packMessageForVerity(context, message));
     }
-
-    protected abstract void defineMessages();
 }

@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.connecting.Connecting;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;

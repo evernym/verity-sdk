@@ -1,7 +1,8 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.protocols.updateendpoint;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
@@ -14,13 +15,8 @@ public class UpdateEndpointImpl extends Protocol implements UpdateEndpoint {
     }
 
     @Override
-    protected void defineMessages() {
-        throw new UnsupportedOperationException("DO NOT USE");
-    }
-
-    @Override
     public void update(Context context) throws IOException, VerityException {
-        this.send(context, updateMsg(context));
+        send(context, updateMsg(context));
     }
 
     @Override
@@ -41,6 +37,6 @@ public class UpdateEndpointImpl extends Protocol implements UpdateEndpoint {
 
     @Override
     public byte[] updateMsgPacked(Context context) throws VerityException {
-        return this.packMsg(context, updateMsg(context));
+        return packMsg(context, updateMsg(context));
     }
 }

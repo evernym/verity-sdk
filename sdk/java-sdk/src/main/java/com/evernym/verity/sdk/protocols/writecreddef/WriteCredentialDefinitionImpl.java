@@ -1,8 +1,9 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.protocols.writecreddef;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
@@ -18,7 +19,7 @@ public class WriteCredentialDefinitionImpl extends Protocol implements WriteCred
     String name;
     protected String schemaId;
     String tag;
-    JSONObject revocationDetails;
+    RevocationRegistryConfig revocationConfig;
 
     /**
      * Initializes the CredDef object
@@ -31,11 +32,13 @@ public class WriteCredentialDefinitionImpl extends Protocol implements WriteCred
 
     /**
      * Initializes the CredDef object
-      * @param name The name of the new credential definition
+     * @param name The name of the new credential definition
      * @param schemaId The id of the schema this credential definition will be based on
      * @param tag An optional tag for the credential definition
      */
-    WriteCredentialDefinitionImpl(String name, String schemaId, String tag) {
+    WriteCredentialDefinitionImpl(String name,
+                                  String schemaId,
+                                  String tag) {
         this(name, schemaId, tag, null);
     }
 
@@ -43,10 +46,10 @@ public class WriteCredentialDefinitionImpl extends Protocol implements WriteCred
      * Initializes the CredDef object
      * @param name The name of the new credential definition
      * @param schemaId The id of the schema this credential definition will be based on
-     * @param revocationDetails the revocationDetails object defining revocation support. See libvcx documentation for more details.
+     * @param revocation the revocation object defining revocation support. See libvcx documentation for more details.
      */
-    WriteCredentialDefinitionImpl(String name, String schemaId, JSONObject revocationDetails) {
-        this(name, schemaId, null, revocationDetails);
+    WriteCredentialDefinitionImpl(String name, String schemaId, RevocationRegistryConfig revocation) {
+        this(name, schemaId, null, revocation);
     }
 
     /**
@@ -54,19 +57,17 @@ public class WriteCredentialDefinitionImpl extends Protocol implements WriteCred
      * @param name The name of the new credential definition
      * @param schemaId The id of the schema this credential definition will be based on
      * @param tag An optional tag for the credential definition
-     * @param revocationDetails the revocationDetails object defining revocation support. See libvcx documentation for more details.
+     * @param revocation the revocation object defining revocation support. See libvcx documentation for more details.
      */
-    WriteCredentialDefinitionImpl(String name, String schemaId, String tag, JSONObject revocationDetails) {
+    WriteCredentialDefinitionImpl(String name,
+                                  String schemaId,
+                                  String tag,
+                                  RevocationRegistryConfig revocation) {
         super();
         this.name = name;
         this.schemaId = schemaId;
         this.tag = tag;
-        this.revocationDetails = revocationDetails;
-    }
-
-    @Override
-    protected void defineMessages() {
-        throw new UnsupportedOperationException("DO NOT USE");
+        this.revocationConfig = revocation;
     }
 
     /**
@@ -78,7 +79,7 @@ public class WriteCredentialDefinitionImpl extends Protocol implements WriteCred
      */
     @SuppressWarnings("WeakerAccess")
     public void write(Context context) throws IOException, VerityException {
-        this.send(context, writeMsg(context));
+        send(context, writeMsg(context));
     }
 
     @Override
@@ -89,12 +90,12 @@ public class WriteCredentialDefinitionImpl extends Protocol implements WriteCred
         message.put("name", this.name);
         message.put("schemaId", this.schemaId);
         message.put("tag", this.tag);
-        message.put("revocationDetails", this.revocationDetails);
+        message.put("revocationDetails", this.revocationConfig.toJson());
         return message;
     }
 
     @Override
     public byte[] writeMsgPacked(Context context) throws VerityException {
-        return this.packMsg(context, writeMsg(context));
+        return packMsg(context, writeMsg(context));
     }
 }

@@ -1,8 +1,9 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.protocols.issuecredential;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
@@ -44,12 +45,6 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
         this.forRelationship = forRelationship;
     }
 
-    @Override
-    protected void defineMessages() {
-        throw new UnsupportedOperationException("DO NOT USE");
-    }
-
-
     /**
      * Sends the credential offer message to the connection
      * @param context an instance of Context configured with the results of the provision_sdk.py script
@@ -59,7 +54,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
      */
     @SuppressWarnings("WeakerAccess")
     public void offerCredential(Context context) throws IOException, VerityException {
-        this.send(context, offerCredentialMsg(context));
+        send(context, offerCredentialMsg(context));
     }
 
     @Override
@@ -82,7 +77,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
 
     @Override
     public byte[] offerCredentialMsgPacked(Context context) throws VerityException {
-        return this.packMsg(context, offerCredentialMsg(context));
+        return packMsg(context, offerCredentialMsg(context));
     }
 
     @Override
@@ -108,7 +103,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
      * @throws WalletException when there are issues with encryption and decryption
      */
     public void issueCredential(Context context) throws IOException, VerityException {
-        this.send(context, issueCredentialMsg(context));
+        send(context, issueCredentialMsg(context));
     }
 
     @Override
@@ -124,7 +119,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
 
     @Override
     public byte[] issueCredentialMsgPacked(Context context) throws VerityException {
-        return this.packMsg(context, issueCredentialMsg(context));
+        return packMsg(context, issueCredentialMsg(context));
     }
 
     /**
@@ -135,7 +130,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
      * @throws WalletException when there are issues with encryption and decryption
      */
     public void status(Context context) throws IOException, VerityException {
-        this.send(context, statusMsg(context));
+        send(context, statusMsg(context));
     }
 
     @Override
@@ -151,6 +146,6 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
 
     @Override
     public byte[] statusMsgPacked(Context context) throws VerityException {
-        return this.packMsg(context, statusMsg(context));
+        return packMsg(context, statusMsg(context));
     }
 }

@@ -1,8 +1,9 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.protocols.writecreddef;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -33,26 +34,26 @@ public interface WriteCredentialDefinition extends MessageFamily {
         return new WriteCredentialDefinitionImpl(name, schemaId, tag);
     }
 
-    static WriteCredentialDefinition v0_6(String name, String schemaId, JSONObject revocationDetails) {
-        return new WriteCredentialDefinitionImpl(name, schemaId, revocationDetails);
+    static WriteCredentialDefinition v0_6(String name, String schemaId, RevocationRegistryConfig revocation) {
+        return new WriteCredentialDefinitionImpl(name, schemaId, revocation);
     }
 
-    static WriteCredentialDefinition v0_6(String name, String schemaId, String tag, JSONObject revocationDetails) {
-        return new WriteCredentialDefinitionImpl(name,schemaId, tag, revocationDetails);
+    static WriteCredentialDefinition v0_6(String name, String schemaId, String tag, RevocationRegistryConfig revocation) {
+        return new WriteCredentialDefinitionImpl(name,schemaId, tag, revocation);
     }
 
-    static JSONObject disabledRegistryDetails() {
+    static RevocationRegistryConfig disabledRegistryConfig() {
         JSONObject json = new JSONObject();
         json.put("support_revocation", false);
-        return json;
+        return new RevocationRegistryConfig(json);
     }
 
-    static JSONObject revocationRegistryDetails(String tailsFile, int totalCredentials) {
+    static RevocationRegistryConfig revocationRegistryConfig(String tailsFile, int totalCredentials) {
         JSONObject json = new JSONObject();
         json.put("support_revocation", true);
         json.put("tails_file", tailsFile);
         json.put("max_creds", totalCredentials);
-        return json;
+        return new RevocationRegistryConfig(json);
     }
 
     /**

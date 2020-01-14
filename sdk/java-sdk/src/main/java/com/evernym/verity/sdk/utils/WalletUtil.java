@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 public class WalletUtil {
+    private WalletUtil() {}
+
     public static void tryCreateWallet(String walletName, String walletKey) throws WalletException {
         String walletConfig = new JSONObject().put("id", walletName).toString();
         String walletCredentials = new JSONObject().put("key", walletKey).toString();

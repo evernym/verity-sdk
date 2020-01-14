@@ -1,7 +1,8 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.protocols.provision;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
@@ -12,11 +13,6 @@ import java.io.IOException;
 public class ProvisionImpl extends Protocol implements Provision {
     ProvisionImpl() {
         super();
-    }
-
-    @Override
-    protected void defineMessages() {
-        throw new UnsupportedOperationException("Context is required to build messages");
     }
 
     /**

@@ -1,6 +1,7 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.protocols.connecting;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
@@ -55,54 +56,46 @@ class ConnectingImpl extends Protocol implements Connecting {
         this.sourceId = sourceId;
         this.phoneNumber = phoneNo;
         this.includePublicDID = includePublicDID;
-        defineMessages();
-    }
-
-    @Override
-    protected void defineMessages() {
-        JSONObject createConnectionMessage = new JSONObject();
-        createConnectionMessage.put("@type", getMessageType(CREATE_CONNECTION));
-        createConnectionMessage.put("@id", getNewId());
-        createConnectionMessage.put("sourceId", this.sourceId);
-        createConnectionMessage.put("phoneNo", this.phoneNumber);
-        createConnectionMessage.put("includePublicDID", this.includePublicDID);
-        this.messages.put(CREATE_CONNECTION, createConnectionMessage);
-
-        JSONObject statusMessage = new JSONObject();
-        statusMessage.put("@type", getMessageType(GET_STATUS));
-        statusMessage.put("@id", getNewId());
-        statusMessage.put("sourceId", this.sourceId);
-        this.messages.put(GET_STATUS, statusMessage);
     }
 
     @Override
     public void connect(Context context) throws IOException, VerityException {
-        this.send(context, this.messages.getJSONObject(CREATE_CONNECTION));
+        send(context, connectMsg(context));
     }
 
     @Override
     public JSONObject connectMsg(Context context) {
-        return this.messages.getJSONObject(CREATE_CONNECTION);
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(CREATE_CONNECTION));
+        msg.put("@id", getNewId());
+        msg.put("sourceId", this.sourceId);
+        msg.put("phoneNo", this.phoneNumber);
+        msg.put("includePublicDID", this.includePublicDID);
+        return msg;
     }
 
     @Override
     public byte[] connectMsgPacked(Context context) throws VerityException {
-        return this.packMsg(context, this.messages.getJSONObject(CREATE_CONNECTION));
+        return packMsg(context, connectMsg(context));
     }
 
     @Override
     public void status(Context context) throws IOException, VerityException {
-        this.send(context, this.messages.getJSONObject(GET_STATUS));
+        send(context, statusMsg(context));
     }
 
     @Override
     public JSONObject statusMsg(Context context) {
-        return this.messages.getJSONObject(GET_STATUS);
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(GET_STATUS));
+        msg.put("@id", getNewId());
+        msg.put("sourceId", this.sourceId);
+        return msg;
     }
 
     @Override
     public byte[] statusMsgPacked(Context context) throws VerityException {
-        return this.packMsg(context, this.messages.getJSONObject(GET_STATUS));
+        return packMsg(context, statusMsg(context));
     }
 
     @Override
