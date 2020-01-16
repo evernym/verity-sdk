@@ -4,7 +4,9 @@
   "description": "The official Node.js SDK for Evernym's Verity",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "standard",
+    "lint-fix": "standard --fix"
   },
   "keywords": [
     "ssi",
