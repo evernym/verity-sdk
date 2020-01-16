@@ -33,7 +33,8 @@ module.exports = class Provision extends Protocol {
   async provisionSdk (context) {
     const url = new URL(context.verityUrl)
     url.pathname = '/agency/msg'
-    const rawResponse = await utils.httpPost(url.href, await this.provisionSdkMsgPacked(context))
+    const packedMessage = await this.provisionSdkMsgPacked(context)
+    const rawResponse = await utils.sendPackedMessage(url.href, packedMessage)
     const response = utils.unpackMessage(rawResponse.body)
     context.verityPairwiseDID = response.verityPairwiseDID
     context.verityPairwiseVerkey = response.verityPairwiseVerkey

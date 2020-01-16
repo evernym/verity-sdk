@@ -13,14 +13,27 @@ exports.miniId = function () {
 }
 
 exports.packMessageForVerity = async function (context, message, provisioning = false) {
+  const packedMessage = await exports.packMessage(context, message, provisioning)
+  return exports.prepareForwardMessage(context, packedMessage)
+}
+
+exports.packMessage = async function (context, message, anoncrypt = false) {
   indy.init()
-  let theirKey
-  if (provisioning) {
-    theirKey = context.verityPublicVerkey
+  const encodedMessage = new TextEncoder('utf-8').encode(JSON.stringify(message))
+  if (anoncrypt) {
+    return indy.sdk.packMessage(context.walletHandle, encodedMessage, [context.verityPublicVerkey], null)
   } else {
-    theirKey = context.verityPairwiseVerkey
+    return indy.sdk.packMessage(context.walletHandle, encodedMessage, [context.verityPairwiseVerkey], context.sdkPairwiseVerkey)
   }
-  return indy.sdk.packMessage(context.walletHandle, new TextEncoder('utf-8').encode(JSON.stringify(message)), [theirKey], context.sdkPairwiseVerkey)
+}
+
+exports.prepareForwardMessage = async function (context, packedMessage) {
+  const forwardMessage = {
+    '@type': 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD',
+    '@fwd': context.verityPublicDID,
+    '@msg': packedMessage
+  }
+  return exports.packMessage(context, forwardMessage, true)
 }
 
 exports.unpackMessage = async function (context, messageBytes) {

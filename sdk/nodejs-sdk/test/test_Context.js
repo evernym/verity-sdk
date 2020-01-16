@@ -7,7 +7,7 @@ const Context = require('../src/utils/Context')
 const utils = require('../src/utils')
 
 const testConfig = {
-  verityUrl: 'http://localhost:8081',
+  verityUrl: 'http://vas-team1.pdev.evernym.com',
   verityPublicDID: '3pjVfGmNysjiS5FiGPaa3F',
   verityPublicVerkey: '2YEuuFaKV3gvbuCUVKGwWxXdiPtHvocV2VNJ7LK9knn1',
   verityPairwiseDID: 'LQYTvDVJpUF76aqBoPnq2p',
@@ -30,7 +30,7 @@ exports.getTestConfig = getTestConfig
 describe('Context', () => {
   it('should accept valid configuration and contain all data', async () => {
     let config = getTestConfig()
-    const context = await Context.create(config)
+    const context = await Context.createWithConfig(config)
     config = JSON.parse(config)
     expect(context.verityUrl).to.equal(config.verityUrl)
     expect(context.verityPublicDID).to.equal(config.verityPublicDID)
@@ -50,12 +50,12 @@ describe('Context', () => {
     for (const key in testConfig) {
       const config = JSON.parse(getTestConfig())
       delete config[key]
-      await expect(Context.create(JSON.stringify(config))).to.be.rejectedWith(Error, 'Invalid Context Configuration: missing attribute "' + key + '"')
+      await expect(Context.createWithConfig(JSON.stringify(config))).to.be.rejectedWith(Error, 'Invalid Context Configuration: missing attribute "' + key + '"')
     }
   })
 
   it('should throw an error if configuration is passed into the Context constructor', () => {
     // eslint-disable-next-line no-new
-    expect(() => { new Context(getTestConfig()) }).to.throw(Error, 'Invalid arguments to Context constructor. Context should be created with `await Context.create(config)`.')
+    expect(() => { new Context(getTestConfig()) }).to.throw(Error, 'Invalid arguments to Context constructor. Context should be created with Context.create or Context.createWithConfig.')
   })
 })

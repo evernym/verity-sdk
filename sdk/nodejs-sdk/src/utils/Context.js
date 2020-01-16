@@ -6,12 +6,12 @@ const utils = require('./index')
 module.exports = class Context {
   constructor () {
     if (arguments.length !== 0) {
-      throw new Error('Invalid arguments to Context constructor. Context should be created with `await Context.create or Context.createWithConfig`.')
+      throw new Error('Invalid arguments to Context constructor. Context should be created with Context.create or Context.createWithConfig.')
     }
   }
 
   static async createWithConfig (config = {}) {
-    if (typeof configString === 'string') {
+    if (typeof config === 'string') {
       config = JSON.parse(config)
     }
     Context.validateConfig(config)
