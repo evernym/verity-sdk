@@ -1,8 +1,9 @@
+/* eslint-env mocha */
 'use strict'
 const chai = require('chai')
 const expect = chai.expect
 chai.use(require('chai-as-promised'))
-const Context = require('../src/Context')
+const Context = require('../src/utils/Context')
 const utils = require('../src/utils')
 
 const testConfig = {
@@ -14,13 +15,13 @@ const testConfig = {
   sdkPairwiseDID: '5wEFMRrGhJUpXegY1eYxdK',
   sdkPairwiseVerkey: '3h1FAFLNLaqyknzzE9xBrchQQC1XkLERWZuyr3ACWyy9',
   endpointUrl: 'http://localhost:4002',
-  walletName: utils.newId(),
+  walletName: utils.miniId(),
   walletKey: '12345'
 }
 
 function getTestConfig () {
   const config = JSON.parse(JSON.stringify(testConfig)) // Copy object
-  config.walletName = utils.newId()
+  config.walletName = utils.miniId()
   return JSON.stringify(config)
 }
 
@@ -54,6 +55,7 @@ describe('Context', () => {
   })
 
   it('should throw an error if configuration is passed into the Context constructor', () => {
-    expect(() => {new Context(getTestConfig())}).to.throw(Error, "Invalid arguments to Context constructor. Context should be created with `await Context.create(config)`.")
+    // eslint-disable-next-line no-new
+    expect(() => { new Context(getTestConfig()) }).to.throw(Error, 'Invalid arguments to Context constructor. Context should be created with `await Context.create(config)`.')
   })
 })

@@ -1,15 +1,19 @@
+'use strict'
 const uuid = require('uuid')
-const request = require('request-promise-native')
-
 const utils = require('../utils')
+const MessageFamily = require('../utils/MessageFamily')
 
-module.exports = class Protocol {
-  constructor () {
-
+module.exports = class Protocol extends MessageFamily {
+  constructor (msgFamily, msgFamilyVersion, msgQualifier = null, threadId = uuid()) {
+    super(msgFamily, msgFamilyVersion, msgQualifier)
+    this.threadId = threadId
   }
 
-  getNewId () {
-    return uuid()
+  _addThread (msg) {
+    msg['~thread'] = {
+      thid: this.threadId
+    }
+    return msg
   }
 
   async getMessageBytes (context, message) {
@@ -17,6 +21,6 @@ module.exports = class Protocol {
   }
 
   async sendMessage (context, message) {
-    await request.post(context.verityUrl, await this.getMessageBytes())
+    await utils.sendPackedMessage(context.verityUrl, await this.getMessageBytes(context, message))
   }
 }
