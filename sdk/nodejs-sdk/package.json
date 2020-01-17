@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-sdk",
+  "name": "verity-sdk",
   "version": "0.1.0",
   "description": "The official Node.js SDK for Evernym's Verity",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "evernym"
   ],
   "author": "Spencer Holman <dev@evernym.com>",
-  "license": "ISC",
+  "license": "",
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
