@@ -12,18 +12,18 @@ exports.miniId = function () {
   return uuid().split('-')[0]
 }
 
-exports.packMessageForVerity = async function (context, message, provisioning = false) {
-  const packedMessage = await exports.packMessage(context, message, provisioning)
+exports.packMessageForVerity = async function (context, message) {
+  const packedMessage = await exports.packMessage(context, context.verityPublicVerkey, message)
   return exports.prepareForwardMessage(context, packedMessage)
 }
 
-exports.packMessage = async function (context, message, anoncrypt = false) {
+exports.packMessage = async function (context, receiverKey, message, anoncrypt = false) {
   indy.init()
-  const encodedMessage = new TextEncoder('utf-8').encode(JSON.stringify(message))
+  const encodedMessage = (new TextEncoder()).encode(JSON.stringify(message))
   if (anoncrypt) {
-    return indy.sdk.packMessage(context.walletHandle, encodedMessage, [context.verityPublicVerkey], null)
+    return indy.sdk.packMessage(context.walletHandle, encodedMessage, [receiverKey], null)
   } else {
-    return indy.sdk.packMessage(context.walletHandle, encodedMessage, [context.verityPairwiseVerkey], context.sdkPairwiseVerkey)
+    return indy.sdk.packMessage(context.walletHandle, encodedMessage, [receiverKey], context.sdkPairwiseVerkey)
   }
 }
 
@@ -33,7 +33,7 @@ exports.prepareForwardMessage = async function (context, packedMessage) {
     '@fwd': context.verityPublicDID,
     '@msg': packedMessage
   }
-  return exports.packMessage(context, forwardMessage, true)
+  return exports.packMessage(context, context.verityPublicVerkey, forwardMessage, true)
 }
 
 exports.unpackMessage = async function (context, messageBytes) {
@@ -44,7 +44,7 @@ exports.unpackMessage = async function (context, messageBytes) {
 }
 
 exports.sendPackedMessage = async function (uri, packedMessage) {
-  return exports.httpPost(uri, packedMessage, 'application/octet-stream')
+  return exports.httpPost(uri, new Uint8Array(packedMessage), 'application/octet-stream')
 }
 
 exports.httpGet = async function (uri) {

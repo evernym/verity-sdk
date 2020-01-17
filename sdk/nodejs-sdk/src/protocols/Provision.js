@@ -27,7 +27,7 @@ module.exports = class Provision extends Protocol {
   }
 
   async provisionSdkMsgPacked (context) {
-    return utils.packMessageForVerity(context, await this.provisionSdkMsg(context), true)
+    return utils.packMessageForVerity(context, await this.provisionSdkMsg(context))
   }
 
   async provisionSdk (context) {
