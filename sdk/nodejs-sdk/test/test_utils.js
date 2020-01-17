@@ -9,6 +9,7 @@ const getTestConfig = require('./test_Context').getTestConfig
 
 async function getTestContext () {
   const context = await Context.createWithConfig(getTestConfig());
+  [context.verityPublicDID, context.verityPublicVerkey] = await indy.newDid(context);
   [context.verityPairwiseDID, context.verityPairwiseVerkey] = await indy.newDid(context);
   [context.sdkPairwiseDID, context.sdkPairwiseVerkey] = await indy.newDid(context)
   return context
@@ -36,8 +37,10 @@ describe('utils', () => {
       const message = { some: 'message' }
       const context = await getTestContext()
       const forwardMessage = await utils.packMessageForVerity(context, message)
-      const packedMessage = await utils.unpackMessage(context, forwardMessage)
-      expect((await utils.unpackMessage(context, packedMessage)).message).to.deep.equal(message)
+      const packedWrappedMessage = await utils.unpackMessage(context, forwardMessage)
+      const insideMessageBytes = packedWrappedMessage.message['@msg']
+      const finalUnpackedWrappedMessage = await utils.unpackMessage(context, new Uint8Array(insideMessageBytes.data))
+      expect(finalUnpackedWrappedMessage.message).to.deep.equal(message)
       context.deleteWallet()
     })
   })
