@@ -30,12 +30,12 @@ async function provision () {
   let context = await sdk.Context.create(sdk.utils.miniId(), '12345', 'http://vas-team1.pdev.evernym.com/', 'http://localhost:4005')
   const provision = new sdk.protocols.Provision()
   context = await provision.provisionSdk(context)
-  const contextString = JSON.stringify(context, null, 2)
   context.closeWallet()
-  return contextString
+  return JSON.stringify(context.getConfig(), null, 2)
 }
 
 async function updateEndpoint (config) {
+  console.log(config)
   const context = await sdk.Context.createWithConfig(config)
   const updateEndpoint = new sdk.protocols.UpdateEndpoint()
   await updateEndpoint.update(context)

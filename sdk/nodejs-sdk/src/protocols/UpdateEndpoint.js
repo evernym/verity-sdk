@@ -26,13 +26,14 @@ module.exports = class UpdateEndpoint extends Protocol {
       type: COM_METHOD_TYPE,
       value: context.endpointUrl
     }
+    return msg
   }
 
   async updateMsgPacked (context) {
-    return this.getMessageBytes(context, await this.updateMsg())
+    return this.getMessageBytes(context, await this.updateMsg(context))
   }
 
   async update (context) {
-    await this.sendMessage(context, await this.updateMsgPacked())
+    await this.sendMessage(context, await this.updateMsgPacked(context))
   }
 }

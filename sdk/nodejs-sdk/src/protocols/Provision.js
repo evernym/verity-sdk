@@ -1,5 +1,4 @@
 'use strict'
-const URL = require('url').URL
 const utils = require('../utils')
 const Protocol = require('./Protocol')
 const indy = require('../utils/indy')
@@ -29,10 +28,8 @@ module.exports = class Provision extends Protocol {
   }
 
   async provisionSdk (context) {
-    const url = new URL(context.verityUrl)
-    url.pathname = '/agency/msg'
     const packedMessage = await this.provisionSdkMsgPacked(context)
-    const rawResponse = await utils.sendPackedMessage(url.href, packedMessage)
+    const rawResponse = await utils.sendPackedMessage(context, packedMessage)
     const jweBytes = (new TextEncoder()).encode(rawResponse)
     const response = await utils.unpackMessage(context, jweBytes)
     context.verityPairwiseDID = response.message.withPairwiseDID

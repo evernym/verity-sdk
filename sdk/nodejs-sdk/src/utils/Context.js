@@ -25,6 +25,8 @@ module.exports = class Context {
     context.sdkPairwiseDID = config.sdkPairwiseDID
     context.sdkPairwiseVerkey = config.sdkPairwiseVerkey
     context.endpointUrl = config.endpointUrl
+    context.walletName = config.walletName
+    context.walletKey = config.walletKey
     context.buildWalletConfig(config.walletName)
     context.buildWalletCredentails(config.walletKey)
     await context.openWallet()
@@ -43,10 +45,12 @@ module.exports = class Context {
   }
 
   buildWalletConfig (walletName) {
+    this.walletName = walletName
     this.walletConfig = JSON.stringify({ id: walletName })
   }
 
   buildWalletCredentails (walletKey) {
+    this.walletKey = walletKey
     this.walletCredentials = JSON.stringify({ key: walletKey })
   }
 
@@ -85,6 +89,14 @@ module.exports = class Context {
         throw new Error('Invalid Context Configuration: missing attribute "' + attr + '"')
       }
     }
+  }
+
+  getConfig () {
+    const config = JSON.parse(JSON.stringify(this))
+    delete config.walletConfig
+    delete config.walletCredentials
+    delete config.walletHandle
+    return config
   }
 
   async closeWallet () {

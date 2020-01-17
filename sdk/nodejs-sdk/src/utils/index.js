@@ -43,8 +43,10 @@ exports.unpackMessage = async function (context, messageBytes) {
   return message
 }
 
-exports.sendPackedMessage = async function (uri, packedMessage) {
-  return exports.httpPost(uri, new Uint8Array(packedMessage), 'application/octet-stream')
+exports.sendPackedMessage = async function (context, packedMessage) {
+  const url = new URL(context.verityUrl)
+  url.pathname = '/agency/msg'
+  return exports.httpPost(url, new Uint8Array(packedMessage), 'application/octet-stream')
 }
 
 exports.httpGet = async function (uri) {

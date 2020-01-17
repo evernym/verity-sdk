@@ -21,6 +21,6 @@ module.exports = class Protocol extends MessageFamily {
   }
 
   async sendMessage (context, message) {
-    await utils.sendPackedMessage(context.verityUrl, await this.getMessageBytes(context, message))
+    await utils.sendPackedMessage(context, await this.getMessageBytes(context, message))
   }
 }
