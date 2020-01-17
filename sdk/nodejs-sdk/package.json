@@ -1,0 +1,28 @@
+{
+  "name": "verity-sdk",
+  "version": "0.1.0",
+  "description": "The official Node.js SDK for Evernym's Verity",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "lint": "standard",
+    "lint-fix": "standard --fix"
+  },
+  "keywords": [
+    "ssi",
+    "verity",
+    "evernym"
+  ],
+  "author": "Spencer Holman <dev@evernym.com>",
+  "license": "",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^7.0.0",
+    "standard": "^14.3.1"
+  },
+  "dependencies": {
+    "indy-sdk": "^1.14.1-dev-1427",
+    "request-promise-native": "^1.0.8"
+  }
+}
