@@ -24,6 +24,11 @@ exports.createOrOpenWallet = async function (config, credentials) {
   return sdk.openWallet(config, credentials)
 }
 
+exports.closeWallet = async function (walletHandle) {
+  init()
+  await sdk.closeWallet(walletHandle)
+}
+
 exports.deleteWallet = async function (walletHandle, walletConfig, walletCredentials) {
   init()
   await sdk.closeWallet(walletHandle)

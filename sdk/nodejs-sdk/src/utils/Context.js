@@ -31,11 +31,12 @@ module.exports = class Context {
     return context
   }
 
-  static async create (walletName, walletKey, verityUrl) {
+  static async create (walletName, walletKey, verityUrl, endpointUrl) {
     const context = new Context()
     context.buildWalletConfig(walletName)
     context.buildWalletCredentails(walletKey)
     context.verityUrl = verityUrl
+    context.endpointUrl = endpointUrl
     await context.updateVerityInfo()
     await context.openWallet()
     return context
@@ -84,6 +85,10 @@ module.exports = class Context {
         throw new Error('Invalid Context Configuration: missing attribute "' + attr + '"')
       }
     }
+  }
+
+  async closeWallet () {
+    return indy.closeWallet(this.walletHandle)
   }
 
   async deleteWallet () {

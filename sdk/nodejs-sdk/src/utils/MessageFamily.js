@@ -14,10 +14,11 @@ module.exports = class MessageFamily {
   }
 
   _getBaseMessage (msgName) {
-    return {
+    const msg = {
       '@id': this._getNewId(),
       '@type': `${this.msgQualifier};spec/${this.msgFamily}/${this.msgFamilyVersion}/${msgName}`
     }
+    return msg
   }
 
   getMessageType (messageName) {

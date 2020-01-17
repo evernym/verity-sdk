@@ -53,7 +53,7 @@ module.exports = class ContextBuilder {
     if (this.context != null) {
       context = this.context
     } else {
-      context = await Context.create(this._walletName, this._walletKey, this._verityUrl)
+      context = await Context.create(this._walletName, this._walletKey, this._verityUrl, this._endpointUrl)
     }
     context.verityPublicDID = this._verityPublicDID
     context.verityPublicVerkey = this._verityPublicVerkey
@@ -61,7 +61,6 @@ module.exports = class ContextBuilder {
     context.verityPairwiseVerkey = this._verityPairwiseVerkey
     context.sdkPairwiseDID = this._sdkPairwiseDID
     context.sdkPairwiseVerkey = this.sdkPairwiseVerkey
-    context.endpointUrl = this.endpointUrl
     return context
   }
 }

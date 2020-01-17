@@ -17,17 +17,15 @@ module.exports = class Provision extends Protocol {
   }
 
   async provisionSdkMsg (context) {
+    const msg = this._getBaseMessage(this.msgNames.CREATE_AGENT);
     [context.sdkPairwiseDID, context.sdkPairwiseVerkey] = await indy.newDid(context)
-    return {
-      '@id': this._getNewId(),
-      '@type': this.getMessageType(this.msgNames.CREATE_AGENT),
-      fromDID: context.sdkPairwiseDID,
-      fromDIDVerKey: context.sdkPairwiseVerkey
-    }
+    msg.fromDID = context.sdkPairwiseDID
+    msg.fromDIDVerKey = context.sdkPairwiseVerkey
+    return msg
   }
 
   async provisionSdkMsgPacked (context) {
-    return utils.packMessageForVerity(context, await this.provisionSdkMsg(context))
+    return this.getMessageBytes(context, await this.provisionSdkMsg(context))
   }
 
   async provisionSdk (context) {
