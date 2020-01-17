@@ -24,7 +24,8 @@ async function main (command) {
 
 async function provision () {
   const sdk = require('./src/index')
-  const context = await sdk.Context.create(sdk.utils.miniId(), '12345', 'http://vas-team1.pdev.evernym.com/')
+  let context = await sdk.Context.create(sdk.utils.miniId(), '12345', 'http://vas-team1.pdev.evernym.com/')
   const provision = new sdk.protocols.Provision()
-  await provision.provisionSdk(context)
+  context = await provision.provisionSdk(context)
+  console.log(context)
 }

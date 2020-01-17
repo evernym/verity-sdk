@@ -35,9 +35,10 @@ module.exports = class Provision extends Protocol {
     url.pathname = '/agency/msg'
     const packedMessage = await this.provisionSdkMsgPacked(context)
     const rawResponse = await utils.sendPackedMessage(url.href, packedMessage)
-    const response = await utils.unpackMessage(context, JSON.parse(rawResponse).body)
-    context.verityPairwiseDID = response.verityPairwiseDID
-    context.verityPairwiseVerkey = response.verityPairwiseVerkey
+    const jweBytes = (new TextEncoder()).encode(rawResponse)
+    const response = await utils.unpackMessage(context, jweBytes)
+    context.verityPairwiseDID = response.message.withPairwiseDID
+    context.verityPairwiseVerkey = response.message.withPairwiseDIDVerKey
     return context
   }
 }
