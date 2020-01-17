@@ -31,7 +31,7 @@ exports.prepareForwardMessage = async function (context, packedMessage) {
   const forwardMessage = {
     '@type': 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD',
     '@fwd': context.verityPublicDID,
-    '@msg': packedMessage
+    '@msg': JSON.parse(packedMessage)
   }
   return exports.packMessage(context, context.verityPublicVerkey, forwardMessage, true)
 }
