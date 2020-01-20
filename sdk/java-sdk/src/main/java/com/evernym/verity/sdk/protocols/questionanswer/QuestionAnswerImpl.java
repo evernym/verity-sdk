@@ -8,15 +8,14 @@ public class QuestionAnswerImpl extends AskCommonImpl implements QuestionAnswer 
     public QuestionAnswerImpl(String forRelationship,
                               String questionText,
                               String questionDetail,
-                              String[] validResponses) {
-        super(forRelationship, questionText, questionDetail, validResponses);
-    }
-
-    public QuestionAnswerImpl(String forRelationship,
-                              String questionText,
-                              String questionDetail,
                               String[] validResponses,
                               Boolean signatureRequired) {
         super(forRelationship, questionText, questionDetail, validResponses, signatureRequired);
+    }
+
+    public QuestionAnswerImpl(String forRelationship,
+                              String threadId,
+                              String answer) {
+        super(forRelationship, threadId, answer);
     }
 }

@@ -29,11 +29,24 @@ public class Util {
             String pairwiseReceiver = new JSONArray(new String[]{pairwiseRemoteVerkey}).toString();
             String verityReceiver = new JSONArray(new String[]{publicVerkey}).toString();
 
-            byte[] agentMessage = Crypto.packMessage(walletHandle, pairwiseReceiver, pairwiseLocalVerkey, message.toString().getBytes()).get();
+            byte[] agentMessage = Crypto.packMessage(
+                    walletHandle,
+                    pairwiseReceiver,
+                    pairwiseLocalVerkey,
+                    message.toString().getBytes()
+            ).get();
 
-            String innerFwd = prepareForwardMessage(pairwiseRemoteDID, agentMessage);
+            String innerFwd = prepareForwardMessage(
+                    pairwiseRemoteDID,
+                    agentMessage
+            );
 
-            return Crypto.packMessage(walletHandle, verityReceiver, null, innerFwd.getBytes()).get();
+            return Crypto.packMessage(
+                    walletHandle,
+                    verityReceiver,
+                    null,
+                    innerFwd.getBytes()
+            ).get();
         } catch (IndyException | InterruptedException | ExecutionException e) {
             throw new WalletException("Unable to pack messages", e);
         }

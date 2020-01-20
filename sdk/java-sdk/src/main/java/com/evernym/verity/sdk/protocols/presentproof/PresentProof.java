@@ -14,13 +14,9 @@ import java.io.IOException;
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
 public interface PresentProof extends MessageFamily {
-    String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
-    String MSG_FAMILY = "present-proof";
-    String MSG_FAMILY_VERSION = "0.6";
-
-    default String qualifier() {return MSG_QUALIFIER;}
-    default String family() {return MSG_FAMILY;}
-    default String version() {return MSG_FAMILY_VERSION;}
+    default String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
+    default String family() {return "present-proof";}
+    default String version() {return "0.6";}
 
     String PROOF_REQUEST = "request";
     String GET_STATUS = "get-status";
@@ -57,6 +53,13 @@ public interface PresentProof extends MessageFamily {
     JSONObject requestMsg(Context context) throws VerityException;
 
     byte[] requestMsgPacked(Context context) throws VerityException;
+
+
+    void accept(Context context) throws IOException, VerityException;
+
+    JSONObject acceptMsg(Context context) throws VerityException;
+
+    byte[] acceptMsgPacked(Context context) throws VerityException;
 
     /**
      * Sends the status request message to Verity

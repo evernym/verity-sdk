@@ -7,6 +7,7 @@ import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.did.Did;
 import org.hyperledger.indy.sdk.did.DidResults;
 import org.hyperledger.indy.sdk.wallet.Wallet;
+import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
@@ -79,4 +80,9 @@ public class TestWallet implements AutoCloseable, WalletConfig {
 
     @Override
     public String credential() {return walletConfig.credential();}
+
+    @Override
+    public void addToJson(JSONObject json) {
+        throw new RuntimeException("Not implemented for tests");
+    }
 }

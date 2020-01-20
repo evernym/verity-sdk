@@ -8,15 +8,15 @@ import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
 /**
  * An object used to hold the wallet handle and other configuration information. 
- * An instance if this object is passed around to many different API calls. 
- * It should be initialized the config output by the tools/provision_sdk.py script.
+ * An instance if this object is passed around to many different API calls.
  */
-public final class Context {
+public final class Context implements AsJsonObject{
     final private WalletConfig walletConfig;
     final private String verityUrl;
     final private String verityPublicDID;
@@ -82,26 +82,7 @@ public final class Context {
         this.walletHandle = handle;
     }
 
-//    /**
-//     * Initialize the Context object
-//     *
-//     * @param configJson the config output by the tools/provision_sdk.py script
-//     * @throws WalletOpenException when libindy is unable to open the wallet
-//     * @throws JSONException when attributes are missing from the configuration JSON
-//     */
-//    public Context(String configJson) throws WalletOpenException, JSONException {
-//        // TODO: Validate config
-//        JSONObject config = new JSONObject(configJson);
-//        this.verityUrl = config.getString("verityUrl");
-//        this.verityPublicDID = config.getString("verityPublicDID");
-//        this.verityPublicVerkey = config.getString("verityPublicVerkey");
-//        this.verityPairwiseDID = config.getString("verityPairwiseDID");
-//        this.verityPairwiseVerkey = config.getString("verityPairwiseVerkey");
-//        this.sdkPairwiseDID = config.getString("sdkPairwiseDID");
-//        this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
-//        this.endpointUrl = config.getString("endpointUrl");
-//        this.walletHandle = openWallet();
-//    }
+
 
     private Wallet openWallet() throws WalletOpenException, JSONException {
         if (walletConfig == null) {
@@ -202,6 +183,24 @@ public final class Context {
         if (!walletClosedFlag) {
             rtn.walletHandle(walletHandle);
         }
+
+        return rtn;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject rtn = new JSONObject();
+
+        if(walletConfig != null) walletConfig.addToJson(rtn);
+
+        if(verityUrl != null) rtn.put("verityUrl", verityUrl);
+        if(verityPublicDID != null) rtn.put("verityPublicDID", verityPublicDID);
+        if(verityPublicVerkey != null) rtn.put("verityPublicVerkey", verityPublicVerkey);
+        if(verityPairwiseDID != null) rtn.put("verityPairwiseDID", verityPairwiseDID);
+        if(verityPairwiseVerkey != null) rtn.put("verityPairwiseVerkey", verityPairwiseVerkey);
+        if(sdkPairwiseDID != null) rtn.put("sdkPairwiseDID", sdkPairwiseDID);
+        if(sdkPairwiseVerkey != null) rtn.put("sdkPairwiseVerkey", sdkPairwiseVerkey);
+        if(endpointUrl != null) rtn.put("endpointUrl", endpointUrl);
 
         return rtn;
     }

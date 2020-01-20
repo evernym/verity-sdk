@@ -43,4 +43,11 @@ public class DefaultWalletConfig implements WalletConfig {
     public String credential() {
         return new JSONObject().put("key", this.key).toString();
     }
+
+    @Override
+    public void addToJson(JSONObject json) {
+        if(id != null) json.put("walletName", id);
+        if(key != null) json.put("walletKey", key);
+        if(path != null) json.put("walletPath", path);
+    }
 }

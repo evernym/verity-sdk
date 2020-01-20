@@ -5,6 +5,7 @@ import com.evernym.verity.sdk.exceptions.WalletOpenException;
 import com.evernym.verity.sdk.wallet.DefaultWalletConfig;
 import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.wallet.Wallet;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -58,8 +59,6 @@ public class ContextBuilder {
     private WalletConfig walletConfig;
     private Wallet walletHandle = null;
 
-    private final String walletName = "walletName";
-    private final String walletKey = "walletKey";
     private final String verityUrl = "verityUrl";
     private final String verityPublicDID = "verityPublicDID";
     private final String verityPublicVerkey = "verityPublicVerkey";
@@ -75,6 +74,34 @@ public class ContextBuilder {
         elements.put(key, val);
         return this;
     }
+
+    private ContextBuilder putElementIgnoreNull(String key, String val) {
+        if(val != null) {
+            return putElement(key, val);
+        }
+        else return this;
+    }
+
+    public ContextBuilder fromJson(JSONObject json){
+        WalletConfig w = DefaultWalletConfig.build(
+                json.optString("walletName"),
+                json.optString("walletKey"),
+                json.optString("walletPath")
+        );
+        this.walletConfig(w);
+        putElementIgnoreNull(verityUrl, json.optString(verityUrl));
+        putElementIgnoreNull(verityPublicDID, json.optString(verityPublicDID));
+        putElementIgnoreNull(verityPublicVerkey, json.optString(verityPublicVerkey));
+        putElementIgnoreNull(verityPairwiseDID, json.optString(verityPairwiseDID));
+        putElementIgnoreNull(verityPairwiseVerkey, json.optString(verityPairwiseVerkey));
+        putElementIgnoreNull(sdkPairwiseDID, json.optString(sdkPairwiseDID));
+        putElementIgnoreNull(sdkPairwiseVerkey, json.optString(sdkPairwiseVerkey));
+        putElementIgnoreNull(endpointUrl, json.optString(endpointUrl));
+
+        return this;
+    }
+
+    public ContextBuilder fromJson(String json) {fromJson(new JSONObject(json)); return this;}
 
     public ContextBuilder walletConfig(WalletConfig config) {walletConfig = config; return this;}
     public ContextBuilder verityUrl(String val) {return putElement(verityUrl, val);}

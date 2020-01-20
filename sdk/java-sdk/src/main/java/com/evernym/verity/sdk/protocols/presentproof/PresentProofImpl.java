@@ -100,6 +100,22 @@ public class PresentProofImpl extends Protocol implements PresentProof {
         return packMsg(context, requestMsg(context));
     }
 
+    @Override
+    public void accept(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public JSONObject acceptMsg(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public byte[] acceptMsgPacked(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+
     public void status(Context context) throws IOException, VerityException {
         send(context, statusMsg(context));
     }

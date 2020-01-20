@@ -24,13 +24,21 @@ module.exports = class Provision extends Protocol {
   }
 
   async provisionSdkMsgPacked (context) {
-    return this.getMessageBytes(context, await this.provisionSdkMsg(context))
+    const msg = await this.provisionSdkMsg(context)
+    return utils.packMessage(
+      context.walletHandle, 
+      msg, 
+      context.verityPublicDID, 
+      context.verityPublicVerkey,
+      context.sdkPairwiseVerkey,
+      context.verityPublicVerkey
+      )
   }
 
   async provisionSdk (context) {
     const packedMessage = await this.provisionSdkMsgPacked(context)
     const rawResponse = await utils.sendPackedMessage(context, packedMessage)
-    const jweBytes = (new TextEncoder()).encode(rawResponse)
+    const jweBytes = Buffer.from(rawResponse, 'utf8')
     const response = await utils.unpackMessage(context, jweBytes)
     context.verityPairwiseDID = response.message.withPairwiseDID
     context.verityPairwiseVerkey = response.message.withPairwiseDIDVerKey

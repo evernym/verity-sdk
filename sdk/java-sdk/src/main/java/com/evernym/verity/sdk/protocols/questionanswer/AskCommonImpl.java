@@ -17,9 +17,11 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
     String questionText;
     String questionDetail;
     String[] validResponses;
+    String answer;
     private boolean signatureRequired;
 
     public static String ASK_QUESTION = "ask-question";
+    public static String ANSWER_QUESTION = "answer-question";
     public static String GET_STATUS = "get-status";
 
 
@@ -44,6 +46,11 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
         this.signatureRequired = signatureRequired;
     }
 
+    public AskCommonImpl(String forRelationship, String threadId, String answer) {
+        super(threadId);
+        this.answer = answer;
+    }
+
     public void ask(Context context) throws IOException, VerityException {
         send(context, askMsg(context));
     }
@@ -65,6 +72,24 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
         return packMsg(context, askMsg(context));
     }
 
+
+    public void answer(Context context) throws IOException, VerityException {
+        send(context, answerMsg(context));
+    }
+
+    public JSONObject answerMsg(Context context) throws VerityException {
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(ANSWER_QUESTION));
+        msg.put("@id", getNewId());
+        addThread(msg);
+        msg.put("~for_relationship", this.forRelationship);
+        msg.put("response", this.answer);
+        return msg;
+    }
+
+    public byte[] answerMsgPacked(Context context) throws VerityException {
+        return  packMsg(context, answerMsg(context));
+    }
 
     public void status(Context context) throws IOException, VerityException {
         send(context, statusMsg(context));

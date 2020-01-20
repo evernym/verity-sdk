@@ -10,13 +10,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public interface Provision extends MessageFamily {
-    String MSG_QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
-    String MSG_FAMILY = "agent-provisioning";
-    String MSG_FAMILY_VERSION = "0.6";
-
-    default String qualifier() {return MSG_QUALIFIER;}
-    default String family() {return MSG_FAMILY;}
-    default String version() {return MSG_FAMILY_VERSION;}
+    default String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
+    default String family() {return "agent-provisioning";}
+    default String version() {return "0.6";}
 
     // Messages
     String CREATE_AGENT = "CREATE_AGENT";

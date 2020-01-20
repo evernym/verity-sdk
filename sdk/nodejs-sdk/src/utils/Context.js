@@ -26,8 +26,9 @@ module.exports = class Context {
     context.sdkPairwiseVerkey = config.sdkPairwiseVerkey
     context.endpointUrl = config.endpointUrl
     context.walletName = config.walletName
+    context.walletPath = config.walletPath
     context.walletKey = config.walletKey
-    context.buildWalletConfig(config.walletName)
+    context.buildWalletConfig(config.walletName, config.walletPath)
     context.buildWalletCredentails(config.walletKey)
     await context.openWallet()
     return context
@@ -44,9 +45,12 @@ module.exports = class Context {
     return context
   }
 
-  buildWalletConfig (walletName) {
-    this.walletName = walletName
-    this.walletConfig = JSON.stringify({ id: walletName })
+  buildWalletConfig (walletName, walletPath) {
+    var walletConfigDict = { id: walletName }
+    if(walletPath) {
+      walletConfigDict['storage_config'] = {path: walletPath}
+    }
+    this.walletConfig = JSON.stringify(walletConfigDict)
   }
 
   buildWalletCredentails (walletKey) {
@@ -76,11 +80,8 @@ module.exports = class Context {
       'verityUrl',
       'verityPublicDID',
       'verityPublicVerkey',
-      'verityPairwiseDID',
-      'verityPairwiseVerkey',
       'sdkPairwiseDID',
       'sdkPairwiseVerkey',
-      'endpointUrl',
       'walletName',
       'walletKey'
     ]
