@@ -81,11 +81,8 @@ module.exports = class Context {
       'verityUrl',
       'verityPublicDID',
       'verityPublicVerkey',
-      // 'verityPairwiseDID', // FIXME: Should these really be removed
-      // 'verityPairwiseVerkey',
       'sdkPairwiseDID',
       'sdkPairwiseVerkey',
-      // 'endpointUrl',
       'walletName',
       'walletKey'
     ]

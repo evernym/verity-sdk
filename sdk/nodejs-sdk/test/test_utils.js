@@ -28,19 +28,17 @@ describe('utils', () => {
     it('should be able to pack and unpack messages', async () => {
       const message = { some: 'message' }
       const context = await getTestContext()
-      const bytes = await utils.packMessage(context, message)
+      const bytes = await utils.packMessage(context.walletHandle, message, context.verityPairwiseDID, context.verityPairwiseVerkey, context.sdkPairwiseVerkey, context.verityPublicVerkey)
       expect((await utils.unpackMessage(context, bytes)).message).to.deep.equal(message)
       context.deleteWallet()
     })
 
-    it('should be able to pack and unpack forward messages', async () => {
+    it('should be able to pack and unpack messages for verity', async () => {
       const message = { some: 'message' }
       const context = await getTestContext()
       const forwardMessage = await utils.packMessageForVerity(context, message)
-      const packedWrappedMessage = await utils.unpackMessage(context, forwardMessage)
-      const insideMessageBytes = packedWrappedMessage.message['@msg']
-      const finalUnpackedWrappedMessage = await utils.unpackMessage(context, new Uint8Array(insideMessageBytes.data))
-      expect(finalUnpackedWrappedMessage.message).to.deep.equal(message)
+      const wrappedMessage = await utils.unpackMessage(context, forwardMessage)
+      expect(wrappedMessage.message).to.deep.equal(message)
       context.deleteWallet()
     })
   })

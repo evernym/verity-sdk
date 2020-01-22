@@ -47,7 +47,16 @@ describe('Context', () => {
   }).timeout(5000)
 
   it('should reject invalid configuration', async () => {
-    for (const key in testConfig) {
+    const requiredAttributes = [
+      'verityUrl',
+      'verityPublicDID',
+      'verityPublicVerkey',
+      'sdkPairwiseDID',
+      'sdkPairwiseVerkey',
+      'walletName',
+      'walletKey'
+    ]
+    for (const key of requiredAttributes) {
       const config = JSON.parse(getTestConfig())
       delete config[key]
       await expect(Context.createWithConfig(JSON.stringify(config))).to.be.rejectedWith(Error, 'Invalid Context Configuration: missing attribute "' + key + '"')
