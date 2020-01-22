@@ -12,10 +12,8 @@ module.exports = class Connecting extends Protocol {
     this.phoneNumber = phoneNumber
     this.includePublicDID = includePublicDID
 
-    this.msgNames = {
-      CREATE_CONNECTION: 'CREATE_CONNECTION',
-      GET_STATUS: 'get-status'
-    }
+    this.msgNames.CREATE_CONNECTION = 'CREATE_CONNECTION'
+    this.msgNames.GET_STATUS = 'get-status'
   }
 
   async connectMsg (context) {

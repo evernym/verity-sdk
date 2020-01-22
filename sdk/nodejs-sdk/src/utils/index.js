@@ -77,3 +77,7 @@ exports.httpPost = async function (uri, message, contentType) {
   }
   return request.post(options)
 }
+
+exports.randInt = function (max) {
+  return Math.floor(Math.random() * Math.floor(max))
+}

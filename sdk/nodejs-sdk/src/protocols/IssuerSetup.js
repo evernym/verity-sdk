@@ -9,11 +9,9 @@ module.exports = class IssuerSetup extends Protocol {
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
-    this.msgNames = {
-      CREATE: 'create',
-      CURRENT_PUBLIC_IDENTIFIER: 'current-public-identifier',
-      PUBLIC_IDENTIFIER_CREATED: 'public-identifier-created'
-    }
+    this.msgNames.CREATE = 'create'
+    this.msgNames.CURRENT_PUBLIC_IDENTIFIER = 'current-public-identifier'
+    this.msgNames.PUBLIC_IDENTIFIER_CREATED = 'public-identifier-created'
   }
 
   async createMsg (context) {

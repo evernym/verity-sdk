@@ -11,6 +11,11 @@ module.exports = class Protocol extends MessageFamily {
     } else {
       this.threadId = uuid()
     }
+
+    this.msgNames = {
+      STATUS: 'status',
+      PROBLEM_REPORT: 'problem-report'
+    }
   }
 
   _addThread (msg) {

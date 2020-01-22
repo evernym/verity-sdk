@@ -19,11 +19,9 @@ module.exports = class CommittedAnswer extends Protocol {
       this.signatureRequired = true
     }
 
-    this.msgNames = {
-      ASK_QUESTION: 'ask-question',
-      ANSWER_QUESTION: 'answer-question',
-      GET_STATUS: 'get-status'
-    }
+    this.msgNames.ASK_QUESTION = 'ask-question'
+    this.msgNames.ANSWER_QUESTION = 'answer-question'
+    this.msgNames.GET_STATUS = 'get-status'
   }
 
   async askMsg (context) {

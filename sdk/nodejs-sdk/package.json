@@ -16,8 +16,10 @@
   "author": "Spencer Holman <dev@evernym.com>",
   "license": "",
   "devDependencies": {
+    "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "express": "^4.17.1",
     "mocha": "^7.0.0",
     "standard": "^14.3.1"
   },

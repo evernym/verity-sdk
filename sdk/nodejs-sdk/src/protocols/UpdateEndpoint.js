@@ -11,9 +11,7 @@ module.exports = class UpdateEndpoint extends Protocol {
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
-    this.msgNames = {
-      UPDATE_ENDPOINT: 'UPDATE_COM_METHOD'
-    }
+    this.msgNames.UPDATE_ENDPOINT = 'UPDATE_COM_METHOD'
   }
 
   async updateMsg (context) {

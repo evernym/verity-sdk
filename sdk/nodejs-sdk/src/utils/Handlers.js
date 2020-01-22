@@ -10,7 +10,7 @@ class Handler {
   }
 
   handles (message) {
-    if (!message.prototype.hasOwnProperty.call('@type')) {
+    if (!('@type' in message)) {
       throw new Error('message does not contain a "@type" attribute')
     }
     const msgType = MessageFamily.parseMessageType(message['@type'])
@@ -25,26 +25,34 @@ class Handlers {
   }
 
   addHandler (msgFamily, msgFamilyVersion, handlerFunction) {
-    const handlersKey = msgFamily + msgFamilyVersion
-    this.handlers[handlersKey] = Handler(msgFamily, msgFamilyVersion, handlerFunction)
+    const handlersKey = Handlers.buildHandlersKey(msgFamily, msgFamilyVersion)
+    this.handlers[handlersKey] = new Handler(msgFamily, msgFamilyVersion, handlerFunction)
   }
 
-  addDefaultHandler (handlerFunction) {
+  hasHandler (msgFamily, msgFamilyVersion) {
+    return Handlers.buildHandlersKey(msgFamily, msgFamilyVersion) in this.handlers
+  }
+
+  setDefaultHandler (handlerFunction) {
     this.defaultHandler = handlerFunction
   }
 
   async handleMessage (context, rawMessage) {
-    const message = await utils.unpackMessage(rawMessage)
+    const message = await utils.unpackMessage(context, rawMessage)
     const msgType = MessageFamily.parseMessageType(message['@type'])
-    const handlersKey = msgType.msgFamily + msgType.msgFamilyVersion
+    const handlersKey = Handlers.buildHandlersKey(msgType.msgFamily, msgType.msgFamilyVersion)
 
-    if (this.handlers.prototype.hasOwnProperty.call(handlersKey)) {
+    if (this.hasHandler(msgType.msgFamily, msgType.msgFamilyVersion)) {
       await this.handlers[handlersKey].handlerFunction(msgType.msgName, message)
     } else {
       if (this.defaultHandler) {
         await this.defaultHandler(msgType.msgName, message)
       }
     }
+  }
+
+  static buildHandlersKey (msgFamily, msgFamilyVersion) {
+    return msgFamily + msgFamilyVersion
   }
 }
 
