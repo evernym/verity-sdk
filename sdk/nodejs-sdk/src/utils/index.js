@@ -41,12 +41,16 @@ exports.prepareForwardMessage = async function (toDID, packedMessage) {
   return forwardMessage
 }
 
-exports.unpackMessage = async function (context, messageBytes) {
+exports.unpackForwardMessage = async function (context, messageBytes) {
   indy.init()
-  const forwardMessage = JSON.parse(JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, messageBytes)).message)
+  const forwardMessage = await exports.unpackMessage(context, messageBytes)
   const message = JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, Buffer.from(JSON.stringify(forwardMessage['@msg']))))
   message.message = JSON.parse(message.message)
   return message
+}
+
+exports.unpackMessage = async function (context, messageBytes) {
+  return JSON.parse(JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, messageBytes)).message)
 }
 
 exports.sendPackedMessage = async function (context, packedMessage) {

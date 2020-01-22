@@ -29,7 +29,7 @@ describe('utils', () => {
       const message = { some: 'message' }
       const context = await getTestContext()
       const bytes = await utils.packMessage(context.walletHandle, message, context.verityPairwiseDID, context.verityPairwiseVerkey, context.sdkPairwiseVerkey, context.verityPublicVerkey)
-      expect((await utils.unpackMessage(context, bytes)).message).to.deep.equal(message)
+      expect((await utils.unpackForwardMessage(context, bytes)).message).to.deep.equal(message)
       context.deleteWallet()
     })
 
@@ -37,7 +37,7 @@ describe('utils', () => {
       const message = { some: 'message' }
       const context = await getTestContext()
       const forwardMessage = await utils.packMessageForVerity(context, message)
-      const wrappedMessage = await utils.unpackMessage(context, forwardMessage)
+      const wrappedMessage = await utils.unpackForwardMessage(context, forwardMessage)
       expect(wrappedMessage.message).to.deep.equal(message)
       context.deleteWallet()
     })
