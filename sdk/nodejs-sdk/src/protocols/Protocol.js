@@ -4,9 +4,13 @@ const utils = require('../utils')
 const MessageFamily = require('../utils/MessageFamily')
 
 module.exports = class Protocol extends MessageFamily {
-  constructor (msgFamily, msgFamilyVersion, msgQualifier = null, threadId = uuid()) {
+  constructor (msgFamily, msgFamilyVersion, msgQualifier = null, threadId = null) {
     super(msgFamily, msgFamilyVersion, msgQualifier)
-    this.threadId = threadId
+    if (threadId) {
+      this.threadId = threadId
+    } else {
+      this.threadId = uuid()
+    }
   }
 
   _addThread (msg) {
@@ -21,6 +25,6 @@ module.exports = class Protocol extends MessageFamily {
   }
 
   async sendMessage (context, message) {
-    await utils.sendPackedMessage(context, await this.getMessageBytes(context, message))
+    await utils.sendPackedMessage(context, message)
   }
 }

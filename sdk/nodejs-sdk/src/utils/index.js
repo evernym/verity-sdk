@@ -13,27 +13,32 @@ exports.miniId = function () {
 }
 
 exports.packMessageForVerity = async function (context, message) {
-  const packedMessage = await exports.packMessage(context, context.verityPublicVerkey, message)
-  return exports.prepareForwardMessage(context, packedMessage)
+  return exports.packMessage(
+    context.walletHandle,
+    message,
+    context.verityPairwiseDID,
+    context.verityPairwiseVerkey,
+    context.sdkPairwiseVerkey,
+    context.verityPublicVerkey
+  )
 }
 
-exports.packMessage = async function (context, receiverKey, message, anoncrypt = false) {
+exports.packMessage = async function (walletHandle, message, pairwiseRemoteDID, pairwiseRemoteVerkey, pairwiseLocalVerkey, publicVerkey) {
   indy.init()
-  const encodedMessage = (new TextEncoder()).encode(JSON.stringify(message))
-  if (anoncrypt) {
-    return indy.sdk.packMessage(context.walletHandle, encodedMessage, [receiverKey], null)
-  } else {
-    return indy.sdk.packMessage(context.walletHandle, encodedMessage, [receiverKey], context.sdkPairwiseVerkey)
-  }
+  const msgBytes = Buffer.from(JSON.stringify(message), 'utf-8')
+  const agentMsg = await indy.sdk.packMessage(walletHandle, msgBytes, [pairwiseRemoteVerkey], pairwiseLocalVerkey)
+  const innerFwd = await exports.prepareForwardMessage(pairwiseRemoteDID, agentMsg)
+  const innerFwdBytes = Buffer.from(JSON.stringify(innerFwd), 'utf-8')
+  return indy.sdk.packMessage(walletHandle, innerFwdBytes, [publicVerkey], null)
 }
 
-exports.prepareForwardMessage = async function (context, packedMessage) {
+exports.prepareForwardMessage = async function (toDID, packedMessage) {
   const forwardMessage = {
     '@type': 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD',
-    '@fwd': context.verityPublicDID,
+    '@fwd': toDID,
     '@msg': JSON.parse(packedMessage)
   }
-  return exports.packMessage(context, context.verityPublicVerkey, forwardMessage, true)
+  return forwardMessage
 }
 
 exports.unpackMessage = async function (context, messageBytes) {
@@ -46,7 +51,7 @@ exports.unpackMessage = async function (context, messageBytes) {
 exports.sendPackedMessage = async function (context, packedMessage) {
   const url = new URL(context.verityUrl)
   url.pathname = '/agency/msg'
-  return exports.httpPost(url, new Uint8Array(packedMessage), 'application/octet-stream')
+  return exports.httpPost(url, packedMessage, 'application/octet-stream')
 }
 
 exports.httpGet = async function (uri) {
