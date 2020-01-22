@@ -11,7 +11,8 @@ module.exports = class IssuerSetup extends Protocol {
 
     this.msgNames = {
       CREATE: 'create',
-      CURRENT_PUBLIC_IDENTIFIER: 'current-public-identifier'
+      CURRENT_PUBLIC_IDENTIFIER: 'current-public-identifier',
+      PUBLIC_IDENTIFIER_CREATED: 'public-identifier-created'
     }
   }
 
