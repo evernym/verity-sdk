@@ -135,7 +135,7 @@ java-unit-tests-and-syntax:
 python-unit-tests-and-syntax:
   stage: test
   image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags-large
+  extends: .tags
   script:
     - cd sdk/python-sdk/ && make lint && cd - # Python SDK linting
     - cd sdk/python-sdk/ && pytest && cd - # Python SDK unit tests
@@ -143,7 +143,7 @@ python-unit-tests-and-syntax:
 nodejs-unit-tests-and-syntax:
   stage: test
   image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags-large
+  extends: .tags
   script:
     - cd sdk/nodejs-sdk/ && npm install && npm run lint && cd - # Node.js linting
     - cd sdk/nodejs-sdk/ && npm test && cd - # Node.js testing
@@ -216,6 +216,20 @@ upload_to_pypi:
       - "master@dev/verity/verity-sdk"
     changes:
       - sdk/python-sdk/**/*
+
+upload_to_npm:
+  stage: deploy
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
+  extends: .tags
+  script:
+    - cd sdk/nodejs-sdk/
+    - npm pack
+    - npn run deploy
+  only:
+    refs:
+      - nodejs-sdk@dev/verity-verity-sdk
+    changes:
+      - sdk/nodejs-sdk/**/*
 
 update_getting_started_guide:
   stage: deploy

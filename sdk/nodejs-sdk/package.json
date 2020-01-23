@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha",
     "lint": "standard",
-    "lint-fix": "standard --fix"
+    "lint-fix": "standard --fix",
+    "deploy": "curl -u \"$KRAKEN_CREDENTIALS\" -X POST -F 'file=@verity-sdk-0.1.0.tgz' https://kraken.corp.evernym.com/repo/npm/upload"
   },
   "keywords": [
     "ssi",
