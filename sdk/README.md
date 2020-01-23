@@ -5,15 +5,12 @@ See individual SDK implementations for more information and examples.
 ## Up to date SDKs
 
 * Java
+* Python
+* Node.js
 
 ## Out of date or work in progress SDKs
 
 * browser-sdk
-
-## Future SDKs
-* Python
-* Node.js
-* .NET
 
 ## Note on Provisioning and the Resulting Config
 
