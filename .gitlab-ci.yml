@@ -227,7 +227,7 @@ upload_to_npm:
     - npn run deploy
   only:
     refs:
-      - nodejs-sdk@dev/verity-verity-sdk
+      - nodejs-sdk@dev/verity/verity-sdk
     changes:
       - sdk/nodejs-sdk/**/*
 
