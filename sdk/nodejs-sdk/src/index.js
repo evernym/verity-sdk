@@ -15,5 +15,7 @@ module.exports = {
     PresentProof: require('./protocols/PresentProof'),
     CommittedAnswer: require('./protocols/CommittedAnswer')
   },
-  utils: require('./utils/index')
+  utils: require('./utils/index'),
+  Handlers: require('./utils/Handlers').Handlers,
+  MessageFamily: require('./utils/MessageFamily')
 }

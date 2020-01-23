@@ -11,11 +11,9 @@ module.exports = class WriteCredentialDefinition extends Protocol {
     this.name = name
     this.schemaId = schemaId
     this.tag = tag
-    this.revocation = revocation 
+    this.revocation = revocation
 
-    this.msgNames = {
-      WRITE_CRED_DEF: 'write',
-    }
+    this.msgNames.WRITE_CRED_DEF = 'write'
   }
 
   async writeMsg (context) {

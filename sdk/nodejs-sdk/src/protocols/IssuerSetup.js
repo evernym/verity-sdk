@@ -2,8 +2,6 @@
 const utils = require('../utils')
 const Protocol = require('./Protocol')
 
-const COM_METHOD_TYPE = 2
-
 module.exports = class IssuerSetup extends Protocol {
   constructor (threadId = null) {
     const msgFamily = 'issuer-setup'
@@ -11,10 +9,9 @@ module.exports = class IssuerSetup extends Protocol {
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
-    this.msgNames = {
-      CREATE: 'create',
-      CURRENT_PUBLIC_IDENTIFIER: 'current-public-identifier'
-    }
+    this.msgNames.CREATE = 'create'
+    this.msgNames.CURRENT_PUBLIC_IDENTIFIER = 'current-public-identifier'
+    this.msgNames.PUBLIC_IDENTIFIER_CREATED = 'public-identifier-created'
   }
 
   async createMsg (context) {

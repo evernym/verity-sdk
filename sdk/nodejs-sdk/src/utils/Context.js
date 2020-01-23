@@ -46,11 +46,12 @@ module.exports = class Context {
   }
 
   buildWalletConfig (walletName, walletPath) {
-    var walletConfigDict = { id: walletName }
-    if(walletPath) {
-      walletConfigDict['storage_config'] = {path: walletPath}
+    this.walletName = walletName
+    const walletConfig = { id: walletName }
+    if (walletPath) {
+      walletConfig.storage_config = { path: walletPath }
     }
-    this.walletConfig = JSON.stringify(walletConfigDict)
+    this.walletConfig = JSON.stringify(walletConfig)
   }
 
   buildWalletCredentails (walletKey) {

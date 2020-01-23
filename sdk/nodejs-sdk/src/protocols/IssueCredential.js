@@ -11,14 +11,12 @@ module.exports = class IssueCredential extends Protocol {
     this.forRelationship = forRelationship
     this.name = name
     this.values = values
-    this.credDefId = credDefId 
-    this.price = "0"
+    this.credDefId = credDefId
+    this.price = '0'
 
-    this.msgNames = {
-      OFFER_CREDENTIAL: 'send-offer',
-      ISSUE_CREDENTIAL: 'issue-credential',
-      GET_STATUS: 'get-status'
-    }
+    this.msgNames.OFFER_CREDENTIAL = 'send-offer'
+    this.msgNames.ISSUE_CREDENTIAL = 'issue-credential'
+    this.msgNames.GET_STATUS = 'get-status'
   }
 
   async offerCredentialMsg (context) {

@@ -10,9 +10,7 @@ module.exports = class Provision extends Protocol {
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
-    this.msgNames = {
-      CREATE_AGENT: 'CREATE_AGENT'
-    }
+    this.msgNames.CREATE_AGENT = 'CREATE_AGENT'
   }
 
   async provisionSdkMsg (context) {
@@ -26,13 +24,13 @@ module.exports = class Provision extends Protocol {
   async provisionSdkMsgPacked (context) {
     const msg = await this.provisionSdkMsg(context)
     return utils.packMessage(
-      context.walletHandle, 
-      msg, 
-      context.verityPublicDID, 
+      context.walletHandle,
+      msg,
+      context.verityPublicDID,
       context.verityPublicVerkey,
       context.sdkPairwiseVerkey,
       context.verityPublicVerkey
-      )
+    )
   }
 
   async provisionSdk (context) {
@@ -40,8 +38,8 @@ module.exports = class Provision extends Protocol {
     const rawResponse = await utils.sendPackedMessage(context, packedMessage)
     const jweBytes = Buffer.from(rawResponse, 'utf8')
     const response = await utils.unpackMessage(context, jweBytes)
-    context.verityPairwiseDID = response.message.withPairwiseDID
-    context.verityPairwiseVerkey = response.message.withPairwiseDIDVerKey
+    context.verityPairwiseDID = response.withPairwiseDID
+    context.verityPairwiseVerkey = response.withPairwiseDIDVerKey
     return context
   }
 }

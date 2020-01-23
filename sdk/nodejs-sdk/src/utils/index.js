@@ -20,10 +20,11 @@ exports.packMessageForVerity = async function (context, message) {
     context.verityPairwiseVerkey,
     context.sdkPairwiseVerkey,
     context.verityPublicVerkey
-    )
+  )
 }
 
 exports.packMessage = async function (walletHandle, message, pairwiseRemoteDID, pairwiseRemoteVerkey, pairwiseLocalVerkey, publicVerkey) {
+  indy.init()
   const msgBytes = Buffer.from(JSON.stringify(message), 'utf-8')
   const agentMsg = await indy.sdk.packMessage(walletHandle, msgBytes, [pairwiseRemoteVerkey], pairwiseLocalVerkey)
   const innerFwd = await exports.prepareForwardMessage(pairwiseRemoteDID, agentMsg)
@@ -31,20 +32,25 @@ exports.packMessage = async function (walletHandle, message, pairwiseRemoteDID, 
   return indy.sdk.packMessage(walletHandle, innerFwdBytes, [publicVerkey], null)
 }
 
-exports.prepareForwardMessage = async function (toDid, packedMessage) {
+exports.prepareForwardMessage = async function (toDID, packedMessage) {
   const forwardMessage = {
     '@type': 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD',
-    '@fwd': toDid,
+    '@fwd': toDID,
     '@msg': JSON.parse(packedMessage)
   }
   return forwardMessage
 }
 
-exports.unpackMessage = async function (context, messageBytes) {
+exports.unpackForwardMessage = async function (context, messageBytes) {
   indy.init()
-  const message = JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, messageBytes))
+  const forwardMessage = await exports.unpackMessage(context, messageBytes)
+  const message = JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, Buffer.from(JSON.stringify(forwardMessage['@msg']))))
   message.message = JSON.parse(message.message)
   return message
+}
+
+exports.unpackMessage = async function (context, messageBytes) {
+  return JSON.parse(JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, messageBytes)).message)
 }
 
 exports.sendPackedMessage = async function (context, packedMessage) {
@@ -70,4 +76,8 @@ exports.httpPost = async function (uri, message, contentType) {
     body: message
   }
   return request.post(options)
+}
+
+exports.randInt = function (max) {
+  return Math.floor(Math.random() * Math.floor(max))
 }

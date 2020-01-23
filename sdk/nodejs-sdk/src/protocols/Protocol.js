@@ -6,11 +6,15 @@ const MessageFamily = require('../utils/MessageFamily')
 module.exports = class Protocol extends MessageFamily {
   constructor (msgFamily, msgFamilyVersion, msgQualifier = null, threadId = null) {
     super(msgFamily, msgFamilyVersion, msgQualifier)
-    if(threadId) {
+    if (threadId) {
       this.threadId = threadId
-    }
-    else {
+    } else {
       this.threadId = uuid()
+    }
+
+    this.msgNames = {
+      STATUS: 'status-report',
+      PROBLEM_REPORT: 'problem-report'
     }
   }
 

@@ -13,10 +13,8 @@ module.exports = class PresentProof extends Protocol {
     this.attributes = attributes
     this.predicates = predicates
 
-    this.msgNames = {
-      PROOF_REQUEST: 'request',
-      GET_STATUS: 'get-status'
-    }
+    this.msgNames.PROOF_REQUEST = 'request'
+    this.msgNames.GET_STATUS = 'get-status'
   }
 
   async requestMsg (context) {
@@ -25,7 +23,7 @@ module.exports = class PresentProof extends Protocol {
     msg['~for_relationship'] = this.forRelationship
     msg.name = this.name
     msg.proofAttrs = this.attributes
-    if(this.predicates) {
+    if (this.predicates) {
       msg.proofPredicates = this.predicates
     }
 

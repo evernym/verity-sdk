@@ -3,18 +3,18 @@ const utils = require('../utils')
 const Protocol = require('./Protocol')
 
 module.exports = class WriteSchema extends Protocol {
-  constructor (threadId = null, name, version, attrs) {
+  constructor (name, version, attrs, threadId = null) {
     const msgFamily = 'write-schema'
     const msgFamilyVersion = '0.6'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
     this.name = name
     this.version = version
-    this.attrs = attrs 
+    this.attrs = attrs
 
-    this.msgNames = {
-      WRITE_SCHEMA: 'write',
-    }
+    this.msgNames.WRITE_SCHEMA = 'write'
+    this.statuses = {}
+    this.statuses.WRITE_SUCCESSFUL = 0
   }
 
   async writeMsg (context) {
