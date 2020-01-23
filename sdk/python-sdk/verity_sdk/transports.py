@@ -7,7 +7,7 @@ def send_message(url: str, message: bytes):
             msg_endpoint(url),
             data=message,
             headers={'Content-Type': 'application/octet-stream'}
-        )
+        ).content
     except requests.RequestException as e:
         print('ERROR: Failed to POST message to {}'.format(url))
         raise e

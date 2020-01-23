@@ -1,10 +1,11 @@
 import json
+
 import pytest
 
+from test.test_utils import get_test_config, send_stub, cleanup
 from verity_sdk.protocols.IssueCredential import IssueCredential
 from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
-from test.test_utils import get_test_config, send_stub, cleanup
 
 for_relationship = 'some_did'
 name = 'degree'
@@ -18,7 +19,7 @@ price = '5'
 
 
 def test_init():
-    issue_credential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
+    issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
 
     assert issue_credential.for_relationship == for_relationship
     assert issue_credential.name == name
@@ -29,7 +30,7 @@ def test_init():
 @pytest.mark.asyncio
 async def test_offer_credential():
     context = await Context.create(await get_test_config())
-    issue_credential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
+    issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
     issue_credential.send = send_stub
     msg = await issue_credential.offer_credential(context)
     msg = await unpack_forward_message(context, msg)
@@ -57,7 +58,7 @@ async def test_offer_credential():
 @pytest.mark.asyncio
 async def test_issue_credential():
     context = await Context.create(await get_test_config())
-    issue_credential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
+    issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
     issue_credential.send = send_stub
     msg = await issue_credential.issue_credential(context)
     msg = await unpack_forward_message(context, msg)
@@ -79,7 +80,7 @@ async def test_issue_credential():
 @pytest.mark.asyncio
 async def test_status():
     context = await Context.create(await get_test_config())
-    issue_credential = IssueCredential(for_relationship, name, cred_def_id, credential_values, price)
+    issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
     issue_credential.send = send_stub
     msg = await issue_credential.status(context)
     msg = await unpack_forward_message(context, msg)

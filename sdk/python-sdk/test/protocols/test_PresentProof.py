@@ -1,9 +1,9 @@
 import pytest
 
+from test.test_utils import get_test_config, send_stub, cleanup
 from verity_sdk.protocols.PresentProof import PresentProof
 from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
-from test.test_utils import get_test_config, send_stub, cleanup
 
 for_relationship = 'some_did'
 name = 'Degree Verification'
@@ -18,7 +18,7 @@ revocation_interval = {'support_revocation': False}
 
 
 def test_init():
-    present_proof = PresentProof(for_relationship, name, proof_attrs, proof_predicates, revocation_interval)
+    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates, revocation_interval)
 
     assert present_proof.for_relationship == for_relationship
     assert present_proof.name == name
@@ -30,7 +30,7 @@ def test_init():
 @pytest.mark.asyncio
 async def test_request():
     context = await Context.create(await get_test_config())
-    present_proof = PresentProof(for_relationship, name, proof_attrs, proof_predicates, revocation_interval)
+    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates, revocation_interval)
     present_proof.send = send_stub
     msg = await present_proof.request(context)
     msg = await unpack_forward_message(context, msg)
@@ -56,7 +56,7 @@ async def test_request():
 @pytest.mark.asyncio
 async def test_status():
     context = await Context.create(await get_test_config())
-    present_proof = PresentProof(for_relationship, name, proof_attrs, proof_predicates, revocation_interval)
+    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates, revocation_interval)
     present_proof.send = send_stub
     msg = await present_proof.status(context)
     msg = await unpack_forward_message(context, msg)

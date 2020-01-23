@@ -1,8 +1,8 @@
 import copy
 
-from verity_sdk.utils import Context, get_message_type, pack_message_for_verity_direct, unpack_message
-from verity_sdk.transports import send_message
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.transports import send_message
+from verity_sdk.utils import Context, get_message_type, pack_message_for_verity_direct, unpack_message
 
 
 class Provision(Protocol):
@@ -41,7 +41,7 @@ class Provision(Protocol):
             context.verity_public_verkey
         )
 
-        resp_bytes = send_message(context.verity_url, msg).content
+        resp_bytes = send_message(context.verity_url, msg)
 
         resp = await unpack_message(context, resp_bytes)
         verity_pairwise_did: str = resp['withPairwiseDID']

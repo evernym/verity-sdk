@@ -1,9 +1,9 @@
 import pytest
 
+from test.test_utils import get_test_config, send_stub, cleanup
 from verity_sdk.protocols.QuestionAnswer import QuestionAnswer
 from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
-from test.test_utils import get_test_config, send_stub, cleanup
 
 for_relationship = 'some_did'
 question_text = 'Are you trying to login to acme.com?'
@@ -13,7 +13,7 @@ signature_required = True
 
 
 def test_init():
-    question_answer = QuestionAnswer(for_relationship, question_text, question_detail, valid_responses,
+    question_answer = QuestionAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                      signature_required)
 
     assert question_answer.for_relationship == for_relationship
@@ -26,7 +26,7 @@ def test_init():
 @pytest.mark.asyncio
 async def test_ask():
     context = await Context.create(await get_test_config())
-    question_answer = QuestionAnswer(for_relationship, question_text, question_detail, valid_responses,
+    question_answer = QuestionAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                      signature_required)
     question_answer.send = send_stub
     msg = await question_answer.ask(context)
@@ -53,7 +53,7 @@ async def test_ask():
 @pytest.mark.asyncio
 async def test_status():
     context = await Context.create(await get_test_config())
-    question_answer = QuestionAnswer(for_relationship, question_text, question_detail, valid_responses,
+    question_answer = QuestionAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                      signature_required)
     question_answer.send = send_stub
     msg = await question_answer.status(context)

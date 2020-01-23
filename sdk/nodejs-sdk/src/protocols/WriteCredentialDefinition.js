@@ -33,4 +33,3 @@ module.exports = class WriteCredentialDefinition extends Protocol {
     await this.sendMessage(context, await this.writeMsgPacked(context))
   }
 }
-

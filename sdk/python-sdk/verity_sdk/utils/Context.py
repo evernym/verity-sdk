@@ -37,16 +37,17 @@ class Context:
         context.sdk_pairwise_verkey = config.get('sdkPairwiseVerkey')
         context.endpoint_url = config.get('endpointUrl')
 
-        context.wallet_config = {'id': config['walletName']}
+        w_config = {'id': config['walletName']}
 
         if context.wallet_path:
-            context.wallet_config['storage_config'] = {'path': context.wallet_path}
+            w_config['storage_config'] = {'path': context.wallet_path}
 
-        context.wallet_credentials = {'key': config['walletKey']}
+        context.wallet_config = json.dumps(w_config)
+        context.wallet_credentials = json.dumps({'key': config['walletKey']})
 
         context.wallet_handle = await wallet.open_wallet(
-            json.dumps(context.wallet_config),
-            json.dumps(context.wallet_credentials)
+            context.wallet_config,
+            context.wallet_credentials
         )
         context.wallet_closed = False
 
