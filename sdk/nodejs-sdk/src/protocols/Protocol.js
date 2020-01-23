@@ -13,7 +13,7 @@ module.exports = class Protocol extends MessageFamily {
     }
 
     this.msgNames = {
-      STATUS: 'status',
+      STATUS: 'status-report',
       PROBLEM_REPORT: 'problem-report'
     }
   }

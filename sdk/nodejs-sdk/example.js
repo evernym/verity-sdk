@@ -2,9 +2,17 @@
 const express = require('express')
 const http = require('http')
 const bodyParser = require('body-parser')
+const readline = require('readline')
 const sdk = require('./src/index')
 
 const listeningPort = 4507
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
+
+let schemaId
 
 exampleFlow()
 
@@ -38,8 +46,12 @@ async function exampleFlow () {
   handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
     switch (msgName) {
       case issuerSetup.msgNames.PUBLIC_IDENTIFIER_CREATED:
-        console.log('IssuerSetup complete, writing test schema to ledger')
-        await writeTestSchema()
+        console.log(message.identifier)
+        rl.question('IssuerSetup complete. This key needs to be written to the ledger. Press enter when done.', async () => {
+          rl.close()
+          console.log('Asking Verity to write Schema to ledger...')
+          await writeTestSchema()
+        })
         break
       default:
         defaultHandler(msgName, message)
@@ -50,19 +62,25 @@ async function exampleFlow () {
 
   // WriteSchema Protocol
   async function writeTestSchema () {
-    const schemaVersion = `${sdk.utils.randInt(0, 1000)}.${sdk.utils.randInt(0, 1000)}.${sdk.utils.randInt(0, 1000)}`
+    const schemaVersion = `${sdk.utils.randInt(1000)}.${sdk.utils.randInt(1000)}.${sdk.utils.randInt(1000)}`
     const schemaAttrs = ['name', 'birthday']
     const writeSchema = new sdk.protocols.WriteSchema('testSchema', schemaVersion, schemaAttrs)
     if (!handlers.hasHandler(writeSchema.msgFamily, writeSchema.msgFamilyVersion)) {
       handlers.addHandler(writeSchema.msgFamily, writeSchema.msgFamilyVersion, async (msgName, message) => {
         switch (msgName) {
           case writeSchema.msgNames.STATUS:
-            if (message.status === writeSchema.statuses.WRITE_SUCCESSFUL) {
-              console.log('Schema written successfully to ledger')
+            if ('schemaId' in message) {
+              schemaId = message.schemaId
+              console.log(`Schema written successfully to ledger. SchemaId = "${schemaId}"`)
             }
+            break
+          default:
+            defaultHandler(msgName, message)
+            break
         }
       })
     }
+    await writeSchema.write(context)
   }
 
   // WriteCredentialDefinition Protocol
@@ -79,4 +97,8 @@ async function exampleFlow () {
 async function defaultHandler (msgName, message) {
   console.log('Unhandled message:')
   console.log(message)
+}
+
+async function writeVerkeyToLedger (did, verkey) {
+  const indy = require('indy-sdk')
 }
