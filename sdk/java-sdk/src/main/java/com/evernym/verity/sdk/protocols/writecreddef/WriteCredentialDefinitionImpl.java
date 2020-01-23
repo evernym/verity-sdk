@@ -90,7 +90,7 @@ public class WriteCredentialDefinitionImpl extends Protocol implements WriteCred
         message.put("name", this.name);
         message.put("schemaId", this.schemaId);
         if(this.tag != null) message.put("tag", this.tag);
-        if(this.revocationConfig != null) message.put("revocationDetails", this.revocationConfig);
+        if(this.revocationConfig != null) message.put("revocationDetails", this.revocationConfig.toJson());
         return message;
     }
 
