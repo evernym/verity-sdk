@@ -124,12 +124,29 @@ autorespond-docker-build-manual:
   extends: .autorespond-docker-build
   when: manual
 
-unit-tests-and-syntax:
+java-unit-tests-and-syntax:
   stage: test
   image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   extends: .tags-large
   script:
-    - ./devops/scripts/unit_tests_and_syntax.sh
+    - cd sdk/java-sdk/ && mvn pmd:check && mvn pmd:cpd-check && cd - # Java SDK linting
+    - cd sdk/java-sdk/ && mvn test && cd - # Java SDK unit tests
+
+python-unit-tests-and-syntax:
+  stage: test
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
+  extends: .tags-large
+  script:
+    - cd sdk/python-sdk/ && make lint && cd - # Python SDK linting
+    - cd sdk/python-sdk/ && pytest && cd - # Python SDK unit tests
+
+nodejs-unit-tests-and-syntax:
+  stage: test
+  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
+  extends: .tags-large
+  script:
+    - cd sdk/nodejs-sdk/ && npm install && npm run lint && cd - # Node.js linting
+    - cd sdk/nodejs-sdk/ && npm test && cd - # Node.js testing
 
 integration-tests:
   stage: test
