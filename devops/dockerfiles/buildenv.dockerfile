@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     openssh-client \
     git \
     plantuml \
-    python3-pip
+    python3-pip \
+    jq
 
 # Install Sovrin Dependencies
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
