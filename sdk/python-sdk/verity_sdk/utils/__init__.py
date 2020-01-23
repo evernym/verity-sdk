@@ -5,7 +5,8 @@ from indy import crypto
 
 from verity_sdk.utils import Context
 
-MESSAGE_TYPE_DID = 'did:sov:123456789abcdefghi1234'
+EVERNYM_MSG_QUALIFIER = 'did:sov:123456789abcdefghi1234'
+COMMUNITY_MSG_QUALIFIER = "did:sov:BzCbsNYhMrjHiqZDTUASHg"
 
 
 def prepare_forward_message(did: str, message: bytes) -> str:
@@ -101,8 +102,11 @@ def uuid() -> str:
     return str(uuid4())
 
 
-def get_message_type(msg_family: str, msg_family_version: str, msg_name: str) -> str:
-    return '{};spec/{}/{}/{}'.format(MESSAGE_TYPE_DID, msg_family, msg_family_version, msg_name)
+def get_message_type(msg_family: str,
+                     msg_family_version: str,
+                     msg_name: str,
+                     msg_qualifier=EVERNYM_MSG_QUALIFIER) -> str:
+    return '{};spec/{}/{}/{}'.format(msg_qualifier, msg_family, msg_family_version, msg_name)
 
 
 def get_problem_report_message_type(msg_family: str, msg_family_version: str) -> str:

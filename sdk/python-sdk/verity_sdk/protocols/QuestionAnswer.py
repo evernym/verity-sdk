@@ -24,10 +24,12 @@ class QuestionAnswer(Protocol):
 
     def __init__(self,
                  for_relationship: str,
-                 question_text: str,
-                 question_detail: str,
-                 valid_responses: List[str],
+                 thread_id: str = None,
+                 question_text: str = None,
+                 question_detail: str = None,
+                 valid_responses: List[str] = None,
                  signature_required: bool = True):
+        super().__init__(thread_id=thread_id)
         self.for_relationship = for_relationship
         self.question_text = question_text
         self.question_detail = question_detail
@@ -61,14 +63,6 @@ class QuestionAnswer(Protocol):
     @staticmethod
     def get_message_type(msg_name: str) -> str:
         return get_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION, msg_name)
-
-    @staticmethod
-    def get_problem_report_message_type() -> str:
-        return get_problem_report_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION)
-
-    @staticmethod
-    def get_status_message_type() -> str:
-        return get_status_message_type(QuestionAnswer.MSG_FAMILY, QuestionAnswer.MSG_FAMILY_VERSION)
 
     async def ask(self, context: Context) -> bytes:
         return await self.send(context, self.messages[self.ASK_QUESTION])

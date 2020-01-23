@@ -1,7 +1,8 @@
 from typing import List
 
-from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import Context, get_message_type, get_status_message_type, \
+    COMMUNITY_MSG_QUALIFIER
 
 
 class CommittedAnswer(Protocol):
@@ -24,10 +25,12 @@ class CommittedAnswer(Protocol):
 
     def __init__(self,
                  for_relationship: str,
-                 question_text: str,
-                 question_detail: str,
-                 valid_responses: List[str],
+                 thread_id: str = None,
+                 question_text: str = None,
+                 question_detail: str = None,
+                 valid_responses: List[str] = None,
                  signature_required: bool = True):
+        super().__init__(thread_id=thread_id)
         self.for_relationship = for_relationship
         self.question_text = question_text
         self.question_detail = question_detail
@@ -58,15 +61,12 @@ class CommittedAnswer(Protocol):
 
     @staticmethod
     def get_message_type(msg_name: str) -> str:
-        return get_message_type(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION, msg_name)
-
-    @staticmethod
-    def get_problem_report_message_type() -> str:
-        return get_problem_report_message_type(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION)
-
-    @staticmethod
-    def get_status_message_type() -> str:
-        return get_status_message_type(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION)
+        return get_message_type(
+            CommittedAnswer.MSG_FAMILY,
+            CommittedAnswer.MSG_FAMILY_VERSION,
+            msg_name,
+            COMMUNITY_MSG_QUALIFIER
+        )
 
     async def ask(self, context: Context) -> bytes:
         return await self.send(context, self.messages[self.ASK_QUESTION])

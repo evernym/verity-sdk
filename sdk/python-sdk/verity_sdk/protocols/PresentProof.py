@@ -1,6 +1,7 @@
 from typing import List
-from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
+
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import Context, get_message_type, get_status_message_type
 
 
 class PresentProof(Protocol):
@@ -23,10 +24,12 @@ class PresentProof(Protocol):
 
     def __init__(self,
                  for_relationship: str,
-                 name: str,
-                 proof_attrs: List[dict],
+                 thread_id: str = None,
+                 name: str = None,
+                 proof_attrs: List[dict] = None,
                  proof_predicates: List[dict] = None,
                  revocation_interval: dict = None):
+        super().__init__(thread_id=thread_id)
         self.for_relationship = for_relationship
         self.name = name
         self.proof_attrs = proof_attrs
@@ -57,10 +60,6 @@ class PresentProof(Protocol):
     @staticmethod
     def get_message_type(msg_name: str) -> str:
         return get_message_type(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION, msg_name)
-
-    @staticmethod
-    def get_problem_report_message_type() -> str:
-        return get_problem_report_message_type(PresentProof.MSG_FAMILY, PresentProof.MSG_FAMILY_VERSION)
 
     @staticmethod
     def get_status_message_type() -> str:
