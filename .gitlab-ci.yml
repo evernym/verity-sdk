@@ -70,7 +70,7 @@ stages:
   variables:
     DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/buildenv.dockerfile'
     DOCKER_IMAGE_NAME: 'buildenv'
-    DOCKER_CONTEXT: '$CI_PROJECT_DIR'
+    DOCKER_CONTEXT: '$CI_PROJECT_DIR/devops'
     DOCKER_PREP_COMMAND: 'echo none'
 
 buildenv-docker-build:
