@@ -3,7 +3,7 @@ const utils = require('../utils')
 const Protocol = require('./Protocol')
 
 module.exports = class WriteCredentialDefinition extends Protocol {
-  constructor (threadId = null, name, schemaId, tag = null, revocation = null) {
+  constructor (name, schemaId, tag = null, revocation = null, threadId = null) {
     const msgFamily = 'write-cred-def'
     const msgFamilyVersion = '0.6'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
