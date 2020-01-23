@@ -224,7 +224,7 @@ upload_to_npm:
   script:
     - cd sdk/nodejs-sdk/
     - npm pack
-    - npn run deploy
+    - npm run deploy
   only:
     refs:
       - nodejs-sdk@dev/verity/verity-sdk
