@@ -23,7 +23,7 @@ describe('utils', () => {
       const bytes = await utils.packMessageForVerity(context, message)
       expect(bytes)
       context.deleteWallet()
-    })
+    }).timeout(5000)
 
     it('should be able to pack and unpack messages', async () => {
       const message = { some: 'message' }
@@ -31,7 +31,7 @@ describe('utils', () => {
       const bytes = await utils.packMessage(context.walletHandle, message, context.verityPairwiseDID, context.verityPairwiseVerkey, context.sdkPairwiseVerkey, context.verityPublicVerkey)
       expect((await utils.unpackForwardMessage(context, bytes)).message).to.deep.equal(message)
       context.deleteWallet()
-    })
+    }).timeout(5000)
 
     it('should be able to pack and unpack messages for verity', async () => {
       const message = { some: 'message' }
@@ -40,6 +40,6 @@ describe('utils', () => {
       const wrappedMessage = await utils.unpackForwardMessage(context, forwardMessage)
       expect(wrappedMessage.message).to.deep.equal(message)
       context.deleteWallet()
-    })
+    }).timeout(5000)
   })
 })
