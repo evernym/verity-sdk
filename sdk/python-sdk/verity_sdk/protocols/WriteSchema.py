@@ -20,6 +20,7 @@ class WriteSchema(Protocol):
     attrs: List[str]
 
     def __init__(self, name: str, version: str, *attrs: str):
+        super().__init__()
         self.name = name
         self.version = version
         self.attrs = list(attrs)

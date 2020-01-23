@@ -19,6 +19,7 @@ class WriteCredentialDefinition(Protocol):
     revocation_details: dict
 
     def __init__(self, name: str, schema_id: str, tag: str = None, revocation_details: dict = None):
+        super().__init__()
         self.name = name
         self.schema_id = schema_id
         self.tag = tag

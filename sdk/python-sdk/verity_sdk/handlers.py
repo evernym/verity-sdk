@@ -7,7 +7,7 @@ def is_problem_report(message_type: str) -> bool:
     return message_type.split('/')[3] == 'problem-report'
 
 
-class Handler():
+class Handler:
     message_type: str
     message_status: Optional[int]
     message_handler: Callable[[dict], Coroutine[Any, Any, None]]
@@ -33,7 +33,7 @@ class Handler():
         await self.message_handler(message)
 
 
-class Handlers():
+class Handlers:
     handlers: List[Handler]
     default_handler: Callable[[dict], Coroutine[Any, Any, None]]
     problem_report_handler: Callable[[dict], Coroutine[Any, Any, None]]
@@ -71,7 +71,7 @@ class Handlers():
 
 
 # Enables handler registration decorator @AddHandler(handlers, message_type, message_status)
-class AddHandler():
+class AddHandler:
 
     def __init__(self, handlers: Handlers, message_type: str, message_status: int = None):
         self.handlers = handlers

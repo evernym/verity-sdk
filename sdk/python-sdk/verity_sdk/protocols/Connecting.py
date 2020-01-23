@@ -19,6 +19,7 @@ class Connecting(Protocol):
     include_public_did: bool
 
     def __init__(self, source_id: str, phone_number: str = None, include_public_did: bool = False):
+        super().__init__()
         self.source_id = source_id
         self.phone_number = phone_number
         self.include_public_did = include_public_did
