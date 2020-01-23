@@ -148,18 +148,6 @@ nodejs-unit-tests-and-syntax:
     - cd sdk/nodejs-sdk/ && npm install && npm run lint && cd - # Node.js linting
     - cd sdk/nodejs-sdk/ && npm test && cd - # Node.js testing
 
-integration-tests:
-  stage: test
-  image: docker:latest
-  tags:
-    - spencer-laptop # TODO: We either need to have a privileged runner in gitlab or rewrite the integration tests using services and figure out DNS resolution from service to container.
-  services:
-    - docker:dind
-  when: manual
-  script:
-    - sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose # Move to image
-    - cd integration-tests && ./test.sh
-
 make_jar:
   stage: build
   image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
