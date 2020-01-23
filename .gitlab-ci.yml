@@ -223,7 +223,7 @@ upload_to_npm:
   extends: .tags
   script:
     - cd sdk/nodejs-sdk/
-    - npm pack
+    - npm run package
     - npm run deploy
   only:
     refs:
