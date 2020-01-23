@@ -12,8 +12,6 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
-let schemaId
-
 exampleFlow()
 
 async function exampleFlow () {
@@ -70,8 +68,9 @@ async function exampleFlow () {
         switch (msgName) {
           case writeSchema.msgNames.STATUS:
             if ('schemaId' in message) {
-              schemaId = message.schemaId
-              console.log(`Schema written successfully to ledger. SchemaId = "${schemaId}"`)
+              const schemaId = message.schemaId
+              console.log(`Schema successfully written to ledger. SchemaId = "${schemaId}"`)
+              await writeTestCredDef(schemaId)
             }
             break
           default:
@@ -84,6 +83,23 @@ async function exampleFlow () {
   }
 
   // WriteCredentialDefinition Protocol
+  async function writeTestCredDef (schemaId) {
+    const writeCredDef = new sdk.protocols.WriteCredentialDefinition('testCredDef', schemaId)
+    if (!handlers.hasHandler(writeCredDef.msgFamily, writeCredDef.msgFamilyVersion)) {
+      handlers.addHandler(writeCredDef.msgFamily, writeCredDef.msgFamilyVersion, async (msgName, message) => {
+        switch (msgName) {
+          case writeCredDef.msgNames.STATUS:
+            console.log('Credential Definition successfully written to ledger. Message = ')
+            console.log(message)
+            break
+          default:
+            defaultHandler(msgName, message)
+            break
+        }
+      })
+    }
+    await writeCredDef.write(context)
+  }
 
   // Connecting Protocol
 
@@ -97,8 +113,4 @@ async function exampleFlow () {
 async function defaultHandler (msgName, message) {
   console.log('Unhandled message:')
   console.log(message)
-}
-
-async function writeVerkeyToLedger (did, verkey) {
-  const indy = require('indy-sdk')
 }
