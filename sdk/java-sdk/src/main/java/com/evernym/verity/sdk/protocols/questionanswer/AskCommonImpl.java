@@ -4,6 +4,7 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -63,7 +64,7 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
         msg.put("~for_relationship", this.forRelationship);
         msg.put("text", this.questionText);
         msg.put("detail", this.questionDetail);
-        msg.put("valid_responses", this.validResponses);
+        msg.put("valid_responses", new JSONArray(this.validResponses));
         msg.put("signature_required", this.signatureRequired);
         return msg;
     }
@@ -77,7 +78,7 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
         send(context, answerMsg(context));
     }
 
-    public JSONObject answerMsg(Context context) throws VerityException {
+    public JSONObject answerMsg(Context context) {
         JSONObject msg = new JSONObject();
         msg.put("@type", getMessageType(ANSWER_QUESTION));
         msg.put("@id", getNewId());
@@ -95,7 +96,7 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
         send(context, statusMsg(context));
     }
 
-    public JSONObject statusMsg(Context context) throws VerityException {
+    public JSONObject statusMsg(Context context) {
         JSONObject msg = new JSONObject();
         msg.put("@type", getMessageType(GET_STATUS));
         msg.put("@id", getNewId());

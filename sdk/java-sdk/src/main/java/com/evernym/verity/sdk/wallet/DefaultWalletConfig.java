@@ -31,7 +31,7 @@ public class DefaultWalletConfig implements WalletConfig {
     public String config() {
         JSONObject rtn = new JSONObject();
         rtn.put("id", this.id);
-        if (path != null) {
+        if (path != null && !path.trim().equals("")) {
             JSONObject storageOptions = new JSONObject();
             storageOptions.put("path", path);
             rtn.put("storage_config", storageOptions);

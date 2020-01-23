@@ -29,6 +29,18 @@ public class ContextBuilder {
         return scratchContext(walletConfig, verityUrl);
     }
 
+    public static ContextBuilder fromJson(String json) {
+        return new ContextBuilder().json(json);
+    }
+
+    public static ContextBuilder fromJson(JSONObject json) {
+        return new ContextBuilder().json(json);
+    }
+
+    public static ContextBuilder blank() {
+        return new ContextBuilder();
+    }
+
     protected static Context scratchContext(WalletConfig wallet, String verityUrl)
             throws WalletException, IOException {
 
@@ -68,7 +80,7 @@ public class ContextBuilder {
     private final String sdkPairwiseVerkey = "sdkPairwiseVerkey";
     private final String endpointUrl = "endpointUrl";
 
-    public ContextBuilder() {}
+    private ContextBuilder() {}
 
     private ContextBuilder putElement(String key, String val) {
         elements.put(key, val);
@@ -82,11 +94,11 @@ public class ContextBuilder {
         else return this;
     }
 
-    public ContextBuilder fromJson(JSONObject json){
+    public ContextBuilder json(JSONObject json){
         WalletConfig w = DefaultWalletConfig.build(
-                json.optString("walletName"),
-                json.optString("walletKey"),
-                json.optString("walletPath")
+                json.getString("walletName"),
+                json.getString("walletKey"),
+                json.optString("walletPath", null)
         );
         this.walletConfig(w);
         putElementIgnoreNull(verityUrl, json.optString(verityUrl));
@@ -101,7 +113,7 @@ public class ContextBuilder {
         return this;
     }
 
-    public ContextBuilder fromJson(String json) {fromJson(new JSONObject(json)); return this;}
+    public ContextBuilder json(String json) {fromJson(new JSONObject(json)); return this;}
 
     public ContextBuilder walletConfig(WalletConfig config) {walletConfig = config; return this;}
     public ContextBuilder verityUrl(String val) {return putElement(verityUrl, val);}

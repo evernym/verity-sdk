@@ -100,7 +100,7 @@ public final class Context implements AsJsonObject{
     /**
      * Closes the wallet handle stored inside the Context object.
      *
-     * @throws WalletCloseException
+     * @throws WalletCloseException when failing to close the wallet
      */
     public void closeWallet() throws WalletCloseException {
         walletClosedFlag = true;
@@ -169,7 +169,7 @@ public final class Context implements AsJsonObject{
     }
 
     public ContextBuilder toContextBuilder() {
-        ContextBuilder rtn = new ContextBuilder();
+        ContextBuilder rtn = ContextBuilder.blank();
         if(walletConfig != null) rtn.walletConfig(walletConfig);
         if(verityUrl != null) rtn.verityUrl(verityUrl);
         if(verityPublicDID != null) rtn.verityPublicDID(verityPublicDID);

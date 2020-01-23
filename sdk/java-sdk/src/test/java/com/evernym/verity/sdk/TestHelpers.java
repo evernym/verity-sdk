@@ -18,7 +18,8 @@ public class TestHelpers {
         String verityUrl = "http://localhost:3000";
 
         TestWallet testWallet = new TestWallet(walletName, walletKey);
-        return new ContextBuilder()
+        return ContextBuilder
+                .blank()
                 .walletConfig(testWallet)
                 .verityUrl(verityUrl)
                 .verityPublicDID(testWallet.getVerityPublicVerkey())

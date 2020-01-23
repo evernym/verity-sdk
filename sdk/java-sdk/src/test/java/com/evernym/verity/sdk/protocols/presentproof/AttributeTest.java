@@ -19,7 +19,7 @@ public class AttributeTest {
     }
 
     @Test public void oneRestrictionTest() {
-        Restriction r = RestrictionBuilder.start()
+        Restriction r = RestrictionBuilder.blank()
                 .credDefId("SDFSDF")
                 .build();
         Attribute a = new Attribute("test", r);

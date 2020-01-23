@@ -8,7 +8,7 @@ public class RestrictionTest {
 
     @Test
     public void buildTest() {
-        Restriction test = RestrictionBuilder.start()
+        Restriction test = RestrictionBuilder.blank()
                 .schemaId("ASDFASDF")
                 .build();
 

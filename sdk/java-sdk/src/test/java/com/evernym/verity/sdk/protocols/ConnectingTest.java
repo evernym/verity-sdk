@@ -8,8 +8,6 @@ import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static org.junit.Assert.*;
 
 public class ConnectingTest {
@@ -33,7 +31,7 @@ public class ConnectingTest {
     }
 
     @Test
-    public void testConstructorWithSourceId() throws VerityException, IOException {
+    public void testConstructorWithSourceId() throws VerityException {
         Connecting connecting = Connecting.newConnection(sourceId);
         assertEquals(sourceId, connecting.sourceId());
         assertNull(connecting.phoneNumber());
@@ -42,7 +40,7 @@ public class ConnectingTest {
     }
 
     @Test
-    public void testConstructorWithSourceIdAndUsePublicDid() throws VerityException, IOException {
+    public void testConstructorWithSourceIdAndUsePublicDid() throws VerityException {
         Connecting connecting = Connecting.newConnection(sourceId, includePublicDID);
         assertEquals(sourceId, connecting.sourceId());
         assertNull(connecting.phoneNumber());
@@ -51,7 +49,7 @@ public class ConnectingTest {
     }
 
     @Test
-    public void testConstructorWithSourceIdAndPhoneNumber() throws VerityException, IOException {
+    public void testConstructorWithSourceIdAndPhoneNumber() throws VerityException {
         Connecting connecting = Connecting.newConnection(sourceId, phoneNumber);
         assertEquals(sourceId, connecting.sourceId());
         assertEquals(phoneNumber, connecting.phoneNumber());
@@ -60,7 +58,7 @@ public class ConnectingTest {
     }
 
     @Test
-    public void testFullConstructor() throws VerityException, IOException {
+    public void testFullConstructor() throws VerityException {
         Connecting connecting = Connecting.newConnection(sourceId, phoneNumber, includePublicDID);
         assertEquals(phoneNumber, connecting.phoneNumber());
         assertEquals(includePublicDID, connecting.includePublicDID());
@@ -77,8 +75,7 @@ public class ConnectingTest {
             JSONObject expectedMessage = connecting.connectMsg(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
 
-            // Not ideal for comparing JSON objects but JSONObject don't provide a better way
-            assertEquals(expectedMessage.toString(), unpackedMessage.toString());
+            TestUtil.assertJsonObjectEqual(expectedMessage, unpackedMessage);
         } catch(Exception e) {
             e.printStackTrace();
             fail();
@@ -96,10 +93,9 @@ public class ConnectingTest {
 
             byte [] statusMsg = connecting.statusMsgPacked(context);
             JSONObject expectedMessage = connecting.statusMsg(context);
-            JSONObject unpackedStatusMessage = Util.unpackForwardMessage(context, statusMsg);
+            JSONObject unpackedMessage = Util.unpackForwardMessage(context, statusMsg);
 
-            // Not ideal for comparing JSON objects but JSONObject don't provide a better way
-            assertEquals(expectedMessage.toString(), unpackedStatusMessage.toString());
+            TestUtil.assertJsonObjectEqual(expectedMessage, unpackedMessage);
         } catch(Exception e) {
             e.printStackTrace();
             fail();
@@ -108,7 +104,7 @@ public class ConnectingTest {
         }
     }
 
-    private void testMessages(Connecting connecting) throws VerityException, IOException {
+    private void testMessages(Connecting connecting) throws VerityException {
         Context context = TestHelpers.getContext();
         JSONObject msg = connecting.connectMsg(context);
         assertEquals(Util.getMessageType(connecting, Connecting.CREATE_CONNECTION), msg.getString("@type"));

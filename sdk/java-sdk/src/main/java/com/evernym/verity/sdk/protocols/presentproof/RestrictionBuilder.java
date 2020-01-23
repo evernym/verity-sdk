@@ -3,7 +3,7 @@ package com.evernym.verity.sdk.protocols.presentproof;
 import org.json.JSONObject;
 
 public class RestrictionBuilder {
-    public static RestrictionBuilder start() {
+    public static RestrictionBuilder blank() {
         return new RestrictionBuilder();
     }
 

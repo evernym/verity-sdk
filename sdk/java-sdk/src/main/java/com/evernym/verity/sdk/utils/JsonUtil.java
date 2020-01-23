@@ -9,7 +9,9 @@ public class JsonUtil {
         JSONArray rtn = new JSONArray();
         if(restrictions != null) {
             for(AsJsonObject i: restrictions) {
-                rtn.put(i.toJson());
+                if(i != null) {
+                    rtn.put(i.toJson());
+                }
             }
         }
         return rtn;

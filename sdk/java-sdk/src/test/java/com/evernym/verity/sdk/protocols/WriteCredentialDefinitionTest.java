@@ -1,99 +1,93 @@
-//package com.evernym.verity.sdk.protocols;
-//
-//import com.evernym.verity.sdk.TestHelpers;
-//import com.evernym.verity.sdk.utils.Context;
-//import com.evernym.verity.sdk.utils.Util;
-//import org.json.JSONObject;
-//import org.junit.Test;
-//
-//import static org.junit.Assert.*;
-//
-//public class WriteCredentialDefinitionTest {
-//
-//    private String name = "cred def name";
-//    private String schemaId = "...someSchemaId...";
-//    private String tag = "latest";
-//    private JSONObject revocationDetails = new JSONObject();
-//
-//    public WriteCredentialDefinitionTest() {
-//        revocationDetails.put("support_revocation", false);
-//    }
-//
-//    @Test
-//    public void testGetMessageType() {
-//        WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId, tag, revocationDetails);
-//        String msgName = "msg name";
-//        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "write-cred-def", "0.6", msgName), WriteCredentialDefinition.getMessageType(msgName));
-//    }
-//
-//    @Test
-//    public void testConstructorWithNameAndSchemaId() {
-//        WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId);
-//        assertEquals(name, writeCredDef.name);
-//        assertEquals(schemaId, writeCredDef.schemaId);
-//        assertNull(writeCredDef.tag);
-//        assertNull(writeCredDef.revocationDetails);
-//        testMessages(writeCredDef);
-//    }
-//
-//    @Test
-//    public void testConstructorWithNameAndSchemaIdAndTag() {
-//        WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId, tag);
-//        assertEquals(name, writeCredDef.name);
-//        assertEquals(schemaId, writeCredDef.schemaId);
-//        assertEquals(tag, writeCredDef.tag);
-//        assertNull(writeCredDef.revocationDetails);
-//        testMessages(writeCredDef);
-//    }
-//
-//    @Test
-//    public void testConstructorWithNameAndSchemaIdAndRevDetails() {
-//        WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId, revocationDetails);
-//        assertEquals(name, writeCredDef.name);
-//        assertEquals(schemaId, writeCredDef.schemaId);
-//        assertNull(writeCredDef.tag);
-//        assertEquals(revocationDetails.toString(), writeCredDef.revocationDetails.toString());
-//        testMessages(writeCredDef);
-//    }
-//
-//
-//    @Test
-//    public void testFullConstructor() {
-//        WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId, tag, revocationDetails);
-//        assertEquals(name, writeCredDef.name);
-//        assertEquals(schemaId, writeCredDef.schemaId);
-//        assertEquals(tag, writeCredDef.tag);
-//        assertEquals(revocationDetails.toString(), writeCredDef.revocationDetails.toString());
-//        testMessages(writeCredDef);
-//    }
-//
-//    private void testMessages(WriteCredentialDefinition writeCredDef) {
-//        JSONObject msg = writeCredDef.messages.getJSONObject(WriteCredentialDefinition.WRITE_CRED_DEF);
-//        assertEquals(WriteCredentialDefinition.getMessageType("write"), msg.getString("@type"));
-//        assertNotNull(msg.getString("@id"));
-//        assertEquals(name, msg.getString("name"));
-//        assertEquals(schemaId, msg.getString("schemaId"));
-//        if(writeCredDef.tag != null)
-//            assertEquals(tag, msg.getString("tag"));
-//        if(writeCredDef.revocationDetails != null)
-//            assertEquals(revocationDetails.toString(), msg.getJSONObject("revocationDetails").toString());
-//    }
-//
-//    @Test
-//    public void testWrite() throws Exception {
-//        Context context = null;
-//        try {
-//            context = TestHelpers.getContext();
-//            WriteCredentialDefinition writeCredDef = new WriteCredentialDefinition(name, schemaId, tag, revocationDetails);
-//            writeCredDef.disableHTTPSend();
-//            byte[] message = writeCredDef.write(context);
-//            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-//            assertEquals(WriteCredentialDefinition.getMessageType(WriteCredentialDefinition.WRITE_CRED_DEF), unpackedMessage.getString("@type"));
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//            fail();
-//        } finally {
-//            TestHelpers.cleanup(context);
-//        }
-//    }
-//}
+package com.evernym.verity.sdk.protocols;
+
+import com.evernym.verity.sdk.TestHelpers;
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.writecreddef.RevocationRegistryConfig;
+import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
+import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.Util;
+import org.json.JSONObject;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class WriteCredentialDefinitionTest {
+
+    private String name = "cred def name";
+    private String schemaId = "...someSchemaId...";
+    private String tag = "latest";
+    private RevocationRegistryConfig revocationDetails = WriteCredentialDefinition.disabledRegistryConfig();
+
+    @Test
+    public void testGetMessageType() {
+        WriteCredentialDefinition writeCredDef = WriteCredentialDefinition.v0_6(name, schemaId, tag, revocationDetails);
+        String msgName = "msg name";
+        assertEquals(
+                Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, writeCredDef.family(), writeCredDef.version(), msgName),
+                writeCredDef.getMessageType(msgName)
+        );
+    }
+
+    @Test
+    public void testConstructorWithNameAndSchemaId() throws WalletException, UndefinedContextException {
+        Context context = TestHelpers.getContext();
+        WriteCredentialDefinition testProtocol = WriteCredentialDefinition.v0_6(name, schemaId);
+        JSONObject msg = testProtocol.writeMsg(context);
+        assertEquals(name, msg.getString("name"));
+        assertEquals(schemaId, msg.getString("schemaId"));
+        assertNull(msg.opt("tag"));
+        assertNull(msg.opt("revocationDetails"));
+    }
+
+    @Test
+    public void testConstructorWithNameAndSchemaIdAndTag() throws UndefinedContextException, WalletException {
+        Context context = TestHelpers.getContext();
+        WriteCredentialDefinition testProtocol = WriteCredentialDefinition.v0_6(name, schemaId, tag);
+        JSONObject msg = testProtocol.writeMsg(context);
+        assertEquals(name, msg.getString("name"));
+        assertEquals(schemaId, msg.getString("schemaId"));
+        assertEquals(tag, msg.getString("tag"));
+        assertNull(msg.opt("revocationDetails"));
+    }
+
+    @Test
+    public void testConstructorWithNameAndSchemaIdAndRevDetails() throws UndefinedContextException, WalletException {
+        Context context = TestHelpers.getContext();
+        WriteCredentialDefinition testProtocol = WriteCredentialDefinition.v0_6(name, schemaId, revocationDetails);
+        JSONObject msg = testProtocol.writeMsg(context);
+        assertEquals(name, msg.getString("name"));
+        assertEquals(schemaId, msg.getString("schemaId"));
+        assertNull(msg.opt("tag"));
+        assertNotNull(msg.get("revocationDetails"));
+    }
+
+
+    @Test
+    public void testFullConstructor() throws UndefinedContextException, WalletException {
+        Context context = TestHelpers.getContext();
+        WriteCredentialDefinition testProtocol = WriteCredentialDefinition.v0_6(name, schemaId, tag, revocationDetails);
+        JSONObject msg = testProtocol.writeMsg(context);
+        assertEquals(name, msg.getString("name"));
+        assertEquals(schemaId, msg.getString("schemaId"));
+        assertEquals(tag, msg.getString("tag"));
+        assertNotNull(msg.get("revocationDetails"));
+    }
+
+    @Test
+    public void testWrite() throws Exception {
+        Context context = null;
+        try {
+            context = TestHelpers.getContext();
+            WriteCredentialDefinition testProtocol = WriteCredentialDefinition.v0_6(name, schemaId, tag, revocationDetails);
+            byte[] message = testProtocol.writeMsgPacked(context);
+            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            assertEquals("did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/write", unpackedMessage.getString("@type"));
+        } catch(Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+            TestHelpers.cleanup(context);
+        }
+    }
+}
