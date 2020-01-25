@@ -1,3 +1,8 @@
+REPO=https://kraken.corp.evernym.com
+VERSION=$(shell python3 verity_sdk/version.py)
+FILE="dist/verity-sdk-${VERSION}.tar.gz"
+FILENAME="verity-sdk_${VERSION}.tar.gz"
+
 pytest:
 	pytest --workers auto
 
@@ -9,4 +14,4 @@ build-artifacts:
 
 upload:
 	make build-artifacts
-	python3 -m twine upload dist/*
+	curl -u ${KRAKEN_CREDENTIALS} -X POST -F "file=@${FILE};filename=${FILENAME}" "${REPO}/repo/python/upload"

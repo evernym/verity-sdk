@@ -113,7 +113,7 @@ public class ContextBuilder {
         return this;
     }
 
-    public ContextBuilder json(String json) {fromJson(new JSONObject(json)); return this;}
+    public ContextBuilder json(String json) {return json(new JSONObject(json));}
 
     public ContextBuilder walletConfig(WalletConfig config) {walletConfig = config; return this;}
     public ContextBuilder verityUrl(String val) {return putElement(verityUrl, val);}
