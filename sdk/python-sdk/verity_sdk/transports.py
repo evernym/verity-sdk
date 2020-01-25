@@ -14,4 +14,4 @@ def send_message(url: str, message: bytes):
 
 
 def msg_endpoint(url: str) -> str:
-    return url + "/agency/msg"
+    return url + '/agency/msg'

@@ -26,7 +26,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get install -y nodejs
 
 # Install python dependencies
-RUN python3 -m pip install requests==2.21.0 python3-indy==1.9.0 python3-wrapper-vcx==0.3.0 pylint==2.3.1 pylint-quotes==0.2.1 aiohttp==3.5.4 pytest-mock==1.11.2 twine
+RUN python3 -m pip install requests==2.21.0 python3-indy==1.10.1 pylint==2.3.1 pylint-quotes==0.2.1 aiohttp==3.5.4 pytest-mock==1.11.2 twine
 
 # Set JAVA_HOME
 ENV JAVA_HOME /usr/lib/jvm/java-1.11.0-openjdk-amd64/
