@@ -6,7 +6,7 @@ from indy import crypto
 from verity_sdk.utils import Context
 
 EVERNYM_MSG_QUALIFIER = 'did:sov:123456789abcdefghi1234'
-COMMUNITY_MSG_QUALIFIER = "did:sov:BzCbsNYhMrjHiqZDTUASHg"
+COMMUNITY_MSG_QUALIFIER = 'did:sov:BzCbsNYhMrjHiqZDTUASHg'
 
 
 def prepare_forward_message(did: str, message: bytes) -> str:

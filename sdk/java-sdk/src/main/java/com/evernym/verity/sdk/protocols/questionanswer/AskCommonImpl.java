@@ -49,6 +49,7 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
 
     public AskCommonImpl(String forRelationship, String threadId, String answer) {
         super(threadId);
+        this.forRelationship = forRelationship;
         this.answer = answer;
     }
 

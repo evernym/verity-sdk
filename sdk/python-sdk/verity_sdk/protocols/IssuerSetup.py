@@ -8,7 +8,7 @@ class IssuerSetup(Protocol):
 
     # Messages
     CREATE = 'create'
-    CURRENT_PUBLIC_IDENTIFIER = "current-public-identifier"
+    CURRENT_PUBLIC_IDENTIFIER = 'current-public-identifier'
 
     def __init__(self):
         super().__init__()

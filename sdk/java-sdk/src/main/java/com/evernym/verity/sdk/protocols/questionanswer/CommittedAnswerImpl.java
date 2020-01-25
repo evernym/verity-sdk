@@ -1,11 +1,5 @@
 package com.evernym.verity.sdk.protocols.questionanswer;
 
-import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.utils.Context;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
 /**
  * Builds and sends a new encrypted agent message for the Question protocol.
  */

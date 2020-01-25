@@ -37,10 +37,10 @@ public class WalletUtil {
         }
         catch (WalletExistsException ignored) {} // This is ok, we want to only create if wallet don't exist
         catch (IndyException | InterruptedException | ExecutionException e) {
-            if(e.getCause() != null && e.getCause() instanceof WalletExistsException) {}  // This is ok, we want to only create if wallet don't exist
-            else {
+            if( !(e.getCause() != null && e.getCause() instanceof WalletExistsException)) {
                 throw new WalletException("Unable to try-create wallet", e);
             }
+            // This is ok, we want to only create if wallet don't exist
         }
     }
 }
