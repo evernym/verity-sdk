@@ -15,7 +15,9 @@ const rl = readline.createInterface({
 exampleFlow()
 
 async function exampleFlow () {
-  let context = await sdk.Context.create(sdk.utils.miniId(), '12345', 'http://vas-team1.pdev.evernym.com', 'http://localhost:' + listeningPort)
+  const verityUrl = 'http://vas-team1.pdev.evernym.com'
+  // const verityUrl = 'http://localhost:4002'
+  let context = await sdk.Context.create(sdk.utils.miniId(), '12345', verityUrl, 'http://localhost:' + listeningPort)
   const handlers = new sdk.Handlers()
   handlers.setDefaultHandler(defaultHandler)
 
