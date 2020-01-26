@@ -14,4 +14,4 @@ build-artifacts:
 
 upload:
 	make build-artifacts
-	curl -u ${KRAKEN_CREDENTIALS} -X POST -F "file=@${FILE};filename=${FILENAME}" "${REPO}/repo/python/upload"
+	curl -u $${KRAKEN_CREDENTIALS} -X POST -F "file=@${FILE};filename=${FILENAME}" "${REPO}/repo/python/upload"
