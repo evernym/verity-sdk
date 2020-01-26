@@ -15,11 +15,6 @@ class SomeProtocol extends Protocol {
   SomeProtocol() {
     super();
   }
-
-  @Override
-  protected void defineMessages() {
-
-  }
 }
 
 public class ProtocolTest {
@@ -28,7 +23,7 @@ public class ProtocolTest {
   public void testGetMessage() throws Exception {
     JSONObject message = new JSONObject("{\"hello\": \"world\"}");
     Context context = TestHelpers.getContext();
-    byte[] packedMessage = Protocol.getMessage(context, message);
+    byte[] packedMessage = Protocol.packMsg(context, message);
     JSONObject unpackedMessage = Util.unpackForwardMessage(context, packedMessage);
     assertEquals(unpackedMessage.getString("hello"), "world");
 

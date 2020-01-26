@@ -1,6 +1,8 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
+import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -18,33 +20,38 @@ public class CommittedAnswerTest {
 
     @Test
     public void testGetMessageType() {
-        CommittedAnswer questionAnswer = new CommittedAnswer(forRelationship, questionText, questionDetail, validResponses);
+        CommittedAnswer testProtocol = CommittedAnswer.v1_0(
+                forRelationship,
+                questionText,
+                questionDetail,
+                validResponses,
+                requireSignature);
+
         String msgName = "msg name";
-        assertEquals(Util.getMessageType(Util.COMMUNITY_MSG_QUALIFIER, "committedanswer", "1.0", msgName), questionAnswer.getMessageType(msgName));
+        String msgType = Util.getMessageType(
+                Util.COMMUNITY_MSG_QUALIFIER,
+                testProtocol.family(),
+                testProtocol.version(),
+                msgName);
+        assertEquals(msgType, testProtocol.getMessageType(msgName));
     }
 
     @Test
-    public void testConstructor() {
-        CommittedAnswer questionAnswer = new CommittedAnswer(
+    public void testConstructor() throws VerityException {
+        Context context = TestHelpers.getContext();
+        CommittedAnswer testProtocol = CommittedAnswer.v1_0(
                 forRelationship,
                 questionText,
                 questionDetail,
                 validResponses,
                 requireSignature
         );
-        assertEquals(forRelationship, questionAnswer.forRelationship);
-        assertEquals(questionText, questionAnswer.questionText);
-        assertEquals(questionDetail, questionAnswer.questionDetail);
-        assertEquals(validResponses.length, questionAnswer.validResponses.length);
-        testMessages(questionAnswer);
+        JSONObject msg = testProtocol.askMsg(context);
+        testAskMessages(msg);
     }
 
-    private void testMessages(CommittedAnswer questionAnswer) {
-        JSONObject msg = questionAnswer.messages.getJSONObject(CommittedAnswer.ASK_QUESTION);
+    private void testAskMessages(JSONObject msg) {
 
-        msg = new JSONObject(msg.toString());
-
-        assertEquals(questionAnswer.getMessageType(CommittedAnswer.ASK_QUESTION), msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertEquals(forRelationship, msg.getString("~for_relationship"));
         assertEquals(questionText, msg.getString("text"));
@@ -52,12 +59,11 @@ public class CommittedAnswerTest {
         assertEquals(validResponses[0], msg.getJSONArray("valid_responses").getString(0));
         assertEquals(requireSignature, msg.getBoolean("signature_required"));
         assertNotNull(msg.getJSONArray("valid_responses"));
+    }
 
-        JSONObject statusMsg = questionAnswer.messages.getJSONObject(CommittedAnswer.GET_STATUS);
-        assertEquals(questionAnswer.getMessageType(CommittedAnswer.GET_STATUS), statusMsg.getString("@type"));
-        assertNotNull(statusMsg.getString("@id"));
-        assertNotNull(statusMsg.getJSONObject("~thread").getString("thid"));
-        assertEquals(forRelationship, statusMsg.getString("~for_relationship"));
+    private void testStatusMessage(JSONObject msg) {
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
     }
 
     @Test
@@ -65,11 +71,19 @@ public class CommittedAnswerTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            CommittedAnswer questionAnswer = new CommittedAnswer(forRelationship, questionText, questionDetail, validResponses);
-            questionAnswer.disableHTTPSend();
-            byte[] message = questionAnswer.ask(context);
+            CommittedAnswer testProtocol = CommittedAnswer.v1_0(
+                    forRelationship,
+                    questionText,
+                    questionDetail,
+                    validResponses,
+                    requireSignature);
+
+            byte[] message = testProtocol.askMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(questionAnswer.getMessageType(CommittedAnswer.ASK_QUESTION), unpackedMessage.getString("@type"));
+            assertEquals(
+                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/ask-question",
+                    unpackedMessage.getString("@type")
+            );
         } catch(Exception e) {
             e.printStackTrace();
             fail();

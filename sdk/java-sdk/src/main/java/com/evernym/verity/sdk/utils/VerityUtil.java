@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 class VerityUtil {
+    private VerityUtil(){}
+
     static Did retrieveVerityPublicDid(HttpGet request, HttpClient httpClient) throws IOException {
         HttpResponse response = httpClient.execute(request);
         int statusCode = response.getStatusLine().getStatusCode();

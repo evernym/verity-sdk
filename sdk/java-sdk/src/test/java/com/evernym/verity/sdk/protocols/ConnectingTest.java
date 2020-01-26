@@ -1,6 +1,8 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
+import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.connecting.Connecting;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -15,81 +17,106 @@ public class ConnectingTest {
 
     @Test
     public void testGetMessageType() {
-        Connecting connecting = new Connecting("none");
+        Connecting connecting = Connecting.newConnection("none");
         String msgName = "msg name";
-        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER,"connecting", "0.6", msgName), Connecting.getMessageType(msgName));
+        assertEquals(
+            Util.getMessageType(
+                    Util.EVERNYM_MSG_QUALIFIER,
+                    "connecting",
+                    "0.6",
+                    msgName
+            ),
+            Util.getMessageType(connecting, msgName)
+        );
     }
 
     @Test
-    public void testConstructorWithSourceId() {
-        Connecting connecting = new Connecting(sourceId);
-        assertEquals(sourceId, connecting.sourceId);
-        assertNull(connecting.phoneNumber);
-        assertFalse(connecting.includePublicDID);
+    public void testConstructorWithSourceId() throws VerityException {
+        Connecting connecting = Connecting.newConnection(sourceId);
+        assertEquals(sourceId, connecting.sourceId());
+        assertNull(connecting.phoneNumber());
+        assertFalse(connecting.includePublicDID());
         testMessages(connecting);
     }
 
     @Test
-    public void testConstructorWithSourceIdAndUsePublicDid() {
-        Connecting connecting = new Connecting(sourceId, includePublicDID);
-        assertEquals(sourceId, connecting.sourceId);
-        assertNull(connecting.phoneNumber);
-        assertEquals(includePublicDID, connecting.includePublicDID);
+    public void testConstructorWithSourceIdAndUsePublicDid() throws VerityException {
+        Connecting connecting = Connecting.newConnection(sourceId, includePublicDID);
+        assertEquals(sourceId, connecting.sourceId());
+        assertNull(connecting.phoneNumber());
+        assertEquals(includePublicDID, connecting.includePublicDID());
         testMessages(connecting);
     }
 
     @Test
-    public void testConstructorWithSourceIdAndPhoneNumber() {
-        Connecting connecting = new Connecting(sourceId, phoneNumber);
-        assertEquals(sourceId, connecting.sourceId);
-        assertEquals(phoneNumber, connecting.phoneNumber);
-        assertFalse(connecting.includePublicDID);
+    public void testConstructorWithSourceIdAndPhoneNumber() throws VerityException {
+        Connecting connecting = Connecting.newConnection(sourceId, phoneNumber);
+        assertEquals(sourceId, connecting.sourceId());
+        assertEquals(phoneNumber, connecting.phoneNumber());
+        assertFalse(connecting.includePublicDID());
         testMessages(connecting);
     }
 
     @Test
-    public void testFullConstructor() {
-        Connecting connecting = new Connecting(sourceId, phoneNumber, includePublicDID);
-        assertEquals(sourceId, connecting.sourceId);
-        assertEquals(phoneNumber, connecting.phoneNumber);
-        assertEquals(includePublicDID, connecting.includePublicDID);
+    public void testFullConstructor() throws VerityException {
+        Connecting connecting = Connecting.newConnection(sourceId, phoneNumber, includePublicDID);
+        assertEquals(phoneNumber, connecting.phoneNumber());
+        assertEquals(includePublicDID, connecting.includePublicDID());
         testMessages(connecting);
     }
 
-    private void testMessages(Connecting connecting) {
-        JSONObject msg = connecting.messages.getJSONObject(Connecting.CREATE_CONNECTION);
-        assertEquals(msg.getString("@type"), Connecting.getMessageType(Connecting.CREATE_CONNECTION));
-        assertNotNull(msg.getString("@id"));
-        assertEquals(msg.getString("sourceId"), connecting.sourceId);
-        if(connecting.phoneNumber != null)
-            assertEquals(msg.getString("phoneNo"), connecting.phoneNumber);
-        assertEquals(msg.getBoolean("includePublicDID"), connecting.includePublicDID);
-
-        JSONObject statusMsg = connecting.messages.getJSONObject(Connecting.GET_STATUS);
-        assertEquals(Connecting.getMessageType(Connecting.GET_STATUS), statusMsg.getString("@type"));
-        assertNotNull(statusMsg.getString("@id"));
-        assertEquals(statusMsg.getString("sourceId"), connecting.sourceId);
-    }
-
     @Test
-    public void testConnect() throws Exception {
+    public void testConnectMsg() throws Exception {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            Connecting connecting = new Connecting(sourceId, phoneNumber, includePublicDID);
-            connecting.disableHTTPSend();
-            byte[] message = connecting.connect(context);
+            Connecting connecting = Connecting.newConnection(sourceId, phoneNumber, includePublicDID);
+            byte[] message = connecting.connectMsgPacked(context);
+            JSONObject expectedMessage = connecting.connectMsg(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(Connecting.getMessageType(Connecting.CREATE_CONNECTION), unpackedMessage.getString("@type"));
 
-            byte [] statusMsg = connecting.status(context);
-            JSONObject unpackedStatusMessage = Util.unpackForwardMessage(context, statusMsg);
-            assertEquals(Connecting.getMessageType(Connecting.GET_STATUS), unpackedStatusMessage.getString("@type"));
+            TestUtil.assertJsonObjectEqual(expectedMessage, unpackedMessage);
         } catch(Exception e) {
             e.printStackTrace();
             fail();
         } finally {
             TestHelpers.cleanup(context);
         }
+    }
+
+    @Test
+    public void testStatusMsg() throws Exception {
+        Context context = null;
+        try {
+            context = TestHelpers.getContext();
+            Connecting connecting = Connecting.newConnection(sourceId, phoneNumber, includePublicDID);
+
+            byte [] statusMsg = connecting.statusMsgPacked(context);
+            JSONObject expectedMessage = connecting.statusMsg(context);
+            JSONObject unpackedMessage = Util.unpackForwardMessage(context, statusMsg);
+
+            TestUtil.assertJsonObjectEqual(expectedMessage, unpackedMessage);
+        } catch(Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+            TestHelpers.cleanup(context);
+        }
+    }
+
+    private void testMessages(Connecting connecting) throws VerityException {
+        Context context = TestHelpers.getContext();
+        JSONObject msg = connecting.connectMsg(context);
+        assertEquals(Util.getMessageType(connecting, Connecting.CREATE_CONNECTION), msg.getString("@type"));
+        assertNotNull(msg.getString("@id"));
+        assertEquals(msg.getString("sourceId"), connecting.sourceId());
+        if(connecting.phoneNumber() != null)
+            assertEquals(msg.getString("phoneNo"), connecting.phoneNumber());
+        assertEquals(msg.getBoolean("includePublicDID"), connecting.includePublicDID());
+
+        JSONObject statusMsg = connecting.statusMsg(context);
+        assertEquals(Util.getMessageType(connecting, Connecting.GET_STATUS), statusMsg.getString("@type"));
+        assertNotNull(statusMsg.getString("@id"));
+        assertEquals(statusMsg.getString("sourceId"), connecting.sourceId());
     }
 }

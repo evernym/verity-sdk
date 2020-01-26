@@ -1,6 +1,7 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
+import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -12,18 +13,33 @@ public class UpdateEndpointTest {
 
     @Test
     public void testGetMessageType() {
+        UpdateEndpoint testProtocol = UpdateEndpoint.v0_6();
         String msgName = "msg name";
-        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "configs", "0.6", msgName), UpdateEndpoint.getMessageType(msgName));
+        assertEquals(
+                Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
+                testProtocol.getMessageType(msgName)
+        );
     }
 
     @Test
-    public void testConstructor() throws Exception {
+    public void testUpdateMsg() throws Exception {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            UpdateEndpoint updateEndpoint = new UpdateEndpoint(context);
-            assertEquals(updateEndpoint.endpointUrl, context.endpointUrl());
-            testMessages(updateEndpoint);
+            UpdateEndpoint testProtocol = UpdateEndpoint.v0_6();
+            JSONObject msg = testProtocol.updateMsg(context);
+
+            assertEquals(
+                    msg.getJSONObject("comMethod").getString("value"),
+                    context.endpointUrl()
+            );
+            assertEquals(
+                    "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD",
+                    msg.getString("@type")
+            );
+            assertNotNull(msg.getString("@id"));
+            assertEquals("webhook", msg.getJSONObject("comMethod").getString("id"));
+            assertEquals(2, msg.getJSONObject("comMethod").getInt("type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();
@@ -32,25 +48,18 @@ public class UpdateEndpointTest {
         }
     }
 
-    private void testMessages(UpdateEndpoint updateEndpoint) {
-        JSONObject msg = updateEndpoint.messages.getJSONObject(UpdateEndpoint.UPDATE_ENDPOINT);
-        assertEquals(UpdateEndpoint.getMessageType("UPDATE_COM_METHOD"), msg.getString("@type"));
-        assertNotNull(msg.getString("@id"));
-        assertEquals("webhook", msg.getJSONObject("comMethod").getString("id"));
-        assertEquals(2, msg.getJSONObject("comMethod").getInt("type"));
-        assertEquals(updateEndpoint.endpointUrl, msg.getJSONObject("comMethod").getString("value"));
-    }
-
     @Test
     public void testUpdate() throws Exception {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            UpdateEndpoint updateEndpoint = new UpdateEndpoint(context);
-            updateEndpoint.disableHTTPSend();
-            byte [] message = updateEndpoint.update();
+            UpdateEndpoint testProtocol = UpdateEndpoint.v0_6();
+            byte [] message = testProtocol.updateMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(UpdateEndpoint.getMessageType(UpdateEndpoint.UPDATE_ENDPOINT), unpackedMessage.getString("@type"));
+            assertEquals(
+                    "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD",
+                    unpackedMessage.getString("@type")
+            );
 
         } catch(Exception e) {
             e.printStackTrace();

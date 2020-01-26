@@ -4,13 +4,16 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.evernym.verity.sdk</groupId>
-  <artifactId>java-sdk</artifactId>
-  <version>0.36-SNAPSHOT</version>
+  <groupId>com.evernym.verity</groupId>
+  <artifactId>verity-sdk</artifactId>
+  <version>0.1.1-SNAPSHOT</version>
 
-  <name>java-sdk</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <name>Verity SDK</name>
+
+  <organization>
+    <name>Evernym, Inc.</name>
+    <url>https://www.evernym.com/products/</url>
+  </organization>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,7 +33,7 @@
     <dependency>
       <groupId>org.hyperledger</groupId>
       <artifactId>indy</artifactId>
-      <version>1.8.1-dev-985</version>
+      <version>1.10.1</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -47,12 +50,6 @@
       <artifactId>slf4j-api</artifactId>
       <version>1.7.26</version>
     </dependency>
-    <!-- Uncomment to enable logging -->
-    <!-- <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.7.26</version>
-    </dependency> -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -186,8 +183,8 @@
   <distributionManagement>
     <repository>
       <id>io.cloudrepo</id> <!-- Must Match the Unique Identifier in settings.xml -->
-      <name>My First Cloud Repo Repository</name>
-      <url>https://evernym.mycloudrepo.io/repositories/verity-sdk-java</url>
+      <name>Evernym Maven Dev</name>
+      <url>https://evernym.mycloudrepo.io/repositories/evernym-dev</url>
     </repository>
   </distributionManagement>
 </project>
