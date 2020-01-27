@@ -6,17 +6,19 @@ const readline = require('readline')
 const sdk = require('./src/index')
 
 const listeningPort = 4507
-
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 })
 
+// let credDefId
+// let connectionId
+
 exampleFlow()
 
 async function exampleFlow () {
-  const verityUrl = 'http://vas-team1.pdev.evernym.com'
-  // const verityUrl = 'http://localhost:4002'
+  // const verityUrl = 'http://vas-team1.pdev.evernym.com'
+  const verityUrl = 'http://localhost:9000'
   let context = await sdk.Context.create(sdk.utils.miniId(), '12345', verityUrl, 'http://localhost:' + listeningPort)
   const handlers = new sdk.Handlers()
   handlers.setDefaultHandler(defaultHandler)
@@ -92,7 +94,8 @@ async function exampleFlow () {
         switch (msgName) {
           case writeCredDef.msgNames.STATUS:
             console.log('Credential Definition successfully written to ledger. Message = ')
-            console.log(message)
+            // credDefId = message.credDefId
+            // await connectWithConnectMe()
             break
           default:
             defaultHandler(msgName, message)
@@ -103,16 +106,95 @@ async function exampleFlow () {
     await writeCredDef.write(context)
   }
 
-  // Connecting Protocol
+  // // Connecting Protocol
+  // async function connectWithConnectMe () {
+  //   const connecting = new sdk.protocols.Connecting()
+  //   if (!handlers.hasHandler(connecting)) {
+  //     handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
+  //       switch (msgName) {
+  //         case connecting.msgNames.INVITE_DETAIL:
+  //           console.log('Invitation Detail:')
+  //           console.log(message)
+  //           break
+  //         case connecting.msgNames.CONN_REQ_ACCEPTED:
+  //           console.log('Connection Accepted!')
+  //           console.log(message)
+  //           // connectionId =
+  //           // await issueTestCredential(connectionId)
+  //         default:
+  //           defaultHandler(msgName, message)
+  //           break
+  //       }
+  //     })
+  //   }
+  //   await connecting.connect(context)
+  // }
 
-  // IssueCredential Protocol
+  // // IssueCredential
+  // async function issueTestCredential () {
+  //   const values = {
+  //     name: 'Jim',
+  //     birthday: '01/01/1970'
+  //   }
+  //   const issueCredential = new sdk.protocols.IssueCredential(connectionId, null, 'Test Credential From Verity', values, credDefId)
+  //   if (!handlers.hasHandler(issueCredential.msgFamily, issueCredential.msgFamilyVersion)) {
+  //     handlers.addHandler(issueCredential.msgFamily, issueCredential.msgFamilyVersion, async (msgName, message) => {
+  //       switch (msgName) {
+  //         case issueCredential.msgNames.OFFER_ACCEPTED:
+  //           console.log('Credential accepted. Issuing...')
+  //           await issueCredential.issueCredential(context)
+  //           break
+  //         default:
+  //           defaultHandler(msgName, message)
+  //           break
+  //       }
+  //     })
+  //   }
+  //   await issueCredential.offerCredential(context)
+  // }
 
-  // PresentProof Protocol
+  // // PresentProof Protocol
+  // async function sendTestProofRequest () {
+  //   const proofAttrs = [
+  //     {
+  //       name: 'name',
+  //       restrictions: [{ cred_def_id: credDefId }]
+  //     },
+  //     {
+  //       name: 'birthday',
+  //       restrictions: [{ cred_def_id: credDefId }]
+  //     }
+  //   ]
+  //   const presentProof = new sdk.protocols.PresentProof(connectionId, null, 'Requesting Proof of Test Credential', proofAttrs)
+  //   if (!handlers.hasHandler(presentProof.msgFamily, presentProof.msgFamilyVersion)) {
+  //     handlers.addHandler(presentProof.msgFamily, presentProof.msgFamilyVersion, async (msgName, message) => {
+  //       switch (msgName) {
+  //         default:
+  //           defaultHandler(msgName, message)
+  //           break
+  //       }
+  //     })
+  //   }
+  //   await presentProof.request(context)
+  // }
 
-  // CommittedAnswer Protocol
+  // // CommittedAnswer Protocol
+  // async function askQuestion() {
+  //   const committedAnswer = new sdk.protocols.CommittedAnswer(connectionId, ...)
+  //   if(!handlers.hasHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion)) {
+  //     handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
+  //       switch(msgName) {
+  //         default:
+  //           defaultHandler(msgName, message)
+  //           break
+  //       }
+  //     })
+  //   }
+  //   await committedAnswer.ask(context)
+  // }
 }
 
-async function defaultHandler (msgName, message) {
+async function defaultHandler (_, message) {
   console.log('Unhandled message:')
   console.log(message)
 }

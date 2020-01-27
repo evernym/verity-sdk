@@ -1,9 +1,10 @@
 'use strict'
+const uuid = require('uuid')
 const utils = require('../utils')
 const Protocol = require('./Protocol')
 
 module.exports = class Connecting extends Protocol {
-  constructor (threadId = null, sourceId, phoneNumber, includePublicDID) {
+  constructor (sourceId = uuid(), phoneNumber = null, includePublicDID = false, threadId = null) {
     const msgFamily = 'connecting'
     const msgFamilyVersion = '0.6'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
@@ -13,6 +14,8 @@ module.exports = class Connecting extends Protocol {
     this.includePublicDID = includePublicDID
 
     this.msgNames.CREATE_CONNECTION = 'CREATE_CONNECTION'
+    this.msgNames.INVITE_DETAIL = 'CONN_REQUEST_RESP'
+    this.msgNames.CONN_REQ_ACCEPTED = 'CONN_REQ_ACCEPTED'
     this.msgNames.GET_STATUS = 'get-status'
   }
 
