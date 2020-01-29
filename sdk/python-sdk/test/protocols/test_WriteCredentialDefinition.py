@@ -1,7 +1,7 @@
 import pytest
 
 from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
-from verity_sdk.utils import unpack_forward_message, MESSAGE_TYPE_DID
+from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 from test.test_utils import get_test_config, send_stub, cleanup
 
@@ -12,33 +12,33 @@ revocation_details = {'support_revocation': False}
 
 
 def test_init():
-  writeCredDef = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
+    write_cred_def = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
 
-  assert writeCredDef.name == name
-  assert writeCredDef.schema_id == schema_id
-  assert writeCredDef.tag == tag
-  assert writeCredDef.revocation_details == revocation_details
-  assert len(writeCredDef.messages) == 1
+    assert write_cred_def.name == name
+    assert write_cred_def.schema_id == schema_id
+    assert write_cred_def.tag == tag
+    assert write_cred_def.revocation_details == revocation_details
+    assert len(write_cred_def.messages) == 1
 
 
 @pytest.mark.asyncio
 async def test_write():
-  context = await Context.create(await get_test_config())
-  writeCredDef = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
-  writeCredDef.send = send_stub
-  msg = await writeCredDef.write(context)
-  msg = await unpack_forward_message(context, msg)
+    context = await Context.create(await get_test_config())
+    write_cred_def = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
+    write_cred_def.send = send_stub
+    msg = await write_cred_def.write(context)
+    msg = await unpack_forward_message(context, msg)
 
-  assert msg['@type'] == '{};spec/{}/{}/{}'.format(
-    MESSAGE_TYPE_DID,
-    WriteCredentialDefinition.MSG_FAMILY,
-    WriteCredentialDefinition.MSG_FAMILY_VERSION,
-    WriteCredentialDefinition.WRITE_CRED_DEF
-  )
-  assert msg['@id'] is not None
-  assert msg['name'] == name
-  assert msg['schemaId'] == schema_id
-  assert msg['tag'] == tag
-  assert msg['revocationDetails'] == revocation_details
+    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+        EVERNYM_MSG_QUALIFIER,
+        WriteCredentialDefinition.MSG_FAMILY,
+        WriteCredentialDefinition.MSG_FAMILY_VERSION,
+        WriteCredentialDefinition.WRITE_CRED_DEF
+    )
+    assert msg['@id'] is not None
+    assert msg['name'] == name
+    assert msg['schemaId'] == schema_id
+    assert msg['tag'] == tag
+    assert msg['revocationDetails'] == revocation_details
 
-  await cleanup(context)
+    await cleanup(context)

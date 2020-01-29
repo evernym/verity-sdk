@@ -1,16 +1,23 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+from verity_sdk.version import VERSION
+
+with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="verity-sdk",
-    version="0.0.10",
+    version=VERSION,  # see verity_sdk/version.py
     author="Evernym, Inc.",
     author_email="dev@evernym.com",
-    description="The official Python SDK for Evernym's Verity",
+    description='The official Python SDK for Evernym\'s Verity',
+    install_requires=[
+        'python3-indy~=1.10.1',
+        'requests~=2.22'
+    ],
+    python_requires='~=3.6',
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type='text/markdown',
     packages=setuptools.find_packages(),
 )
 

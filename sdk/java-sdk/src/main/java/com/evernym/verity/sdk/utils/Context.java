@@ -4,6 +4,7 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletCloseException;
 import com.evernym.verity.sdk.exceptions.WalletClosedException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
+import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONException;
@@ -13,12 +14,10 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * An object used to hold the wallet handle and other configuration information. 
- * An instance if this object is passed around to many different API calls. 
- * It should be initialized the config output by the tools/provision_sdk.py script.
+ * An instance if this object is passed around to many different API calls.
  */
-public final class Context {
-    final private String walletName;
-    final private String walletKey;
+public final class Context implements AsJsonObject{
+    final private WalletConfig walletConfig;
     final private String verityUrl;
     final private String verityPublicDID;
     final private String verityPublicVerkey;
@@ -32,9 +31,8 @@ public final class Context {
 
     private boolean walletClosedFlag = false;
 
-    Context(
-        String walletName,
-        String walletKey,
+    Context( // Not a public constructor! Allows work with ContextBuilder
+        WalletConfig walletConfig,
         String verityUrl,
         String verityPublicDID,
         String verityPublicVerkey,
@@ -44,8 +42,7 @@ public final class Context {
         String sdkPairwiseVerkey,
         String endpointUrl
     ) throws WalletOpenException {
-        this.walletName = walletName;
-        this.walletKey = walletKey;
+        this.walletConfig = walletConfig;
         this.verityUrl = verityUrl;
         this.verityPublicDID = verityPublicDID;
         this.verityPublicVerkey = verityPublicVerkey;
@@ -58,8 +55,7 @@ public final class Context {
     }
 
     Context( // Not a public constructor! Allows work with ContextBuilder
-            String walletName,
-            String walletKey,
+            WalletConfig walletConfig,
             String verityUrl,
             String verityPublicDID,
             String verityPublicVerkey,
@@ -74,8 +70,7 @@ public final class Context {
             throw new WalletOpenException("Context can not be constructed without wallet handle");
         }
 
-        this.walletName = walletName;
-        this.walletKey = walletKey;
+        this.walletConfig = walletConfig;
         this.verityUrl = verityUrl;
         this.verityPublicDID = verityPublicDID;
         this.verityPublicVerkey = verityPublicVerkey;
@@ -87,42 +82,17 @@ public final class Context {
         this.walletHandle = handle;
     }
 
-    /**
-     * Initialize the Context object
-     * 
-     * @param configJson the config output by the tools/provision_sdk.py script
-     * @throws WalletOpenException when libindy is unable to open the wallet
-     * @throws JSONException when attributes are missing from the configuration JSON
-     */
-    public Context(String configJson) throws WalletOpenException, JSONException {
-        // TODO: Validate config
-        JSONObject config = new JSONObject(configJson);
-        this.walletName = config.getString("walletName");
-        this.walletKey = config.getString("walletKey");
-        this.verityUrl = config.getString("verityUrl");
-        this.verityPublicDID = config.getString("verityPublicDID");
-        this.verityPublicVerkey = config.getString("verityPublicVerkey");
-        this.verityPairwiseDID = config.getString("verityPairwiseDID");
-        this.verityPairwiseVerkey = config.getString("verityPairwiseVerkey");
-        this.sdkPairwiseDID = config.getString("sdkPairwiseDID");
-        this.sdkPairwiseVerkey = config.getString("sdkPairwiseVerkey");
-        this.endpointUrl = config.getString("endpointUrl");
-        this.walletHandle = openWallet();
-    }
 
-    public String walletConfig() throws JSONException, UndefinedContextException {
-        return new JSONObject().put("id", walletName()).toString();
-    }
-
-    public String walletCredentials() throws JSONException, UndefinedContextException {
-        return new JSONObject().put("key", walletKey()).toString();
-    }
 
     private Wallet openWallet() throws WalletOpenException, JSONException {
-        try {
-            return Wallet.openWallet(walletConfig(), walletCredentials()).get();
+        if (walletConfig == null) {
+            throw new WalletOpenException("Unable to open wallet without wallet configuration.");
         }
-        catch (IndyException | ExecutionException | InterruptedException | UndefinedContextException e){
+
+        try {
+            return Wallet.openWallet(walletConfig.config(), walletConfig.credential()).get();
+        }
+        catch (IndyException | ExecutionException | InterruptedException e){
             throw new WalletOpenException(e);
         }
     }
@@ -130,7 +100,7 @@ public final class Context {
     /**
      * Closes the wallet handle stored inside the Context object.
      *
-     * @throws WalletCloseException
+     * @throws WalletCloseException when failing to close the wallet
      */
     public void closeWallet() throws WalletCloseException {
         walletClosedFlag = true;
@@ -140,10 +110,9 @@ public final class Context {
         catch (IndyException | ExecutionException | InterruptedException e){
             throw new WalletCloseException(e);
         }
-
     }
 
-    private String throwIfNull(String val, String fieldName) throws UndefinedContextException {
+    private <T> T throwIfNull(T val, String fieldName) throws UndefinedContextException {
         if(val == null) {
             throw new UndefinedContextException(
                     String.format("Context field is used without definition -- %s", fieldName)
@@ -152,12 +121,8 @@ public final class Context {
         return val;
     }
 
-    public String walletName() throws UndefinedContextException {
-        return throwIfNull(walletName, "walletName");
-    }
-
-    public String walletKey() throws UndefinedContextException {
-        return throwIfNull(walletKey, "walletName");
+    public WalletConfig walletConfig() throws UndefinedContextException {
+        return throwIfNull(walletConfig, "walletConfig");
     }
 
     public String verityUrl() throws UndefinedContextException {
@@ -204,9 +169,8 @@ public final class Context {
     }
 
     public ContextBuilder toContextBuilder() {
-        ContextBuilder rtn = new ContextBuilder();
-        if(walletName != null) rtn.walletName(walletName);
-        if(walletKey != null) rtn.walletKey(walletKey);
+        ContextBuilder rtn = ContextBuilder.blank();
+        if(walletConfig != null) rtn.walletConfig(walletConfig);
         if(verityUrl != null) rtn.verityUrl(verityUrl);
         if(verityPublicDID != null) rtn.verityPublicDID(verityPublicDID);
         if(verityPublicVerkey != null) rtn.verityPublicVerkey(verityPublicVerkey);
@@ -219,6 +183,24 @@ public final class Context {
         if (!walletClosedFlag) {
             rtn.walletHandle(walletHandle);
         }
+
+        return rtn;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject rtn = new JSONObject();
+
+        if(walletConfig != null) walletConfig.addToJson(rtn);
+
+        if(verityUrl != null) rtn.put("verityUrl", verityUrl);
+        if(verityPublicDID != null) rtn.put("verityPublicDID", verityPublicDID);
+        if(verityPublicVerkey != null) rtn.put("verityPublicVerkey", verityPublicVerkey);
+        if(verityPairwiseDID != null) rtn.put("verityPairwiseDID", verityPairwiseDID);
+        if(verityPairwiseVerkey != null) rtn.put("verityPairwiseVerkey", verityPairwiseVerkey);
+        if(sdkPairwiseDID != null) rtn.put("sdkPairwiseDID", sdkPairwiseDID);
+        if(sdkPairwiseVerkey != null) rtn.put("sdkPairwiseVerkey", sdkPairwiseVerkey);
+        if(endpointUrl != null) rtn.put("endpointUrl", endpointUrl);
 
         return rtn;
     }

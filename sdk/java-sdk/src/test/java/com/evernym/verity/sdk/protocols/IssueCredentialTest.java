@@ -1,10 +1,15 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
+import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -13,8 +18,8 @@ public class IssueCredentialTest {
     private String forRelationship = "...someDid...";
     private String credentialName = "Bachelors Degree";
     private String credDefId = "...someCredDefId...";
-    private JSONObject credentialValues = new JSONObject();
-    private String price = "3";
+    private Map<String, String> credentialValues = new HashMap<>();
+    private String price = "0";
 
     public IssueCredentialTest() {
         credentialValues.put("name", "Jose Smith");
@@ -24,44 +29,52 @@ public class IssueCredentialTest {
 
     @Test
     public void testGetMessageType() {
-        IssueCredential issueCredential = new IssueCredential(forRelationship, credentialName, credDefId, credentialValues, price);
+        IssueCredential testProtocol = IssueCredential.v0_6(
+                forRelationship,
+                credentialName,
+                credentialValues,
+                credDefId
+            );
         String msgName = "msg name";
-        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "issue-credential", "0.6", msgName), IssueCredential.getMessageType(msgName));
+        assertEquals(
+                Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
+                testProtocol.getMessageType(msgName)
+        );
     }
 
     @Test
-    public void testConstructor() {
-        IssueCredential issueCredential = new IssueCredential(forRelationship, credentialName, credDefId, credentialValues, price);
-        assertEquals(forRelationship, issueCredential.forRelationship);
-        assertEquals(credentialName, issueCredential.credentialName);
-        assertEquals(credDefId, issueCredential.credDefId);
-        assertEquals(credentialValues.toString(), issueCredential.credentialValues.toString());
-        assert price.equals(issueCredential.price);
-        testMessages(issueCredential);
+    public void testConstructor() throws VerityException {
+        Context context = TestHelpers.getContext();
+        IssueCredential testProtocol = IssueCredential.v0_6(
+                forRelationship,
+                credentialName,
+                credentialValues,
+                credDefId
+        );
+
+        testOfferMessages(testProtocol.offerCredentialMsg(context));
+        testIssueMsg(testProtocol.issueCredentialMsg(context));
+        testStatusMsg(testProtocol.statusMsg(context));
     }
 
-    private void testMessages(IssueCredential issueCredential) {
-        JSONObject offerMsg = issueCredential.messages.getJSONObject(IssueCredential.OFFER_CREDENTIAL);
-        assertEquals(IssueCredential.getMessageType(IssueCredential.OFFER_CREDENTIAL), offerMsg.getString("@type"));
-        assertNotNull(offerMsg.getString("@id"));
-        assertNotNull(offerMsg.getJSONObject("~thread").getString("thid"));
-        assertEquals(forRelationship, offerMsg.getString("~for_relationship"));
-        assertEquals(credentialName, offerMsg.getString("name"));
-        assertEquals(credDefId, offerMsg.getString("credDefId"));
-        assertEquals(credentialValues.toString(), offerMsg.getJSONObject("credentialValues").toString());
-        assertEquals(price, offerMsg.getString("price"));
-
-        JSONObject issueMsg = issueCredential.messages.getJSONObject(IssueCredential.ISSUE_CREDENTIAL);
-        assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), issueMsg.getString("@type"));
-        assertNotNull(issueMsg.getString("@id"));
-        assertNotNull(issueMsg.getJSONObject("~thread").getString("thid"));
-        assertEquals(forRelationship, issueMsg.getString("~for_relationship"));
-
-        JSONObject statusMsg = issueCredential.messages.getJSONObject(IssueCredential.GET_STATUS);
-        assertEquals(IssueCredential.getMessageType(IssueCredential.GET_STATUS), statusMsg.getString("@type"));
-        assertNotNull(statusMsg.getString("@id"));
-        assertNotNull(statusMsg.getJSONObject("~thread").getString("thid"));
-        assertEquals(forRelationship, statusMsg.getString("~for_relationship"));
+    private void testOfferMessages(JSONObject msg) {
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
+        assertEquals(forRelationship, msg.getString("~for_relationship"));
+        assertEquals(credentialName, msg.getString("name"));
+        assertEquals(credDefId, msg.getString("credDefId"));
+        assertEquals(credentialValues, msg.getJSONObject("credentialValues").toMap());
+        assertEquals(price, msg.getString("price"));
+    }
+    private void testIssueMsg(JSONObject msg) {
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
+        assertEquals(forRelationship, msg.getString("~for_relationship"));
+    }
+    private void testStatusMsg(JSONObject msg) {
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
+        assertEquals(forRelationship, msg.getString("~for_relationship"));
     }
 
     @Test
@@ -69,17 +82,33 @@ public class IssueCredentialTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            IssueCredential issueCredential = new IssueCredential(forRelationship, credentialName, credDefId, credentialValues, price);
-            issueCredential.disableHTTPSend();
-            byte [] offerMsg = issueCredential.offerCredential(context);
+            IssueCredential testProtocol = IssueCredential.v0_6(
+                    forRelationship,
+                    credentialName,
+                    credentialValues,
+                    credDefId
+            );
+
+            byte [] offerMsg = testProtocol.offerCredentialMsgPacked(context);
             JSONObject unpackedOfferMessage = Util.unpackForwardMessage(context, offerMsg);
-            assertEquals(IssueCredential.getMessageType(IssueCredential.OFFER_CREDENTIAL), unpackedOfferMessage.getString("@type"));
-            byte [] issueMsg = issueCredential.issueCredential(context);
+            assertEquals(
+                    "did:sov:123456789abcdefghi1234;spec/issue-credential/0.6/send-offer",
+                    unpackedOfferMessage.getString("@type")
+            );
+
+            byte [] issueMsg = testProtocol.issueCredentialMsgPacked(context);
             JSONObject unpackedIssueMessage = Util.unpackForwardMessage(context, issueMsg);
-            assertEquals(IssueCredential.getMessageType(IssueCredential.ISSUE_CREDENTIAL), unpackedIssueMessage.getString("@type"));
-            byte [] statusMsg = issueCredential.status(context);
+            assertEquals(
+                    "did:sov:123456789abcdefghi1234;spec/issue-credential/0.6/issue-credential",
+                    unpackedIssueMessage.getString("@type")
+            );
+
+            byte [] statusMsg = testProtocol.statusMsgPacked(context);
             JSONObject unpackedStatusMessage = Util.unpackForwardMessage(context, statusMsg);
-            assertEquals(IssueCredential.getMessageType(IssueCredential.GET_STATUS), unpackedStatusMessage.getString("@type"));
+            assertEquals(
+                    "did:sov:123456789abcdefghi1234;spec/issue-credential/0.6/get-status",
+                    unpackedStatusMessage.getString("@type")
+            );
         } catch(Exception e) {
             e.printStackTrace();
             fail();

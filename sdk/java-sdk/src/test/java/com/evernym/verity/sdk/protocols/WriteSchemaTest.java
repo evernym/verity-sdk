@@ -1,6 +1,9 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -17,41 +20,47 @@ public class WriteSchemaTest {
 
     @Test
     public void testGetMessageType() {
+        WriteSchema testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1);
         String msgName = "msg name";
-        assertEquals(Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "write-schema", "0.6", msgName), WriteSchema.getMessageType(msgName));
+        assertEquals(
+                Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
+                testProtocol.getMessageType(msgName));
     }
 
     @Test
-    public void testConstructor() {
-        WriteSchema writeSchema = new WriteSchema(schemaName, schemaVersion, attr1, attr2);
-        assertEquals(schemaName, writeSchema.name);
-        assertEquals(schemaVersion, writeSchema.version);
-        assertEquals(attr1, writeSchema.attrs[0]);
-        assertEquals(attr2, writeSchema.attrs[1]);
-        testMessages(writeSchema);
+    public void testConstructor() throws WalletException, UndefinedContextException {
+        Context context = TestHelpers.getContext();
+        WriteSchema writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
+        JSONObject msg = writeSchema.writeMsg(context);
+
+        assertEquals(schemaName, msg.get("name"));
+        assertEquals(schemaVersion, msg.get("version"));
+        assertArrayEquals(new String[]{attr1, attr2}, msg.getJSONArray("attrNames").toList().toArray());
     }
 
-    private void testMessages(WriteSchema writeSchema) {
-        JSONObject msg = writeSchema.messages.getJSONObject(WriteSchema.WRITE_SCHEMA);
-        assertEquals(WriteSchema.getMessageType("write"), msg.getString("@type"));
-        assertNotNull(msg.getString("@id"));
-        assertEquals(schemaName, msg.getString("name"));
-        assertEquals(schemaVersion, msg.getString("version"));
-        assertEquals(attr1, msg.getJSONArray("attrNames").getString(0));
-        assertEquals(attr2, msg.getJSONArray("attrNames").getString(1));
-
-    }
+//    private void testMessages(WriteSchema writeSchema) {
+//        JSONObject msg = writeSchema.messages.getJSONObject(WriteSchema.WRITE_SCHEMA);
+//        assertEquals(WriteSchema.getMessageType("write"), msg.getString("@type"));
+//        assertNotNull(msg.getString("@id"));
+//        assertEquals(schemaName, msg.getString("name"));
+//        assertEquals(schemaVersion, msg.getString("version"));
+//        assertEquals(attr1, msg.getJSONArray("attrNames").getString(0));
+//        assertEquals(attr2, msg.getJSONArray("attrNames").getString(1));
+//
+//    }
 
     @Test
     public void testWrite() throws Exception {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            WriteSchema writeSchema = new WriteSchema(schemaName, schemaVersion, attr1, attr2);
-            writeSchema.disableHTTPSend();
-            byte[] message = writeSchema.write(context);
+            WriteSchema testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
+            byte[] message = testProtocol.writeMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
-            assertEquals(WriteSchema.getMessageType(WriteSchema.WRITE_SCHEMA), unpackedMessage.getString("@type"));
+            assertEquals(
+                    "did:sov:123456789abcdefghi1234;spec/write-schema/0.6/write",
+                    unpackedMessage.getString("@type")
+            );
         } catch(Exception e) {
             e.printStackTrace();
             fail();

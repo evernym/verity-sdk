@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.MessageFamily;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.wallet.Wallet;
@@ -28,11 +29,24 @@ public class Util {
             String pairwiseReceiver = new JSONArray(new String[]{pairwiseRemoteVerkey}).toString();
             String verityReceiver = new JSONArray(new String[]{publicVerkey}).toString();
 
-            byte[] agentMessage = Crypto.packMessage(walletHandle, pairwiseReceiver, pairwiseLocalVerkey, message.toString().getBytes()).get();
+            byte[] agentMessage = Crypto.packMessage(
+                    walletHandle,
+                    pairwiseReceiver,
+                    pairwiseLocalVerkey,
+                    message.toString().getBytes()
+            ).get();
 
-            String innerFwd = prepareForwardMessage(pairwiseRemoteDID, agentMessage);
+            String innerFwd = prepareForwardMessage(
+                    pairwiseRemoteDID,
+                    agentMessage
+            );
 
-            return Crypto.packMessage(walletHandle, verityReceiver, null, innerFwd.getBytes()).get();
+            return Crypto.packMessage(
+                    walletHandle,
+                    verityReceiver,
+                    null,
+                    innerFwd.getBytes()
+            ).get();
         } catch (IndyException | InterruptedException | ExecutionException e) {
             throw new WalletException("Unable to pack messages", e);
         }
@@ -99,6 +113,11 @@ public class Util {
         JSONObject unpackedOnceMessage = unpackMessage(context, message);
         byte[] unpackedOnceMessageMessage = unpackedOnceMessage.getJSONObject("@msg").toString().getBytes();
         return unpackMessage(context, unpackedOnceMessageMessage);
+    }
+
+    // FIXME move to MessageFamily interface
+    public static String getMessageType(MessageFamily f, String msgName) {
+        return getMessageType(f.qualifier(), f.family(), f.version(), msgName);
     }
 
     public static String getMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion, String msgName) {

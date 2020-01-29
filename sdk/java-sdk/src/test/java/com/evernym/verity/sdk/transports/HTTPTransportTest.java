@@ -13,3 +13,5 @@
 //         transport.sendMessage("https://jsonplaceholder.typicode.com/posts", "{\"Hello\": \"World!\"}".getBytes());
 //     }
 // }
+
+// TODO we should create some real tests for the transport but not rely on an external service
