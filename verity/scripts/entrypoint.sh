@@ -12,6 +12,7 @@ fi
 
 # Start ngrok
 ngrok http 9000 > /dev/null &
+sleep 5 # Wait for ngrok to startup
 NGROK_PID=$!
 NGROK_HOST="$(curl -s http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url' | cut -d'/' -f3)"
 
