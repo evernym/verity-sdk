@@ -11,7 +11,7 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
-// let credDefId
+let credDefId
 // let connectionId
 
 exampleFlow()
@@ -93,8 +93,8 @@ async function exampleFlow () {
       handlers.addHandler(writeCredDef.msgFamily, writeCredDef.msgFamilyVersion, async (msgName, message) => {
         switch (msgName) {
           case writeCredDef.msgNames.STATUS:
-            console.log('Credential Definition successfully written to ledger. Message = ')
-            // credDefId = message.credDefId
+            credDefId = message.credDefId
+            console.log(`Credential Definition successfully written to ledger. credDefId = ${credDefId}`)
             // await connectWithConnectMe()
             break
           default:
