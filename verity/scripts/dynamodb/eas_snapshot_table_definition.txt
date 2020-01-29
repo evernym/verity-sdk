@@ -1,0 +1,26 @@
+{
+    "TableName":"agency_akka_snapshot_eas",
+    "KeySchema":[
+        {"AttributeName":"par","KeyType":"HASH"},
+        {"AttributeName":"seq","KeyType":"RANGE"}
+    ],
+    "AttributeDefinitions":[
+        {"AttributeName":"par","AttributeType":"S"},
+        {"AttributeName":"seq","AttributeType":"N"},
+        {"AttributeName":"ts","AttributeType":"N"}
+    ],
+    "ProvisionedThroughput":{
+        "ReadCapacityUnits":10,
+        "WriteCapacityUnits":10
+    },
+    "LocalSecondaryIndexes":[
+        {
+            "IndexName":"ts-idx",
+            "KeySchema":[
+                {"AttributeName":"par","KeyType":"HASH"},
+                {"AttributeName":"ts","KeyType":"RANGE"}
+            ],
+            "Projection":{"ProjectionType":"ALL"}
+        }
+    ]
+}

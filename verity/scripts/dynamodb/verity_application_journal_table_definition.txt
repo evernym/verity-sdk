@@ -1,0 +1,15 @@
+{
+    "TableName":"verity_akka_application",
+    "KeySchema":[
+        {"AttributeName":"par","KeyType":"HASH"},
+        {"AttributeName":"num","KeyType":"RANGE"}
+    ],
+    "AttributeDefinitions":[
+        {"AttributeName":"par","AttributeType":"S"},
+        {"AttributeName":"num","AttributeType":"N"}
+    ],
+    "ProvisionedThroughput":{
+        "ReadCapacityUnits":10,
+        "WriteCapacityUnits":10
+    }
+}
