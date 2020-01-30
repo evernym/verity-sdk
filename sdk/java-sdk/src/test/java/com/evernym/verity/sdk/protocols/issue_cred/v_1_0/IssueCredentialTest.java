@@ -1,0 +1,138 @@
+package com.evernym.verity.sdk.protocols.issue_cred.v_1_0;
+
+import com.evernym.verity.sdk.TestHelpers;
+import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
+import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.Util;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import static org.junit.Assert.*;
+
+public class IssueCredentialTest {
+
+    private String forRelationship = "...someDid...";
+
+    private Map<String, String> credentialValues = new HashMap<>();
+
+    public IssueCredentialTest() {
+        credentialValues.put("name", "Jose Smith");
+        credentialValues.put("degree", "Bachelors");
+        credentialValues.put("gpa", "3.67");
+    }
+
+    @Test
+    public void testGetMessageType() {
+        IssueCredential testProtocol = IssueCredential.v1_0(
+                forRelationship,
+                "dummy-thread-id"
+        );
+        String msgName = "msg name";
+        assertEquals(
+                Util.getMessageType(Util.COMMUNITY_MSG_QUALIFIER, testProtocol.family(),
+                        testProtocol.version(), msgName), testProtocol.getMessageType(msgName)
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorWithRequiredFieldAsNull() throws VerityException {
+        Context context = TestHelpers.getContext();
+        IssueCredential testProtocol = IssueCredential.v1_0(
+                null, null, null,null,
+                null,null, null,null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorWithAllOptionalAsNull() throws VerityException {
+        Context context = TestHelpers.getContext();
+        IssueCredential testProtocol = IssueCredential.v1_0(
+                forRelationship, null, null,null,
+                null,null, null,null, null);
+    }
+
+    @Test
+    public void testValidConstructor() throws VerityException {
+        Context context = TestHelpers.getContext();
+        IssueCredential testProtocol = IssueCredential.v1_0(
+                forRelationship, null, "driver license",null,
+                null,null, null,null, null);
+
+        testProposalMessage(testProtocol.proposeCredentialMsg(context));
+    }
+
+    @Test
+    public void testPropose() throws Exception {
+        Context context = null;
+        JSONObject credProposal = prepareCredProposalObject(credentialValues);
+        try {
+            context = TestHelpers.getContext();
+            IssueCredential testProtocol = IssueCredential.v1_0(
+                    forRelationship,
+                    credProposal,
+                    "comment",
+                    null, null, null, null, null, null);
+
+            byte [] offerMsg = testProtocol.proposeCredentialMsgPacked(context);
+            JSONObject unpackedProposedMessage = Util.unpackForwardMessage(context, offerMsg);
+            assertEquals(
+                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/send-proposal",
+                    unpackedProposedMessage.getString("@type")
+            );
+        } catch(Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+            TestHelpers.cleanup(context);
+        }
+    }
+
+    private void testProposalMessage(JSONObject msg) {
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
+        assertEquals(forRelationship, msg.getString("~for_relationship"));
+
+        ArrayList<Boolean> optionalFieldCheckResults = new ArrayList<Boolean>();
+
+        optionalFieldCheckResults.add(msg.has("credential_proposal"));
+        optionalFieldCheckResults.add(msg.has("comment"));
+        optionalFieldCheckResults.add(msg.has("schema_issuer_id"));
+        optionalFieldCheckResults.add(msg.has("schema_id"));
+        optionalFieldCheckResults.add(msg.has("schema_name"));
+        optionalFieldCheckResults.add(msg.has("schema_version"));
+        optionalFieldCheckResults.add(msg.has("cred_def_id"));
+        optionalFieldCheckResults.add(msg.has("issuer_did"));
+
+        assertTrue("one of the optional field should be present",
+                optionalFieldCheckResults.stream().anyMatch(Objects::nonNull));
+    }
+
+    private ArrayList<String> optionalFieldNames() {
+        ArrayList<String> optionalFields = new ArrayList<>();
+        optionalFields.add("credential_proposal");
+        optionalFields.add("schema_issuer_did");
+        optionalFields.add("schema_id");
+        optionalFields.add("schema_name");
+        optionalFields.add("schema_version");
+        optionalFields.add("cred_def_id");
+        optionalFields.add("issuer_did");
+        return optionalFields;
+    }
+
+    private JSONObject prepareCredProposalObject(Map<String, String> credentialValues) {
+        JSONObject credProposal = new JSONObject();
+        credProposal.put("@id", "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/credential-preview");
+        JSONArray attributes = new JSONArray();
+        for (Map.Entry<String,String> entry : credentialValues.entrySet())
+            attributes.put(new JSONObject(String.format("{\"%s\":\"%s\"}", entry.getKey(), entry.getValue())));
+
+        credProposal.put("attributes", attributes);
+        return credProposal;
+    }
+}

@@ -1,10 +1,12 @@
-package com.evernym.verity.sdk.protocols.issuecredential;
+package com.evernym.verity.sdk.protocols.issuecredential.v_0_6;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -14,6 +16,14 @@ import java.util.Map;
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
 public class IssueCredentialImpl extends Protocol implements IssueCredential {
+
+    public String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
+    public String family() { return "issue-credential";}
+    public String version() {return "0.6";}
+
+    String OFFER_CREDENTIAL = "send-offer";
+    String ISSUE_CREDENTIAL = "issue-credential";
+    String GET_STATUS = "get-status";
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -43,6 +53,23 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
     public IssueCredentialImpl(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
+    }
+
+    /**
+     * Sends the proposal message to the connection
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     */
+
+    public void proposeCredential(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    public JSONObject proposeCredentialMsg(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    public byte[] proposeCredentialMsgPacked(Context context) {
+        throw new UnsupportedOperationException();
     }
 
     /**

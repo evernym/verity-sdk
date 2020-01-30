@@ -4,22 +4,15 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.issuecredential.v_0_6.IssueCredentialImpl;
 import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Map;
 
 public interface IssueCredential extends MessageFamily {
-    default String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
-    default String family() {return "issue-credential";}
-    default String version() {return "0.6";}
 
-
-    String OFFER_CREDENTIAL = "send-offer";
-    String ISSUE_CREDENTIAL = "issue-credential";
-    String GET_STATUS = "get-status";
 
     static IssueCredential v0_6(String forRelationship,
                                 String name,
@@ -33,6 +26,29 @@ public interface IssueCredential extends MessageFamily {
         return new IssueCredentialImpl(forRelationship, threadId);
     }
 
+    static IssueCredential v1_0(String forRelationship, JSONObject credentialProposal, String comment, String schemaIssuerId,
+                                String schemaId, String schemaName, String schemaVersion, String credDefId, String issuerDID) {
+        return new com.evernym.verity.sdk.protocols.issuecredential.v_1_0.IssueCredentialImpl(
+                forRelationship, credentialProposal, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID);
+    }
+
+    static IssueCredential v1_0(String forRelationship,
+                                String threadId) {
+        return new com.evernym.verity.sdk.protocols.issuecredential.v_1_0.IssueCredentialImpl(forRelationship, threadId);
+    }
+
+    /**
+     * Sends the proposal message to the connection
+     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @throws IOException               when the HTTP library fails to post to the agency endpoint
+     * @throws UndefinedContextException when the context doesn't have enough information for this operation
+     * @throws WalletException when there are issues with encryption and decryption
+     */
+    void proposeCredential(Context context) throws IOException, VerityException;
+
+    JSONObject proposeCredentialMsg(Context context) throws VerityException;
+
+    byte[] proposeCredentialMsgPacked(Context context) throws VerityException;
 
     /**
      * Sends the credential offer message to the connection
