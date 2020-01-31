@@ -110,5 +110,5 @@ exports.truncateInviteDetailKeys = function (inviteDetails) {
   if ('publicDID' in inviteDetails.senderDetail) {
     truncatedInviteDetails.s.publicDID = inviteDetails.senderDetail.publicDID
   }
-  return truncatedInviteDetails
+  return JSON.stringify(truncatedInviteDetails)
 }

@@ -19,6 +19,7 @@ exampleFlow()
 async function exampleFlow () {
   // const verityUrl = 'http://vas-team1.pdev.evernym.com'
   const verityUrl = 'http://localhost:9000'
+  // const verityUrl = 'http://localhost:9020'
   let context = await sdk.Context.create(sdk.utils.miniId(), '12345', verityUrl, 'http://localhost:' + listeningPort)
   const handlers = new sdk.Handlers()
   handlers.setDefaultHandler(defaultHandler)
@@ -113,14 +114,13 @@ async function exampleFlow () {
       handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
         switch (msgName) {
           case connecting.msgNames.INVITE_DETAIL:
-            console.log('Invitation Detail:')
-            console.log(message)
+            console.log(`Invitation Detail: ${sdk.utils.truncateInviteDetailKeys(message.inviteDetail)}`)
             break
           case connecting.msgNames.CONN_REQ_ACCEPTED:
             console.log('Connection Accepted!')
-            console.log(message)
-            // connectionId =
-            // await issueTestCredential(connectionId)
+            connectionId = message.senderDetail.DID
+            await issueTestCredential(connectionId)
+            break
           default:
             defaultHandler(msgName, message)
             break
