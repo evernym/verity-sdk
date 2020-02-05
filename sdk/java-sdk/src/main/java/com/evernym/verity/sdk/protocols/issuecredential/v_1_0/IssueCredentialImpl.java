@@ -3,13 +3,14 @@ package com.evernym.verity.sdk.protocols.issuecredential.v_1_0;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
+import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_preview.CredPreviewAttribute;
+import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.proposal.CredProposalBuilder;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Builds and sends a message asking Verity to issue a credential to a connection
@@ -27,7 +28,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
 
     String forRelationship;
     String comment;
-    JSONObject credentialProposal;
+    List<CredPreviewAttribute> attributes;
     String schemaIssuerId;
     String schemaId;
     String schemaName;
@@ -40,27 +41,24 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
      *
      * @param forRelationship pairwise relationship identifier
      */
-    public IssueCredentialImpl(String forRelationship, JSONObject credentialProposal, String comment, String schemaIssuerId,
-                               String schemaId, String schemaName, String schemaVersion, String credDefId, String issuerDID) {
+    public IssueCredentialImpl(String forRelationship,
+                               List<CredPreviewAttribute> attributes,
+                               String comment,
+                               String schemaIssuerId,
+                               String schemaId,
+                               String schemaName,
+                               String schemaVersion,
+                               String credDefId,
+                               String issuerDID) {
         super();
-
         checkRequiredField(forRelationship, "forRelationship");
-
-        ArrayList optionalFields = new ArrayList();
-        optionalFields.add(credentialProposal);
-        optionalFields.add(comment);
-        optionalFields.add(schemaIssuerId);
-        optionalFields.add(schemaId);
-        optionalFields.add(schemaName);
-        optionalFields.add(schemaVersion);
-        optionalFields.add(credDefId);
-        optionalFields.add(issuerDID);
-        checkOneOptionalFieldExists(optionalFields);
-
+        checkOneOptionalFieldExists(new ArrayList(Arrays.asList(
+                attributes, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID))
+        );
 
         this.forRelationship = forRelationship;
+        this.attributes = attributes;
         this.comment = comment;
-        this.credentialProposal = credentialProposal;
         this.schemaIssuerId = schemaIssuerId;
         this.schemaId = schemaId;
         this.schemaName = schemaName;
@@ -90,21 +88,23 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
             throw new IllegalArgumentException("Unable to propose credentials when NOT starting the interaction");
         }
 
-        JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(PROPOSE_CREDENTIAL));
-        msg.put("@id", getNewId());
-        addThread(msg);
-
-        msg.put("~for_relationship", forRelationship);
-        msg.put("credential_proposal", credentialProposal);
-        msg.put("schema_issuer_did", schemaIssuerId);
-        msg.put("schema_id", schemaId);
-        msg.put("schema_name", schemaName);
-        msg.put("schema_version", schemaVersion);
-        msg.put("cred_def_id", credDefId);
-        msg.put("issuer_did", issuerDID);
-
-        return msg;
+        JSONObject js = CredProposalBuilder
+                .blank()
+                .type(getMessageType(PROPOSE_CREDENTIAL))
+                .id(getNewId())
+                .forRelationship(forRelationship)
+                .comment(comment)
+                .schemaId(schemaIssuerId)
+                .schemaId(schemaId)
+                .schemaName(schemaName)
+                .schemaVersion(schemaVersion)
+                .credDefId(credDefId)
+                .issuerDid(issuerDID)
+                .proposal(attributes, this)
+                .build()
+                .toJson();
+        addThread(js);
+        return js;
     }
 
     private void checkOneOptionalFieldExists(ArrayList allOptionalInputs) {

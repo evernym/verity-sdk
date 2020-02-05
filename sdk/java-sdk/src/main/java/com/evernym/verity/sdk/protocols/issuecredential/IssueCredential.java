@@ -5,10 +5,12 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.protocols.issuecredential.v_0_6.IssueCredentialImpl;
+import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_preview.CredPreviewAttribute;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public interface IssueCredential extends MessageFamily {
@@ -26,10 +28,11 @@ public interface IssueCredential extends MessageFamily {
         return new IssueCredentialImpl(forRelationship, threadId);
     }
 
-    static IssueCredential v1_0(String forRelationship, JSONObject credentialProposal, String comment, String schemaIssuerId,
-                                String schemaId, String schemaName, String schemaVersion, String credDefId, String issuerDID) {
+    static IssueCredential v1_0(String forRelationship, List<CredPreviewAttribute> attributes,
+                                String comment, String schemaIssuerId, String schemaId, String schemaName,
+                                String schemaVersion, String credDefId, String issuerDID) {
         return new com.evernym.verity.sdk.protocols.issuecredential.v_1_0.IssueCredentialImpl(
-                forRelationship, credentialProposal, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID);
+                forRelationship, attributes, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID);
     }
 
     static IssueCredential v1_0(String forRelationship,

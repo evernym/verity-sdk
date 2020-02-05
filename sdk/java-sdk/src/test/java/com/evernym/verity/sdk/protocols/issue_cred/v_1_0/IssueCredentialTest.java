@@ -3,16 +3,13 @@ package com.evernym.verity.sdk.protocols.issue_cred.v_1_0;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
+import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_preview.CredPreviewAttribute;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -20,12 +17,12 @@ public class IssueCredentialTest {
 
     private String forRelationship = "...someDid...";
 
-    private Map<String, String> credentialValues = new HashMap<>();
+    private List<CredPreviewAttribute> attributes = new ArrayList<CredPreviewAttribute>();
 
     public IssueCredentialTest() {
-        credentialValues.put("name", "Jose Smith");
-        credentialValues.put("degree", "Bachelors");
-        credentialValues.put("gpa", "3.67");
+        attributes.add(new CredPreviewAttribute("name", null, "Jose Smith"));
+        attributes.add(new CredPreviewAttribute("degree", null, "Bachelors"));
+        attributes.add(new CredPreviewAttribute("gpa", null, "3.67"));
     }
 
     @Test
@@ -70,12 +67,11 @@ public class IssueCredentialTest {
     @Test
     public void testPropose() throws Exception {
         Context context = null;
-        JSONObject credProposal = prepareCredProposalObject(credentialValues);
         try {
             context = TestHelpers.getContext();
             IssueCredential testProtocol = IssueCredential.v1_0(
                     forRelationship,
-                    credProposal,
+                    attributes,
                     "comment",
                     null, null, null, null, null, null);
 
@@ -125,14 +121,4 @@ public class IssueCredentialTest {
         return optionalFields;
     }
 
-    private JSONObject prepareCredProposalObject(Map<String, String> credentialValues) {
-        JSONObject credProposal = new JSONObject();
-        credProposal.put("@id", "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/credential-preview");
-        JSONArray attributes = new JSONArray();
-        for (Map.Entry<String,String> entry : credentialValues.entrySet())
-            attributes.put(new JSONObject(String.format("{\"%s\":\"%s\"}", entry.getKey(), entry.getValue())));
-
-        credProposal.put("attributes", attributes);
-        return credProposal;
-    }
 }
