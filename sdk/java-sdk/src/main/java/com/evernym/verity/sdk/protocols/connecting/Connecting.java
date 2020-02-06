@@ -4,37 +4,34 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.connecting.v_0_6.ConnectingImpl;
 import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 public interface Connecting extends MessageFamily {
+
     String CREATE_CONNECTION = "CREATE_CONNECTION";
     String GET_STATUS = "get-status";
 
-    default String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
-    default String family() {return "connecting";}
-    default String version() {return "0.6";}
-
-    static Connecting newConnection(String sourceId) {
+    static Connecting v_06(String sourceId) {
         return new ConnectingImpl(sourceId);
     }
 
-    static Connecting newConnection(String sourceId, boolean includePublicDID) {
+    static Connecting v_06(String sourceId, boolean includePublicDID) {
         return new ConnectingImpl(sourceId, includePublicDID);
     }
 
-    static Connecting newConnection(String sourceId, String phoneNo) {
+    static Connecting v_06(String sourceId, String phoneNo) {
         return new ConnectingImpl(sourceId, phoneNo);
     }
 
-    static Connecting newConnection(String sourceId, String phoneNo, boolean includePublicDID) {
+    static Connecting v_06(String sourceId, String phoneNo, boolean includePublicDID) {
         return new ConnectingImpl(sourceId, phoneNo, includePublicDID);
     }
 
-    static Connecting interaction(String threadId) {
+    static Connecting v_06_interaction(String threadId) {
         return new ConnectingImpl(null); // FIXME
     }
 

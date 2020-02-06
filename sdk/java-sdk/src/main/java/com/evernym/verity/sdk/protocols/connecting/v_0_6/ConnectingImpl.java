@@ -1,8 +1,10 @@
-package com.evernym.verity.sdk.protocols.connecting;
+package com.evernym.verity.sdk.protocols.connecting.v_0_6;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.connecting.Connecting;
 import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -10,10 +12,15 @@ import java.io.IOException;
 /**
  * Builds and sends a new encrypted agent message for the Connection protocol.
  */
-class ConnectingImpl extends Protocol implements Connecting {
+public class ConnectingImpl extends Protocol implements Connecting {
+
     String sourceId;
     String phoneNumber;
     boolean includePublicDID;
+
+    public String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
+    public String family() {return "connecting";}
+    public String version() {return "0.6";}
 
     @Override public String sourceId() {return sourceId;}
     @Override public String phoneNumber() {return phoneNumber;}
@@ -23,7 +30,7 @@ class ConnectingImpl extends Protocol implements Connecting {
     * Create connection without phone number
     * @param sourceId required optional param that sets an id of the connection
     */
-    ConnectingImpl(String sourceId) {
+    public ConnectingImpl(String sourceId) {
         this(sourceId, null, false);
     }
 
@@ -32,16 +39,16 @@ class ConnectingImpl extends Protocol implements Connecting {
     * @param sourceId required param that sets an id of the connection
     * @param includePublicDID optional param that indicates the connection invite should use the institution's public DID.
     */
-    ConnectingImpl(String sourceId, boolean includePublicDID) {
+    public ConnectingImpl(String sourceId, boolean includePublicDID) {
         this(sourceId, null, includePublicDID);
     }
 
     /**
-    * Create connection with phone number
-    * @param sourceId required param that sets an id of the connection
-    * @param phoneNo optional param that sets the sms phone number for an identity holder 
-    */
-    ConnectingImpl(String sourceId, String phoneNo) {
+     * Create connection with phone number
+     * @param sourceId required param that sets an id of the connection
+     * @param phoneNo optional param that sets the sms phone number for an identity holder
+     */
+    public ConnectingImpl(String sourceId, String phoneNo) {
         this(sourceId, phoneNo, false);
     }
 
@@ -51,7 +58,7 @@ class ConnectingImpl extends Protocol implements Connecting {
     * @param phoneNo optional param that sets the sms phone number for an identity holder 
     * @param includePublicDID optional param that indicates the connection invite should use the institution's public DID.
     */
-    ConnectingImpl(String sourceId, String phoneNo, boolean includePublicDID) {
+    public ConnectingImpl(String sourceId, String phoneNo, boolean includePublicDID) {
         super();
         this.sourceId = sourceId;
         this.phoneNumber = phoneNo;
