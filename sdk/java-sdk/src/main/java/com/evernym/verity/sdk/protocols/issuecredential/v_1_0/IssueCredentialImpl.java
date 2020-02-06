@@ -8,6 +8,7 @@ import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.proposal.CredPropo
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
+import com.evernym.verity.sdk.utils.ValidationUtil;
 
 import java.io.IOException;
 import java.util.*;
@@ -51,8 +52,8 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
                                String credDefId,
                                String issuerDID) {
         super();
-        checkRequiredField(forRelationship, "forRelationship");
-        checkOneOptionalFieldExists(new ArrayList(Arrays.asList(
+        ValidationUtil.checkRequiredField(forRelationship, "forRelationship");
+        ValidationUtil.checkAtLeastOneOptionalFieldExists(new ArrayList(Arrays.asList(
                 attributes, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID))
         );
 
@@ -107,18 +108,6 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
         return js;
     }
 
-    private void checkOneOptionalFieldExists(ArrayList allOptionalInputs) {
-        boolean result = allOptionalInputs.stream().allMatch(Objects::isNull);
-        if (result) {
-            throw new IllegalArgumentException("one of the optional input parameters must be supplied");
-        }
-    }
-
-    private <E> void checkRequiredField(E field, String fieldName) {
-        if (field == null) {
-            throw new IllegalArgumentException(String.format("'%s' field is required", fieldName));
-        }
-    }
 
     @Override
     public byte[] proposeCredentialMsgPacked(Context context) throws VerityException {

@@ -3,12 +3,14 @@ package com.evernym.verity.sdk.protocols.connecting.v_1_0;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
-import com.evernym.verity.sdk.protocols.connecting.v_1_0.invite_with_did.InviteWithDIDBuilder;
+import com.evernym.verity.sdk.protocols.connecting.v_1_0.invitation.InvitationBuilder;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
+import com.evernym.verity.sdk.utils.ValidationUtil;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -24,25 +26,47 @@ public class ConnectionsImpl extends Protocol implements Connecting {
 
     String did;
     String label;
+    String serviceEndpoint;
+    ArrayList<String> recipientKeys;
+    ArrayList<String> routingKeys;
 
     /**
-     * Create connection without phone number
-     * @param did required optional param that is used during preparing invitation with public DID message
+     * this is used by inviter to prepare invite with DID
+     * @param did invite sender's DID
+     * @param label optional label which will help invitee identifying inviter
      */
     public ConnectionsImpl(String did, String label) {
+        ValidationUtil.checkRequiredField(did, "did");
         this.did = did;
+        this.label = label;
+    }
+
+    /**
+     * this is used by inviter to prepare invite with keys
+     * @param serviceEndpoint inviter's service endpoint
+     * @param recipientKeys inviter's recipient keys
+     * @param routingKeys inviter's routing keys
+     * @param label optional label which will help invitee identifying inviter
+     */
+    public ConnectionsImpl(String serviceEndpoint, ArrayList<String> recipientKeys, ArrayList<String> routingKeys, String label) {
+        this.serviceEndpoint = serviceEndpoint;
+        this.recipientKeys = recipientKeys;
+        this.routingKeys = routingKeys;
         this.label = label;
     }
 
 
     @Override
     public JSONObject invitationMsg(Context context) {
-        JSONObject js = InviteWithDIDBuilder
+        JSONObject js = InvitationBuilder
                 .blank()
                 .type(getMessageType(INVITATION))
                 .id(getNewId())
                 .did(did)
                 .label(label)
+                .serviceEndpoint(serviceEndpoint)
+                .recipientKeys(recipientKeys)
+                .routingKeys(routingKeys)
                 .build()
                 .toJson();
         addThread(js);

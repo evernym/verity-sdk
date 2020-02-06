@@ -21,7 +21,7 @@ public class JsonUtil {
     public static <T extends AsJsonObject> JSONArray makeArray(List<T> items) {
         if (items == null)
             return null;
-        AsJsonObject[] array = items.toArray(new AsJsonObject[0]);
+        AsJsonObject[] array = items.toArray(new AsJsonObject[0]);  //FIXME: not sure about the 0
         return makeArray(array);
     }
 }
