@@ -35,9 +35,9 @@ public interface Connecting extends MessageFamily {
         return new ConnectingImpl(null); // FIXME
     }
 
-    String sourceId();
-    String phoneNumber();
-    boolean includePublicDID();
+    static Connecting v_10(String did, String label) {
+        return new com.evernym.verity.sdk.protocols.connecting.v_1_0.ConnectionsImpl(did, label);
+    }
 
     /**
      * Sends the connection create message to Verity
@@ -89,6 +89,10 @@ public interface Connecting extends MessageFamily {
     byte[] statusMsgPacked(Context context) throws VerityException;
 
     void accept(Context context) throws IOException, VerityException;
-    void acceptMsg(Context context) throws IOException, VerityException;
-    void acceptMsgPacked(Context context) throws IOException, VerityException;
+    JSONObject acceptMsg(Context context) throws IOException, VerityException;
+    byte[] acceptMsgPacked(Context context) throws IOException, VerityException;
+
+    void invitation(Context context) throws IOException, VerityException;
+    JSONObject invitationMsg(Context context) throws IOException, VerityException;
+    byte[] invitationMsgPacked(Context context) throws IOException, VerityException;
 }

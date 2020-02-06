@@ -18,14 +18,14 @@ public class ConnectingImpl extends Protocol implements Connecting {
     String phoneNumber;
     boolean includePublicDID;
 
+    public String sourceId() {return sourceId;}
+    public String phoneNumber() {return phoneNumber;}
+    public boolean includePublicDID() {return includePublicDID;}
+
     public String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
     public String family() {return "connecting";}
     public String version() {return "0.6";}
 
-    @Override public String sourceId() {return sourceId;}
-    @Override public String phoneNumber() {return phoneNumber;}
-    @Override public boolean includePublicDID() {return includePublicDID;}
-    
     /**
     * Create connection without phone number
     * @param sourceId required optional param that sets an id of the connection
@@ -111,12 +111,27 @@ public class ConnectingImpl extends Protocol implements Connecting {
     }
 
     @Override
-    public void acceptMsg(Context context) {
+    public JSONObject acceptMsg(Context context) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void acceptMsgPacked(Context context) {
+    public byte[] acceptMsgPacked(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void invitation(Context context) throws IOException, VerityException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public JSONObject invitationMsg(Context context) throws IOException, VerityException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public byte[] invitationMsgPacked(Context context) throws IOException, VerityException {
         throw new UnsupportedOperationException();
     }
 }

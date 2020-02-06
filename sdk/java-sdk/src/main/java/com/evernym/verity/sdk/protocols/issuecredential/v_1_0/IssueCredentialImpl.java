@@ -94,7 +94,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
                 .id(getNewId())
                 .forRelationship(forRelationship)
                 .comment(comment)
-                .schemaId(schemaIssuerId)
+                .schemaIssuerDid(schemaIssuerId)
                 .schemaId(schemaId)
                 .schemaName(schemaName)
                 .schemaVersion(schemaVersion)

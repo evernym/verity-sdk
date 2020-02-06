@@ -40,16 +40,14 @@ public class IssueCredentialTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithRequiredFieldAsNull() throws VerityException {
-        Context context = TestHelpers.getContext();
-        IssueCredential testProtocol = IssueCredential.v1_0(
+        IssueCredential.v1_0(
                 null, null, null,null,
                 null,null, null,null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithAllOptionalAsNull() throws VerityException {
-        Context context = TestHelpers.getContext();
-        IssueCredential testProtocol = IssueCredential.v1_0(
+        IssueCredential.v1_0(
                 forRelationship, null, null,null,
                 null,null, null,null, null);
     }
@@ -60,12 +58,11 @@ public class IssueCredentialTest {
         IssueCredential testProtocol = IssueCredential.v1_0(
                 forRelationship, null, "driver license",null,
                 null,null, null,null, null);
-
         testProposalMessage(testProtocol.proposeCredentialMsg(context));
     }
 
     @Test
-    public void testPropose() throws Exception {
+    public void testSendPropose() throws Exception {
         Context context = null;
         try {
             context = TestHelpers.getContext();
@@ -89,7 +86,10 @@ public class IssueCredentialTest {
         }
     }
 
+    //below are helper methods
+
     private void testProposalMessage(JSONObject msg) {
+        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/send-proposal", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertNotNull(msg.getJSONObject("~thread").getString("thid"));
         assertEquals(forRelationship, msg.getString("~for_relationship"));

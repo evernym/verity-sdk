@@ -32,4 +32,6 @@ public abstract class BaseMsgBuilder<T> {
     public JSONObject getJSONObject() {
         return data;
     }
+
+    public JSONObject toJson() { return getJSONObject(); }
 }

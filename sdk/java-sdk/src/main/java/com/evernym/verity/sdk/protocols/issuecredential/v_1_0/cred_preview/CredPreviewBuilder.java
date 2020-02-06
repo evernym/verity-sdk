@@ -3,7 +3,6 @@ package com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_preview;
 import com.evernym.verity.sdk.protocols.common.BaseMsgBuilder;
 import com.evernym.verity.sdk.utils.AsJsonObject;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -20,9 +19,6 @@ public class CredPreviewBuilder extends BaseMsgBuilder<CredPreviewBuilder> imple
         addToJSON("attributes", ja);
         return this;
     }
-
-    @Override
-    public JSONObject toJson() { return getJSONObject(); }
 
     public CredPreview build() {
         return new CredPreview(getJSONObject());
