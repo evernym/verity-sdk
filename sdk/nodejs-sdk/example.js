@@ -118,7 +118,7 @@ async function exampleFlow () {
             break
           case connecting.msgNames.CONN_REQ_ACCEPTED:
             console.log('Connection Accepted!')
-            connectionId = message.senderDetail.DID
+            connectionId = message['@msg'].senderDetail.DID
             await issueTestCredential(connectionId)
             break
           default:
