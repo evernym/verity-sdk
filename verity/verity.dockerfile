@@ -1,6 +1,9 @@
 FROM ubuntu:16.04
 WORKDIR /root
 
+ENV LIBVCX_VERSION 0.3.52800629-ee57591
+ENV LIBINDY_VERSION 1.10.1
+
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     apt-utils \
@@ -42,7 +45,7 @@ RUN add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable"
 RUN apt-get update
 
 # install verity-application, ignoring failed post-install script
-RUN apt-get install -y libvcx=0.3.52800629-ee57591 libindy=1.10.1 libnullpay=1.10.1
+RUN apt-get install -y libvcx=${LIBVCX_VERSION} libindy=${LIBINDY_VERSION} libnullpay=${LIBINDY_VERSION}
 RUN apt-get install -y verity-application; exit 0
 RUN rm -rf /etc/verity/verity-application/*
 ADD configuration/ /etc/verity/verity-application/.
