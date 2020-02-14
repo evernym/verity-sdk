@@ -47,12 +47,7 @@ RUN apt-get install -y verity-application; exit 0
 RUN rm -rf /etc/verity/verity-application/*
 ADD configuration/ /etc/verity/verity-application/.
 
-# Install and setup dynamodb
-ADD scripts/dynamodb scripts/dynamodb
-RUN sh scripts/dynamodb/install.sh
-RUN sh scripts/dynamodb/clean-setup.sh
-
-ADD scripts/entrypoint.sh scripts/.
+ADD scripts/entrypoint.sh scripts/entrypoint.sh
 RUN chmod +x scripts/entrypoint.sh
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
