@@ -15,6 +15,7 @@ module.exports = class IssueCredential extends Protocol {
     this.price = '0'
 
     this.msgNames.OFFER_CREDENTIAL = 'send-offer'
+    this.msgNames.ASK_ACCEPT = 'ask-accept'
     this.msgNames.ISSUE_CREDENTIAL = 'issue-credential'
     this.msgNames.GET_STATUS = 'get-status'
   }

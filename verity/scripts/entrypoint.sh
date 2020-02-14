@@ -104,7 +104,7 @@ echo "Bootstrapping Verity"
 curl -H "Content-Type: application/json" -X POST http://127.0.0.1:9000/agency/internal/setup/key  -d "{\"seed\":\"$ENTERPRISE_SEED\"}"
 curl -X POST http://127.0.0.1:9000/agency/internal/setup/endpoint
 
-echo "Verity Bootstrapping complete. Listening on https://$NGROK_HOST"
+echo "Verity Bootstrapping complete. Listening on http://$NGROK_HOST"
 
 # Wait for Verity Application to exit (wait forever)
 wait

@@ -1,2 +1,4 @@
 node_modules
 verity-sdk*.tgz
+verityConfig.json
+connectionId.txt
