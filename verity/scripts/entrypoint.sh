@@ -89,7 +89,7 @@ sed -i "s/NGROK_HOST/$NGROK_HOST/g" $APP_CONFIG_FILE
 sed -i "s/TXN_FILE/$TXN_FILE/g" $APP_CONFIG_FILE
 
 # Start DynamoDB
-/root/scripts/dynamodb/start.sh
+# /root/scripts/dynamodb/start.sh
 
 # Start Verity Application
 /usr/bin/java -javaagent:/usr/lib/verity-application/aspectjweaver.jar -cp /etc/verity/verity-application:/usr/lib/verity-application/verity-application-assembly.jar com.evernym.verity.Main &
