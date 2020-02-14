@@ -40,7 +40,7 @@ async function exampleFlow () {
 
   // Provision Protocol. Delete verityConfig.json to reprovision
   let context
-  if(fs.existsSync(CONFIG_PATH)) { // If provisioning has already happened
+  if (fs.existsSync(CONFIG_PATH)) { // If provisioning has already happened
     context = await sdk.Context.createWithConfig(fs.readFileSync(CONFIG_PATH)) // Read config from file
     await updateTestEndpoint()
     await writeTestSchema()
@@ -54,13 +54,13 @@ async function exampleFlow () {
   }
 
   // UpdateEndpoint Protocol
-  async function updateTestEndpoint() {
+  async function updateTestEndpoint () {
     const updateEndpoint = new sdk.protocols.UpdateEndpoint()
     await updateEndpoint.update(context)
   }
 
   // IssuerSetup Protocol
-  async function testIssuerSetup() {
+  async function testIssuerSetup () {
     const issuerSetup = new sdk.protocols.IssuerSetup()
     handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
@@ -136,7 +136,7 @@ async function exampleFlow () {
             break
           case connecting.msgNames.CONN_REQ_ACCEPTED:
             console.log('Connection Accepted!')
-            fs.writeFileSync(CONNECTION_CACHE, connectionId) // Connection 
+            fs.writeFileSync(CONNECTION_CACHE, connectionId) // Connection
             await issueTestCredential(connectionId)
             break
           default:
@@ -146,7 +146,7 @@ async function exampleFlow () {
       })
     }
 
-    if(fs.existsSync(CONNECTION_CACHE)) { // If connection already created
+    if (fs.existsSync(CONNECTION_CACHE)) { // If connection already created
       connectionId = fs.readFileSync(CONNECTION_CACHE) // Get connectionId from cache
       await issueTestCredential(connectionId) // And continue to next protocol
       // await askQuestion()
@@ -176,7 +176,7 @@ async function exampleFlow () {
         }
       })
     }
-    console.log("Issuing test credential")
+    console.log('Issuing test credential')
     await issueCredential.offerCredential(context)
   }
 
@@ -197,7 +197,7 @@ async function exampleFlow () {
       handlers.addHandler(presentProof.msgFamily, presentProof.msgFamilyVersion, async (msgName, message) => {
         switch (msgName) {
           case presentProof.msgNames.PROOF_RESULT:
-            console.log("Proof received:")
+            console.log('Proof received:')
             console.log(message.requestedProof)
             // await askQuestion() // AskQuestion protocol not working yet. Message never arrives at Connect.Me
             break
