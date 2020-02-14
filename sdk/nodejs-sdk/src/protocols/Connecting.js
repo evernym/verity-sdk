@@ -4,7 +4,7 @@ const utils = require('../utils')
 const Protocol = require('./Protocol')
 
 module.exports = class Connecting extends Protocol {
-  constructor (sourceId = uuid(), phoneNumber = null, includePublicDID = false, threadId = null) {
+  constructor (threadId = null, sourceId = uuid(), phoneNumber = null, includePublicDID = false) {
     const msgFamily = 'connecting'
     const msgFamilyVersion = '0.6'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
