@@ -18,19 +18,19 @@ public interface Connecting extends MessageFamily {
     default String family() {return "connecting";}
     default String version() {return "0.6";}
 
-    static Connecting newConnection(String sourceId) {
+    static Connecting v0_6(String sourceId) {
         return new ConnectingImpl(sourceId);
     }
 
-    static Connecting newConnection(String sourceId, boolean includePublicDID) {
+    static Connecting v0_6(String sourceId, boolean includePublicDID) {
         return new ConnectingImpl(sourceId, includePublicDID);
     }
 
-    static Connecting newConnection(String sourceId, String phoneNo) {
+    static Connecting v0_6(String sourceId, String phoneNo) {
         return new ConnectingImpl(sourceId, phoneNo);
     }
 
-    static Connecting newConnection(String sourceId, String phoneNo, boolean includePublicDID) {
+    static Connecting v0_6(String sourceId, String phoneNo, boolean includePublicDID) {
         return new ConnectingImpl(sourceId, phoneNo, includePublicDID);
     }
 
