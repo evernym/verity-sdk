@@ -1,5 +1,6 @@
 'use strict'
 const uuid = require('uuid')
+const URL = require('url').URL
 const indy = require('./indy')
 const request = require('request-promise-native')
 
