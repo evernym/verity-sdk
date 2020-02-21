@@ -53,8 +53,8 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
                                String issuerDID) {
         super();
         ValidationUtil.checkRequiredField(forRelationship, "forRelationship");
-        ValidationUtil.checkAtLeastOneOptionalFieldExists(new ArrayList(Arrays.asList(
-                attributes, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID))
+        ValidationUtil.checkAtLeastOneOptionalFieldExists(Arrays.asList(
+                attributes, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID)
         );
 
         this.forRelationship = forRelationship;

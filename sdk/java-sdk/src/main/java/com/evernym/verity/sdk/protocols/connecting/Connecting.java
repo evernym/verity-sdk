@@ -9,7 +9,6 @@ import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public interface Connecting extends MessageFamily {
 
@@ -32,17 +31,8 @@ public interface Connecting extends MessageFamily {
         return new ConnectingImpl(sourceId, phoneNo, includePublicDID);
     }
 
-    //FIXME function name
-    static Connecting v_06_interaction(String threadId) {
-        return new ConnectingImpl(null); // FIXME
-    }
-
-    static Connecting v_10(String did, String label) {
-        return new com.evernym.verity.sdk.protocols.connecting.v_1_0.ConnectionsImpl(did, label);
-    }
-
-    static Connecting v_10(String serviceEndpoint, ArrayList<String> recipientKeys, ArrayList<String> routingKeys, String label) {
-        return new com.evernym.verity.sdk.protocols.connecting.v_1_0.ConnectionsImpl(serviceEndpoint, recipientKeys, routingKeys, label);
+    static Connecting v_10(String parentThreadId, String label, String base64InviteURL) {
+        return new com.evernym.verity.sdk.protocols.connecting.v_1_0.ConnectionsImpl(parentThreadId, label, base64InviteURL);
     }
 
     /**
@@ -98,7 +88,4 @@ public interface Connecting extends MessageFamily {
     JSONObject acceptMsg(Context context) throws IOException, VerityException;
     byte[] acceptMsgPacked(Context context) throws IOException, VerityException;
 
-    void invitation(Context context) throws IOException, VerityException;
-    JSONObject invitationMsg(Context context) throws IOException, VerityException;
-    byte[] invitationMsgPacked(Context context) throws IOException, VerityException;
 }

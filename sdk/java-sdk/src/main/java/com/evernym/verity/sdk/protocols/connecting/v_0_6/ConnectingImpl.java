@@ -120,18 +120,4 @@ public class ConnectingImpl extends Protocol implements Connecting {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void invitation(Context context) throws IOException, VerityException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public JSONObject invitationMsg(Context context) throws IOException, VerityException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public byte[] invitationMsgPacked(Context context) throws IOException, VerityException {
-        throw new UnsupportedOperationException();
-    }
 }

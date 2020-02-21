@@ -4,9 +4,7 @@ import com.evernym.verity.sdk.protocols.common.BaseMsgBuilder;
 import com.evernym.verity.sdk.utils.AsJsonObject;
 import org.json.JSONArray;
 
-import java.util.ArrayList;
-
-import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
+import java.util.List;
 
 public class InvitationBuilder extends BaseMsgBuilder<InvitationBuilder> implements AsJsonObject  {
 
@@ -24,17 +22,12 @@ public class InvitationBuilder extends BaseMsgBuilder<InvitationBuilder> impleme
         return this;
     }
 
-    public InvitationBuilder serviceEndpoint(String serviceEndpoint) {
-        addToJSON("serviceEndpoint", serviceEndpoint);
-        return this;
-    }
-
-    public InvitationBuilder recipientKeys(ArrayList<String> recipientKeys) {
+    public InvitationBuilder recipientKeys(List<String> recipientKeys) {
         addToJSON("recipientKeys", new JSONArray(recipientKeys));
         return this;
     }
 
-    public InvitationBuilder routingKeys(ArrayList<String> routingKeys) {
+    public InvitationBuilder routingKeys(List<String> routingKeys) {
         addToJSON("routingKeys", new JSONArray(routingKeys));
         return this;
     }

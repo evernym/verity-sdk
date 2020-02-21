@@ -1,17 +1,10 @@
 package com.evernym.verity.sdk.protocols.connecting.v_1_0;
 
-import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
-import com.evernym.verity.sdk.protocols.connecting.v_1_0.invitation.InvitationBuilder;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
-import com.evernym.verity.sdk.utils.ValidationUtil;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
 
 /**
  * Builds and sends a new encrypted agent message for the Connections protocol.
@@ -22,67 +15,28 @@ public class ConnectionsImpl extends Protocol implements Connecting {
     public String family() {return "connections";}
     public String version() {return "1.0";}
 
-    String INVITATION = "invitation";
-
-    String did;
+    String parentThreadId;
+    String base64InviteURL;
     String label;
-    String serviceEndpoint;
-    ArrayList<String> recipientKeys;
-    ArrayList<String> routingKeys;
 
     /**
-     * this is used by inviter to prepare invite with DID
-     * @param did invite sender's DID
-     * @param label optional label which will help invitee identifying inviter
+     * this is used by invitee to respond to an invitation
+     * @param parentThreadId id of invitation message
+     * @param base64InviteURL received invitation's url
      */
-    public ConnectionsImpl(String did, String label) {
-        ValidationUtil.checkRequiredField(did, "did");
-        this.did = did;
+    public ConnectionsImpl(String parentThreadId, String label, String base64InviteURL) {
+        this.parentThreadId = parentThreadId;
+        this.base64InviteURL = base64InviteURL;
         this.label = label;
     }
 
     /**
-     * this is used by inviter to prepare invite with keys
-     * @param serviceEndpoint inviter's service endpoint
-     * @param recipientKeys inviter's recipient keys
-     * @param routingKeys inviter's routing keys
-     * @param label optional label which will help invitee identifying inviter
+     * can be used by either inviter or invitee once it knows thread id
+     * @param threadId
      */
-    public ConnectionsImpl(String serviceEndpoint, ArrayList<String> recipientKeys, ArrayList<String> routingKeys, String label) {
-        this.serviceEndpoint = serviceEndpoint;
-        this.recipientKeys = recipientKeys;
-        this.routingKeys = routingKeys;
-        this.label = label;
+    public ConnectionsImpl(String threadId) {
+        super(threadId);
     }
-
-
-    @Override
-    public JSONObject invitationMsg(Context context) {
-        JSONObject js = InvitationBuilder
-                .blank()
-                .type(getMessageType(INVITATION))
-                .id(getNewId())
-                .did(did)
-                .label(label)
-                .serviceEndpoint(serviceEndpoint)
-                .recipientKeys(recipientKeys)
-                .routingKeys(routingKeys)
-                .build()
-                .toJson();
-        addThread(js);
-        return js;
-    }
-
-    @Override
-    public void invitation(Context context) throws IOException, VerityException {
-        send(context, invitationMsg(context));
-    }
-
-    @Override
-    public byte[] invitationMsgPacked(Context context) throws IOException, VerityException {
-        return packMsg(context, invitationMsg(context));
-    }
-
 
     //non supported
 
@@ -115,16 +69,13 @@ public class ConnectionsImpl extends Protocol implements Connecting {
     }
 
     @Override
-    public void accept(Context context) { throw new UnsupportedOperationException(); }
-
-    @Override
     public JSONObject acceptMsg(Context context) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public byte[] acceptMsgPacked(Context context) {
-        throw new UnsupportedOperationException();
-    }
+    public void accept(Context context) { throw new UnsupportedOperationException(); }
 
+    @Override
+    public byte[] acceptMsgPacked(Context context) { throw new UnsupportedOperationException(); }
 }

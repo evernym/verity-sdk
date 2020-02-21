@@ -27,6 +27,10 @@ public abstract class Protocol {
         this(UUID.randomUUID().toString());
     }
 
+    public String getThreadId() {
+        return threadId;
+    }
+
     private final String threadId;
 
     protected JSONObject addThread(JSONObject msg) {
