@@ -3,6 +3,15 @@
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Handle ctrl-C to exit the application
+trap_ctrlC() {
+    if [ -n "$NGROK_PID" ]; then
+        kill $NGROK_PID
+    fi
+    exit 1
+}
+trap trap_ctrlC SIGINT SIGTERM
+
 print_usage_and_exit() {
     echo "usage: ./entrypoint.sh -s|--enterprise-seed ENTERPRISE_SEED -e|--environment ENVIRONMENT"
     echo
@@ -82,26 +91,20 @@ echo
 echo "****************** GETTING START VERITY APPLICATION ******************"
 # Start ngrok
 echo -n Starting ngrok...
-ngrok http 9000 > /dev/null &
+ngrok http 9000 >> /dev/null &
 NGROK_PID=$!
-until curl -q http://127.0.0.1:4040/api/tunnels > /dev/null 2>&1
+
+until curl -m 1 -q http://127.0.0.1:4040/api/tunnels > /dev/null 2>&1
 do
   echo -n "."
   sleep 1
 done
-NGROK_HOST="$(curl -s http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url' | cut -d'/' -f3)"
+NGROK_HOST="$(curl -m 1 -s http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url' | cut -d'/' -f3)"
 
 
 echo
 printf "Verity Endpoint: ${RED}http://${NGROK_HOST}${NC}"
 echo
-
-# Handle ctrl-C to exit the application
-trap_ctrlC() {
-    kill $NGROK_PID
-    exit 1
-}
-trap trap_ctrlC SIGINT SIGTERM
 
 # Configure local ip address
 APP_CONFIG_FILE='/etc/verity/verity-application/application.conf'
