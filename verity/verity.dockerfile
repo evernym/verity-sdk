@@ -45,7 +45,7 @@ RUN add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable"
 RUN apt-get update
 
 # install verity-application, ignoring failed post-install script
-RUN apt-get install -y libvcx=${LIBVCX_VERSION} libindy=${LIBINDY_VERSION} libnullpay=${LIBINDY_VERSION}
+RUN apt-get install -y libvcx=${LIBVCX_VERSION} libindy=${LIBINDY_VERSION} libnullpay=${LIBINDY_VERSION} indy-cli=${LIBINDY_VERSION}
 RUN apt-get install -y verity-application; exit 0
 RUN rm -rf /etc/verity/verity-application/*
 ADD configuration/ /etc/verity/verity-application/.

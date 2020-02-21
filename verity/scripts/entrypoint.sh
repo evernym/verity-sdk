@@ -1,5 +1,8 @@
 #!/bin/bash
 
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
 print_usage_and_exit() {
     echo "usage: ./entrypoint.sh -s|--enterprise-seed ENTERPRISE_SEED -e|--environment ENVIRONMENT"
     echo
@@ -43,8 +46,7 @@ done
 eval set -- "$PARAMS"
 # Validate arguments
 if [ -z "$ENTERPRISE_SEED" ]; then
-    echo "ERROR: Missing ENTERPRISE_SEED"
-    print_usage_and_exit
+    ENTERPRISE_SEED=$(date +%s | md5sum | base64 | head -c 32)
 fi
 
 # Set ENVIRONMENT params
@@ -68,11 +70,31 @@ else
   esac
 fi
 
+echo "******************   GENERATE VERITY AGNECY DID     ******************"
+printf "wallet create test key=test\nwallet open test key=test\ndid new seed=%s" "${ENTERPRISE_SEED}" | indy-cli
+
+echo
+echo "Add the DID and Verkey to the target environment"
+read -p "Press enter to continue..."
+echo "**************************     COMPLETE     **************************"
+sleep 1
+echo
+echo "****************** GETTING START VERITY APPLICATION ******************"
 # Start ngrok
+echo -n Starting ngrok...
 ngrok http 9000 > /dev/null &
-sleep 5 # Wait for ngrok to startup
 NGROK_PID=$!
+until curl -q http://127.0.0.1:4040/api/tunnels > /dev/null 2>&1
+do
+  echo -n "."
+  sleep 1
+done
 NGROK_HOST="$(curl -s http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url' | cut -d'/' -f3)"
+
+
+echo
+printf "Verity Endpoint: ${RED}http://${NGROK_HOST}${NC}"
+echo
 
 # Handle ctrl-C to exit the application
 trap_ctrlC() {
@@ -89,19 +111,31 @@ sed -i "s/NGROK_HOST/$NGROK_HOST/g" $APP_CONFIG_FILE
 sed -i "s/TXN_FILE/$TXN_FILE/g" $APP_CONFIG_FILE
 
 # Start Verity Application
-/usr/bin/java -javaagent:/usr/lib/verity-application/aspectjweaver.jar -cp /etc/verity/verity-application:/usr/lib/verity-application/verity-application-assembly.jar com.evernym.verity.Main &
+/usr/bin/java -javaagent:/usr/lib/verity-application/aspectjweaver.jar \
+-cp /etc/verity/verity-application:/usr/lib/verity-application/verity-application-assembly.jar \
+com.evernym.verity.Main &> log.txt &
 
 # Bootstrap Verity Application with seed
+echo
+echo -n "Waiting for Verity to start listening..."
 until curl -q 127.0.0.1:9000/agency > /dev/null 2>&1
 do
-    echo "Waiting for Verity to start listening..."
-    sleep 2
+    echo -n "."
+    sleep 1
 done
+echo
+
 echo "Bootstrapping Verity"
-curl -H "Content-Type: application/json" -X POST http://127.0.0.1:9000/agency/internal/setup/key  -d "{\"seed\":\"$ENTERPRISE_SEED\"}"
-curl -X POST http://127.0.0.1:9000/agency/internal/setup/endpoint
+echo
 
-echo "Verity Bootstrapping complete. Listening on http://$NGROK_HOST"
+curl -H "Content-Type: application/json" -X POST http://127.0.0.1:9000/agency/internal/setup/key \
+-d "{\"seed\":\"$ENTERPRISE_SEED\"}" &> /dev/null
+curl -X POST http://127.0.0.1:9000/agency/internal/setup/endpoint &> /dev/null
 
-# Wait for Verity Application to exit (wait forever)
-wait
+echo "Verity Bootstrapping complete."
+
+echo "**************************     COMPLETE     **************************"
+echo
+echo "**************************       LOG        **************************"
+read -p "Press enter to start tailing log..."
+tail -f -n +1 log.txt

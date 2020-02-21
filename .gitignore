@@ -201,3 +201,5 @@ Cargo.lock
 #!! ERROR: vscode is undefined. Use list command to see defined gitignore types !!#
 
 # End of https://www.gitignore.io/api/rust,linux,python,java,node.js,javascript,vscode
+/sdk/java-sdk/example/qrcode.png
+/sdk/java-sdk/example/verity-context.json

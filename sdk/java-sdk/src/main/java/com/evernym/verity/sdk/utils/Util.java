@@ -143,7 +143,9 @@ public class Util {
         truncatedInviteDetails.put("sm", inviteDetails.getString("statusMsg"));
         truncatedInviteDetails.put("t", inviteDetails.getString("targetName"));
         truncatedInviteDetails.put("version", inviteDetails.getString("version"));
-        truncatedInviteDetails.put("threadId", inviteDetails.getString("threadId"));
+        if(inviteDetails.has("threadId")) {
+            truncatedInviteDetails.put("threadId", inviteDetails.getString("threadId"));
+        }
             JSONObject s = new JSONObject();
             JSONObject senderDetail = inviteDetails.getJSONObject("senderDetail");
             if(senderDetail.has("publicDID")) {
