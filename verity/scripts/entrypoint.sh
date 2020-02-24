@@ -25,10 +25,18 @@ else
   case "$NETWORK" in
     demo)
       export TXN_FILE="demo.txn"
+      DATE=$(date +%F)
+      export TAA_ACCEPTANCE=$DATE
+      export TAA_HASH="8cee5d7a573e4893b08ff53a0761a22a1607df3b3fcd7e75b98696c92879641f"
+      export TAA_VERSION="2.0"
       shift
       ;;
     team1)
       export TXN_FILE="team1.txn"
+      DATE=$(date +%F)
+      export TAA_ACCEPTANCE=$DATE
+      export TAA_HASH="3ae97ea501bd26b81c8c63da2c99696608517d6df8599210c7edaa7e2c719d65"
+      export TAA_VERSION="1.0.0"
       shift
       ;;
     *)
@@ -43,6 +51,9 @@ echo
 echo "VERITY_SEED: ${VERITY_SEED}"
 echo "NETWORK: ${NETWORK}"
 echo "TXN_FILE: ${TXN_FILE}"
+echo "TAA_VERSION: ${TAA_VERSION}"
+echo "TAA_HASH: ${TAA_HASH}"
+echo "TAA_ACCEPTANCE: ${TAA_ACCEPTANCE}"
 echo
 
 echo "**************************                  **************************"
@@ -73,6 +84,9 @@ export NGROK_HOST="$(curl -m 1 -s http://127.0.0.1:4040/api/tunnels | jq -r '.tu
 echo
 printf "Verity Endpoint: ${RED}http://${NGROK_HOST}${NC}"
 echo
+
+# Write out TAA configruation to file
+echo "agency.lib-indy.ledger.transaction_author_agreement.agreements = {\"${TAA_VERSION}\" = { digest = \${?TAA_HASH}, mechanism = on_file, time-of-acceptance = \${?TAA_ACCEPTANCE}}}" > /etc/verity/verity-application/taa.conf
 
 # Start Verity Application
 /usr/bin/java -javaagent:/usr/lib/verity-application/aspectjweaver.jar \
