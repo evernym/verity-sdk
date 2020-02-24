@@ -34,19 +34,23 @@ RUN update-ca-certificates
 
 # Setup apt for Sovrin repository
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
-    add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable" 
+    add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable"
 
 # Setup apt for evernym repositories
 RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
-RUN echo 'deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main' | tee /etc/apt/sources.list.d/agency-dev_repo.corp.evernym.com.list
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88
-RUN add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial master"
-RUN add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable"
-RUN apt-get update
+RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main"
 
 # install verity-application, ignoring failed post-install script
-RUN apt-get install -y libvcx=${LIBVCX_VERSION} libindy=${LIBINDY_VERSION} libnullpay=${LIBINDY_VERSION} indy-cli=${LIBINDY_VERSION}
-RUN apt-get install -y verity-application; exit 0
+RUN apt-get update && apt-get install -y \
+    libvcx=${LIBVCX_VERSION} \
+    libindy=${LIBINDY_VERSION} \
+    libnullpay=${LIBINDY_VERSION} \
+    indy-cli=${LIBINDY_VERSION}
+
+RUN apt-get update && apt-get install -y \
+    verity-application=0.4.82272863.997c518 \
+    ; exit 0
+
 RUN rm -rf /etc/verity/verity-application/*
 ADD configuration/ /etc/verity/verity-application/.
 

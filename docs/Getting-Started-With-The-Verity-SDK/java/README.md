@@ -1,7 +1,100 @@
 
 # Getting Started with the Verity SDK for Java
+## Standing Up a Toy Verity Application
+To use the verity-sdk, we will need an instance of the Verity Application to interact with. 
 
-## Running the Example Java Application (Ubuntu 16.04)
+We have two means of standing up an instance of the Verity Application:
+1. Build and/or run a limited instance of Verity Application in a docker container.
+1. Have a member of our Customer Success team provision a small instance of the Verity Application in the cloud.
+
+### Docker
+#### Build
+Building the Verity Application docker image assumes access to:
+1. Internal Evernym Dev Debian repo
+1. Internal Evernym Debian public key
+1. Sovrin public Debian repo
+1. Ubuntu public mirrors
+
+At the root of this repo run this cmd to build the image:
+ 
+```docker build -t verity -f verity/verity.dockerfile verity/```
+
+This should build a new image tagged with
+
+`verity:latest`
+
+#### Run
+
+
+Docker is very flexible and run many ways. The follow is an example of a `docker` run command to run Verity Application.
+
+```docker run --name verity -it --rm -p 9000:9000 -e VERITY_SEED=NjRkNmM1NzUzMzlmM2YxYjUzMGI4MTZl -e NETWORK=team1  verity```
+
+* `--name verity` - gives the running docker instance the name `verity`
+* `-it`  - helps with stdout in the console where it is being run
+* `--rm` - will remove the container after exiting
+* `-p 9000:9000` - exposes the Verity Application port
+* `-e` - enviroment variables
+* `verity` - points to the image create previously
+
+**Enviroment Variables**
+* VERITY_SEED - Seeds the DID and Verkey used for the verity endpoint
+* NETWORK - Selects the Identity Network used by Verity Application
+  * team1 - points to the team1 ledger
+  * demo - points to the demo ledger
+  
+The running container uses a script that will guild the user and display details about the running Verity Application.
+
+The Verity Application requires a public DID is on used Identity Network. The script will pause and allow for the User to put the generated DID and its verkey onto the ledger. 
+
+Logs from the Verity Application can be displayed pressing enter when requested after the application has finished starting up.
+
+### Cloud
+
+See your friendly neighborhood Customer Sucess team member for a cloud-based Verity Application.
+
+**TODO** Add information for this step
+
+## Running the Java Example App
+The Java Example App is a simple showcase of the Java Verity-SDK.
+
+Building the Java Example App requires the follow:
+1. A recent version of the Maven build tool.
+1. Internal Evernym Dev Maven repo
+1. Public Sovrin Maven repo
+1. Public Maven Centrol repo
+
+### Build
+
+1. Move the Example App project folder
+  
+   `cd verity-sdk/sdk/java-sdk/example`
+2. Compile the Example App (using)
+
+   `mvn compile`
+   
+### Run
+The Example App simulates a simple Credential example work flow. This sample interaction requires the use of Connect.me mobile app. The mobile app must be on the same Identity Network as the Verity Application.
+
+**TODO** Add instructions for setup of connect.me 
+
+#### Launch
+`mvn exec:java` will star the Example App and start the sample interaction.
+
+#### Interactions
+The Example App guides the User through a series of interactions as explain below:
+
+1. Provisioning -
+   
+   sdf
+1. Connecting
+1. Ask a Committed Answer
+1. Write Schema to Ledger
+1. Write Credential Definition to Ledger
+1. Issue Degree Credential
+1. Request Proof Presentation
+
+<!--## Running the Example Java Application (Ubuntu 16.04)
 
 These steps target the x86-64 architecture running Ubuntu 16.04. If you want to run this inside a fresh VM, install [vagrant](https://www.vagrantup.com/) and in an empty folder run:
 
@@ -106,7 +199,7 @@ vagrant ssh
 
 	![Connect.Me Developer Mode Switch](https://i.postimg.cc/pTrdMszg/IMG-0116.png)
 
-12. Scan the QR code with Connect.Me. You will then receive a Connection Invite, Challenge Question, Credential Offer, Credential and Proof Request in that order, demonstrating all of the protocols currently supported by the Verity SDK.
+12. Scan the QR code with Connect.Me. You will then receive a Connection Invite, Challenge Question, Credential Offer, Credential and Proof Request in that order, demonstrating all of the protocols currently supported by the Verity SDK. -->
 
 © 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.
 

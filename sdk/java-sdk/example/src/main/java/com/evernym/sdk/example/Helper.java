@@ -38,6 +38,9 @@ public abstract class Helper {
 
     void end() {
         listener.stop();
+        println("");
+        println("******************** STDERR ********************");
+        println(new String(errBuffer.toByteArray()));
     }
 
     // Basic http server listening for messages from Verity
@@ -128,5 +131,4 @@ public abstract class Helper {
             System.setOut(out);
         }
     }
-
 }

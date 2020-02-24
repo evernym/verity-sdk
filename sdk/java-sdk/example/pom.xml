@@ -35,31 +35,6 @@
       <version>0.1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5.8</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hyperledger</groupId>
-      <artifactId>indy</artifactId>
-      <version>1.8.1-dev-985</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.8.0-beta4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.8.0-beta4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.61</version>
-    </dependency>
-    <dependency>
       <groupId>net.glxn</groupId>
       <artifactId>qrgen</artifactId>
       <version>1.4</version>
