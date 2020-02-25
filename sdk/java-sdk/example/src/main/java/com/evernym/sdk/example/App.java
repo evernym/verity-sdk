@@ -1,9 +1,12 @@
 /*
- * COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.
+ * COPYRIGHT 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
  */
 package com.evernym.sdk.example;
 
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.exceptions.WalletOpenException;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
@@ -16,6 +19,7 @@ import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
 import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
 import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
 import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
+import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
 import com.evernym.verity.sdk.utils.Util;
 import net.glxn.qrgen.QRCode;
@@ -30,19 +34,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class App extends Helper {
-    private String webhook = "http://a2792c52.ngrok.io";
+    Integer port = 4000;
+    @Override int listenerPort() {return port;}
 
     private String issuerDID;
     private String issuerVerkey;
-
-    private String verityUrl = "http://localhost:9000";
 
     public static void main( String[] args ) {
         new App().execute();
     }
 
     public void example() throws IOException, VerityException, InterruptedException {
-        provision();
+        setup();
 
         String forDID = createConnection();
 
@@ -56,64 +59,111 @@ public class App extends Helper {
         requestProof(forDID);
     }
 
-    void provision() throws IOException, VerityException {
+
+
+    Context provisionAgent() throws WalletException, IOException, UndefinedContextException {
+        String verityUrl = consoleInput("Verity Application Endpoint").trim();
+
+        if ("".equals(verityUrl)) {
+            verityUrl = "http://localhost:9000";
+        }
+
+        println("Using Url: "+ verityUrl);
+        Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
+        ctx = Provision.v0_6().provisionSdk(ctx);
+        return ctx;
+    }
+
+    Context loadContext(File contextFile) throws IOException, WalletOpenException {
+        return ContextBuilder.fromJson(
+                new JSONObject(
+                        new String(Files.readAllBytes(contextFile.toPath()))
+                )
+        ).build();
+    }
+
+    void updateWebhookEndpoint() throws IOException, VerityException {
+        String webhookFromCtx = "";
+
+        try {
+            webhookFromCtx = context.endpointUrl();
+        } catch (UndefinedContextException ignored) {}
+
+        String webhook = consoleInput(String.format("Ngrok endpoint for port(%d)[%s]", port, webhookFromCtx)).trim();
+
+        if("".equals(webhook)) {
+            webhook = webhookFromCtx;
+        }
+
+        println("Using Webhook: "+ webhook);
+        context = context.toContextBuilder().endpointUrl(webhook).build();
+        UpdateEndpoint.v0_6().update(context); // The SDK lets Verity know what its endpoint is
+    }
+
+    void setupIssuer() throws IOException, VerityException {
+        IssuerSetup newIssuerSetup = IssuerSetup.v0_6();
+        AtomicBoolean setupComplete = new AtomicBoolean(false);
+        handle(newIssuerSetup, (String msgName, JSONObject message) -> {
+            if("public-identifier-created".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                issuerDID = message.getJSONObject("identifier").getString("did");
+                issuerVerkey = message.getJSONObject("identifier").getString("verKey");
+                setupComplete.set(true);
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        newIssuerSetup.create(context);
+        waitFor(setupComplete, "Waiting for setup to complete");
+        println("The issuer DID and Verkey must be on the ledger.");
+        println(String.format("Please add DID (%s) and Verkey (%s) to ledger.", issuerDID, issuerVerkey));
+        waitFor("Press ENTER when DID is on ledger");
+    }
+
+    void issuerIdentifier() throws IOException, VerityException {
+        IssuerSetup issuerSetup = IssuerSetup.v0_6();
+        AtomicBoolean issuerComplete = new AtomicBoolean(false);
+        handle(issuerSetup, (String msgName, JSONObject message) -> {
+            if("public-identifier".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                issuerDID = message.getString("did");
+                issuerVerkey = message.getString("verKey");
+            }
+            issuerComplete.set(true);
+        });
+
+        issuerSetup.currentPublicIdentifier(context);
+        waitFor(issuerComplete, "Waiting for current issuer DID");
+    }
+
+    void setup() throws IOException, VerityException {
         File contextFile = new File("verity-context.json");
         if (contextFile.exists()) {
-            context = ContextBuilder.fromJson(
-                    new JSONObject(
-                            new String(Files.readAllBytes(contextFile.toPath()))
-                    )
-            ).build();
-
-            IssuerSetup issuerSetup = IssuerSetup.v0_6();
-            AtomicBoolean issuerComplete = new AtomicBoolean(false);
-            handle(issuerSetup, (String msgName, JSONObject message) -> {
-                if("public-identifier".equals(msgName))
-                {
-                    println(message.toString(2));
-                    issuerDID = message.getString("did");
-                    issuerComplete.set(true);
-                }
-                else {
-                    nonHandled("Message Name is not handled - "+msgName);
-                }
-            });
-
-            issuerSetup.currentPublicIdentifier(context);
-            waitFor(issuerComplete, "Waiting for current issuer DID");
+            if (consoleYesNo("Reuse Verity Context (in verity-context.json)", true)) {
+                context = loadContext(contextFile);
+            } else {
+                context = provisionAgent();
+            }
         }
         else {
-            context = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
-            context = Provision.v0_6().provisionSdk(context);
-            context = context.toContextBuilder().endpointUrl(webhook).build();
-
-            UpdateEndpoint.v0_6().update(context); // The SDK lets Verity know what its endpoint is
-
-            IssuerSetup issuerSetup = IssuerSetup.v0_6();
-
-            AtomicBoolean setupComplete = new AtomicBoolean(false);
-            handle(issuerSetup, (String msgName, JSONObject message) -> {
-                if("public-identifier-created".equals(msgName))
-                {
-                    println(message.toString(2));
-                    issuerDID = message.getJSONObject("identifier").getString("did");
-                    issuerVerkey = message.getJSONObject("identifier").getString("verKey");
-                    setupComplete.set(true);
-                }
-                else {
-                    nonHandled("Message Name is not handled - "+msgName);
-                }
-            });
-
-            issuerSetup.create(context);
-            waitFor(setupComplete, "Waiting for setup to complete");
-            println("The issuer DID and Verkey must be on the ledger.");
-            println(String.format("Please add DID (%s) and Verkey (%s) to ledger.", issuerDID, issuerVerkey));
-            waitFor("Press ENTER when DID is on ledger");
-
-            println(context.toJson().toString(2));
-            Files.write(contextFile.toPath(), context.toJson().toString(2).getBytes());
+            context = provisionAgent();
         }
+
+        updateWebhookEndpoint();
+
+        issuerIdentifier();
+
+        if (issuerDID == null) {
+            setupIssuer();
+        }
+
+        printlnObject(context.toJson(), ">>>", "Context Used:");
+
+        Files.write(contextFile.toPath(), context.toJson().toString(2).getBytes());
     }
 
     private String createConnection() throws IOException, VerityException {
@@ -127,7 +177,7 @@ public class App extends Helper {
         handle(connecting, (String msgName, JSONObject message) -> {
             if("CONN_REQUEST_RESP".equals(msgName))
             {
-                println(message.toString(2));
+                printlnMessage(msgName, message);
                 JSONObject invite = message.getJSONObject("inviteDetail");
                 relDID.set(invite.getJSONObject("senderDetail").getString("DID"));
                 String inviteDetails = Util.truncateInviteDetails(invite).toString();
@@ -144,6 +194,7 @@ public class App extends Helper {
                 startConnectionComplete.set(true);
             }
             else if("CONN_REQ_ACCEPTED".equals(msgName)){
+                printlnMessage(msgName, message);
                 connectionComplete.set(true);
             }
             else {
@@ -174,8 +225,9 @@ public class App extends Helper {
         handle(committedAnswer, (String msgName, JSONObject message) -> {
             if("answer".equals(msgName))
             {
+                printlnMessage(msgName, message);
                 questionComplete.set(true);
-                println(message.toString(2));
+
             }
             else {
                 nonHandled("Message Name is not handled - "+msgName);
@@ -197,9 +249,10 @@ public class App extends Helper {
         AtomicReference<String> schemaIdRef = new AtomicReference<>();
         handle(writeSchema, (String msgName, JSONObject message) -> {
             if("status-report".equals(msgName)) {
+                printlnMessage(msgName, message);
                 schemaIdRef.set(message.getString("schemaId"));
                 schemaComplete.set(true);
-                println(message.toString(2));
+
             }
             else {
                 nonHandled("Message Name is not handled - "+msgName);
@@ -222,9 +275,10 @@ public class App extends Helper {
         AtomicReference<String> defIdRef = new AtomicReference<>();
         handle(def, (String msgName, JSONObject message) -> {
             if("status-report".equals(msgName)) {
+                printlnMessage(msgName, message);
                 defIdRef.set(message.getString("credDefId"));
                 defComplete.set(true);
-                System.out.println(message.toString(2));
+
             }
             else {
                 nonHandled("Message Name is not handled - "+msgName);
@@ -247,11 +301,11 @@ public class App extends Helper {
         AtomicBoolean issueComplete = new AtomicBoolean(false);
         handle(issue, (String msgName, JSONObject message) -> {
             if("ask-accept".equals(msgName)) {
-                println(message.toString(2));
+                printlnMessage(msgName, message);
                 offerComplete.set(true);
             }
             else if ("status-report".equals(msgName)){
-                println(message.toString(2));
+                printlnMessage(msgName, message);
                 issueComplete.set(true);
             }
             else {
@@ -284,7 +338,7 @@ public class App extends Helper {
         AtomicBoolean proofComplete = new AtomicBoolean(false);
         handle(proof, (String msgName, JSONObject message) -> {
             if("proof-result".equals(msgName)) {
-                println(message.toString(2));
+                printlnMessage(msgName, message);
                 proofComplete.set(true);
             }
             else {

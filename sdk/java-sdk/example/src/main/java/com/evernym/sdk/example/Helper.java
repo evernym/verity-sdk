@@ -1,3 +1,6 @@
+/*
+ * COPYRIGHT 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
+ */
 package com.evernym.sdk.example;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
@@ -13,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class Helper {
     Listener listener;
     Handlers handlers;
-    Integer port = 4000;
+
     Context context;
     private static ByteArrayOutputStream errBuffer = new ByteArrayOutputStream();
 
@@ -29,6 +32,7 @@ public abstract class Helper {
     }
 
     abstract void example() throws IOException, VerityException, InterruptedException;
+    abstract int listenerPort();
 
 
     void start() throws IOException, InterruptedException {
@@ -45,7 +49,7 @@ public abstract class Helper {
 
     // Basic http server listening for messages from Verity
     void startListening() throws IOException, InterruptedException {
-        listener = new Listener(port, (String encryptedMessageFromVerity) -> {
+        listener = new Listener(listenerPort(), (String encryptedMessageFromVerity) -> {
             try {
                 handlers.handleMessage(context, encryptedMessageFromVerity.getBytes());
             } catch(Exception ex) {
@@ -53,7 +57,7 @@ public abstract class Helper {
             }
         });
         listener.listen();
-        println("Listening on port " + port);
+        println("Listening on port " + listenerPort());
     }
 
     void handle(MessageFamily messageFamily, MessageHandler.Handler messageHandler) {
@@ -83,17 +87,74 @@ public abstract class Helper {
         System.out.println(out.toString());
     }
 
+    static void printlnMessage(String messageName, JSONObject message) {
+        try {
+            printlnObject(message, "<<<", String.format("Incoming Message -- %s", messageName));
+        } catch (IOException ignored) {}
+    }
+
+    static void printlnObject(JSONObject message, String prefix, String preamble) throws IOException {
+        println(prefix + "  " + preamble);
+        BufferedReader r = new BufferedReader(new StringReader(message.toString(2)));
+        String line;
+        while((line = r.readLine()) != null) {
+            println(prefix + "  " + line);
+        }
+        r.close();
+        println("");
+    }
+
+    static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+    static boolean consoleYesNo(String request, boolean defaultYes) throws IOException {
+        String yesNo = defaultYes ? "[y]/n" : "y/n";
+        String modifiedRequest = request + "? " + yesNo;
+        String response = consoleInput(modifiedRequest).trim().toLowerCase();
+
+        if(defaultYes && "".equals(response)){
+            return true;
+        }
+        else if ("y".equals(response)) {
+            return true;
+        }
+        else if ("n".equals(response)) {
+            return false;
+        }
+
+        throw new IOException("Did not get a valid response -- '"+response+"' is not y or n");
+
+    }
+
+    static String consoleInput(String request) throws IOException {
+        ByteArrayOutputStream recordedOut = new ByteArrayOutputStream();
+        PrintStream out = System.out;
+        System.setOut(new PrintStream(recordedOut));
+
+        try {
+
+            out.println();
+            out.print(request+":");
+            out.flush();
+
+            String rtn = in.readLine();
+            return rtn;
+        }
+        finally {
+            out.print(new String(recordedOut.toByteArray()));
+            System.setOut(out);
+        }
+    }
+
     static void waitFor(String waitMsg) {
         ByteArrayOutputStream recordedOut = new ByteArrayOutputStream();
         PrintStream out = System.out;
         System.setOut(new PrintStream(recordedOut));
 
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             out.println();
             out.print(waitMsg+" ... ");
             out.flush();
-            try {br.readLine();} catch (IOException ignored) {}
+            try {in.readLine();} catch (IOException ignored) {}
 
             out.print("Done\n");
             out.flush();
@@ -102,7 +163,6 @@ public abstract class Helper {
             out.print(new String(recordedOut.toByteArray()));
             System.setOut(out);
         }
-
     }
 
     static void waitFor(AtomicBoolean canContinue, String waitMsg) {

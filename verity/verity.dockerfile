@@ -48,14 +48,13 @@ RUN apt-get update && apt-get install -y \
     indy-cli=${LIBINDY_VERSION}
 
 RUN apt-get update && apt-get install -y \
-    verity-application=0.4.82272863.997c518 \
+    verity-application=0.4.82626082.74394ef \
     ; exit 0
 
 RUN rm -rf /etc/verity/verity-application/*
 ADD configuration/ /etc/verity/verity-application/.
 
 ADD scripts/entrypoint.sh scripts/entrypoint.sh
-RUN chmod +x scripts/entrypoint.sh
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 EXPOSE 9000

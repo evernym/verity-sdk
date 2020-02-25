@@ -39,6 +39,14 @@ else
       export TAA_VERSION="1.0.0"
       shift
       ;;
+    stage)
+      export TXN_FILE="stage.txn"
+      DATE=$(date +%F)
+      export TAA_ACCEPTANCE=$DATE
+      export TAA_HASH="8cee5d7a573e4893b08ff53a0761a22a1607df3b3fcd7e75b98696c92879641f"
+      export TAA_VERSION="2.0"
+      shift
+      ;;
     *)
       echo "ERROR: Unknown NETWORK $NETWORK. Must be one of \"demo\" or \"team1\""
       print_usage_and_exit

@@ -1,6 +1,6 @@
 
 # Getting Started with the Verity SDK for Java
-## Standing Up a Toy Verity Application
+## Standing Up a Evaluation Verity Application
 To use the verity-sdk, we will need an instance of the Verity Application to interact with. 
 
 We have two means of standing up an instance of the Verity Application:
@@ -58,13 +58,28 @@ See your friendly neighborhood Customer Sucess team member for a cloud-based Ver
 ## Running the Java Example App
 The Java Example App is a simple showcase of the Java Verity-SDK.
 
-Building the Java Example App requires the follow:
-1. A recent version of the Maven build tool.
+### Prerequisites
+
+#### Install Libindy
+See and follow instructions on [Indy-sdk Github Project page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
+
+#### Install Ngrok
+See and follow instructions on the [Ngrok website](https://ngrok.com/download).
+
+#### Install Maven
+See and follow instructions on the [Maven website](http://maven.apache.org/download.cgi)
+
+#### Clone Verity Sdk Repo
+
+```git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git```
+
+#### Repo Requirements:
 1. Internal Evernym Dev Maven repo
 1. Public Sovrin Maven repo
 1. Public Maven Centrol repo
 
 ### Build
+##### Steps:
 
 1. Move the Example App project folder
   
@@ -74,132 +89,61 @@ Building the Java Example App requires the follow:
    `mvn compile`
    
 ### Run
-The Example App simulates a simple Credential example work flow. This sample interaction requires the use of Connect.me mobile app. The mobile app must be on the same Identity Network as the Verity Application.
+#### Steps:
+1. Start Ngrok -- Ngrok is used allow the verity application to reach a webhook endpoint that the Example app starts. Be default, the Example App uses port `4000`. So, Ngrok must be started to proxy to that local port. 
 
-**TODO** Add instructions for setup of connect.me 
-
-#### Launch
-`mvn exec:java` will star the Example App and start the sample interaction.
+   To start `ngrok` use the following command:
+   
+   ```ngrok http 4000```
+   
+   This will start `ngrok`, this process will need to be running at the same time as the Example App and endpoint will need to later be given to the Example App. See the *Setup* interaction below.
+1. Get and Setup Connect.Me
+   The interaction that is simulated in the Example App requires the use of the Connect.me mobile app. 
+   
+   The Connect.me mobile app can be found on the Apple App Store and Android App Store.
+   
+   **TODO** Add more instructions for setup of connect.me
+1. Launch Example App
+   
+   `mvn exec:java` 
+   
+   will start the Example App and begin the simulated interaction.
 
 #### Interactions
 The Example App guides the User through a series of interactions as explain below:
 
-1. Provisioning -
+1. **Setup**
    
-   sdf
-1. Connecting
-1. Ask a Committed Answer
-1. Write Schema to Ledger
-1. Write Credential Definition to Ledger
-1. Issue Degree Credential
-1. Request Proof Presentation
+   During setup there are three task being accomplished:
+   
+   1. Provisioning an Agent
+   1. Registering a Webhook
+   1. Setting up an Issuer Identity 
+   
+   When setting up for the frist time, the Example app will require to inputs from the using during this process. These inputs will be asked for by the Example app.
+   1. The url for the Verity Application it will be connecting to.
+   2. The ngrok url for the webhook that was started earlier. 
+   
+   Additionally, the Issuer Identity must be written to the ledger. This can be done using the [Sovrin Self-Serve website](https://selfserve.sovrin.org/) for the Sovrin StagingNet. The DID and Verkey will be displayed in the console and they must be transferred accurately to the self-serve site. The Example app will pause and will for this state to be completed. Press enter once the identity is on the ledger.
+   
+   After the first setup, the context for the verity-sdk is saved to disk and can be reused. 
+1. **Connecting**
+   
+   Connecting is largely automated in the Example App. Incoming messages can be view in the console as they arrive from the Verity Application.
+    
+   A `QR code` image will be generated and place in the current working directory. This QR code can be scanned by the Connect.me app to finish forming the connection between Verity Application and Connect.me.<!--1. Ask a Committed Answer-->
+1. **Write Schema to Ledger**
 
-<!--## Running the Example Java Application (Ubuntu 16.04)
+   Writing the Schema to the Ledger is fully automated in the Example App. Incoming messages can be view in the console as they arrive from the Verity Application.
+1. **Write Credential Definition to Ledger**
 
-These steps target the x86-64 architecture running Ubuntu 16.04. If you want to run this inside a fresh VM, install [vagrant](https://www.vagrantup.com/) and in an empty folder run:
+   Writing the Credential Definition to the Ledger is fully automated in the Example App. Incoming messages can be view in the console as they arrive from the Verity Application.
+1. **Issue Degree Credential**
+   
+   Issuing a credential is automated in the Example App. It will wait for steps to be completed in the Connect.me App asynchronously. The credential should pop up in the Connect.me App and in the Connect.me app it can be accepted.
+1. **Request Proof Presentation**
+   The request for Proof is automated in the Example App. It will wait for steps to be completed in the Connect.me App asynchronously. The request should pop up in the Connect.me App and in the Connect.me app it can be accepted.
+   
+After the proof is exchange with the Verity Application, the simulated interaction will be complete and the Example App will terminate.
 
-```sh
-vagrant init ubuntu/xenial64
-vagrant up
-vagrant ssh
-```
-
-1. You will need docker, Java 8 (JDK), Maven, libindy and python3-pip installed on your system
-
-	```sh
-	sudo apt-get update
-	sudo apt-get install -y docker.io default-jdk maven python3-pip
-	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88
-	sudo add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial master"
-	sudo apt-get update
-	sudo apt-get install -y libindy=1.9.0~1122
-	```
-	
-2. You will need to be a Trust Anchor on the Sovrin Test Ledger to run this example. Use the `tools/new_did.py` script **in this repository** to create a new DID and then email the DID and VerKey to [support@sovrin.org](mailto:support@sovrin.org) asking for that DID to be written to the Staging Net. You should received a response within 12 hours on a weekday (often much sooner!).
-
-	You will also need `tools/requirements.txt` from this repository. It's probably best to clone this repository and keep it handy.
-
-	```
-	git clone https://github.com/evernym/Getting-Started-With-The-Verity-SDK
-	cd Getting-Started-With-The-Verity-SDK
-	pip3 install -r tools/requirements.txt --user
-	./tools/new_did.py
-	```
-
-	:exclamation: Don't send the seed! Keep it safe. You will need it to start the Mock Verity application and any other time you want to write to the Test Ledger.
-
-3. One directory back from this repo (not inside the Getting-Started-With-The-Verity-SDK folder) create a new Java application with [maven](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
-	
-	```sh
-	mvn archetype:generate \
-		-DgroupId=com.mycompany.app \
-		-DartifactId=example-app \
-		-DarchetypeArtifactId=maven-archetype-quickstart \
-		-DarchetypeVersion=1.4 \
-		-DinteractiveMode=false
-	cd example-app
-	```
-
-4. Copy `java/pom.xml` from this repository to the `pom.xml` of your application
-
-        ```sh
-        cp ../Getting-Started-With-The-Verity-SDK/java/pom.xml pom.xml
-        ```
-
-	This file is similar to the pom.xml file generated by maven, but it adds the Verity SDK JAR file as a dependency to your project and increases the target Java version to 1.8.
-	
-5. Copy `java/App.java` and `java/Listener.java` from this repository to `src/main/java/com/mycompany/app/.` of your example application.
-
-        ```sh
-        cp ../Getting-Started-With-The-Verity-SDK/java/*.java src/main/java/com/mycompany/app/.
-        ```
-
-6. Start the Mock Verity service locally with your Trust Anchor Seed created in step 2.
-
-	```sh
-	sudo docker pull evernymdev/mock-verity # Get latest version
-	sudo docker run -itd --rm --network host evernymdev/mock-verity <YOUR_TRUST_ANCHOR_SEED>
-	```
-
-7. Provision against Mock Verity
-
-	This is the process whereby your application registers and exchanges keys with the Verity application. You will need `tools/provision_sdk.py` from this repository. Also, make sure to replace \<WALLET\_KEY\_HERE\> with a new wallet password.
-
-	```sh
-        python3 ../Getting-Started-With-The-Verity-SDK/tools/provision_sdk.py --wallet-name verity-sdk-test-wallet http://localhost:8080 <WALLET_KEY_HERE> > verityConfig.json
-	```
-	
-	As shown in the above command, the resulting config is copied to `example-app/verityConfig.json`
-	
-	Note: This wallet is only used to store the keys you use to communicate with Verity.
-	
-	:exclamation: If you restart Mock Verity at any point, you will need to provision again.
-
-
-8. Build and run the example application.
-
-	From inside the `example-app` directory:
-
-	```sh
-	mvn package
-	mvn exec:java -Dexec.mainClass="com.mycompany.app.App"
-	```
-	
-9. The logs for the example application will print something like this:
-	
-	```
-	Invite Details: {"sc":"MS-101","threadId":null,"s"...
-	```
-	
-	Copy the invite details JSON object into any QR code generator.  [This one](https://www.qr-code-generator.com/) works well, but you will need to click on the "Text" tab. 
-
-10. Download [Connect.Me](https://connect.me/) from the [App Store](https://itunes.apple.com/us/app/connect-me/id1260651672?mt=8) or the [Google Play Store](https://play.google.com/store/apps/details?id=me.connect&hl=en).
-
-11. When you setup the app, make sure to check the "Use Staging Net" option at the bottom of the screen or this demo won't work.
-
-	![Connect.Me Developer Mode Switch](https://i.postimg.cc/pTrdMszg/IMG-0116.png)
-
-12. Scan the QR code with Connect.Me. You will then receive a Connection Invite, Challenge Question, Credential Offer, Credential and Proof Request in that order, demonstrating all of the protocols currently supported by the Verity SDK. -->
-
-© 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.
-
+© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
