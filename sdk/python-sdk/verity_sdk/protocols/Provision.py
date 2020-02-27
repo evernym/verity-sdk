@@ -4,7 +4,6 @@ from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.transports import send_message
 from verity_sdk.utils import Context, get_message_type, pack_message_for_verity_direct, unpack_message
 
-
 class Provision(Protocol):
     MSG_FAMILY = 'agent-provisioning'
     MSG_FAMILY_VERSION = '0.6'
