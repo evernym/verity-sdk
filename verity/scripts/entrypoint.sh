@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o pipefail
+
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
@@ -81,12 +83,13 @@ echo -n Starting ngrok..
 ngrok http 9000 >> /dev/null &
 NGROK_PID=$!
 
-until curl -m 1 -q http://127.0.0.1:4040/api/tunnels > /dev/null 2>&1
+until curl -m 1 -q http://127.0.0.1:4040/api/tunnels 2> /dev/null | jq -M -r -e '.tunnels[0].public_url' > /dev/null 2>&1
 do
   echo -n "."
   sleep 1
 done
-export NGROK_HOST="$(curl -m 1 -s http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url' | cut -d'/' -f3)"
+NGROK_HOST="$(curl -m 1 -s http://127.0.0.1:4040/api/tunnels 2> /dev/null | jq -M -r '.tunnels[0].public_url' | cut -d'/' -f3)"
+export NGROK_HOST
 
 
 echo
@@ -95,6 +98,11 @@ echo
 
 # Write out TAA configruation to file
 echo "agency.lib-indy.ledger.transaction_author_agreement.agreements = {\"${TAA_VERSION}\" = { digest = \${?TAA_HASH}, mechanism = on_file, time-of-acceptance = \${?TAA_ACCEPTANCE}}}" > /etc/verity/verity-application/taa.conf
+
+ROBO_HASH=$(date +%s | md5sum | base64 | head -c 8)
+export LOGO_URL="http://robohash.org/${ROBO_HASH}"
+
+
 
 # Start Verity Application
 /usr/bin/java -javaagent:/usr/lib/verity-application/aspectjweaver.jar \

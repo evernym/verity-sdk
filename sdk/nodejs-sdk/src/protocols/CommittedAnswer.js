@@ -22,6 +22,7 @@ module.exports = class CommittedAnswer extends Protocol {
     this.msgNames.ASK_QUESTION = 'ask-question'
     this.msgNames.ANSWER_QUESTION = 'answer-question'
     this.msgNames.GET_STATUS = 'get-status'
+    this.msgNames.ANSWER_GIVEN = 'answer-given'
   }
 
   async askMsg (context) {

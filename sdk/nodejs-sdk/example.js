@@ -1,236 +1,502 @@
 'use strict'
+
 const express = require('express')
 const http = require('http')
 const bodyParser = require('body-parser')
 const readline = require('readline')
 const fs = require('fs')
 const sdk = require('./src/index')
+const Spinner = require('cli-spinner').Spinner
+const QRCode = require('qrcode')
 
-const LISTENING_PORT = 4507
-const CONFIG_PATH = 'verityConfig.json'
-const CONNECTION_CACHE = 'connectionId.txt'
-const VERITY_URL = 'http://localhost:9000'
-// const VERITY_URL = 'http://vas-team1.pdev.evernym.com'
+
+const LISTENING_PORT = 4000
+const CONFIG_PATH = 'verity-context.json'
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 })
 
-let credDefId
-let connectionId
+const handlers = new sdk.Handlers()
+let listener
 
-exampleFlow()
+let context
+let issuerDID
+let issuerVerkey
 
-async function exampleFlow () {
-  const handlers = new sdk.Handlers()
-  handlers.setDefaultHandler(defaultHandler)
+async function example() {
 
-  var app = express()
+  await setup()
+
+  const forDID = await createConnection()
+
+  // await askQuestion(forDID)
+
+  const schemaId = await writeLedgerSchema()
+  const defId = await writeLedgerCredDef(schemaId)
+
+  await issueCredential(forDID, defId)
+
+  await requestProof(forDID)
+}
+
+
+//************************
+//       CONNECTION
+//************************
+async function createConnection() {
+  const connecting = new sdk.protocols.Connecting(null, uuidv4(), null, true)
+  var spinner = new Spinner('Waiting to start connection ... %s').setSpinnerDelay(450)
+
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case connecting.msgNames.INVITE_DETAIL:
+            spinner.stop()
+            printMessage(msgName, message)
+            const invite = message.inviteDetail
+            const relDID = invite.senderDetail.DID
+            const truncatedInvite = sdk.utils.truncateInviteDetailKeys(invite)
+
+            await QRCode.toFile('qrcode.png', truncatedInvite)
+
+            console.log()
+            console.log("QR code at: qrcode.png")
+
+            resolve(relDID)
+            break
+        default:
+          printMessage(msgName, message)
+          nonHandle("Message Name is not handled - "+msgName)
+      }
+      
+    })
+  })
+
+  spinner.start()
+  connecting.connect(context)
+  const forDID = await firstStep
+
+
+  spinner = new Spinner('Waiting for Connect.Me to accept connection ... %s').setSpinnerDelay(450)
+  var secondStep = new Promise((resolve) => {
+    handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case connecting.msgNames.CONN_REQ_ACCEPTED:
+            spinner.stop()
+            printMessage(msgName, message)
+            resolve(null)
+            break
+        default:
+          printMessage(msgName, message)
+          nonHandle("Message Name is not handled - "+msgName)
+      }
+      
+    })
+  })
+
+  spinner.start()
+  await secondStep
+  return forDID
+}
+
+//************************
+//        QUESTION
+//************************
+async function askQuestion(forDID) {
+  const questionText = 'Hi Alice, how are you today?'
+  const questionDetail = 'Checking up on you today.'
+  const validAnswers = ['Great!', 'Not so good.']
+
+  const committedAnswer = new sdk.protocols.CommittedAnswer(forDID, null, questionText, null, questionDetail, validAnswers, true)
+  var spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450)
+
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case committedAnswer.msgNames.ANSWER_GIVEN:
+            spinner.stop()
+            printMessage(msgName, message)
+
+            resolve(null)
+            break
+        default:
+          printMessage(msgName, message)
+          nonHandle("Message Name is not handled - "+msgName)
+      }
+    })
+  })
+  spinner.start()
+  committedAnswer.ask(context)
+  return await firstStep
+}
+
+//************************
+//        SCHEMA
+//************************
+async function writeLedgerSchema() {
+  const schemaName = 'Diploma '+ uuidv4().substring(0, 8)
+  const schemaVersion = "0.1"
+  const schemaAttrs = ['name', 'degree']
+
+  const schema = new sdk.protocols.WriteSchema(schemaName, schemaVersion, schemaAttrs)
+  var spinner = new Spinner('Waiting to write schema to ledger ... %s').setSpinnerDelay(450)
+
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(schema.msgFamily, schema.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case schema.msgNames.STATUS:
+            spinner.stop()
+            printMessage(msgName, message)
+
+            resolve(message.schemaId)
+            break
+        default:
+          printMessage(msgName, message)
+          nonHandle("Message Name is not handled - "+msgName)
+      }
+      
+    })
+  })
+
+  spinner.start()
+  schema.write(context)
+  return await firstStep
+}
+
+//************************
+//        CRED DEF
+//************************
+async function writeLedgerCredDef(schemaId) {
+  const credDefName = 'Trinity Collage Diplomas'
+  const credDefTag = "latest"
+
+  const def = new sdk.protocols.WriteCredentialDefinition(credDefName, schemaId, credDefTag)
+  var spinner = new Spinner('Waiting to write cred def to ledger ... %s').setSpinnerDelay(450)
+
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(def.msgFamily, def.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case def.msgNames.STATUS:
+            spinner.stop()
+            printMessage(msgName, message)
+
+            resolve(message.credDefId)
+            break
+        default:
+          printMessage(msgName, message)
+          nonHandle("Message Name is not handled - "+msgName)
+      }
+      
+    })
+  })
+
+  spinner.start()
+  def.write(context)
+  return await firstStep
+}
+
+//************************
+//         ISSUE
+//************************
+async function issueCredential(forDID, defId) {
+  const credentialName = 'Degree'
+  const credentialData = {
+    name: 'Joe Smith',
+    degree: 'Bachelors'
+  }
+
+  const issue = new sdk.protocols.IssueCredential(forDID, null, credentialName, credentialData, defId)
+  var spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450)
+
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case issue.msgNames.ASK_ACCEPT:
+            spinner.stop()
+            printMessage(msgName, message)
+
+            resolve(null)
+            break
+        default:
+          printMessage(msgName, message)
+          nonHandle("Message Name is not handled - "+msgName)
+      }
+      
+    })
+  })
+
+  spinner.start()
+  issue.offerCredential(context)
+  await firstStep
+  issue.issueCredential(context)
+  return await sleep(3000)
+}
+
+//************************
+//         PROOF
+//************************
+async function requestProof(forDID) {
+  const proofName = 'Proof of Degree' + uuidv4().substring(0, 8)
+  const proofAttrs = [
+    {
+      name: 'name',
+      restrictions: [{ issuer_did: issuerDID }]
+    },
+    {
+      name: 'degree',
+      restrictions: [{ issuer_did: issuerDID }]
+    }
+  ]
+
+  const proof = new sdk.protocols.PresentProof(forDID, null, proofName, proofAttrs)
+  var spinner = new Spinner('Waiting for proof presentation from Connect.me ... %s').setSpinnerDelay(450)
+
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(proof.msgFamily, proof.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case proof.msgNames.PROOF_RESULT:
+            spinner.stop()
+            printMessage(msgName, message)
+
+            resolve(null)
+            break
+        default:
+          printMessage(msgName, message)
+          nonHandle("Message Name is not handled - "+msgName)
+      }
+      
+    })
+  })
+  spinner.start()
+  proof.request(context)
+  return await firstStep
+
+}
+
+//************************
+//         SETUP
+//************************
+async function setup() {
+  
+  if (fs.existsSync(CONFIG_PATH)) {
+    if (await readlineYesNo("Reuse Verity Context (in "+CONFIG_PATH+")", true)){
+      context = await loadContext(CONFIG_PATH)
+    }
+    else {
+      context = await provisionAgent();
+    }
+  }
+  else {
+    context = await provisionAgent();
+  }
+
+  await updateWebhookEndpoint()
+
+  await issuerIdentifier()
+
+  console.log(issuerDID)
+
+  if (issuerDID == null) {
+    await setupIssuer()
+  }
+
+  printObject(context.getConfig(), '>>>', 'Context Used:')
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
+}
+
+async function loadContext(contextFile) {
+  return await sdk.Context.createWithConfig(fs.readFileSync(CONFIG_PATH))
+}
+
+async function provisionAgent() {
+  var verityUrl = await readlineInput('Verity Application Endpoint')
+  verityUrl = verityUrl.trim()
+  if ('' == verityUrl) {
+    verityUrl = "http://localhost:9000"
+  }
+
+  console.log("Using Url: "+verityUrl)
+
+  var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, "")
+  const provision = new sdk.protocols.Provision()
+  return await provision.provisionSdk(ctx)
+
+}
+
+async function updateWebhookEndpoint() {
+  var webhookFromCtx = context.endpointUrl
+
+  var webhook = await readlineInput(`Ngrok endpoint for port(${LISTENING_PORT})[${webhookFromCtx}]`)
+  if('' == webhook) {
+    webhook = webhookFromCtx
+  }
+
+  console.log("Using Webhook: " + webhook)
+  context.endpointUrl = webhook
+
+  const updateEndpoint = new sdk.protocols.UpdateEndpoint()
+  await updateEndpoint.update(context)
+
+}
+
+async function setupIssuer() {
+  const issuerSetup = new sdk.protocols.IssuerSetup()
+  var spinner = new Spinner('Waiting for setup to complete ... %s').setSpinnerDelay(450)
+
+  var p = new Promise((resolve) => {
+    handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case issuerSetup.msgNames.PUBLIC_IDENTIFIER_CREATED:
+            spinner.stop()
+            printMessage(msgName, message)
+            issuerDID = message.identifier.did
+            issuerVerkey = message.identifier.verKey
+            console.log('The issuer DID and Verkey must be on the ledger.')
+            console.log(`Please add DID (${issuerDID}) and Verkey (${issuerVerkey}) to ledger.`)
+            await readlineInput("Press ENTER when DID is on ledger")
+            resolve(null)
+            break
+        default: 
+          printMessage(msgName, message)
+          nonHandle("Message Name is not handled - "+msgName)
+      }
+      
+    })
+  })
+
+  spinner.start()
+  issuerSetup.create(context)
+  return await p
+}
+
+async function issuerIdentifier() {
+  const issuerSetup = new sdk.protocols.IssuerSetup()
+  var spinner = new Spinner('Waiting for current issuer DID ... %s').setSpinnerDelay(450)
+
+
+  var p = new Promise((resolve) => {
+    handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
+      spinner.stop()
+      switch (msgName) {
+        case "public-identifier":
+            printMessage(msgName, message)
+            issuerDID = message.did
+            issuerVerkey = message.verKey
+            break
+      }
+      resolve(null)
+    })
+  })
+
+  spinner.start()
+  issuerSetup.currentPublicIdentifier(context)
+  return await p
+}
+
+//************************
+//         MAIN
+//************************
+main()
+
+async function main() {
+  await start()
+  await example()
+  await end()
+}
+
+async function start() {
+  const app = express()
   app.use(bodyParser.text({
     type: function (_) {
       return 'text'
     }
   }))
+
   app.post('/', async (req, res) => {
-    console.log('Handling new message')
     await handlers.handleMessage(context, Buffer.from(req.body, 'utf8'))
     res.send('Success')
   })
-  http.createServer(app).listen(LISTENING_PORT)
+  
 
-  // Provision Protocol. Delete verityConfig.json to reprovision
-  let context
-  if (fs.existsSync(CONFIG_PATH)) { // If provisioning has already happened
-    context = await sdk.Context.createWithConfig(fs.readFileSync(CONFIG_PATH)) // Read config from file
-    await updateTestEndpoint()
-    await writeTestSchema()
-  } else {
-    context = await sdk.Context.create(sdk.utils.miniId(), '12345', VERITY_URL, 'http://localhost:' + LISTENING_PORT)
-    const provision = new sdk.protocols.Provision()
-    context = await provision.provisionSdk(context)
-    fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
-    await updateTestEndpoint()
-    await testIssuerSetup()
-  }
-
-  // UpdateEndpoint Protocol
-  async function updateTestEndpoint () {
-    const updateEndpoint = new sdk.protocols.UpdateEndpoint()
-    await updateEndpoint.update(context)
-  }
-
-  // IssuerSetup Protocol
-  async function testIssuerSetup () {
-    const issuerSetup = new sdk.protocols.IssuerSetup()
-    handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
-      switch (msgName) {
-        case issuerSetup.msgNames.PUBLIC_IDENTIFIER_CREATED:
-          console.log(message.identifier)
-          rl.question('IssuerSetup complete. This key needs to be written to the ledger. Press enter when done.', async () => {
-            rl.close()
-            console.log('Asking Verity to write Schema to ledger...')
-            await writeTestSchema()
-          })
-          break
-        default:
-          defaultHandler(msgName, message)
-          break
-      }
-    })
-    await issuerSetup.create(context)
-  }
-
-  // WriteSchema Protocol
-  async function writeTestSchema () {
-    const schemaVersion = `${sdk.utils.randInt(1000)}.${sdk.utils.randInt(1000)}.${sdk.utils.randInt(1000)}`
-    const schemaAttrs = ['name', 'birthday']
-    const writeSchema = new sdk.protocols.WriteSchema('testSchema', schemaVersion, schemaAttrs)
-    if (!handlers.hasHandler(writeSchema.msgFamily, writeSchema.msgFamilyVersion)) {
-      handlers.addHandler(writeSchema.msgFamily, writeSchema.msgFamilyVersion, async (msgName, message) => {
-        switch (msgName) {
-          case writeSchema.msgNames.STATUS:
-            if ('schemaId' in message) {
-              const schemaId = message.schemaId
-              console.log(`Schema successfully written to ledger. SchemaId = "${schemaId}"`)
-              await writeTestCredDef(schemaId)
-            }
-            break
-          default:
-            defaultHandler(msgName, message)
-            break
-        }
-      })
-    }
-    await writeSchema.write(context)
-  }
-
-  // WriteCredentialDefinition Protocol
-  async function writeTestCredDef (schemaId) {
-    const writeCredDef = new sdk.protocols.WriteCredentialDefinition('testCredDef', schemaId)
-    if (!handlers.hasHandler(writeCredDef.msgFamily, writeCredDef.msgFamilyVersion)) {
-      handlers.addHandler(writeCredDef.msgFamily, writeCredDef.msgFamilyVersion, async (msgName, message) => {
-        switch (msgName) {
-          case writeCredDef.msgNames.STATUS:
-            credDefId = message.credDefId
-            console.log(`Credential Definition successfully written to ledger. credDefId = ${credDefId}`)
-            await connectWithConnectMe()
-            break
-          default:
-            defaultHandler(msgName, message)
-            break
-        }
-      })
-    }
-    await writeCredDef.write(context)
-  }
-
-  // Connecting Protocol
-  async function connectWithConnectMe () {
-    const connecting = new sdk.protocols.Connecting()
-    if (!handlers.hasHandler(connecting)) {
-      handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
-        switch (msgName) {
-          case connecting.msgNames.INVITE_DETAIL:
-            console.log(`Invitation Detail: ${sdk.utils.truncateInviteDetailKeys(message.inviteDetail)}`)
-            connectionId = message.inviteDetail.senderDetail.DID
-            break
-          case connecting.msgNames.CONN_REQ_ACCEPTED:
-            console.log('Connection Accepted!')
-            fs.writeFileSync(CONNECTION_CACHE, connectionId) // Connection
-            await issueTestCredential(connectionId)
-            break
-          default:
-            defaultHandler(msgName, message)
-            break
-        }
-      })
-    }
-
-    if (fs.existsSync(CONNECTION_CACHE)) { // If connection already created
-      connectionId = fs.readFileSync(CONNECTION_CACHE) // Get connectionId from cache
-      await issueTestCredential(connectionId) // And continue to next protocol
-      // await askQuestion()
-    } else {
-      await connecting.connect(context) // Else begin connecting protocol
-    }
-  }
-
-  // IssueCredential
-  async function issueTestCredential () {
-    const values = {
-      name: 'Jim',
-      birthday: '01/01/1970'
-    }
-    const issueCredential = new sdk.protocols.IssueCredential(connectionId, null, 'Test Credential From Verity', values, credDefId)
-    if (!handlers.hasHandler(issueCredential.msgFamily, issueCredential.msgFamilyVersion)) {
-      handlers.addHandler(issueCredential.msgFamily, issueCredential.msgFamilyVersion, async (msgName, message) => {
-        switch (msgName) {
-          case issueCredential.msgNames.ASK_ACCEPT:
-            console.log('Credential accepted. Issuing...')
-            await issueCredential.issueCredential(context)
-            await sendTestProofRequest()
-            break
-          default:
-            defaultHandler(msgName, message)
-            break
-        }
-      })
-    }
-    console.log('Issuing test credential')
-    await issueCredential.offerCredential(context)
-  }
-
-  // PresentProof Protocol
-  async function sendTestProofRequest () {
-    const proofAttrs = [
-      {
-        name: 'name',
-        restrictions: [{ cred_def_id: credDefId }]
-      },
-      {
-        name: 'birthday',
-        restrictions: [{ cred_def_id: credDefId }]
-      }
-    ]
-    const presentProof = new sdk.protocols.PresentProof(connectionId, null, 'Requesting Proof of Test Credential', proofAttrs)
-    if (!handlers.hasHandler(presentProof.msgFamily, presentProof.msgFamilyVersion)) {
-      handlers.addHandler(presentProof.msgFamily, presentProof.msgFamilyVersion, async (msgName, message) => {
-        switch (msgName) {
-          case presentProof.msgNames.PROOF_RESULT:
-            console.log('Proof received:')
-            console.log(message.requestedProof)
-            // await askQuestion() // AskQuestion protocol not working yet. Message never arrives at Connect.Me
-            break
-          default:
-            defaultHandler(msgName, message)
-            break
-        }
-      })
-    }
-    await presentProof.request(context)
-  }
-
-  // // CommittedAnswer Protocol
-  // async function askQuestion() {
-  //   const questionText = 'Hi Alice, how are you today?'
-  //   const questionDetail = ' '
-  //   const validResponses = ['Great!', 'Not so good.']
-  //   const committedAnswer = new sdk.protocols.CommittedAnswer(connectionId, null, questionText, null, questionDetail, validResponses, true)
-  //   if (!handlers.hasHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion)) {
-  //     handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
-  //       switch (msgName) {
-  //         default:
-  //           defaultHandler(msgName, message)
-  //           break
-  //       }
-  //     })
-  //   }
-  //   console.log("Asking question")
-  //   await committedAnswer.ask(context)
-  // }
+  listener = http.createServer(app).listen(LISTENING_PORT)
+  console.log(`Listening on port ${LISTENING_PORT}`)
 }
 
-async function defaultHandler (_, message) {
-  console.log('Unhandled message:')
-  console.log(message)
+
+async function end() {
+  listener.close()
+  rl.close()
+  process.exit(0)
+}
+
+
+//************************
+//         UTILS
+//************************
+
+// Simple utility functions for the Example app.
+
+
+async function readlineInput(request) {
+  console.log()
+
+  return await new Promise((resolve) => {
+    rl.question(request+": ", (response) => {resolve(response) })})
+}
+
+async function readlineYesNo(request, defaultYes) {
+  var yesNo = defaultYes ? '[y]/n' : 'y/n'
+  var modifiedRequest = request + '? ' + yesNo + ': ';
+
+  return await new Promise((resolve) => {
+    rl.question(modifiedRequest, (response) => 
+    { 
+      var normalized = response.trim().toLocaleLowerCase()
+      if(defaultYes && '' == normalized) {
+        resolve(true)
+      }
+      else if ('y' == normalized) {
+        resolve(true)
+      }
+      else if ('n' == normalized) {
+        resolve(false)
+      }
+      else {
+        console.error("Did not get a valid response -- '"+response+"' is not y or n")
+        process.exit(-1)
+      }
+    })
+  })
+}
+
+function printMessage(msgName, msg) {
+  printObject(msg, "<<<", `Incomming Message -- ${msgName}`)
+}
+
+function printObject(obj, prefix, preamble) {
+  console.log()
+  console.log(prefix + "  " + preamble)
+  var lines = JSON.stringify(obj, null, 2).split("\n")
+  lines.forEach(line => {
+    console.log(prefix + "  " + line)
+  })
+  console.log()
+}
+
+function nonHandle(msg) {
+  console.error(msg)
+  process.exit(-1)
+}
+
+
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

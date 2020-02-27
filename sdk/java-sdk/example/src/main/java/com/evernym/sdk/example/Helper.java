@@ -18,7 +18,9 @@ public abstract class Helper {
     Handlers handlers;
 
     Context context;
+    private static PrintStream err = System.err;
     private static ByteArrayOutputStream errBuffer = new ByteArrayOutputStream();
+
 
     void execute() {
         try {
@@ -75,8 +77,14 @@ public abstract class Helper {
     }
 
     void nonHandled(String msg) {
-        System.err.println(msg);
-        System.err.flush();
+        err.println(msg);
+        err.flush();
+
+        err.println("******************** STDERR ********************");
+        err.println(new String(errBuffer.toByteArray()));
+
+        err.flush();
+
         listener.stop();
         try { Thread.sleep(250); } catch (InterruptedException ignored) {}
         System.exit(-1);
@@ -93,9 +101,9 @@ public abstract class Helper {
         } catch (IOException ignored) {}
     }
 
-    static void printlnObject(JSONObject message, String prefix, String preamble) throws IOException {
+    static void printlnObject(JSONObject obj, String prefix, String preamble) throws IOException {
         println(prefix + "  " + preamble);
-        BufferedReader r = new BufferedReader(new StringReader(message.toString(2)));
+        BufferedReader r = new BufferedReader(new StringReader(obj.toString(2)));
         String line;
         while((line = r.readLine()) != null) {
             println(prefix + "  " + line);
@@ -133,7 +141,7 @@ public abstract class Helper {
         try {
 
             out.println();
-            out.print(request+":");
+            out.print(request+": ");
             out.flush();
 
             String rtn = in.readLine();

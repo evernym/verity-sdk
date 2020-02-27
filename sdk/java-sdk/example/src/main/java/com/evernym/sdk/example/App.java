@@ -49,7 +49,7 @@ public class App extends Helper {
 
         String forDID = createConnection();
 
-//        askQuestion(forDID);
+        askQuestion(forDID);
 
         String schemaId = writeLedgerSchema();
         String defId = writeLedgerCredDef(schemaId);
@@ -180,10 +180,10 @@ public class App extends Helper {
                 printlnMessage(msgName, message);
                 JSONObject invite = message.getJSONObject("inviteDetail");
                 relDID.set(invite.getJSONObject("senderDetail").getString("DID"));
-                String inviteDetails = Util.truncateInviteDetails(invite).toString();
+                String truncatedInvite = Util.truncateInviteDetails(invite).toString();
 
                 try {
-                    QRCode.from(inviteDetails).withSize(500, 500)
+                    QRCode.from(truncatedInvite).withSize(500, 500)
                             .writeTo(new FileOutputStream(new File("qrcode.png")));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -210,7 +210,7 @@ public class App extends Helper {
 
     private void askQuestion(String forDID) throws IOException, VerityException {
         String questionText = "Hi Alice, how are you today?";
-        String questionDetail = " ";
+        String questionDetail = "Checking up on you today.";
         String[] validResponses = {"Great!", "Not so good."};
 
         CommittedAnswer committedAnswer = CommittedAnswer.v1_0(
@@ -223,7 +223,7 @@ public class App extends Helper {
 
         AtomicBoolean questionComplete = new AtomicBoolean(false);
         handle(committedAnswer, (String msgName, JSONObject message) -> {
-            if("answer".equals(msgName))
+            if("answer-given".equals(msgName))
             {
                 printlnMessage(msgName, message);
                 questionComplete.set(true);
@@ -293,38 +293,30 @@ public class App extends Helper {
     private void issueCredential(String forDID, String defId) throws IOException, VerityException, InterruptedException {
         String credentialName = "Degree";
         Map<String, String> credentialData = new HashMap<>();
-        credentialData.put("name", "JoeSmith");
+        credentialData.put("name", "Joe Smith");
         credentialData.put("degree", "Bachelors");
         IssueCredential issue = IssueCredential.v0_6(forDID, credentialName, credentialData, defId);
 
         AtomicBoolean offerComplete = new AtomicBoolean(false);
-        AtomicBoolean issueComplete = new AtomicBoolean(false);
         handle(issue, (String msgName, JSONObject message) -> {
             if("ask-accept".equals(msgName)) {
                 printlnMessage(msgName, message);
                 offerComplete.set(true);
             }
-            else if ("status-report".equals(msgName)){
-                printlnMessage(msgName, message);
-                issueComplete.set(true);
-            }
             else {
                 nonHandled("Message Name is not handled - "+msgName);
             }
-
         });
 
         issue.offerCredential(context);
         waitFor(offerComplete, "Wait for Connect.me to accept the Credential Offer");
         issue.issueCredential(context);
-        waitFor(offerComplete, "Wait for issuance to complete");
 
         Thread.sleep(3000); // Give time for Credential to get to mobile device
-
     }
 
     private void requestProof(String forDID) throws IOException, VerityException {
-        String proofName = UUID.randomUUID().toString();
+        String proofName = "Proof of Degree - "+UUID.randomUUID().toString().substring(0, 8);
         Restriction restriction =  RestrictionBuilder
                 .blank()
                 .issuerDid(issuerDID)
@@ -346,6 +338,7 @@ public class App extends Helper {
             }
         });
 
+        println(proof.requestMsg(context).toString(2));
         proof.request(context);
         waitFor(proofComplete, "Waiting for proof presentation from Connect.me");
     }
