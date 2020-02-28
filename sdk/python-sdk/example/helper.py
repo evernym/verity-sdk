@@ -1,6 +1,5 @@
 __copyright__ = "COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC."
-
-from indy import wallet
+import sys
 
 def console_input(request):
     print()
@@ -23,3 +22,7 @@ def console_yes_no(request, default_yes):
     elif "n" == response:
         return False
     raise Exception("Did not get a valid response -- '" + response + "' is not y or n")
+
+
+def print_error(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
