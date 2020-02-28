@@ -42,7 +42,7 @@ async def example():
     global for_did
 
     logging.info("Starting setup")
-    await setup()
+    await setup() # TODO @devin: Does not check for existing config yet because the config isn't being written
 
     for_did = await create_connection()
 
@@ -53,7 +53,7 @@ async def example():
 
     await issue_credential(for_did, cred_def_id)
 
-    #await request_proof(for_did)
+    await request_proof(for_did)
 
 
 def default_handler(_, message):
@@ -291,7 +291,7 @@ async def issuer_identifier():
             issuer_verkey = message['verKey']
             first_step.set_result(None)
         elif msg_name == IssuerSetup.PROBLEM_REPORT:
-            print(message) # Do nothing. Just means we need to write the keys to the ledger.
+            # Do nothing. Just means we need to write the keys to the ledger.
             first_step.set_result(None)
         else:
             non_handled(f"Message name is not handled - {msg_name}", message)
