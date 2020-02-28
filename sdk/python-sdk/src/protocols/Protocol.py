@@ -1,7 +1,7 @@
 import abc
 
-from verity_sdk.utils import Context, pack_message_for_verity, uuid
-from verity_sdk.transports import send_message
+from src.utils import Context, pack_message_for_verity, uuid
+from src.transports import send_message
 
 
 class Protocol:

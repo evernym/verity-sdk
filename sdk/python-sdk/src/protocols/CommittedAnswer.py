@@ -1,7 +1,7 @@
 from typing import List
 
-from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import Context, get_message_type, COMMUNITY_MSG_QUALIFIER
+from src.protocols.Protocol import Protocol
+from src.utils import Context, get_message_type, COMMUNITY_MSG_QUALIFIER
 
 
 class CommittedAnswer(Protocol):
