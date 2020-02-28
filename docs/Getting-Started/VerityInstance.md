@@ -1,54 +1,56 @@
-# Standing Up a Evaluation Verity Application
-To use the verity-sdk, we will need an instance of the Verity Application to interact with. 
+# Standing Up an Evaluation Verity Application
+To use the Verity SDK, you need an instance of the Verity application to interact with. 
 
-We have two means of standing up an instance of the Verity Application:
-1. Build and/or run a limited instance of Verity Application in a docker container.
-1. Have a member of our Customer Success team provision a small instance of the Verity Application in the cloud.
+There are two ways to stand up an instance of the Verity application:
+1. Build or run a limited instance of Verity application in a Docker container.
+1. Ask a member of the Evernym Customer Success team to provision a small instance of the Verity application in the cloud.
 
 ## Docker
 ### Build
-Building the Verity Application docker image assumes access to:
-1. Internal Evernym Dev Debian repo
-1. Internal Evernym Debian public key
-1. Sovrin public Debian repo
+To build the Verity application Docker image you must have access to:
+1. The internal Evernym Dev Debian repo
+1. The internal Evernym Debian public key
+1. The Sovrin public Debian repo
 1. Ubuntu public mirrors
 
-At the root of this repo run this cmd to build the image:
+At the root of this repo <!--Which repo?--> run this command to build the image:
  
-```docker build -t verity -f verity/verity.dockerfile verity/```
+```sh
+docker build -t verity -f verity/verity.dockerfile verity/
+```
 
-This should build a new image tagged with
-
-`verity:latest`
+The command builds a new image tagged as `verity:latest`.
 
 ### Run
 
 
-Docker is very flexible and run many ways. The follow is an example of a `docker` run command to run Verity Application.
+Docker can be run in a variety of ways. The following is an example of a `docker run` command to run the Verity application.
 
-```docker run --name verity -it --rm -p 9000:9000 -e VERITY_SEED=NjRkNmM1NzUzMzlmM2YxYjUzMGI4MTZl -e NETWORK=team1  verity```
+```sh
+docker run --name verity -it --rm -p 9000:9000 -e VERITY_SEED=NjRkNmM1NzUzMzlmM2YxYjUzMGI4MTZl -e NETWORK=team1  verity
+```
 
 * `--name verity` - gives the running docker instance the name `verity`
-* `-it`  - helps with stdout in the console where it is being run
-* `--rm` - will remove the container after exiting
-* `-p 9000:9000` - exposes the Verity Application port
-* `-e` - enviroment variables
-* `verity` - points to the image create previously
+* `-it`  - helps with `stdout` in the console where it is being run
+* `--rm` - removes the container after exiting
+* `-p 9000:9000` - exposes the Verity application port
+* `-e` - contains enviroment variables
+* `verity` - points to the image created previously
 
 **Enviroment Variables**
-* VERITY_SEED - Seeds the DID and Verkey used for the verity endpoint
-* NETWORK - Selects the Identity Network used by Verity Application
-  * team1 - points to the team1 ledger
-  * demo - points to the demo ledger
+* `VERITY_SEED` - Seeds the DID and Verkey used for the Verity endpoint
+* `NETWORK` - Selects the Identity Network used by the Verity application
+  * `team1` - points to the `team1` ledger
+  * `demo` - points to the `demo` ledger
   
-The running container uses a script that will guild the user and display details about the running Verity Application.
+The running container uses a script that will guide the user and display details about the running Verity application.
 
-The Verity Application requires a public DID is on used Identity Network. The script will pause and allow for the **User** to put the generated DID and its verkey onto the ledger. The [Sovrin Self-Serve website](https://selfserve.sovrin.org/) can be used it the target network is the Sovrin BuilderNet or Sorvin StagingNet.
+The Verity application requires a public DID to be used on the Identity Network. The script will pause and allow for the user to put the generated DID and its Verkey onto the ledger. The [Sovrin Self-Serve website](https://selfserve.sovrin.org/) can be used if the target network is the Sovrin BuilderNet or Sorvin StagingNet.
 
-Logs from the Verity Application can be displayed pressing enter when requested after the application has finished starting up.
+Logs from the Verity application can be displayed by pressing **Enter** when requested, after the application has finished starting up.
 
 ## Cloud
 
-See your friendly neighborhood Customer Success team member for a cloud-based Verity Application.
+Speak to a Customer Success team member for a cloud-based Verity application.
 
-**TODO** Add information for this step
+<!--**TODO** Add information for this step -->
