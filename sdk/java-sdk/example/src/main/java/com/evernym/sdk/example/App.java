@@ -49,7 +49,7 @@ public class App extends Helper {
 
         String forDID = createConnection();
 
-        askQuestion(forDID);
+//        askQuestion(forDID);
 
         String schemaId = writeLedgerSchema();
         String defId = writeLedgerCredDef(schemaId);
