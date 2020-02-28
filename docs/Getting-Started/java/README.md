@@ -1,59 +1,6 @@
-
 # Getting Started with the Verity SDK for Java
 ## Standing Up a Evaluation Verity Application
-To use the verity-sdk, we will need an instance of the Verity Application to interact with. 
-
-We have two means of standing up an instance of the Verity Application:
-1. Build and/or run a limited instance of Verity Application in a docker container.
-1. Have a member of our Customer Success team provision a small instance of the Verity Application in the cloud.
-
-### Docker
-#### Build
-Building the Verity Application docker image assumes access to:
-1. Internal Evernym Dev Debian repo
-1. Internal Evernym Debian public key
-1. Sovrin public Debian repo
-1. Ubuntu public mirrors
-
-At the root of this repo run this cmd to build the image:
- 
-```docker build -t verity -f verity/verity.dockerfile verity/```
-
-This should build a new image tagged with
-
-`verity:latest`
-
-#### Run
-
-
-Docker is very flexible and run many ways. The follow is an example of a `docker` run command to run Verity Application.
-
-```docker run --name verity -it --rm -p 9000:9000 -e VERITY_SEED=NjRkNmM1NzUzMzlmM2YxYjUzMGI4MTZl -e NETWORK=team1  verity```
-
-* `--name verity` - gives the running docker instance the name `verity`
-* `-it`  - helps with stdout in the console where it is being run
-* `--rm` - will remove the container after exiting
-* `-p 9000:9000` - exposes the Verity Application port
-* `-e` - enviroment variables
-* `verity` - points to the image create previously
-
-**Enviroment Variables**
-* VERITY_SEED - Seeds the DID and Verkey used for the verity endpoint
-* NETWORK - Selects the Identity Network used by Verity Application
-  * team1 - points to the team1 ledger
-  * demo - points to the demo ledger
-  
-The running container uses a script that will guild the user and display details about the running Verity Application.
-
-The Verity Application requires a public DID is on used Identity Network. The script will pause and allow for the User to put the generated DID and its verkey onto the ledger. 
-
-Logs from the Verity Application can be displayed pressing enter when requested after the application has finished starting up.
-
-### Cloud
-
-See your friendly neighborhood Customer Sucess team member for a cloud-based Verity Application.
-
-**TODO** Add information for this step
+See: [Standing Up a Evaluation Verity Application](../VerityInstance.md)
 
 ## Running the Java Example App
 The Java Example App is a simple showcase of the Java Verity-SDK.
@@ -74,11 +21,18 @@ See and follow instructions on the [Maven website](http://maven.apache.org/downl
 ```git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git```
 
 #### Repo Requirements:
-1. Internal Evernym Dev Maven repo
 1. Public Sovrin Maven repo
-1. Public Maven Centrol repo
+1. Public Maven Central repo
 
-### Build
+### Build Java Verity SDK
+##### Steps:
+1. Move the Java Verity SDK project folder
+  
+   `cd verity-sdk/sdk/java-sdk`
+2. Compile, Package and Install (to the local Maven Repo, see ~/.m2) the Java Verity SDK (using)
+
+   `mvn install`
+### Build Example App
 ##### Steps:
 
 1. Move the Example App project folder
@@ -90,20 +44,27 @@ See and follow instructions on the [Maven website](http://maven.apache.org/downl
    
 ### Run
 #### Steps:
-1. Start Ngrok -- Ngrok is used allow the verity application to reach a webhook endpoint that the Example app starts. Be default, the Example App uses port `4000`. So, Ngrok must be started to proxy to that local port. 
+1. **Start Ngrok**
+
+   Ngrok is used allow the verity application to reach a webhook endpoint that the Example app starts. Be default, the Example App uses port `4000`. So, Ngrok must be started to proxy to that local port. 
 
    To start `ngrok` use the following command:
    
    ```ngrok http 4000```
    
-   This will start `ngrok`, this process will need to be running at the same time as the Example App and endpoint will need to later be given to the Example App. See the *Setup* interaction below.
-1. Get and Setup Connect.Me
+   This will start `ngrok`, this process will need to be running at the same time as the Example App and endpoint will need to later be given to the Example App. 
+   
+   See the *Setup* interaction below.
+1. **Get and Setup Connect.Me**
+
    The interaction that is simulated in the Example App requires the use of the Connect.me mobile app. 
    
    The Connect.me mobile app can be found on the Apple App Store and Android App Store.
    
-   **TODO** Add more instructions for setup of connect.me
-1. Launch Example App
+   See: [Connect.Me Setup Instruction](../ConnectMe.md)
+
+   
+1. **Launch Example App**
    
    `mvn exec:java` 
    

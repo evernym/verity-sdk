@@ -70,7 +70,7 @@ async function createConnection () {
   })
 
   spinner.start()
-  connecting.connect(context)
+  await connecting.connect(context)
   const forDID = await firstStep
 
   spinner = new Spinner('Waiting for Connect.Me to accept connection ... %s').setSpinnerDelay(450)
@@ -121,7 +121,7 @@ async function createConnection () {
 //     })
 //   })
 //   spinner.start()
-//   committedAnswer.ask(context)
+//   await committedAnswer.ask(context)
 //   return await firstStep
 // }
 
@@ -153,7 +153,7 @@ async function writeLedgerSchema () {
   })
 
   spinner.start()
-  schema.write(context)
+  await schema.write(context)
   return firstStep
 }
 
@@ -184,7 +184,7 @@ async function writeLedgerCredDef (schemaId) {
   })
 
   spinner.start()
-  def.write(context)
+  await def.write(context)
   return firstStep
 }
 
@@ -218,9 +218,9 @@ async function issueCredential (forDID, defId) {
   })
 
   spinner.start()
-  issue.offerCredential(context)
+  await issue.offerCredential(context)
   await firstStep
-  issue.issueCredential(context)
+  await issue.issueCredential(context)
   return sleep(3000)
 }
 
@@ -259,7 +259,7 @@ async function requestProof (forDID) {
     })
   })
   spinner.start()
-  proof.request(context)
+  await proof.request(context)
   return firstStep
 }
 
@@ -349,7 +349,7 @@ async function setupIssuer () {
   })
 
   spinner.start()
-  issuerSetup.create(context)
+  await issuerSetup.create(context)
   return step
 }
 
@@ -372,7 +372,7 @@ async function issuerIdentifier () {
   })
 
   spinner.start()
-  issuerSetup.currentPublicIdentifier(context)
+  await issuerSetup.currentPublicIdentifier(context)
   return step
 }
 
