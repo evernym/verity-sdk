@@ -161,7 +161,7 @@ async function writeLedgerSchema () {
 //        CRED DEF
 //* ***********************
 async function writeLedgerCredDef (schemaId) {
-  const credDefName = 'Trinity Collage Diplomas'
+  const credDefName = 'Trinity College Diplomas'
   const credDefTag = 'latest'
 
   const def = new sdk.protocols.WriteCredentialDefinition(credDefName, schemaId, credDefTag)
@@ -361,7 +361,7 @@ async function issuerIdentifier () {
     handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
       spinner.stop()
       switch (msgName) {
-        case 'public-identifier':
+        case issuerSetup.msgNames.PUBLIC_IDENTIFIER:
           printMessage(msgName, message)
           issuerDID = message.did
           issuerVerkey = message.verKey

@@ -58,7 +58,7 @@ class Handlers:
         message: dict = await unpack_message(context, raw_message)
         msg_type = MsgType(message['@type'])
 
-        if Handlers.has_handler(msg_type.msg_family, msg_type.msg_family_version):
+        if self.has_handler(msg_type.msg_family, msg_type.msg_family_version):
             await self.handlers[Handlers.build_handlers_key(msg_type.msg_family, msg_type.msg_family_version)].handle(msg_type.msg_name, message)
         else:
             if self.default_handler is not None:

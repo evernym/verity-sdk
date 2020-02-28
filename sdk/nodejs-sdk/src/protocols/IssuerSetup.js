@@ -10,6 +10,7 @@ module.exports = class IssuerSetup extends Protocol {
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
     this.msgNames.CREATE = 'create'
+    this.msgNames.PUBLIC_IDENTIFIER = 'public-identifier'
     this.msgNames.CURRENT_PUBLIC_IDENTIFIER = 'current-public-identifier'
     this.msgNames.PUBLIC_IDENTIFIER_CREATED = 'public-identifier-created'
   }

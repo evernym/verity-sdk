@@ -6,7 +6,7 @@
 docker build -t verity --network host -f verity/verity.dockerfile verity/
 ```
 
-The `--network host` is only required when using sshuttle-helper.
+The `--network host` is only required when using `sshuttle-helper`.
 
 ## Run
 
@@ -24,5 +24,5 @@ positional arguments:
 	 -e, --environment	 one of "demo" or "team1". default: "demo"
 ```
 
-DID associated with `enterprise-seed` must already be written to the ledger.
+The DID associated with `enterprise-seed` must already be written to the ledger.
 

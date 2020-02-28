@@ -10,6 +10,7 @@ class IssueCredential(Protocol):
     OFFER_CREDENTIAL = 'send-offer'
     ISSUE_CREDENTIAL = 'issue-credential'
     GET_STATUS = 'get-status'
+    ASK_ACCEPT = 'ask-accept'
 
     # Status
     OFFER_SENT_TO_USER_STATUS = 0

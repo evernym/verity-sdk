@@ -88,6 +88,8 @@ def truncate_invite_details(invite_details: dict):
     if 'publicDID' in invite_details['senderDetail']:
         truncated_invite_details['s']['publicDID'] = invite_details['senderDetail']['publicDID']
 
+    return truncated_invite_details
+
 
 async def unpack_message(context: Context, message: bytes) -> Dict:
     jwe: bytes = await crypto.unpack_message(

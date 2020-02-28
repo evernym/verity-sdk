@@ -1,5 +1,7 @@
 __copyright__ = "COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC."
 import sys
+import random
+
 
 def console_input(request):
     print()
@@ -26,3 +28,11 @@ def console_yes_no(request, default_yes):
 
 def print_error(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
+
+def get_random_version():
+    return '{}.{}.{}'.format(get_random_int(), get_random_int(), get_random_int())
+
+
+def get_random_int():
+    random.seed()
+    return random.randrange(0, 1000)
