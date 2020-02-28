@@ -8,25 +8,24 @@ import sys
 from aiohttp import web
 from example.helper import console_input, console_yes_no
 
-from verity_sdk.handlers import Handlers, AddHandler
-from verity_sdk.protocols.Connecting import Connecting
-from verity_sdk.protocols.Provision import Provision
-from verity_sdk.protocols.IssueCredential import IssueCredential
-from verity_sdk.protocols.PresentProof import PresentProof
-from verity_sdk.protocols.QuestionAnswer import QuestionAnswer
-from verity_sdk.protocols.UpdateEndpoint import UpdateEndpoint
-from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
-from verity_sdk.protocols.WriteSchema import WriteSchema
-from verity_sdk.utils.Context import Context
-from verity_sdk.utils.Wallet import try_create_wallet
-from verity_sdk.utils.Verity import retrieve_verity_public_did
+from src.handlers import Handlers, AddHandler
+from src.protocols.Connecting import Connecting
+from src.protocols.IssueCredential import IssueCredential
+from src.protocols.PresentProof import PresentProof
+from src.protocols.Provision import Provision
+from src.protocols.UpdateEndpoint import UpdateEndpoint
+from src.protocols.WriteCredentialDefinition import WriteCredentialDefinition
+from src.protocols.WriteSchema import WriteSchema
+from src.utils.Context import Context
+from src.utils import truncate_invite_details, uuid
 from verity_sdk.utils.Did import Did, create_new_did
-from verity_sdk.utils import truncate_invite_details, uuid
-from verity_sdk.wallet import DefaultWalletConfig, WalletConfig
+from verity_sdk.utils.Verity import retrieve_verity_public_did
+from verity_sdk.utils.Wallet import try_create_wallet
+from verity_sdk.wallet import DefaultWalletConfig
 
 context: Context
-connection_id: str
-cred_def_id: str
+issuer_did: str
+issuer_verkey: str
 
 handlers = Handlers()
 routes = web.RouteTableDef()
@@ -35,7 +34,7 @@ port = 4000
 
 async def provision_agent() -> str:
     global context
-    default_verity_url = "http://localhost:8083"
+    default_verity_url = "http://localhost:9000"
     verity_url = console_input(f"Verity Application Endpoint [{default_verity_url}]").strip()
     wallet_name = "examplewallet1"
     wallet_key = wallet_name
@@ -121,9 +120,20 @@ async def setup():
 
 async def create_connection():
     global context
-    source_id = uuid()
-    connecting: Connecting = Connecting(source_id, include_public_did=True)
+    global handlers
+    connecting: Connecting = Connecting(include_public_did=True)
+
     await connecting.connect(context)
+
+@AddHandler(handlers, Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION)
+async def connecting_handler(msg_name, message):
+    if msg_name == Connecting.INVITE_DETAIL:
+        print_message(msg_name, message)
+        # write QR Code to disk
+
+    elif msg_name == Connecting.
+
+
 
 
 async def example():
@@ -234,6 +244,7 @@ def get_proof_attrs(cred_def_id: str):
 
 def get_issuer_did(cred_def_id: str):
     return cred_def_id.split(':')[0]
+
 
 
 @routes.post('/')

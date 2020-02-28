@@ -1,9 +1,9 @@
 import json
 import pytest
 
-from verity_sdk.utils import unpack_forward_message
-from verity_sdk.utils.Context import Context
-from verity_sdk.protocols.Protocol import Protocol
+from src.utils import unpack_forward_message
+from src.utils.Context import Context
+from src.protocols.Protocol import Protocol
 from ..test_utils import get_test_config, cleanup
 
 

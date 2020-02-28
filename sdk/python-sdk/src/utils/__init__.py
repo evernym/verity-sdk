@@ -3,7 +3,7 @@ from typing import Dict
 from uuid import uuid4
 from indy import crypto
 
-from verity_sdk.utils import Context
+from src.utils import Context
 
 EVERNYM_MSG_QUALIFIER = 'did:sov:123456789abcdefghi1234'
 COMMUNITY_MSG_QUALIFIER = 'did:sov:BzCbsNYhMrjHiqZDTUASHg'
@@ -115,3 +115,13 @@ def get_problem_report_message_type(msg_family: str, msg_family_version: str) ->
 
 def get_status_message_type(msg_family: str, msg_family_version: str) -> str:
     return get_message_type(msg_family, msg_family_version, 'status')
+
+class MsgType:
+    def __init__(self, msgType: str):
+        parts1 = msgType.split(';spec/')
+        self.msg_qualifier = parts1[0]
+        parts2 = parts1[1].split('/')
+        self.msg_family = parts2[0]
+        self.msg_family_version = parts2[1]
+        self.msg_name = parts2[2]
+

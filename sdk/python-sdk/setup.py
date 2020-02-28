@@ -1,13 +1,13 @@
 import setuptools
 
-from verity_sdk.version import VERSION
+from src.version import VERSION
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="verity-sdk",
-    version=VERSION,  # see verity_sdk/version.py
+    version=VERSION,  # see src/version.py
     author="Evernym, Inc.",
     author_email="dev@evernym.com",
     description='The official Python SDK for Evernym\'s Verity',

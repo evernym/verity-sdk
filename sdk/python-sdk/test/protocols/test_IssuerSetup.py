@@ -1,8 +1,8 @@
 import pytest
 
-from verity_sdk.protocols.IssuerSetup import IssuerSetup
-from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
-from verity_sdk.utils.Context import Context
+from src.protocols.IssuerSetup import IssuerSetup
+from src.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from src.utils.Context import Context
 from test.test_utils import get_test_config, send_stub, cleanup
 
 

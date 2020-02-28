@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from verity_sdk.transports import send_message
+from src.transports import send_message
 
 
 def test_send_message_passes():
