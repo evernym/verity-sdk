@@ -11,6 +11,7 @@ class PresentProof(Protocol):
     # Messages
     PROOF_REQUEST = 'request'
     GET_STATUS = 'get-status'
+    PROOF_RESULT = 'proof-result'
 
     # Status
     PROOF_REQUEST_SENT_STATUS = 0

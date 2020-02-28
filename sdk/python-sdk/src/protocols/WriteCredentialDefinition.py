@@ -8,6 +8,7 @@ class WriteCredentialDefinition(Protocol):
 
     # Messages
     WRITE_CRED_DEF = 'write'
+    STATUS = 'status-report'
 
     # Status
     WRITE_SUCCESSFUL_STATUS = 0
