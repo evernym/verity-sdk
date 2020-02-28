@@ -6,7 +6,10 @@ import random
 import sys
 
 from aiohttp import web
-from example.helper import console_input, console_yes_no
+from aiohttp.web_routedef import RouteTableDef
+from asyncio.base_events import Server
+
+from example.helper import console_input, console_yes_no, print_error
 
 from src.handlers import Handlers, AddHandler
 from src.protocols.Connecting import Connecting
@@ -24,12 +27,20 @@ from verity_sdk.utils.Wallet import try_create_wallet
 from verity_sdk.wallet import DefaultWalletConfig
 
 context: Context
+for_did: str
+cred_def_id: str
 issuer_did: str
 issuer_verkey: str
 
-handlers = Handlers()
-routes = web.RouteTableDef()
-port = 4000
+server: Server
+port: int = 4000
+handlers: Handlers = Handlers()
+routes: RouteTableDef = web.RouteTableDef()
+
+# Connection Handler
+#startConnectionComplete: bool = False
+#connectionComplete: bool = False
+#relDID: str
 
 
 async def provision_agent() -> str:
@@ -122,24 +133,47 @@ async def create_connection():
     global context
     global handlers
     connecting: Connecting = Connecting(include_public_did=True)
-
     await connecting.connect(context)
+
+
+def non_handled(msg: str):
+    global server
+    print_error(msg)
+    server.close()
+    sys.exit(1)
+
 
 @AddHandler(handlers, Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION)
 async def connecting_handler(msg_name, message):
+    print(f"{msg_name} - {message}")
     if msg_name == Connecting.INVITE_DETAIL:
-        print_message(msg_name, message)
         # write QR Code to disk
-
-    elif msg_name == Connecting.
-
-
+        invite = json.loads(message)
+        # Capture the senderDetail > DID
+        # Capture truncated version of invite
+        # Generate and write the QR code png file
+        print("QR code at: qrcode.png");
+        #startConnectionComplete.set(true);
+    elif msg_name == Connecting.CONN_REQ_ACCEPTED:
+        #connectionComplete.set(true);
+        pass
+    else:
+        non_handled(f"Message name is not handled - {msg_name}")
 
 
 async def example():
-    global connection_id
+    global for_did
     await setup()
-    connection_id = await create_connection()
+    for_did = await create_connection()
+
+    #await ask_question(for_did)
+
+    #schema_id = await write_ledger_schema()
+    #def_idi = await write_ledger_cred_def(schema_id)
+
+    #await issue_credential(for_did, def_id)
+
+    #await request_proof(for_did)
 
     @AddHandler(handlers, message_type="did:sov:123456789abcdefghi1234;spec/connecting/0.6/CONN_REQUEST_RESP")
     async def print_invite_details(msg: dict) -> None:
@@ -158,10 +192,10 @@ async def example():
 #    async def send_question(msg: dict) -> None:
 #        print("Connection accepted!")
 #
-#        global connection_id
-#        connection_id = msg['content']
+#        global for_did
+#        for_did = msg['content']
 #        question = QuestionAnswer(
-#            connection_id,
+#            for_did,
 #            "Challenge Question",
 #            "Hi Alice, how are you today?",
 #            " ",
@@ -187,10 +221,10 @@ async def example():
                 message_status=WriteCredentialDefinition.WRITE_SUCCESSFUL_STATUS)
     async def send_credential(msg: dict) -> None:
         global cred_def_id
-        global connection_id
+        global for_did
         cred_def_id = msg['content']
         issue_credential = IssueCredential(
-            connection_id,
+            for_did,
             name="Degree",
             cred_def_id=cred_def_id,
             credential_values={'name': 'John', 'degree': 'Bachelors of Science'},
@@ -206,8 +240,8 @@ async def example():
                 message_status=IssueCredential.CREDENTIAL_SENT_TO_USER_STATUS)
     async def send_proof_request(msg: dict) -> None:
         global cred_def_id
-        global connection_id
-        present_proof = PresentProof(connection_id, name="Who are you?", proof_attrs=get_proof_attrs(cred_def_id))
+        global for_did
+        present_proof = PresentProof(for_did, name="Who are you?", proof_attrs=get_proof_attrs(cred_def_id))
         await present_proof.request(context)
 
     @AddHandler(handlers, message_type=PresentProof.get_status_message_type(),
@@ -258,9 +292,10 @@ async def endpoint_handler(request):
 
 async def main(loop):
     global port
+    global server
     app = web.Application(loop=loop)
     app.add_routes(routes)
-    await loop.create_server(app.make_handler(), '0.0.0.0', port)
+    server = await loop.create_server(app.make_handler(), '0.0.0.0', port)
     print("Listening on port {}".format(port))
     await loop.create_task(example())
 
