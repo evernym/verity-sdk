@@ -17,7 +17,7 @@ After you have finished launching the example application, you begin going throu
    
    After initial setup, the context for the Verity SDK is saved to disk and can be reused. 
 
-1.**Connect**
+1. **Connect**
    
    Connecting is largely automated in the example application. You can view incoming messages in the console as they arrive from the Verity application.
     
