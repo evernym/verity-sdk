@@ -8,10 +8,10 @@ There are two ways to stand up an instance of the Verity application:
 ## Docker
 ### Build
 To build the Verity application Docker image you must have access to:
-1. The internal Evernym Dev Debian repo
-1. The internal Evernym Debian public key
-1. The Sovrin public Debian repo
-1. Ubuntu public mirrors
+* The internal Evernym Dev Debian repo
+* The internal Evernym Debian public key
+* The Sovrin public Debian repo
+* Ubuntu public mirrors
 
 At the root of this repo <!--Which repo?--> run this command to build the image:
  

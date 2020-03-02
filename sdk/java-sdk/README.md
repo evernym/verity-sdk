@@ -2,22 +2,22 @@
 
 ## Overview
 
-This directory contains both the Java SDK and an example application that consumes the SDK.  The JAR file is available at https://evernym.mycloudrepo.io. See [below](#maven) for information on consuming this artifact.
+This directory contains both the Java SDK and an example application that consumes the SDK. The JAR file is available at https://evernym.mycloudrepo.io. See [below](#maven) for information on consuming this artifact.
 
 ## Reference Documentation
 
-To generate the Javadoc reference documentation:
+To generate the Javadoc reference documentation run
 
 ```sh
 cd sdk/java-sdk
 mvn site
 ```
 
-then open sdk/java-sdk/target/site/apidocs/index.html
+then open `sdk/java-sdk/target/site/apidocs/index.html`
 
 ## Steps to Run the Example Application (Ubuntu 16.04)
 
-1. Install libindy, Java 8 (JDK) and Maven
+1. Install `libindy`, Java 8 (JDK) and Maven
 
 	```sh
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88
@@ -26,28 +26,28 @@ then open sdk/java-sdk/target/site/apidocs/index.html
 	sudo apt-get install libindy default-jdk maven
 	```
 
-2. Clone this repository
+2. Clone the verity-sdk repository.
 
 	```sh
 	git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git
 	cd verity-sdk
 	```
 
-3. Build the Java SDK for Verity
+3. Build the Java SDK for Verity.
 
 	```sh
 	cd sdk/java-sdk
 	mvn package
 	```
 
-4. Start the Mock Verity service
+4. Start the Mock Verity service.
 
 	```sh
 	docker login gitlab.corp.evernym.com:4567
 	docker run -it --network host gitlab.corp.evernym.com:4567/dev/verity/verity-sdk/verity-server-image
 	```
 
-5. Provision against Mock Verity
+5. Provision against Mock Verity.
 
 	```sh
 	# From the root of the repository
@@ -65,18 +65,18 @@ then open sdk/java-sdk/target/site/apidocs/index.html
 	./run.sh
 	```
 
-NOTE: If you restart Mock Verity at any point, you will need to provision again.
+> NOTE: If you restart Mock Verity at any point, you will need to provision again.
 
 <a id="maven"></a>
-## Adding the Java SDK for Verity to your Maven Application
+## Adding the Java SDK for Verity to Your Maven Application
 
-In order for your Maven Client to authenticate with CloudRepo, you’ll need to add your credentials to a <server> entry to the settings.xml file, usually located in the `$HOME/.m2` directory.
+In order for your Maven Client to authenticate with CloudRepo, you’ll need to add your credentials to a `<server>` entry to the `settings.xml` file, usually located in the `$HOME/.m2` directory.
 
 Authentication is required to read and write to/from private repository URLs.
 
-A template settings.xml for you to use is below:
+A template `settings.xml` for you to use is below:
 
-Note: Replace the provided username and password with the placeholders.
+> NOTE: Replace the provided username and password with the placeholders.
 
 ```xml
 <settings>
@@ -101,11 +101,11 @@ Configuration of the POM file for downloading artifacts is distinct from publish
 
 ### Retrieving Artifacts from CloudRepo (Authenticated Access)
 
-Repositories specified in the <repositories> block define the repositories that Maven will use to retrieve artifacts.
+Repositories specified in the `<repositories>` block define the repositories that Maven will use to retrieve artifacts.
 
 The following example shows how to retrieve artifacts via authenticated (private) access.
 
-Add the following to your pom.xml file:
+Add the following to your `pom.xml` file:
 
 ```xml
 <project>
@@ -131,11 +131,11 @@ After the repository has been configured, Maven will retrieve your artifacts sto
 
 One way to trigger a maven build is to execute the following command in the same directory as your POM file:
 
-mvn install
+`mvn install`
 
 ### Retrieving Artifacts from CloudRepo (Public Access)
 
-**_Public read access for this repository is NOT yet enabled, but this is included as reference for when it is._**
+**_Public read access for this repository is NOT yet enabled. This docment is included as reference for when it is._**
 
 Unauthenticated (public) access must use a different URL than the one that is used for private access.
 
