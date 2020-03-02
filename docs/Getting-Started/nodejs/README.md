@@ -1,7 +1,10 @@
 # Getting Started with the Verity SDK for NodeJs
-The NodeJs example application is a simple showcase of the Java Verity SDK.
 
-Before performing this procedure go to: [Standing Up an Evaluation Verity Application](../VerityInstance.md)
+### Previous Step
+
+[Stand Up an Evaluation Verity Application](../VerityInstance.md)
+
+The NodeJs integration code example is a simple showcase of the NodeJs Verity SDK.
 
 **Prerequisites**
 
@@ -39,29 +42,32 @@ git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git
 
 1. **Start `Ngrok`**
 
-   `Ngrok` allows the Verity application to reach a webhook endpoint that the example application starts. By default, the example application uses port `4000`, so Ngrok must be started to proxy to that local port:
+   `Ngrok` allows the customer integration code to reach a webhook endpoint that the integration code example starts. By default, the integration code example uses port `4000`, so Ngrok must be started to proxy to that local port:
    
    ```sh
    ngrok http 4000
    ```
    
-   `Ngrok` should be running at the same time as the example application, and the endpoint should be given to the example during the *Setup* interaction.
+   `Ngrok` should be running at the same time as the integration code example, and the endpoint should be given to the example during the *Setup* interaction.
 
 1. **Set up Connect.Me**
 
-   The interaction that is simulated in the example application requires the Connect.Me mobile app. 
+   The interaction that is simulated in the integration code example requires the Connect.Me mobile app. 
 
    * Find Connect.Me in the Apple and Android app stores. 
    * Follow the [Connect.Me Setup Instructions](../ConnectMe.md)
    
-1. **Launch the example application**
+1. **Launch the integration code example**
    
-   Start the example application and begin the simulated interaction:
+   Start the integration code example and begin the simulated interaction:
    
    ```sh
    node example.js
    ``` 
    
-   Continue to [Interactions](/..Interactions.md).
+### Next Step
+
+Continue to [Interactions](../Interactions.md).
+
  
 © 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.

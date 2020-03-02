@@ -5,7 +5,7 @@ v0.1
 <a id="overview"></a>
 ## Overview
 
-This document outlines the various definitions, message formatting, and message requirements for interacting with the Verity service. This document will be versioned and is intended to be extended and mutated as seen fit by the maintainers of the Verity service. Treat this document as you would any RESTful or other API document, in that you build your messages to the service based on the guidelines below.
+This document outlines the various definitions, message formatting, and message requirements for interacting with the Verity service. This document will be versioned and is intended to be extended and mutated as seen fit by the maintainers of the Verity service. Treat this document as you would any RESTful or other API document, meaning that you build your messages to the service based on the guidelines below.
 
 <a id="tableofcontents"></a>
 ## Table of Contents

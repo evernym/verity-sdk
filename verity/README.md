@@ -6,7 +6,7 @@
 docker build -t verity --network host -f verity/verity.dockerfile verity/
 ```
 
-The `--network host` is only required when using `sshuttle-helper`.
+The `--network host` is required only when using `sshuttle-helper`.
 
 ## Run
 
