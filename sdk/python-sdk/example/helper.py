@@ -5,7 +5,7 @@ import random
 
 def console_input(request):
     print()
-    val = input(f"{request}:")
+    val = input(f"{request}: ")
     print()
     if not val:
         return ""

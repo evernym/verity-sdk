@@ -11,3 +11,13 @@ async def create_and_open_wallet(wallet_config, wallet_credentials):
             raise e
 
     return await open_wallet(wallet_config, wallet_credentials)
+
+
+async def try_to_create_wallet(config, cred):
+    try:
+        await create_wallet(config, cred)
+    except IndyError as e:
+        if ErrorCode.WalletAlreadyExistsError == e.error_code:
+            pass
+        else:
+            raise e

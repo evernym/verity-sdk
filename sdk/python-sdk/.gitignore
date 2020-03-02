@@ -4,3 +4,4 @@ dist
 inviteDetails.json
 verityConfig.json
 /example/qrcode.png
+/example/verity-context.json
