@@ -359,7 +359,7 @@ async def issuer_identifier(loop):
             issuer_verkey = message['verKey']
             first_step.set_result(None)
         elif msg_name == IssuerSetup.PROBLEM_REPORT:
-            # Do nothing. Just means we need to write the keys to the ledger.
+            # Do nothing. Just means we need to write the keys to the ledger. Checked for in setup()
             first_step.set_result(None)
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)

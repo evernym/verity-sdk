@@ -1,9 +1,5 @@
 # Standing Up an Evaluation Verity Application
 
-### Previous Step
-
-[Install libindy, run the provision script, and save the config file](../../README.md#setup).
-
 To use the Verity SDK, you need an instance of the Verity application to interact with. 
 
 There are two ways to stand up an instance of the Verity application:
@@ -65,9 +61,4 @@ Speak to a Customer Success team member for a cloud-based Verity application.
 
 <!--**TODO** Add information for this step -->
 
-### Next Step
-
-Install the language-specific elements of the SDK:
-* [Java](/java/README.md)
-* [NodeJs](/nodejs/README.md)
-* [Python](/python/README.md)
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.
