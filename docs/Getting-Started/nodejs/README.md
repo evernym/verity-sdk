@@ -2,7 +2,7 @@
 
 ### Previous Step
 
-[Stand Up an Evaluation Verity Application](../VerityInstance.md)
+[Stand Up an Evaluation Verity Application](../../../README.md#cloud)
 
 The NodeJs integration code example is a simple showcase of the NodeJs Verity SDK.
 
@@ -14,6 +14,7 @@ Install the following items:
 * `NodeJs` - Follow the instructions on the [NodeJs website](https://nodejs.org/en/).
 
 ## Clone the Verity SDK Repo
+<!--This step is contingent on how the repo is delivered-->
 
 ```sh
 git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git

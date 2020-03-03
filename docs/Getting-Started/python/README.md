@@ -1,8 +1,10 @@
 # Getting Started with the Verity SDK for Python
 
-The Python integration code example is a simple showcase of the Python Verity SDK.
+### Previous Step
 
-Before performing this procedure go to: [Standing Up an Evaluation Verity Application](../VerityInstance.md)
+[Stand Up an Evaluation Verity Application](../../../README.md#cloud)
+
+The Python integration code example is a simple showcase of the Python Verity SDK.
 
 **Prerequisites**
 
@@ -12,6 +14,7 @@ Install the following items:
 * `Python3` - Follow the instructions on the [Python3 website](https://www.python.org/downloads/)
 
 ### Clone the Verity SDK Repo
+<!--This step is contingent on how the repo is delivered-->
 
 ```sh
 git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git

@@ -2,7 +2,7 @@
 
 ### Previous Step
 
-[Stand Up an Evaluation Verity Application](../VerityInstance.md)
+[Stand Up an Evaluation Verity Application](../../../README.md#cloud)
 
 The Java integration code example is a simple showcase of the Java Verity SDK.
 
@@ -13,7 +13,8 @@ Install the following items:
 * `Ngrok` - Follow the instructions on the [Ngrok website](https://ngrok.com/download).
 * `Maven` - Follow the instructions on the [Maven website](http://maven.apache.org/download.cgi)
 
-## Clone the Verity SDK Repo
+## Clone the Verity SDK Repo 
+<!--This step is contingent on how the repo is delivered-->
 
 ```sh
 git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git

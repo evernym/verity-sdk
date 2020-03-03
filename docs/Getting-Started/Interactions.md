@@ -3,11 +3,11 @@
 ### Previous Step
 
 Language-specific setup:
-* [Java](/java/README.md)
-* [NodeJs](/nodejs/README.md)
-* [Python](/python/README.md)
+* [Java](/docs/Getting-Started/java/README.md)
+* [NodeJs](/docs/Getting-Started/nodejs/README.md)
+* [Python](/docs/Getting-Started/python/README.md)
 
-After you have finished launching the integration code example, you begin going through a series of interactions:
+After you have finished launching the integration code example in the previous step, the process completes a series of interactions:
 
 1. **Setup**
    
@@ -15,10 +15,10 @@ After you have finished launching the integration code example, you begin going 
    
    1. Provisioning an Agent
    1. Registering a webhook
-   1. Setting up an Issuer Identity 
+   1. Setting up an Issuer identity 
    
    When setting up for the first time, the integration code example will require these inputs from the user:
-   * The URL for the customer integration code it will be connecting to
+   * The URL for the customer integration code that it will be connecting to
    * The `Ngrok` URL for the webhook that you started earlier
    
    Additionally, the issuer identity must be written to the ledger, using the [Sovrin Self-Serve website](https://selfserve.sovrin.org/) for the Sovrin StagingNet. The DID and Verkey will be displayed in the console, and they must be transferred accurately to the self-serve site. The integration code example will pause and will wait <!--Is this correct? It will wait?-->for this state to be completed. Press **Enter** as soon as the identity is on the ledger.
