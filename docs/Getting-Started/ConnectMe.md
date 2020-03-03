@@ -8,4 +8,4 @@
    ![Connect.Me Developer Mode Switch](https://i.postimg.cc/pTrdMszg/IMG-0116.png)
 1. Choose an authentication method.
 
-After these steps Connect.Me is ready for the interactions that are demonstrated by the Example application. 
+After these steps Connect.Me is ready for the interactions that are demonstrated by the integration code example. 
