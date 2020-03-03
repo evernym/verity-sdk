@@ -69,9 +69,12 @@ public class App extends Helper {
         }
 
         println("Using Url: "+ verityUrl);
+
+        // create initial Context
         Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
-        ctx = Provision.v0_6().provisionSdk(ctx);
-        return ctx;
+
+        // ask that an agent by provision (setup) and associated with created key pair
+        return Provision.v0_6().provisionSdk(ctx);
     }
 
     Context loadContext(File contextFile) throws IOException, WalletOpenException {
@@ -97,12 +100,18 @@ public class App extends Helper {
 
         println("Using Webhook: "+ webhook);
         context = context.toContextBuilder().endpointUrl(webhook).build();
-        UpdateEndpoint.v0_6().update(context); // The SDK lets Verity know what its endpoint is
+
+        // request that verity application use specified webhook endpoint
+        UpdateEndpoint.v0_6().update(context);
     }
 
     void setupIssuer() throws IOException, VerityException {
+        // constructor for the Issuer Setup protocol
         IssuerSetup newIssuerSetup = IssuerSetup.v0_6();
-        AtomicBoolean setupComplete = new AtomicBoolean(false);
+
+        AtomicBoolean setupComplete = new AtomicBoolean(false); // spinlock bool
+
+        // handler for created issuer identifier message
         handle(newIssuerSetup, (String msgName, JSONObject message) -> {
             if("public-identifier-created".equals(msgName))
             {
@@ -116,16 +125,24 @@ public class App extends Helper {
             }
         });
 
+        // request that issuer identifier be created
         newIssuerSetup.create(context);
+
+        // wait for request to complete
         waitFor(setupComplete, "Waiting for setup to complete");
+
         println("The issuer DID and Verkey must be on the ledger.");
         println(String.format("Please add DID (%s) and Verkey (%s) to ledger.", issuerDID, issuerVerkey));
         waitFor("Press ENTER when DID is on ledger");
     }
 
     void issuerIdentifier() throws IOException, VerityException {
+        // constructor for the Issuer Setup protocol
         IssuerSetup issuerSetup = IssuerSetup.v0_6();
-        AtomicBoolean issuerComplete = new AtomicBoolean(false);
+
+        AtomicBoolean issuerComplete = new AtomicBoolean(false); // spinlock bool
+
+        // handler for current issuer identifier message
         handle(issuerSetup, (String msgName, JSONObject message) -> {
             if("public-identifier".equals(msgName))
             {
@@ -136,7 +153,10 @@ public class App extends Helper {
             issuerComplete.set(true);
         });
 
+        // query the current identifier
         issuerSetup.currentPublicIdentifier(context);
+
+        // wait for response from verity application
         waitFor(issuerComplete, "Waiting for current issuer DID");
     }
 
@@ -167,12 +187,18 @@ public class App extends Helper {
     }
 
     private String createConnection() throws IOException, VerityException {
-        // Create a new connection
+        // Connecting protocol has to steps
+        // 1. Start the protocol and receive the invite
+        //  2. Wait for the other participant to accept the invite
+
+        // Step 1
+
+        // Constructor for the Connecting API
         Connecting connecting = Connecting.v0_6(UUID.randomUUID().toString(), true);
 
-        // Handler for getting invite details (connection awaiting response)
-        AtomicBoolean startConnectionComplete = new AtomicBoolean(false);
-        AtomicBoolean connectionComplete = new AtomicBoolean(false);
+        // handler for the response to the request to start the Connecting protocol.
+        AtomicBoolean startConnectionComplete = new AtomicBoolean(false); // spinlock bool
+        AtomicBoolean connectionComplete = new AtomicBoolean(false); // spinlock bool
         AtomicReference<String> relDID = new AtomicReference<>();
         handle(connecting, (String msgName, JSONObject message) -> {
             if("CONN_REQUEST_RESP".equals(msgName))
@@ -202,9 +228,16 @@ public class App extends Helper {
             }
         });
 
+        // starts the connecting protocol
         connecting.connect(context); // Send the connection create message to Verity
+        // wait for response from verity application
         waitFor(startConnectionComplete, "Waiting to start connection");
+
+        // Step 2
+
+        // wait for acceptance from connect.me user
         waitFor(connectionComplete, "Waiting for Connect.Me to accept connection");
+        // return owning DID for the connection
         return relDID.get();
     }
 
@@ -221,7 +254,7 @@ public class App extends Helper {
                 true);
 
 
-        AtomicBoolean questionComplete = new AtomicBoolean(false);
+        AtomicBoolean questionComplete = new AtomicBoolean(false); // spinlock bool
         handle(committedAnswer, (String msgName, JSONObject message) -> {
             if("answer-given".equals(msgName))
             {
@@ -238,15 +271,18 @@ public class App extends Helper {
         waitFor(questionComplete, "Waiting for Connect.Me to answer the question");
     }
 
-
-
     private String writeLedgerSchema() throws IOException, VerityException {
+        // input parameters for schema
         String schemaName = "Diploma "+ UUID.randomUUID().toString().substring(0, 8);
         String schemaVersion = "0.1";
+
+        // constructor for the Write Schema protocol
         WriteSchema writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, "name", "degree");
 
-        AtomicBoolean schemaComplete = new AtomicBoolean(false);
+        AtomicBoolean schemaComplete = new AtomicBoolean(false); // spinlock bool
         AtomicReference<String> schemaIdRef = new AtomicReference<>();
+
+        // handler for message received when schema is written
         handle(writeSchema, (String msgName, JSONObject message) -> {
             if("status-report".equals(msgName)) {
                 printlnMessage(msgName, message);
@@ -259,20 +295,28 @@ public class App extends Helper {
             }
         });
 
+        // request schema be written to ledger
         writeSchema.write(context);
-        waitFor(schemaComplete, "Waiting to write schema to ledger");
 
+        // wait for operation to be complete
+        waitFor(schemaComplete, "Waiting to write schema to ledger");
+        // returns ledger schema identifier
         return schemaIdRef.get();
     }
 
     private String writeLedgerCredDef(String schemaId) throws IOException, VerityException {
+
+        // input parameters for cred definition
         String credDefName = "Trinity Collage Diplomas";
         String credDefTag = "latest";
 
+        // constructor for the Write Credential Definition protocol
         WriteCredentialDefinition def = WriteCredentialDefinition.v0_6(credDefName, schemaId, credDefTag);
 
-        AtomicBoolean defComplete = new AtomicBoolean(false);
+        AtomicBoolean defComplete = new AtomicBoolean(false); // spinlock bool
         AtomicReference<String> defIdRef = new AtomicReference<>();
+
+        // handler for message received when schema is written
         handle(def, (String msgName, JSONObject message) -> {
             if("status-report".equals(msgName)) {
                 printlnMessage(msgName, message);
@@ -285,19 +329,26 @@ public class App extends Helper {
             }
         });
 
+        // request the cred def be writen to ledger
         def.write(context);
+        // wait for operation to be complete
         waitFor(defComplete, "Waiting to write cred def to ledger");
+        // returns ledger cred def identifier
         return defIdRef.get();
     }
 
     private void issueCredential(String forDID, String defId) throws IOException, VerityException, InterruptedException {
+        // input parameters for issue credential
         String credentialName = "Degree";
         Map<String, String> credentialData = new HashMap<>();
         credentialData.put("name", "Joe Smith");
         credentialData.put("degree", "Bachelors");
+        // constructor for the Issue Credential protocol
         IssueCredential issue = IssueCredential.v0_6(forDID, credentialName, credentialData, defId);
 
-        AtomicBoolean offerComplete = new AtomicBoolean(false);
+        AtomicBoolean offerComplete = new AtomicBoolean(false); // spinlock bool
+
+        // handler for 'ask_accept` message when the offer for credential is accepted
         handle(issue, (String msgName, JSONObject message) -> {
             if("ask-accept".equals(msgName)) {
                 printlnMessage(msgName, message);
@@ -308,15 +359,21 @@ public class App extends Helper {
             }
         });
 
+        // request that credential is offered
         issue.offerCredential(context);
+        // wait for connect.me user to accept offer
         waitFor(offerComplete, "Wait for Connect.me to accept the Credential Offer");
+
+        // request that credential be issued
         issue.issueCredential(context);
 
         Thread.sleep(3000); // Give time for Credential to get to mobile device
     }
 
     private void requestProof(String forDID) throws IOException, VerityException {
+        // input parameters for request proof
         String proofName = "Proof of Degree - "+UUID.randomUUID().toString().substring(0, 8);
+
         Restriction restriction =  RestrictionBuilder
                 .blank()
                 .issuerDid(issuerDID)
@@ -325,9 +382,12 @@ public class App extends Helper {
         Attribute nameAttr = PresentProof.attribute("name", restriction);
         Attribute degreeAttr = PresentProof.attribute("degree", restriction);
 
+        // constructor for the Present Proof protocol
         PresentProof proof = PresentProof.v0_6(forDID, proofName, nameAttr, degreeAttr);
 
-        AtomicBoolean proofComplete = new AtomicBoolean(false);
+        AtomicBoolean proofComplete = new AtomicBoolean(false); // spinlock bool
+
+        // handler for the result of the proof presentation
         handle(proof, (String msgName, JSONObject message) -> {
             if("proof-result".equals(msgName)) {
                 printlnMessage(msgName, message);
@@ -338,8 +398,9 @@ public class App extends Helper {
             }
         });
 
-        println(proof.requestMsg(context).toString(2));
+        // request proof
         proof.request(context);
+        // wait for connect.me user to present the requested proof
         waitFor(proofComplete, "Waiting for proof presentation from Connect.me");
     }
 }

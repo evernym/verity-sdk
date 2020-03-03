@@ -42,9 +42,17 @@ async function example () {
 //       CONNECTION
 //* ***********************
 async function createConnection () {
-  const connecting = new sdk.protocols.Connecting(null, uuidv4(), null, true)
-  var spinner = new Spinner('Waiting to start connection ... %s').setSpinnerDelay(450)
+  // Connecting protocol has to steps
+  // 1. Start the protocol and receive the invite
+  // 2. Wait for the other participant to accept the invite
 
+  // Step 1
+
+  // Constructor for the Connecting API
+  const connecting = new sdk.protocols.Connecting(null, uuidv4(), null, true)
+  var spinner = new Spinner('Waiting to start connection ... %s').setSpinnerDelay(450) // Console spinner
+
+  // handler for the response to the request to start the Connecting protocol.
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
@@ -70,10 +78,14 @@ async function createConnection () {
   })
 
   spinner.start()
+  // starts the connecting protocol
   await connecting.connect(context)
-  const forDID = await firstStep
+  const forDID = await firstStep // wait for response from verity application
 
-  spinner = new Spinner('Waiting for Connect.Me to accept connection ... %s').setSpinnerDelay(450)
+  // Step 2
+
+  spinner = new Spinner('Waiting for Connect.Me to accept connection ... %s').setSpinnerDelay(450) // Console spinner
+  // handler for the accept message sent when connection is accepted
   var secondStep = new Promise((resolve) => {
     handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
@@ -90,8 +102,8 @@ async function createConnection () {
   })
 
   spinner.start()
-  await secondStep
-  return forDID
+  await secondStep // wait for acceptance from connect.me user
+  return forDID // return owning DID for the connection
 }
 
 // //* ***********************
@@ -103,7 +115,7 @@ async function createConnection () {
 //   const validAnswers = ['Great!', 'Not so good.']
 
 //   const committedAnswer = new sdk.protocols.CommittedAnswer(forDID, null, questionText, null, questionDetail, validAnswers, true)
-//   var spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450)
+//   var spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450) // Console spinner
 
 //   var firstStep = new Promise((resolve) => {
 //     handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
@@ -129,13 +141,17 @@ async function createConnection () {
 //        SCHEMA
 //* ***********************
 async function writeLedgerSchema () {
+  
+  // input parameters for schema
   const schemaName = 'Diploma ' + uuidv4().substring(0, 8)
   const schemaVersion = '0.1'
   const schemaAttrs = ['name', 'degree']
 
+  // constructor for the Write Schema protocol
   const schema = new sdk.protocols.WriteSchema(schemaName, schemaVersion, schemaAttrs)
-  var spinner = new Spinner('Waiting to write schema to ledger ... %s').setSpinnerDelay(450)
+  var spinner = new Spinner('Waiting to write schema to ledger ... %s').setSpinnerDelay(450) // Console spinner
 
+  // handler for message received when schema is written
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(schema.msgFamily, schema.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
@@ -153,20 +169,24 @@ async function writeLedgerSchema () {
   })
 
   spinner.start()
-  await schema.write(context)
-  return firstStep
+  // request schema be written to ledger
+  await schema.write(context) // wait for operation to be complete
+  return firstStep // returns ledger schema identifier
 }
 
 //* ***********************
 //        CRED DEF
 //* ***********************
 async function writeLedgerCredDef (schemaId) {
+  // input parameters for cred definition
   const credDefName = 'Trinity College Diplomas'
   const credDefTag = 'latest'
 
+  // constructor for the Write Credential Definition protocol
   const def = new sdk.protocols.WriteCredentialDefinition(credDefName, schemaId, credDefTag)
-  var spinner = new Spinner('Waiting to write cred def to ledger ... %s').setSpinnerDelay(450)
+  var spinner = new Spinner('Waiting to write cred def to ledger ... %s').setSpinnerDelay(450) // Console spinner
 
+  // handler for message received when schema is written
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(def.msgFamily, def.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
@@ -184,7 +204,8 @@ async function writeLedgerCredDef (schemaId) {
   })
 
   spinner.start()
-  await def.write(context)
+  // request the cred def be writen to ledger
+  await def.write(context) // wait for operation to be complete and returns ledger cred def identifier
   return firstStep
 }
 
@@ -192,15 +213,19 @@ async function writeLedgerCredDef (schemaId) {
 //         ISSUE
 //* ***********************
 async function issueCredential (forDID, defId) {
+
+  // input parameters for issue credential
   const credentialName = 'Degree'
   const credentialData = {
     name: 'Joe Smith',
     degree: 'Bachelors'
   }
 
+  // constructor for the Issue Credential protocol
   const issue = new sdk.protocols.IssueCredential(forDID, null, credentialName, credentialData, defId)
-  var spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450)
+  var spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450) // Console spinner
 
+  // handler for 'ask_accept` message when the offer for credential is accepted
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
@@ -218,16 +243,20 @@ async function issueCredential (forDID, defId) {
   })
 
   spinner.start()
-  await issue.offerCredential(context)
-  await firstStep
+  // request that credential is offered
+  await issue.offerCredential(context) 
+  await firstStep // wait for connect.me user to accept offer
+  
+  // request that credential be issued
   await issue.issueCredential(context)
-  return sleep(3000)
+  return sleep(3000)  // Wait a few seconds for the credential to arrive before sending the proof
 }
 
 //* ***********************
 //         PROOF
 //* ***********************
 async function requestProof (forDID) {
+  // input parameters for request proof
   const proofName = 'Proof of Degree' + uuidv4().substring(0, 8)
   const proofAttrs = [
     {
@@ -240,9 +269,11 @@ async function requestProof (forDID) {
     }
   ]
 
+  // constructor for the Present Proof protocol
   const proof = new sdk.protocols.PresentProof(forDID, null, proofName, proofAttrs)
-  var spinner = new Spinner('Waiting for proof presentation from Connect.me ... %s').setSpinnerDelay(450)
+  var spinner = new Spinner('Waiting for proof presentation from Connect.me ... %s').setSpinnerDelay(450) // Console spinner
 
+  // handler for the result of the proof presentation
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(proof.msgFamily, proof.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
@@ -259,8 +290,10 @@ async function requestProof (forDID) {
     })
   })
   spinner.start()
-  await proof.request(context)
-  return firstStep
+
+  // request proof
+  await proof.request(context) 
+  return firstStep // wait for connect.me user to present the requested proof
 }
 
 //* ***********************
@@ -304,8 +337,10 @@ async function provisionAgent () {
 
   console.log('Using Url: ' + verityUrl)
 
+  // create initial Context
   var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
   const provision = new sdk.protocols.Provision()
+  // ask that an agent by provision (setup) and associated with created key pair
   return provision.provisionSdk(ctx)
 }
 
@@ -320,14 +355,17 @@ async function updateWebhookEndpoint () {
   console.log('Using Webhook: ' + webhook)
   context.endpointUrl = webhook
 
-  const updateEndpoint = new sdk.protocols.UpdateEndpoint()
-  await updateEndpoint.update(context)
+  // request that verity application use specified webhook endpoint
+  await new sdk.protocols.UpdateEndpoint().update(context)
 }
 
 async function setupIssuer () {
-  const issuerSetup = new sdk.protocols.IssuerSetup()
-  var spinner = new Spinner('Waiting for setup to complete ... %s').setSpinnerDelay(450)
 
+  // constructor for the Issuer Setup protocol
+  const issuerSetup = new sdk.protocols.IssuerSetup()
+  var spinner = new Spinner('Waiting for setup to complete ... %s').setSpinnerDelay(450) // Console spinner
+
+  // handler for created issuer identifier message
   var step = new Promise((resolve) => {
     handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
@@ -349,14 +387,18 @@ async function setupIssuer () {
   })
 
   spinner.start()
-  await issuerSetup.create(context)
-  return step
+  // request that issuer identifier be created
+  await issuerSetup.create(context) 
+  return step // wait for request to complete
 }
 
 async function issuerIdentifier () {
+
+  // constructor for the Issuer Setup protocol
   const issuerSetup = new sdk.protocols.IssuerSetup()
   var spinner = new Spinner('Waiting for current issuer DID ... %s').setSpinnerDelay(450)
 
+  // handler for current issuer identifier message
   var step = new Promise((resolve) => {
     handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
       spinner.stop()
@@ -372,8 +414,9 @@ async function issuerIdentifier () {
   })
 
   spinner.start()
+  // query the current identifier
   await issuerSetup.currentPublicIdentifier(context)
-  return step
+  return step // wait for response from verity application
 }
 
 //* ***********************
