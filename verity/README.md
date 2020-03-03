@@ -26,3 +26,4 @@ positional arguments:
 
 The DID associated with `enterprise-seed` must already be written to the ledger.
 
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.

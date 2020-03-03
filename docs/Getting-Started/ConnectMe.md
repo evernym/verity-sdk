@@ -27,3 +27,6 @@ Return to the language-specific procedure:
 * [Java](/docs/Getting-Started/java/README.md#connectme)
 * [NodeJs](/docs/Getting-Started/java/README.md#connectme)
 * [Python](/docs/Getting-Started/java/README.md#connectme)
+
+
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.

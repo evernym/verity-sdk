@@ -12,7 +12,15 @@ This repo is divided into two major portions: the SDK and the server. The SDK co
 
 By design, Verity SDK is stateless, which gives control of the library-provided APIs back to the consumer. This architecture has significant implications for the design of the library: namely, it will function as a helper to the library for ease of use with Verity, but it will not interact with the Verity Agent itself. 
 
-<!--We need something here on what the setup looks like in general, what the component parts are, what they generally will be accomplishing-->
+## Terminology
+
+The instructions for this SDK use the following terms:
+
+* **Customer integration code** &#8212; The Verity application that you create using the SDK.
+
+* **Integration code example** &#8212; An example application that demonstrates the basic steps involved in various Connect.Me transactions.
+
+<!--Do we need something here on what the setup looks like in general, what the component parts are, what they generally will be accomplishing?-->
 
 ## Setup 
 
@@ -27,7 +35,7 @@ These are the general steps for setting up the Verity SDK for development:
 
 ## 1. Stand up a Verity server instance in the cloud
 
-<!--need info from Trev on this-->
+<!--need info from Trev on this-->[TBD]
 
 ### Next Step
 
@@ -36,4 +44,4 @@ Install the language-specific elements of the SDK:
 * [NodeJs](/docs/Getting-Started/nodejs/README.md)
 * [Python](/docs/Getting-Started/python/README.md)
 
-© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.

@@ -60,3 +60,5 @@ Logs from the Verity application can be displayed by pressing **Enter** when req
 Speak to a Customer Success team member for a cloud-based Verity application.
 
 <!--**TODO** Add information for this step -->
+
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.

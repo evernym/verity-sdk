@@ -73,4 +73,4 @@ git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git
 Continue to [Interactions](../Interactions.md).
 
 
-© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.

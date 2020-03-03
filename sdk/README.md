@@ -11,3 +11,4 @@ For instructions on using the SDKs start with the [Overview document](../README.
 ## Future SDKs
 * .NET
 
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.

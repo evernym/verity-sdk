@@ -52,4 +52,4 @@ After you have finished launching the integration code example in the previous s
    
 After the proof is exchanged with the customer integration code, the simulated interaction is complete and the integration code example will terminate.
 
-© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.
