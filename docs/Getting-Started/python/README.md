@@ -59,7 +59,7 @@ git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git
    Start the example application and begin the simulated interaction.
    
    ```sh
-   python3 example.py
+   python3 app.py
    ```
 
 Continue to [Interactions](/..Interactions.md).
