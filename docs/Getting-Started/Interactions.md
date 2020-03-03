@@ -14,11 +14,14 @@ After you have finished launching the integration code example in the previous s
    During setup, three tasks are being accomplished:
    
    1. Provisioning an Agent
+
    1. Registering a webhook
+
    1. Setting up an Issuer identity 
    
    When setting up for the first time, the integration code example will require these inputs from the user:
    * The URL for the customer integration code that it will be connecting to
+   
    * The `Ngrok` URL for the webhook that you started earlier
    
    Additionally, the issuer identity must be written to the ledger, using the [Sovrin Self-Serve website](https://selfserve.sovrin.org/) for the Sovrin StagingNet. The DID and Verkey will be displayed in the console, and they must be transferred accurately to the self-serve site. The integration code example will pause and will wait <!--Is this correct? It will wait?-->for this state to be completed. Press **Enter** as soon as the identity is on the ledger.

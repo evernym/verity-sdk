@@ -21,7 +21,7 @@ git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git
 ```
 
 **Repo Requirements**
-<!--What do they need to do about this? Get access? Download it?-->
+
 * Public NPM repo
 
 
@@ -51,11 +51,14 @@ git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git
    
    `Ngrok` should be running at the same time as the integration code example, and the endpoint should be given to the example during the *Setup* interaction.
 
+<a id="connectme"></a>
+
 1. **Set up Connect.Me**
 
    The interaction that is simulated in the integration code example requires the Connect.Me mobile app. 
 
    * Find Connect.Me in the Apple and Android app stores. 
+
    * Follow the [Connect.Me Setup Instructions](../ConnectMe.md)
    
 1. **Launch the integration code example**
