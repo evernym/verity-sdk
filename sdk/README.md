@@ -1,8 +1,8 @@
 # SDKs for Verity
 
-See individual SDK implementations for more information and examples.
+For instructions on using the SDKs start with the [Overview document](../README.md).
 
-## Up to date SDKs
+## Current SDKs
 
 * Java
 * Python
@@ -10,3 +10,4 @@ See individual SDK implementations for more information and examples.
 
 ## Future SDKs
 * .NET
+

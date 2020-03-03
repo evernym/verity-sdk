@@ -3,4 +3,5 @@ dist
 .venv
 inviteDetails.json
 verityConfig.json
-qrcode.png
+/example/qrcode.png
+/example/verity-context.json

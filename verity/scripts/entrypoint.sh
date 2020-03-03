@@ -71,6 +71,9 @@ echo
 echo "******************   GENERATE VERITY AGENCY DID     ******************"
 printf "wallet create test key=test\nwallet open test key=test\ndid new seed=%s" "${VERITY_SEED}" | indy-cli
 
+# TODO for some networks we could automate this step
+# curl 'https://selfserve.sovrin.org/nym' --data '{"network":"<NETWORK>","did":"<DID>","verkey":"<VERKEY>","paymentaddr":""}'
+
 echo
 echo "Add the DID and Verkey to the target environment"
 read -p "Press enter to continue..."

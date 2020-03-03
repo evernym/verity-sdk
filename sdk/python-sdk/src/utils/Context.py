@@ -3,7 +3,7 @@ import requests
 
 from indy import wallet
 
-from src.utils.Wallet import create_and_open_wallet
+from src.utils.Wallet import create_and_open_wallet, try_to_create_wallet
 
 
 class Context:
@@ -24,17 +24,20 @@ class Context:
     wallet_closed: bool
 
     @classmethod
-    async def create(cls, wallet_name: str, wallet_key: str, verity_url: str, endpoint_url: str, wallet_path: str = None):
+    async def create(cls, wallet_name: str, wallet_key: str, verity_url: str, endpoint_url: str,
+                     wallet_path: str = None):
         context = cls()
         context.set_wallet_config(wallet_name, wallet_path)
         context.set_wallet_credentials(wallet_key)
+        context.wallet_name = wallet_name
+        context.wallet_key = wallet_key
         context.verity_url = verity_url
         context.endpoint_url = endpoint_url
         await context.update_verity_info()
         await context.open_wallet()
         return context
 
-    def set_wallet_config(self, wallet_name, wallet_path = None):
+    def set_wallet_config(self, wallet_name, wallet_path=None):
         wallet_config = {'id': wallet_name}
 
         if wallet_path:
@@ -97,12 +100,12 @@ class Context:
         await wallet.close_wallet(self.wallet_handle)
         self.wallet_closed = True
 
-    def to_json(self) -> str:
+    def to_json(self, indent=None) -> str:
         return json.dumps(
             {
                 'walletName': self.wallet_name,
                 'walletKey': self.wallet_key,
-                'walletPath': self.wallet_path,
+                'walletPath': self.wallet_path if hasattr(self, 'wallet_path') else None,
                 'verityUrl': self.verity_url,
                 'verityPublicDID': self.verity_public_did,
                 'verityPublicVerkey': self.verity_public_verkey,
@@ -111,5 +114,6 @@ class Context:
                 'sdkPairwiseDID': self.sdk_pairwise_did,
                 'sdkPairwiseVerkey': self.sdk_pairwise_verkey,
                 'endpointUrl': self.endpoint_url,
-            }
+            },
+            indent=indent
         )

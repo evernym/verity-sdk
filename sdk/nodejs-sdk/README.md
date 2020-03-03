@@ -1,6 +1,6 @@
 # Verity SDK
 
-This is the official Python SDK for Evernym's Verity application. 
+This is the official NodeJS SDK for Evernym's Verity application. 
 
 For instructions on using the SDKs start with the [Overview document](../../README.md).
 
