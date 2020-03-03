@@ -68,7 +68,7 @@ echo
 
 echo "**************************                  **************************"
 echo
-echo "******************   GENERATE VERITY AGNECY DID     ******************"
+echo "******************   GENERATE VERITY AGENCY DID     ******************"
 printf "wallet create test key=test\nwallet open test key=test\ndid new seed=%s" "${VERITY_SEED}" | indy-cli
 
 echo
