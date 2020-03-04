@@ -25,7 +25,7 @@ def test_init():
 
 @pytest.mark.asyncio
 async def test_ask():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     committed_answer = CommittedAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                        signature_required)
     committed_answer.send = send_stub
@@ -52,7 +52,7 @@ async def test_ask():
 
 @pytest.mark.asyncio
 async def test_status():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     committed_answer = CommittedAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                        signature_required)
     committed_answer.send = send_stub

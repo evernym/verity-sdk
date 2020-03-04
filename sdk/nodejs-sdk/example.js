@@ -141,7 +141,6 @@ async function createConnection () {
 //        SCHEMA
 //* ***********************
 async function writeLedgerSchema () {
-  
   // input parameters for schema
   const schemaName = 'Diploma ' + uuidv4().substring(0, 8)
   const schemaVersion = '0.1'
@@ -213,7 +212,6 @@ async function writeLedgerCredDef (schemaId) {
 //         ISSUE
 //* ***********************
 async function issueCredential (forDID, defId) {
-
   // input parameters for issue credential
   const credentialName = 'Degree'
   const credentialData = {
@@ -244,12 +242,12 @@ async function issueCredential (forDID, defId) {
 
   spinner.start()
   // request that credential is offered
-  await issue.offerCredential(context) 
+  await issue.offerCredential(context)
   await firstStep // wait for connect.me user to accept offer
-  
+
   // request that credential be issued
   await issue.issueCredential(context)
-  return sleep(3000)  // Wait a few seconds for the credential to arrive before sending the proof
+  return sleep(3000) // Wait a few seconds for the credential to arrive before sending the proof
 }
 
 //* ***********************
@@ -292,7 +290,7 @@ async function requestProof (forDID) {
   spinner.start()
 
   // request proof
-  await proof.request(context) 
+  await proof.request(context)
   return firstStep // wait for connect.me user to present the requested proof
 }
 
@@ -360,7 +358,6 @@ async function updateWebhookEndpoint () {
 }
 
 async function setupIssuer () {
-
   // constructor for the Issuer Setup protocol
   const issuerSetup = new sdk.protocols.IssuerSetup()
   var spinner = new Spinner('Waiting for setup to complete ... %s').setSpinnerDelay(450) // Console spinner
@@ -388,12 +385,11 @@ async function setupIssuer () {
 
   spinner.start()
   // request that issuer identifier be created
-  await issuerSetup.create(context) 
+  await issuerSetup.create(context)
   return step // wait for request to complete
 }
 
 async function issuerIdentifier () {
-
   // constructor for the Issuer Setup protocol
   const issuerSetup = new sdk.protocols.IssuerSetup()
   var spinner = new Spinner('Waiting for current issuer DID ... %s').setSpinnerDelay(450)

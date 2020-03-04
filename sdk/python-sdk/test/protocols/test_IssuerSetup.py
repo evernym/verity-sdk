@@ -12,7 +12,7 @@ def test_init():
 
 @pytest.mark.asyncio
 async def test_create():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     issuer_setup = IssuerSetup()
     issuer_setup.send = send_stub
     msg = await issuer_setup.create(context)

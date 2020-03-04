@@ -29,7 +29,7 @@ def test_init():
 
 @pytest.mark.asyncio
 async def test_offer_credential():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
     issue_credential.send = send_stub
     msg = await issue_credential.offer_credential(context)
@@ -57,7 +57,7 @@ async def test_offer_credential():
 
 @pytest.mark.asyncio
 async def test_issue_credential():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
     issue_credential.send = send_stub
     msg = await issue_credential.issue_credential(context)
@@ -79,7 +79,7 @@ async def test_issue_credential():
 
 @pytest.mark.asyncio
 async def test_status():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
     issue_credential.send = send_stub
     msg = await issue_credential.status(context)

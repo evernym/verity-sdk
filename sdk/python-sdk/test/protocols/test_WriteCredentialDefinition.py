@@ -23,7 +23,7 @@ def test_init():
 
 @pytest.mark.asyncio
 async def test_write():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     write_cred_def = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
     write_cred_def.send = send_stub
     msg = await write_cred_def.write(context)

@@ -8,7 +8,7 @@ from src.utils.Context import Context
 
 @pytest.mark.asyncio
 async def test_init():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     update_endpoint = UpdateEndpoint(context)
     assert update_endpoint.context.endpoint_url == context.endpoint_url
     await cleanup(context)
@@ -16,7 +16,7 @@ async def test_init():
 
 @pytest.mark.asyncio
 async def test_write():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     update_endpoint = UpdateEndpoint(context)
     update_endpoint.send = send_stub
     msg = await update_endpoint.update()

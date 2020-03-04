@@ -21,7 +21,7 @@ def test_init():
 
 @pytest.mark.asyncio
 async def test_connect():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     connecting = Connecting(source_id, phone_number, include_public_did)
     connecting.send = send_stub
     msg = await connecting.connect(context)
@@ -43,7 +43,7 @@ async def test_connect():
 
 @pytest.mark.asyncio
 async def test_status():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     connecting = Connecting(source_id, phone_number, include_public_did)
     connecting.send = send_stub
     msg = await connecting.status(context)

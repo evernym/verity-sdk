@@ -17,7 +17,7 @@ def test_init():
 
 @pytest.mark.asyncio
 async def test_provision_sdk(mocker):
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
 
     response = {
         'withPairwiseDID': pw_did,

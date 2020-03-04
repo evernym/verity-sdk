@@ -10,7 +10,7 @@ from ..test_utils import get_test_config, cleanup
 @pytest.mark.asyncio
 async def test_get_message():
     message = {'hello': 'world'}
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     packed_message = await Protocol.get_message(context, message)
     unpacked_message = json.dumps(await unpack_forward_message(context, packed_message))
     assert json.dumps(message) == unpacked_message

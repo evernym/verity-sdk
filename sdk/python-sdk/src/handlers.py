@@ -71,13 +71,13 @@ class Handlers:
         return '{}{}'.format(msg_family, msg_family_version)
 
 
-# Enables handler registration decorator @AddHandler(handlers, msg_family, msg_family_version)
-class AddHandler:
-
-    def __init__(self, handlers: Handlers, msg_family: str, msg_family_version: str,):
-        self.handlers = handlers
-        self.msg_family = msg_family
-        self.msg_family_version = msg_family_version
-
-    def __call__(self, handler_function: HandlerFunction, *args, **kwargs):
-        self.handlers.add_handler(self.msg_family, self.msg_family_version, handler_function)
+# # Enables handler registration decorator @AddHandler(handlers, msg_family, msg_family_version)
+# class AddHandler:
+#
+#     def __init__(self, handlers: Handlers, msg_family: str, msg_family_version: str,):
+#         self.handlers = handlers
+#         self.msg_family = msg_family
+#         self.msg_family_version = msg_family_version
+#
+#     def __call__(self, handler_function: HandlerFunction, *args, **kwargs):
+#         self.handlers.add_handler(self.msg_family, self.msg_family_version, handler_function)
