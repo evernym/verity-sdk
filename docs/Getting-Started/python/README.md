@@ -4,14 +4,14 @@
 
 [Stand Up an Evaluation Verity Application](../../../README.md#cloud)
 
-The Python integration code example is a simple showcase of the Python Verity SDK.
+This procedure shows you how to set up your Python development environment to use the Verity SDK. As desired, run the example application to see a demonstration of how the interactions take place. 
 
 **Prerequisites**
 
 Install the following items:
-* `libindy` - Follow the instructions on the [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
-* `Ngrok` - Follow the instructions on the [Ngrok website](https://ngrok.com/download).
-* `Python3` - Follow the instructions on the [Python3 website](https://www.python.org/downloads/)
+* `libindy` &#8212; Follow the instructions on the [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
+* `Ngrok` &#8212; Follow the instructions on the [Ngrok website](https://ngrok.com/download).
+* `Python3` &#8212; Follow the instructions on the [Python3 website](https://www.python.org/downloads/)
 
 ### Clone the Verity SDK Repo
 <!--This step is contingent on how the repo is delivered-->
@@ -41,28 +41,28 @@ git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git
 
 1. **Start `Ngrok`**
 
-   `Ngrok` allows the customer integration code to reach a webhook endpoint that the integration code example starts. By default, the integration code example uses port `4000`, so `Ngrok` must be started to proxy to that local port:
+   `Ngrok` allows the customer integration code to reach a webhook endpoint that the example application starts. By default, the example application uses port `4000`, so `Ngrok` must be started to proxy to that local port:
    
    ```sh
    ngrok http 4000
    ```
    
-   `Ngrok` should be running at the same time as the integration code example, and the endpoint should be given to the example during the *Setup* interaction.
+   `Ngrok` should be running at the same time as the example application, and the endpoint should be given to the example during the *Setup* interaction.
 
 <a id="connectme"></a>
    
 1. **Set up Connect.Me**
 
-   The interaction that is simulated in the integration code example requires the Connect.Me mobile app. 
+   The interaction that is simulated in the example application requires the Connect.Me mobile app. 
 
    * Find Connect.Me in the Apple and Android app stores. 
 
    * Follow the [Connect.Me Setup Instructions](../ConnectMe.md)
 
    
-1. **Launch the integration code example**
+1. **Launch the example application**
    
-   Start the integration code example and begin the simulated interaction.
+   Start the example application and begin the simulated interaction.
    
    ```sh
    python3 app.py

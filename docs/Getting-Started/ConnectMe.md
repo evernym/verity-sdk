@@ -19,7 +19,7 @@ Perform the language-specific procedure:
 
 1. Choose an authentication method.
 
-After these steps, Connect.Me is ready for the interactions that are demonstrated by the integration code example. 
+After these steps, Connect.Me is ready for the interactions that are demonstrated by the example application. 
 
 ### Next Step
 
