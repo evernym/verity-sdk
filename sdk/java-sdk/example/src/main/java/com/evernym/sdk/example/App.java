@@ -1,211 +1,406 @@
 /*
- * COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.
+ * COPYRIGHT 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
  */
 package com.evernym.sdk.example;
 
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-
-import com.evernym.verity.sdk.protocols.*;
-import com.evernym.verity.sdk.handlers.Handlers;
+import com.evernym.verity.sdk.exceptions.UndefinedContextException;
+import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.exceptions.WalletOpenException;
+import com.evernym.verity.sdk.protocols.connecting.Connecting;
+import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
+import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
+import com.evernym.verity.sdk.protocols.presentproof.Attribute;
+import com.evernym.verity.sdk.protocols.presentproof.PresentProof;
+import com.evernym.verity.sdk.protocols.presentproof.Restriction;
+import com.evernym.verity.sdk.protocols.presentproof.RestrictionBuilder;
+import com.evernym.verity.sdk.protocols.provision.Provision;
+import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
+import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
+import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
+import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
 import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.ContextBuilder;
 import com.evernym.verity.sdk.utils.Util;
-
-import org.json.JSONArray;
+import net.glxn.qrgen.QRCode;
 import org.json.JSONObject;
 
-public class App {
-    private static Integer port = 4000;
-    private static String connectionId;
-    private static String credDefId;
-    private static Context context;
-    private static QuestionAnswer questionAnswer;
-    private static WriteSchema writeSchema;
-    private static WriteCredentialDefinition writeCredDef;
-    private static IssueCredential issueCredential;
-    private static PresentProof presentProof;
-    private static Handlers handlers;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
+public class App extends Helper {
+    Integer port = 4000;
+    @Override int listenerPort() {return port;}
+
+    private String issuerDID;
+    private String issuerVerkey;
 
     public static void main( String[] args ) {
-        try {
-            // NOTE: You must provision against Verity using the provision-sdk.py script before running this example.
-                // The output of that script should be stored in verityConfig.json
-
-            startListening(); // The example app stands up an endpoint to listen for messages from Verity
-            context = new Context(readConfigFile("verityConfig.json"));
-            UpdateEndpoint updateEndpoint = new UpdateEndpoint(context);
-            updateEndpoint.update(); // The SDK lets Verity know what its endpoint is
-
-            // Create a new connection (initiates the daisy-chained flow of Connecting, QuestionAnswer, Credential, Proof)
-            Connecting connecting = new Connecting("my institution id", true); // Note that Connecting also supports a phone number in the constructor. See javadocs.
-            connecting.connect(context); // Send the connection create message to Verity
-
-            handlers = new Handlers();
-
-            // Handler for getting invite details (connection awaiting response)
-            handlers.addHandler(Connecting.getStatusMessageType(), Connecting.AWAITING_RESPONSE_STATUS, (JSONObject message) -> {
-                try {
-                    JSONObject inviteDetails = Util.truncateInviteDetails(message.getString("content"));
-                    System.out.print("Invite Details: ");
-                    System.out.println(inviteDetails.toString());
-                    writeInviteDetailsFile(inviteDetails); // For integration tests
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            // Handler for Connecting Accepted message
-            handlers.addHandler(Connecting.getStatusMessageType(), Connecting.INVITE_ACCEPTED_STATUS, (JSONObject message) -> {
-                try {
-                    System.out.println("Connecting Accepted!!!");
-
-                    // Now that the connection has been accepted, let's send Alice a Question.
-                    App.connectionId = message.getString("content");
-                    String notificationTitle = "Challenge Question";
-                    String questionText = "Hi Alice, how are you today?";
-                    String questionDetail = " ";
-                    String[] validResponses = {"Great!", "Not so good."};
-                    questionAnswer = new QuestionAnswer(App.connectionId, notificationTitle, questionText, questionDetail, validResponses);
-                    questionAnswer.ask(context);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            // Handler for Question Answered message
-            handlers.addHandler(QuestionAnswer.getStatusMessageType(), QuestionAnswer.QUESTION_ANSWERED_STATUS, (JSONObject message) -> {
-                try {
-                    System.out.println("Question Answered: \"" + message.getString("content") + "\"");
-
-                    // Write a Schema and Cred Def to the ledger in preparation for issuing
-                    // This step will likely be done manually by the institution, and not on a regular basis
-                    String schemaName = "My test schema";
-                    String schemaVersion = getRandomVersion();
-                    writeSchema = new WriteSchema(schemaName, schemaVersion, "name", "degree");
-                    writeSchema.write(context);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            // Handler for Schema write successful status
-            handlers.addHandler(WriteSchema.getStatusMessageType(), WriteSchema.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
-                try {
-                    String credDefName = "My test credential definition";
-                    String schemaId = message.getString("content");
-                    String credDefTag = "latest";
-                    JSONObject revocationDetails = new JSONObject();
-                    revocationDetails.put("support_revocation", false);
-                    writeCredDef = new WriteCredentialDefinition(credDefName, schemaId, credDefTag, revocationDetails);
-                    writeCredDef.write(context);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            // Handler for Cred Def write successful status
-            handlers.addHandler(WriteCredentialDefinition.getStatusMessageType(), WriteCredentialDefinition.WRITE_SUCCESSFUL_STATUS, (JSONObject message) -> {
-                try {
-                    // Issue a credential to Alice
-                    credDefId = message.getString("content");
-                    String credentialName = "Degree";
-                    JSONObject credentialValues = new JSONObject();
-                    credentialValues.put("name", "Joe Smith");
-                    credentialValues.put("degree", "Bachelors");
-                    issueCredential = new IssueCredential(connectionId, credentialName, credDefId, credentialValues, 0);
-                    issueCredential.issue(context);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            // Handler for Credential Offer Accepted message
-            handlers.addHandler(IssueCredential.getStatusMessageType(), IssueCredential.OFFER_ACCEPTED_BY_USER_STATUS, (JSONObject message) -> {
-                try {
-                    System.out.println("User has accepted the credential offer. Verity is now sending the Credential");
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            // Handler for Credential Accepted message
-            handlers.addHandler(IssueCredential.getStatusMessageType(), IssueCredential.CREDENTIAL_SENT_TO_USER_STATUS, (JSONObject message) -> {
-                try {
-                    System.out.println("User accepted the credential");
-
-                    // Ask Alice to prove she owns the credential we sent her
-                    String proofRequestName = "Who are you?";
-                    JSONArray proofAttrs = new JSONArray();
-                    proofAttrs.put(getProofAttr("name", credDefId.split(":")[0]));
-                    JSONObject revocationInterval = new JSONObject();
-                    presentProof = new PresentProof(connectionId, proofRequestName, proofAttrs, revocationInterval);
-                    presentProof.request(context);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            // Handler for Proof Received message
-            handlers.addHandler(PresentProof.getStatusMessageType(), PresentProof.PROOF_RECEIVED_STATUS, (JSONObject message) -> {
-                System.out.println("Proof Accepted!");
-                System.out.println(message.toString());
-                System.exit(0);
-            });
-
-            // Handle all messages not handled by other handlers
-            handlers.addDefaultHandler((JSONObject message) -> {
-                System.out.println("New message from verity: " + message.toString());
-            });
-
-            // Handle all problem report messages not handled directly by other handlers
-            handlers.addProblemReportHandler((JSONObject message) -> {
-                System.out.println("New problem report from verity: " + message.getJSONObject("comment").getString("en"));
-                System.exit(1);
-            });
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
+        new App().execute();
     }
 
-    // Basic http server listening for messages from Verity
-    private static void startListening() throws IOException, InterruptedException {
-        Listener listener = new Listener(App.port, (String encryptedMessageFromVerity) -> {
-            try {
-                handlers.handleMessage(context, encryptedMessageFromVerity.getBytes());
-            } catch(Exception ex) {
-                ex.printStackTrace();
+    public void example() throws IOException, VerityException, InterruptedException {
+        setup();
+
+        String forDID = createConnection();
+
+//        askQuestion(forDID);
+
+        String schemaId = writeLedgerSchema();
+        String defId = writeLedgerCredDef(schemaId);
+
+        issueCredential(forDID, defId);
+
+        requestProof(forDID);
+    }
+
+
+
+    Context provisionAgent() throws WalletException, IOException, UndefinedContextException {
+        String verityUrl = consoleInput("Verity Application Endpoint").trim();
+
+        if ("".equals(verityUrl)) {
+            verityUrl = "http://localhost:9000";
+        }
+
+        println("Using Url: "+ verityUrl);
+
+        // create initial Context
+        Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
+
+        // ask that an agent by provision (setup) and associated with created key pair
+        return Provision.v0_6().provisionSdk(ctx);
+    }
+
+    Context loadContext(File contextFile) throws IOException, WalletOpenException {
+        return ContextBuilder.fromJson(
+                new JSONObject(
+                        new String(Files.readAllBytes(contextFile.toPath()))
+                )
+        ).build();
+    }
+
+    void updateWebhookEndpoint() throws IOException, VerityException {
+        String webhookFromCtx = "";
+
+        try {
+            webhookFromCtx = context.endpointUrl();
+        } catch (UndefinedContextException ignored) {}
+
+        String webhook = consoleInput(String.format("Ngrok endpoint for port(%d)[%s]", port, webhookFromCtx)).trim();
+
+        if("".equals(webhook)) {
+            webhook = webhookFromCtx;
+        }
+
+        println("Using Webhook: "+ webhook);
+        context = context.toContextBuilder().endpointUrl(webhook).build();
+
+        // request that verity application use specified webhook endpoint
+        UpdateEndpoint.v0_6().update(context);
+    }
+
+    void setupIssuer() throws IOException, VerityException {
+        // constructor for the Issuer Setup protocol
+        IssuerSetup newIssuerSetup = IssuerSetup.v0_6();
+
+        AtomicBoolean setupComplete = new AtomicBoolean(false); // spinlock bool
+
+        // handler for created issuer identifier message
+        handle(newIssuerSetup, (String msgName, JSONObject message) -> {
+            if("public-identifier-created".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                issuerDID = message.getJSONObject("identifier").getString("did");
+                issuerVerkey = message.getJSONObject("identifier").getString("verKey");
+                setupComplete.set(true);
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
             }
         });
-        listener.listen();
-        System.out.println("Listening on port " + port);
+
+        // request that issuer identifier be created
+        newIssuerSetup.create(context);
+
+        // wait for request to complete
+        waitFor(setupComplete, "Waiting for setup to complete");
+
+        println("The issuer DID and Verkey must be on the ledger.");
+        println(String.format("Please add DID (%s) and Verkey (%s) to ledger.", issuerDID, issuerVerkey));
+        waitFor("Press ENTER when DID is on ledger");
     }
 
-    private static String readConfigFile(String configPath) throws IOException {
-        return new String(Files.readAllBytes(FileSystems.getDefault().getPath(configPath)));
+    void issuerIdentifier() throws IOException, VerityException {
+        // constructor for the Issuer Setup protocol
+        IssuerSetup issuerSetup = IssuerSetup.v0_6();
+
+        AtomicBoolean issuerComplete = new AtomicBoolean(false); // spinlock bool
+
+        // handler for current issuer identifier message
+        handle(issuerSetup, (String msgName, JSONObject message) -> {
+            if("public-identifier".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                issuerDID = message.getString("did");
+                issuerVerkey = message.getString("verKey");
+            }
+            issuerComplete.set(true);
+        });
+
+        // query the current identifier
+        issuerSetup.currentPublicIdentifier(context);
+
+        // wait for response from verity application
+        waitFor(issuerComplete, "Waiting for current issuer DID");
     }
 
-    private static void writeInviteDetailsFile(JSONObject data) throws IOException {
-        Files.write(FileSystems.getDefault().getPath("inviteDetails.json"), data.toString().getBytes());
+    void setup() throws IOException, VerityException {
+        File contextFile = new File("verity-context.json");
+        if (contextFile.exists()) {
+            if (consoleYesNo("Reuse Verity Context (in verity-context.json)", true)) {
+                context = loadContext(contextFile);
+            } else {
+                context = provisionAgent();
+            }
+        }
+        else {
+            context = provisionAgent();
+        }
+
+        updateWebhookEndpoint();
+
+        issuerIdentifier();
+
+        if (issuerDID == null) {
+            setupIssuer();
+        }
+
+        printlnObject(context.toJson(), ">>>", "Context Used:");
+
+        Files.write(contextFile.toPath(), context.toJson().toString(2).getBytes());
     }
 
-    private static String getRandomVersion() {
-        return getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString() + "." + getRandomInt(0, 1000).toString();
+    private String createConnection() throws IOException, VerityException {
+        // Connecting protocol has to steps
+        // 1. Start the protocol and receive the invite
+        //  2. Wait for the other participant to accept the invite
+
+        // Step 1
+
+        // Constructor for the Connecting API
+        Connecting connecting = Connecting.v0_6(UUID.randomUUID().toString(), true);
+
+        // handler for the response to the request to start the Connecting protocol.
+        AtomicBoolean startConnectionComplete = new AtomicBoolean(false); // spinlock bool
+        AtomicBoolean connectionComplete = new AtomicBoolean(false); // spinlock bool
+        AtomicReference<String> relDID = new AtomicReference<>();
+        handle(connecting, (String msgName, JSONObject message) -> {
+            if("CONN_REQUEST_RESP".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                JSONObject invite = message.getJSONObject("inviteDetail");
+                relDID.set(invite.getJSONObject("senderDetail").getString("DID"));
+                String truncatedInvite = Util.truncateInviteDetails(invite).toString();
+
+                try {
+                    QRCode.from(truncatedInvite).withSize(500, 500)
+                            .writeTo(new FileOutputStream(new File("qrcode.png")));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                println("QR code at: qrcode.png");
+
+                startConnectionComplete.set(true);
+            }
+            else if("CONN_REQ_ACCEPTED".equals(msgName)){
+                printlnMessage(msgName, message);
+                connectionComplete.set(true);
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        // starts the connecting protocol
+        connecting.connect(context); // Send the connection create message to Verity
+        // wait for response from verity application
+        waitFor(startConnectionComplete, "Waiting to start connection");
+
+        // Step 2
+
+        // wait for acceptance from connect.me user
+        waitFor(connectionComplete, "Waiting for Connect.Me to accept connection");
+        // return owning DID for the connection
+        return relDID.get();
     }
 
-    private static Integer getRandomInt(int min, int max) {
-        return (int)(Math.random() * ((max - min) + 1)) + min;
+    private void askQuestion(String forDID) throws IOException, VerityException {
+        String questionText = "Hi Alice, how are you today?";
+        String questionDetail = "Checking up on you today.";
+        String[] validResponses = {"Great!", "Not so good."};
+
+        CommittedAnswer committedAnswer = CommittedAnswer.v1_0(
+                forDID,
+                questionText,
+                questionDetail,
+                validResponses,
+                true);
+
+
+        AtomicBoolean questionComplete = new AtomicBoolean(false); // spinlock bool
+        handle(committedAnswer, (String msgName, JSONObject message) -> {
+            if("answer-given".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                questionComplete.set(true);
+
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        committedAnswer.ask(context);
+        waitFor(questionComplete, "Waiting for Connect.Me to answer the question");
     }
 
-    // Builds JSON object for proof requested attributes
-    private static JSONObject getProofAttr(String name, String issuerDid) {
-        JSONObject proofAttr = new JSONObject();
-        proofAttr.put("name", name);
-        JSONArray restrictions = new JSONArray();
-        JSONObject restriction = new JSONObject();
-        restriction.put("issuer_did", issuerDid);
-        restrictions.put(restriction);
-        proofAttr.put("restrictions", restrictions);
-        return proofAttr;
+    private String writeLedgerSchema() throws IOException, VerityException {
+        // input parameters for schema
+        String schemaName = "Diploma "+ UUID.randomUUID().toString().substring(0, 8);
+        String schemaVersion = "0.1";
+
+        // constructor for the Write Schema protocol
+        WriteSchema writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, "name", "degree");
+
+        AtomicBoolean schemaComplete = new AtomicBoolean(false); // spinlock bool
+        AtomicReference<String> schemaIdRef = new AtomicReference<>();
+
+        // handler for message received when schema is written
+        handle(writeSchema, (String msgName, JSONObject message) -> {
+            if("status-report".equals(msgName)) {
+                printlnMessage(msgName, message);
+                schemaIdRef.set(message.getString("schemaId"));
+                schemaComplete.set(true);
+
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        // request schema be written to ledger
+        writeSchema.write(context);
+
+        // wait for operation to be complete
+        waitFor(schemaComplete, "Waiting to write schema to ledger");
+        // returns ledger schema identifier
+        return schemaIdRef.get();
+    }
+
+    private String writeLedgerCredDef(String schemaId) throws IOException, VerityException {
+
+        // input parameters for cred definition
+        String credDefName = "Trinity Collage Diplomas";
+        String credDefTag = "latest";
+
+        // constructor for the Write Credential Definition protocol
+        WriteCredentialDefinition def = WriteCredentialDefinition.v0_6(credDefName, schemaId, credDefTag);
+
+        AtomicBoolean defComplete = new AtomicBoolean(false); // spinlock bool
+        AtomicReference<String> defIdRef = new AtomicReference<>();
+
+        // handler for message received when schema is written
+        handle(def, (String msgName, JSONObject message) -> {
+            if("status-report".equals(msgName)) {
+                printlnMessage(msgName, message);
+                defIdRef.set(message.getString("credDefId"));
+                defComplete.set(true);
+
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        // request the cred def be writen to ledger
+        def.write(context);
+        // wait for operation to be complete
+        waitFor(defComplete, "Waiting to write cred def to ledger");
+        // returns ledger cred def identifier
+        return defIdRef.get();
+    }
+
+    private void issueCredential(String forDID, String defId) throws IOException, VerityException, InterruptedException {
+        // input parameters for issue credential
+        String credentialName = "Degree";
+        Map<String, String> credentialData = new HashMap<>();
+        credentialData.put("name", "Joe Smith");
+        credentialData.put("degree", "Bachelors");
+        // constructor for the Issue Credential protocol
+        IssueCredential issue = IssueCredential.v0_6(forDID, credentialName, credentialData, defId);
+
+        AtomicBoolean offerComplete = new AtomicBoolean(false); // spinlock bool
+
+        // handler for 'ask_accept` message when the offer for credential is accepted
+        handle(issue, (String msgName, JSONObject message) -> {
+            if("ask-accept".equals(msgName)) {
+                printlnMessage(msgName, message);
+                offerComplete.set(true);
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        // request that credential is offered
+        issue.offerCredential(context);
+        // wait for connect.me user to accept offer
+        waitFor(offerComplete, "Wait for Connect.me to accept the Credential Offer");
+
+        // request that credential be issued
+        issue.issueCredential(context);
+
+        Thread.sleep(3000); // Give time for Credential to get to mobile device
+    }
+
+    private void requestProof(String forDID) throws IOException, VerityException {
+        // input parameters for request proof
+        String proofName = "Proof of Degree - "+UUID.randomUUID().toString().substring(0, 8);
+
+        Restriction restriction =  RestrictionBuilder
+                .blank()
+                .issuerDid(issuerDID)
+                .build();
+
+        Attribute nameAttr = PresentProof.attribute("name", restriction);
+        Attribute degreeAttr = PresentProof.attribute("degree", restriction);
+
+        // constructor for the Present Proof protocol
+        PresentProof proof = PresentProof.v0_6(forDID, proofName, nameAttr, degreeAttr);
+
+        AtomicBoolean proofComplete = new AtomicBoolean(false); // spinlock bool
+
+        // handler for the result of the proof presentation
+        handle(proof, (String msgName, JSONObject message) -> {
+            if("proof-result".equals(msgName)) {
+                printlnMessage(msgName, message);
+                proofComplete.set(true);
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        // request proof
+        proof.request(context);
+        // wait for connect.me user to present the requested proof
+        waitFor(proofComplete, "Waiting for proof presentation from Connect.me");
     }
 }

@@ -1,9 +1,10 @@
 import pytest
 
+from test.test_utils import get_test_config, send_stub, cleanup
 from verity_sdk.protocols.IssuerSetup import IssuerSetup
 from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
-from test.test_utils import get_test_config, send_stub, cleanup
+
 
 
 def test_init():
@@ -12,7 +13,7 @@ def test_init():
 
 @pytest.mark.asyncio
 async def test_create():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     issuer_setup = IssuerSetup()
     issuer_setup.send = send_stub
     msg = await issuer_setup.create(context)

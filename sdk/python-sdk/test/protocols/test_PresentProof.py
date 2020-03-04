@@ -29,7 +29,7 @@ def test_init():
 
 @pytest.mark.asyncio
 async def test_request():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates, revocation_interval)
     present_proof.send = send_stub
     msg = await present_proof.request(context)
@@ -55,7 +55,7 @@ async def test_request():
 
 @pytest.mark.asyncio
 async def test_status():
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates, revocation_interval)
     present_proof.send = send_stub
     msg = await present_proof.status(context)

@@ -1,10 +1,11 @@
 /*
- * COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.
+ * COPYRIGHT 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
  * Adapted from https://hc.apache.org/httpcomponents-core-ga/httpcore/examples/org/apache/http/examples/HttpFileServer.java
  */
 package com.evernym.sdk.example;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.Locale;
@@ -35,6 +36,7 @@ interface Handler {
 public class Listener {
     Integer port;
     Handler handler;
+    private HttpServer server;
 
     public Listener (Integer port, Handler handler) {
         this.port = port;
@@ -47,7 +49,7 @@ public class Listener {
                 .setTcpNoDelay(true)
                 .build();
 
-        final HttpServer server = ServerBootstrap.bootstrap()
+        server = ServerBootstrap.bootstrap()
                 .setListenerPort(this.port)
                 .setServerInfo("Test/1.1")
                 .setSocketConfig(socketConfig)
@@ -56,7 +58,11 @@ public class Listener {
                 .create();
 
         server.start();
-        // server.awaitTermination(this.timeoutSeconds, TimeUnit.SECONDS);
+    }
+
+    public void stop() {
+        if (server != null)
+            server.stop();
     }
 
     static class StdErrorExceptionLogger implements ExceptionLogger {
@@ -67,6 +73,8 @@ public class Listener {
                 System.err.println("Connection timed out");
             } else if (ex instanceof ConnectionClosedException) {
                 System.err.println(ex.getMessage());
+            } else if (ex instanceof SocketException) {
+                System.err.println("Socket closed");
             } else {
                 ex.printStackTrace();
             }
@@ -90,7 +98,7 @@ public class Listener {
                 throw new MethodNotSupportedException(method + " method not supported");
             }
             String target = request.getRequestLine().getUri();
-            System.out.println("Got request for " + method + " " + target);
+            System.err.println("Got request for " + method + " " + target);
 
             if (request instanceof HttpEntityEnclosingRequest) {
                 HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
@@ -102,7 +110,7 @@ public class Listener {
             HttpConnection conn = coreContext.getConnection(HttpConnection.class);
             response.setStatusCode(HttpStatus.SC_OK);
             response.setEntity(new StringEntity("Success", Charset.forName("UTF-8")));
-            System.out.println(conn + ": serving data \"Success\"");
+            System.err.println(conn + ": serving data \"Success\"");
         }
     }
 }

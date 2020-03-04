@@ -12,9 +12,15 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <exec.mainClass>com.evernym.sdk.example.App</exec.mainClass>
   </properties>
 
   <repositories>
+    <repository>
+      <id>evernym</id>
+      <name>evernym</name>
+      <url>https://evernym.mycloudrepo.io/public/repositories/evernym-dev/</url>
+    </repository>
     <repository>
       <id>sovrin</id>
       <name>sovrin</name>
@@ -24,34 +30,14 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.evernym.verity.sdk</groupId>
-      <artifactId>sdk</artifactId>
-      <version>0.37-SNAPSHOT</version>
+      <groupId>com.evernym.verity</groupId>
+      <artifactId>verity-sdk</artifactId>
+      <version>0.1.2-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5.8</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hyperledger</groupId>
-      <artifactId>indy</artifactId>
-      <version>1.8.1-dev-985</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.8.0-beta4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.8.0-beta4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.61</version>
+      <groupId>net.glxn</groupId>
+      <artifactId>qrgen</artifactId>
+      <version>1.4</version>
     </dependency>
   </dependencies>
 

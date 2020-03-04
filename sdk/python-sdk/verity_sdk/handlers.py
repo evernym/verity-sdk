@@ -1,82 +1,85 @@
-from typing import Callable, List, Optional, Coroutine, Any
+import logging
+from typing import Callable, NewType, Awaitable, Dict
 
-from verity_sdk.utils import Context, unpack_message
+from verity_sdk.utils import Context, unpack_message, MsgType
 
 
 def is_problem_report(message_type: str) -> bool:
     return message_type.split('/')[3] == 'problem-report'
 
 
+HandlerFunction = NewType('HandlerFunction', Callable[[str, dict], Awaitable[None]])
+
+
 class Handler:
-    message_type: str
-    message_status: Optional[int]
-    message_handler: Callable[[dict], Coroutine[Any, Any, None]]
 
     def __init__(
             self,
-            message_type: str,
-            message_status: Optional[int],
-            message_handler: Callable[[dict], Coroutine[Any, Any, None]]):
-        self.message_type = message_type
-        self.message_status = message_status
-        self.message_handler = message_handler
+            msg_family: str,
+            msg_family_version: str,
+            handler_function: HandlerFunction):
+        self.msg_family: str = msg_family
+        self.msg_family_version: str = msg_family_version
+        self.handler_function: HandlerFunction = handler_function
 
     def handles(self, message: dict) -> bool:
-        if self.message_status is not None:
-            return message['@type'] == self.message_type and message['status'] == self.message_status
-        return message['@type'] == self.message_type
+        if '@type' not in message:
+            logging.error('message does not contain an "@type" attribute')
+            return False
+        msgType = MsgType(message['@type'])
+        return msgType.msg_family == self.msg_family and msgType.msg_family_version == self.msg_family_version
 
-    async def handle(self, message: dict):
-        await self.message_handler(message)
+    async def handle(self, msg_name: str, message: dict):
+        await self.handler_function(msg_name, message)
 
-    async def __call__(self, message: dict):
-        await self.message_handler(message)
+    async def __call__(self, msg_name: str, message: dict): # Added for clarity and flexibility. Same as `self.handle`.
+        await self.handler_function(msg_name, message)
 
 
 class Handlers:
-    handlers: List[Handler]
-    default_handler: Callable[[dict], Coroutine[Any, Any, None]]
-    problem_report_handler: Callable[[dict], Coroutine[Any, Any, None]]
+    handlers: Dict[str, Handler]
+    default_handler: HandlerFunction
 
     def __init__(self):
-        self.handlers = []
+        self.handlers = {}
 
     def add_handler(
             self,
-            message_type: str,
-            message_status: int,
-            message_handler: Callable[[dict], Coroutine[Any, Any, None]]):
-        self.handlers.append(Handler(message_type, message_status, message_handler))
+            msg_family: str,
+            msg_family_version: str,
+            handler_function: HandlerFunction):
+        self.handlers[Handlers.build_handlers_key(msg_family, msg_family_version)] = Handler(msg_family, msg_family_version, handler_function)
 
-    def add_default_handler(self, handler: Callable[[dict], Coroutine[Any, Any, None]]):
-        self.default_handler = handler
+    def has_handler(self, msg_family: str, msg_family_version: str):
+        return Handlers.build_handlers_key(msg_family, msg_family_version) in self.handlers
 
-    def add_problem_report_handler(self, handler: Callable[[dict], Coroutine[Any, Any, None]]):
-        self.problem_report_handler = handler
+    def set_default_handler(self, handler_function: HandlerFunction):
+        self.default_handler = handler_function
 
     async def handle_message(self, context: Context, raw_message: bytes):
         message: dict = await unpack_message(context, raw_message)
-        handled: bool = False
+        msg_type = MsgType(message['@type'])
 
-        for handler in self.handlers:
-            if handler.handles(message):
-                await handler(message)
-                handled = True
+        if self.has_handler(msg_type.msg_family, msg_type.msg_family_version):
+            await self.handlers[Handlers.build_handlers_key(msg_type.msg_family, msg_type.msg_family_version)].handle(msg_type.msg_name, message)
+        else:
+            if self.default_handler is not None:
+                await self.default_handler(msg_type.msg_name, message)
+            else:
+                logging.warning('Unable to handle message, and no default handler was defined')
 
-        if not handled:
-            if is_problem_report(message['@type']) and self.problem_report_handler is not None:
-                await self.problem_report_handler(message)
-            elif self.default_handler is not None:
-                await self.default_handler(message)
+    @staticmethod
+    def build_handlers_key(msg_family: str, msg_family_version: str):
+        return '{}{}'.format(msg_family, msg_family_version)
 
 
-# Enables handler registration decorator @AddHandler(handlers, message_type, message_status)
-class AddHandler:
-
-    def __init__(self, handlers: Handlers, message_type: str, message_status: int = None):
-        self.handlers = handlers
-        self.message_type = message_type
-        self.message_status = message_status
-
-    def __call__(self, handler: Callable[[dict], Coroutine[Any, Any, None]], *args, **kwargs):
-        self.handlers.add_handler(self.message_type, self.message_status, handler)
+# # Enables handler registration decorator @AddHandler(handlers, msg_family, msg_family_version)
+# class AddHandler:
+#
+#     def __init__(self, handlers: Handlers, msg_family: str, msg_family_version: str,):
+#         self.handlers = handlers
+#         self.msg_family = msg_family
+#         self.msg_family_version = msg_family_version
+#
+#     def __call__(self, handler_function: HandlerFunction, *args, **kwargs):
+#         self.handlers.add_handler(self.msg_family, self.msg_family_version, handler_function)

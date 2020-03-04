@@ -1,6 +1,8 @@
 package com.evernym.verity.sdk.handlers;
 
+import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
@@ -18,21 +20,11 @@ public class Handlers {
 
     /**
      * Adds a MessageHandler for a message type to the list if current message handlers
-     * @param messageType the type of message to be handled
+     * @param messageFamily the family of the message to be handled
      * @param messageHandler the handler function itself
      */
-    public void addHandler(String messageType, MessageHandler.Handler messageHandler) {
-        messageHandlers.add(new MessageHandler(messageType, messageHandler));
-    }
-
-    /**
-     * Adds a MessageHandler for a message type and status to the list if current message handlers
-     * @param messageType the type of message to be handled
-     * @param messageStatus the status of the message to be handled
-     * @param messageHandler the handler function itself
-     */
-    public void addHandler(String messageType, Integer messageStatus, MessageHandler.Handler messageHandler) {
-        messageHandlers.add(new MessageHandler(messageType, messageStatus, messageHandler));
+    public void addHandler(MessageFamily messageFamily, MessageHandler.Handler messageHandler) {
+        messageHandlers.add(new MessageHandler(messageFamily, messageHandler));
     }
 
     /**
@@ -57,7 +49,7 @@ public class Handlers {
      * @param rawMessage the raw bytes received from Verity
      * @throws WalletException when there are issues with encryption and decryption
      */
-    public void handleMessage(Context context, byte[] rawMessage) throws WalletException {
+    public void handleMessage(Context context, byte[] rawMessage) throws VerityException {
         JSONObject message = Util.unpackMessage(context, rawMessage);
         boolean handled = false;
         for(MessageHandler messageHandler: messageHandlers) {

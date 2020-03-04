@@ -1,20 +1,47 @@
-# Verity-sdk Repo
+# verity-sdk Repo
 
 ## Overview
 
-The goal of the VeritySDK is easy application integration with the Verity server. This integration allows for SSI-enabled workflows like creating connections, issuing credentials, requesting proof, and general pairwise interactions. The SDK uses libindy and Agent-to-Agent protocols to securely authenticate and communicate with the Verity server. The creation of language specific bindings allows for developers to quickly integrate their backend services into the world of SSI with minimal overhead.
+The goal of the Verity SDK is to provide easy application integration with the Verity server. This integration provides the basis for SSI-enabled workflows such as creating connections, issuing credentials, requesting proof, and general pairwise interactions. The SDK uses `libindy` and Agent-to-Agent protocols to securely authenticate and communicate with the Verity server. With the creation of language-specific bindings, developers can quickly integrate their backend services into the world of SSI with minimal overhead.
 
-## Setup
+## Repo Structure
 
-The general steps for setting up the VeritySDK for development:
+This repo is divided into two major portions: the SDK and the server. The SDK contains the language-specific bindings for interacting with the Verity server in an idiomatic way. The server is a *mock* Verity server to simplify integration and testing of applications. It runs an in-memory-only service that can be deployed easily for application testing but that lacks many key features needed for production use.
 
-1. Install libindy and its python wrapper (https://github.com/hyperledger/indy-sdk)
-2. As the User/UID that will use the SDK execute the tools/provisioner/provision_sdk.py script and save the resulting config file. 
-3. Download/integrate the language specific library of your choosing.
-4. Write and test your application making sure to use the config file from step 2 during initialization and also making sure to use the same User/UID from step 2.
+## Architecture
 
-## Repo structure
+By design, Verity SDK is stateless, which gives control of the library-provided APIs back to the consumer. This architecture has significant implications for the design of the library: namely, it will function as a helper to the library for ease of use with Verity, but it will not interact with the Verity Agent itself. 
 
-This repo is broken up into two major portions: the sdk, and the server. The SDK contains the language specific bindings for interacting with the Verity server in an idiomatic way. The server is a MOCK Verity server to simplify integration and testing of applications. It runs an in-memory only service that can be deployed easily for application testing but lacks many key features needed for production use.
+## Terminology
 
-Take time to become familiar with the language specific SDK of your choice starting with its README. 
+The instructions for this SDK use the following terms:
+
+* **Customer integration code** &#8212; The Verity application that you create using the SDK.
+
+* **Integration code example** &#8212; An example application that demonstrates the basic steps involved in various Connect.Me transactions.
+
+<!--Do we need something here on what the setup looks like in general, what the component parts are, what they generally will be accomplishing?-->
+
+## Setup 
+
+These are the general steps for setting up the Verity SDK for development:
+
+1. Stand up a Verity server instance in the cloud. 
+3. Download and integrate the language-specific library of your choice.
+4. Run the integration code example against the Verity server instance.
+5. Write and test your application.
+
+<a id="cloud"></a>
+
+## 1. Stand up a Verity server instance in the cloud
+
+<!--need info from Trev on this-->[TBD]
+
+### Next Step
+
+Install the language-specific elements of the SDK:
+* [Java](/docs/Getting-Started/java/README.md)
+* [NodeJs](/docs/Getting-Started/nodejs/README.md)
+* [Python](/docs/Getting-Started/python/README.md)
+
+© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.

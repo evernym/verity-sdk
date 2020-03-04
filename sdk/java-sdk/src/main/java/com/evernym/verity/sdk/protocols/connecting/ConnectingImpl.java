@@ -68,6 +68,7 @@ class ConnectingImpl extends Protocol implements Connecting {
         JSONObject msg = new JSONObject();
         msg.put("@type", getMessageType(CREATE_CONNECTION));
         msg.put("@id", getNewId());
+        addThread(msg);
         msg.put("sourceId", this.sourceId);
         msg.put("phoneNo", this.phoneNumber);
         msg.put("includePublicDID", this.includePublicDID);

@@ -1,4 +1,4 @@
-from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
+from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type, uuid
 from verity_sdk.protocols.Protocol import Protocol
 
 
@@ -8,6 +8,8 @@ class Connecting(Protocol):
 
     # Messages
     CREATE_CONNECTION = 'CREATE_CONNECTION'
+    INVITE_DETAIL = 'CONN_REQUEST_RESP'
+    CONN_REQ_ACCEPTED = 'CONN_REQ_ACCEPTED'
     GET_STATUS = 'get-status'
 
     # Status
@@ -18,9 +20,9 @@ class Connecting(Protocol):
     phone_number: str
     include_public_did: bool
 
-    def __init__(self, source_id: str, phone_number: str = None, include_public_did: bool = False):
+    def __init__(self, source_id: str = None, phone_number: str = None, include_public_did: bool = False):
         super().__init__()
-        self.source_id = source_id
+        self.source_id = source_id if source_id is not None else uuid()
         self.phone_number = phone_number
         self.include_public_did = include_public_did
 

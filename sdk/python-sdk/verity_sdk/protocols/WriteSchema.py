@@ -10,6 +10,7 @@ class WriteSchema(Protocol):
 
     # Messages
     WRITE_SCHEMA = 'write'
+    STATUS = 'status-report'
 
     # Status
     WRITE_SUCCESSFUL_STATUS = 0
@@ -19,11 +20,11 @@ class WriteSchema(Protocol):
     version: str
     attrs: List[str]
 
-    def __init__(self, name: str, version: str, *attrs: str):
+    def __init__(self, name: str, version: str, attrs: [str]):
         super().__init__()
         self.name = name
         self.version = version
-        self.attrs = list(attrs)
+        self.attrs = attrs
         self.define_messages()
 
     def define_messages(self):
