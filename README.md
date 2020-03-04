@@ -4,13 +4,9 @@
 
 The goal of the Verity SDK is to provide easy application integration with the Verity server. This integration provides the basis for SSI-enabled workflows such as creating connections, issuing credentials, requesting proof, and general pairwise interactions. The SDK uses `libindy` and Agent-to-Agent protocols to securely authenticate and communicate with the Verity server. With the creation of language-specific bindings, developers can quickly integrate their backend services into the world of SSI with minimal overhead.
 
-## Repo Structure
-
-This repo is divided into two major portions: the SDK and the server. The SDK contains the language-specific bindings for interacting with the Verity server in an idiomatic way. The server is a *mock* Verity server to simplify integration and testing of applications. It runs an in-memory-only service that can be deployed easily for application testing but that lacks many key features needed for production use.
-
 ## Architecture
 
-By design, Verity SDK is stateless, which gives control of the library-provided APIs back to the consumer. This architecture has significant implications for the design of the library: namely, it will function as a helper to the library for ease of use with Verity, but it will not interact with the Verity Agent itself. 
+By design, Verity SDK is largely stateless (only requiring a small set of configuration context and a single public-private key), which allows using applications to orchestrate SSI integrations without heavy involvement in the interactions.
 
 ## Terminology
 
