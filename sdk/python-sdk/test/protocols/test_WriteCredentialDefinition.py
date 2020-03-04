@@ -1,9 +1,10 @@
 import pytest
 
+from test.test_utils import get_test_config, send_stub, cleanup
 from src.protocols.WriteCredentialDefinition import WriteCredentialDefinition
 from src.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
 from src.utils.Context import Context
-from test.test_utils import get_test_config, send_stub, cleanup
+
 
 name = 'name'
 schema_id = 'schema id'
