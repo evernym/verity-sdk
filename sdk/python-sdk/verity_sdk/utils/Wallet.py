@@ -1,6 +1,5 @@
-import json
-from indy.wallet import create_wallet, open_wallet
 from indy.error import IndyError, ErrorCode
+from indy.wallet import create_wallet, open_wallet
 
 
 async def create_and_open_wallet(wallet_config, wallet_credentials):

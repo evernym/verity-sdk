@@ -49,18 +49,19 @@ class Context:
         self.wallet_credentials = json.dumps({'key': wallet_key})
 
     async def update_verity_info(self):
-        full_url = f"{self.verity_url}/agency"
+        full_url = f'{self.verity_url}/agency'
         result = requests.get(full_url)
         status_code = result.status_code
         if status_code > 399:
-            raise IOError(f"Request failed! - {status_code} - {result.text}")
-        else:
-            try:
-                msg = result.json()
-                self.verity_public_did = msg.get("DID")
-                self.verity_public_verkey = msg.get("verKey")
-            except ValueError as e:
-                raise IOError(f"Invalid and unexpected data from Verity -- response -- {e}")
+            raise IOError(f'Request failed! - {status_code} - {result.text}')
+
+        try:
+            msg = result.json()
+            self.verity_public_did = msg.get('DID')
+            self.verity_public_verkey = msg.get('verKey')
+        except ValueError as e:
+            raise IOError(f'Invalid and unexpected data from Verity -- response -- {e}')
+
 
     async def open_wallet(self):
         self.wallet_handle = await create_and_open_wallet(self.wallet_config, self.wallet_credentials)

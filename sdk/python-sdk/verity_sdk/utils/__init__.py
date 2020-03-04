@@ -126,4 +126,3 @@ class MsgType:
         self.msg_family = parts2[0]
         self.msg_family_version = parts2[1]
         self.msg_name = parts2[2]
-

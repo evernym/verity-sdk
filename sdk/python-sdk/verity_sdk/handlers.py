@@ -1,5 +1,5 @@
 import logging
-from typing import Callable, List, Any, NewType, Awaitable, Dict
+from typing import Callable, NewType, Awaitable, Dict
 
 from verity_sdk.utils import Context, unpack_message, MsgType
 
@@ -7,7 +7,9 @@ from verity_sdk.utils import Context, unpack_message, MsgType
 def is_problem_report(message_type: str) -> bool:
     return message_type.split('/')[3] == 'problem-report'
 
+
 HandlerFunction = NewType('HandlerFunction', Callable[[str, dict], Awaitable[None]])
+
 
 class Handler:
 
@@ -24,8 +26,8 @@ class Handler:
         if '@type' not in message:
             logging.error('message does not contain an "@type" attribute')
             return False
-        type = MsgType(message['@type'])
-        return type.msg_family == self.msg_family and type.msg_family_version == self.msg_family_version
+        msgType = MsgType(message['@type'])
+        return msgType.msg_family == self.msg_family and msgType.msg_family_version == self.msg_family_version
 
     async def handle(self, msg_name: str, message: dict):
         await self.handler_function(msg_name, message)
@@ -64,7 +66,7 @@ class Handlers:
             if self.default_handler is not None:
                 await self.default_handler(msg_type.msg_name, message)
             else:
-                logging.warning("Unable to handle message, and no default handler was defined")
+                logging.warning('Unable to handle message, and no default handler was defined')
 
     @staticmethod
     def build_handlers_key(msg_family: str, msg_family_version: str):
