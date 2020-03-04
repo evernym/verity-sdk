@@ -1,5 +1,5 @@
 import requests
-from src.utils.Did import Did
+from verity_sdk.utils.Did import Did
 
 
 def retrieve_verity_public_did(verity_url) -> Did:

@@ -1,5 +1,5 @@
-from src.utils import Context, get_message_type
-from src.protocols.Protocol import Protocol
+from verity_sdk.utils import Context, get_message_type
+from verity_sdk.protocols.Protocol import Protocol
 
 
 class IssuerSetup(Protocol):

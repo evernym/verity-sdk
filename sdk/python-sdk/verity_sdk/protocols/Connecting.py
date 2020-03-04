@@ -1,5 +1,5 @@
-from src.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type, uuid
-from src.protocols.Protocol import Protocol
+from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type, uuid
+from verity_sdk.protocols.Protocol import Protocol
 
 
 class Connecting(Protocol):

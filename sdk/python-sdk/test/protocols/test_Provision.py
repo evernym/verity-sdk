@@ -3,9 +3,9 @@ import pytest
 
 from indy import crypto
 from test.test_utils import get_test_config, cleanup
-from src.protocols.Provision import Provision
-from src.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
-from src.utils.Context import Context
+from verity_sdk.protocols.Provision import Provision
+from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils.Context import Context
 
 
 pw_did = 'pwDID'
@@ -30,7 +30,7 @@ async def test_provision_sdk(mocker):
         [context.sdk_pairwise_verkey],
         context.verity_public_verkey,
     )
-    mock = mocker.patch('src.protocols.Provision.send_message')
+    mock = mocker.patch('verity_sdk.protocols.Provision.send_message')
     mock.return_value = response_msg
 
     provision = Provision()

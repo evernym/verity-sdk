@@ -1,7 +1,7 @@
 import logging
 from typing import Callable, List, Any, NewType, Awaitable, Dict
 
-from src.utils import Context, unpack_message, MsgType
+from verity_sdk.utils import Context, unpack_message, MsgType
 
 
 def is_problem_report(message_type: str) -> bool:

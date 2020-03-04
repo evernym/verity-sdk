@@ -3,7 +3,7 @@ from typing import Dict
 from uuid import uuid4
 from indy import crypto
 
-from src.utils import Context
+from verity_sdk.utils import Context
 
 EVERNYM_MSG_QUALIFIER = 'did:sov:123456789abcdefghi1234'
 COMMUNITY_MSG_QUALIFIER = 'did:sov:BzCbsNYhMrjHiqZDTUASHg'

@@ -1,7 +1,6 @@
 __copyright__ = 'COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.'
 
 import asyncio
-import json
 import logging
 import traceback
 from asyncio.base_events import Server
@@ -11,18 +10,18 @@ from aiohttp import web
 from aiohttp.web_routedef import RouteTableDef
 
 from example.helper import *
-from src.handlers import Handlers
-from src.protocols.Connecting import Connecting
-from src.protocols.IssueCredential import IssueCredential
-from src.protocols.IssuerSetup import IssuerSetup
-from src.protocols.PresentProof import PresentProof
-from src.protocols.Provision import Provision
-from src.protocols.UpdateEndpoint import UpdateEndpoint
-from src.protocols.WriteCredentialDefinition import WriteCredentialDefinition
-from src.protocols.WriteSchema import WriteSchema
-from src.utils import truncate_invite_details, uuid
-from src.utils.Context import Context
-from src.utils.Did import Did, create_new_did
+from verity_sdk.handlers import Handlers
+from verity_sdk.protocols.Connecting import Connecting
+from verity_sdk.protocols.IssueCredential import IssueCredential
+from verity_sdk.protocols.IssuerSetup import IssuerSetup
+from verity_sdk.protocols.PresentProof import PresentProof
+from verity_sdk.protocols.Provision import Provision
+from verity_sdk.protocols.UpdateEndpoint import UpdateEndpoint
+from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
+from verity_sdk.protocols.WriteSchema import WriteSchema
+from verity_sdk.utils import truncate_invite_details
+from verity_sdk.utils.Context import Context
+from verity_sdk.utils.Did import Did, create_new_did
 
 context: Context
 issuer_did: str = ''

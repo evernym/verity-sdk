@@ -1,9 +1,9 @@
 import pytest
 
 from test.test_utils import get_test_config, send_stub, cleanup
-from src.protocols.Connecting import Connecting
-from src.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
-from src.utils.Context import Context
+from verity_sdk.protocols.Connecting import Connecting
+from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils.Context import Context
 
 source_id = '12345'
 phone_number = '1234357890'

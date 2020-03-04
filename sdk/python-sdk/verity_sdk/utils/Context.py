@@ -3,7 +3,7 @@ import requests
 
 from indy import wallet
 
-from src.utils.Wallet import create_and_open_wallet, try_to_create_wallet
+from verity_sdk.utils.Wallet import create_and_open_wallet, try_to_create_wallet
 
 
 class Context:

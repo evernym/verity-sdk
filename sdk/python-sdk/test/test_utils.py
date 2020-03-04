@@ -4,11 +4,11 @@ from uuid import uuid4 as uuid
 import pytest
 from indy import did, wallet
 
-from src.protocols.Protocol import Protocol
-from src.utils import prepare_forward_message, pack_message_for_verity, \
+from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import prepare_forward_message, pack_message_for_verity, \
     unpack_forward_message, get_message_type, get_problem_report_message_type, \
     EVERNYM_MSG_QUALIFIER, get_status_message_type
-from src.utils.Context import Context
+from verity_sdk.utils.Context import Context
 
 
 async def get_test_config():
