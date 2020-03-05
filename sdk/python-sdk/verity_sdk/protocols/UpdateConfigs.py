@@ -5,17 +5,17 @@ class UpdateConfigs(Protocol):
     # Messages
     UPDATE_CONFIGS = 'UPDATE_CONFIGS'
 
-    def __init__(self, name, logo_url, thread_id = None):
+    def __init__(self, name, logo_url, thread_id=None):
         super().__init__(thread_id)
         self.name = name
         self.logo_url = logo_url
 
     async def update_msg(self):
         return {
-            '@type': { 'name': 'UPDATE_CONFIGS', 'ver': '1.0' },
+            '@type': {'name': 'UPDATE_CONFIGS', 'ver': '1.0'},
             'configs': [
-                { 'name': 'name', 'value': self.name },
-                { 'name': 'logoUrl', 'value': self.logo_url }
+                {'name': 'name', 'value': self.name},
+                {'name': 'logoUrl', 'value': self.logo_url}
             ]
         }
 
