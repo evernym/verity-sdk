@@ -6,15 +6,15 @@ The goal of the Verity SDK is to provide easy application integration with the V
 
 ## Architecture
 
-By design, Verity SDK is largely stateless (requiring only a small set of configuration contexts and a single public/private key), which allows using applications to orchestrate SSI integrations without heavy involvement in the interactions.
+By design, Verity SDK is largely stateless (requiring only a small set of configuration contexts and a single public/private key), which allows applications to orchestrate SSI integrations without heavy involvement in the interactions.
 
 ## Terminology
 
 The instructions for this SDK use the following terms:
 
-* **Customer integration code** &#8212; The Verity application that you create using the SDK
+* **Verity server instance** &#8212; An demo version of the Verity server for testing the SDK
 
-* **Example application** &#8212; An sample application provided by Evernym that demonstrates the basic steps involved in various Connect.Me transactions
+* **Example application** &#8212; A sample application provided by Evernym that demonstrates the basic steps involved in various Connect.Me transactions
 
 ## Setup 
 

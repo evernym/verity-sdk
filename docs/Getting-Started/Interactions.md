@@ -21,7 +21,7 @@ After you launch the example application in the previous step, the example proce
    
    When setting up for the first time, the example application will require these inputs from the user:
 
-   * The URL for the customer integration code that it will be connecting to
+   * The URL for the Verity server instance that it will be connecting to
    
    * The `Ngrok` URL for the webhook that you started earlier
    
@@ -31,17 +31,17 @@ After you launch the example application in the previous step, the example proce
 
 1. **Connect**
    
-   Connecting is largely automated in the example application. You can view incoming messages in the console as they arrive from the customer integration code.
+   Connecting is largely automated in the example application. You can view incoming messages in the console as they arrive from the Verity server instance.
     
-   A QR code image will be generated and placed in the current working directory. Scan this QR code with Connect.Me to finish forming the connection between the customer integration code and Connect.Me.<!--1. Ask a Committed Answer-->
+   A QR code image will be generated and placed in the current working directory. Scan this QR code with Connect.Me to finish forming the connection between the Verity server instance and Connect.Me.<!--1. Ask a Committed Answer-->
 
 1. **Write Schema to Ledger**
 
-   Writing the schema to the ledger is fully automated in the example application. You can view incoming messages in the console as they arrive from the customer integration code.
+   Writing the schema to the ledger is fully automated in the example application. You can view incoming messages in the console as they arrive from the Verity server instance.
 
 1. **Write Credential Definition to Ledger**
 
-   Writing the credential definition to the ledger is fully automated in the example application. You can view incoming messages in the console as they arrive from the customer integration code.
+   Writing the credential definition to the ledger is fully automated in the example application. You can view incoming messages in the console as they arrive from the Verity server instance.
 
 1. **Issue Degree Credential**
    
@@ -51,6 +51,6 @@ After you launch the example application in the previous step, the example proce
 
    The request for proof is automated in the example application. It will wait for steps to be completed in Connect.Me asynchronously. Accept the proof in Connect.Me when it pops up.
    
-After the proof is exchanged with the customer integration code, the simulated interaction is complete and the example application terminates.
+After the proof is exchanged with the Verity server instance, the simulated interaction is complete and the example application terminates.
 
 © 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.

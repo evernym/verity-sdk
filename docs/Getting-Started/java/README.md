@@ -57,7 +57,7 @@ git clone git@gitlab.corp.evernym.com:dev/verity/verity-sdk.git
 
 1. **Start `Ngrok`**
 
-   `Ngrok` allows the customer integration code to reach a webhook endpoint that the example application starts. By default, the example application uses port `4000`, so `Ngrok` must be started to proxy to that local port:
+   `Ngrok` allows the Verity server instance to reach a webhook endpoint that the example application starts. By default, the example application uses port `4000`, so `Ngrok` must be started to proxy to that local port:
    
    ```sh
    ngrok http 4000
