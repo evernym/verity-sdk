@@ -3,6 +3,7 @@ WORKDIR /root
 
 ENV LIBVCX_VERSION 0.3.52800629-ee57591
 ENV LIBINDY_VERSION 1.10.1
+ENV VERITY_APPLICATION_VERSION 0.4.83377239.4646637
 
 RUN apt-get update && apt-get install -y \
     software-properties-common \
@@ -48,7 +49,7 @@ RUN apt-get update && apt-get install -y \
     indy-cli=${LIBINDY_VERSION}
 
 RUN apt-get update && apt-get install -y \
-    verity-application=0.4.82626082.74394ef \
+    verity-application=${VERITY_APPLICATION_VERSION} \
     ; exit 0
 
 RUN rm -rf /etc/verity/verity-application/*
