@@ -7,6 +7,7 @@ module.exports = {
     Protocol: require('./protocols/Protocol'),
     Provision: require('./protocols/Provision'),
     UpdateEndpoint: require('./protocols/UpdateEndpoint'),
+    UpdateConfigs: require('./protocols/UpdateConfigs'),
     IssuerSetup: require('./protocols/IssuerSetup'),
     WriteSchema: require('./protocols/WriteSchema'),
     WriteCredentialDefinition: require('./protocols/WriteCredentialDefinition'),
