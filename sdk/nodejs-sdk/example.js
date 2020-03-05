@@ -11,8 +11,8 @@ const QRCode = require('qrcode')
 
 const LISTENING_PORT = 4000
 const CONFIG_PATH = 'verity-context.json'
-const INSTITUTION_NAME = "Faber College"
-const LOGO_URL = "http://robohash.org/235"
+const INSTITUTION_NAME = 'Faber College'
+const LOGO_URL = 'http://robohash.org/235'
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -361,7 +361,7 @@ async function updateWebhookEndpoint () {
   await new sdk.protocols.UpdateEndpoint().update(context)
 }
 
-async function updateConfigs() {
+async function updateConfigs () {
   const updateConfigs = new sdk.protocols.UpdateConfigs(INSTITUTION_NAME, LOGO_URL)
   await updateConfigs.update(context)
 }
