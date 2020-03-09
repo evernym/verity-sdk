@@ -16,12 +16,16 @@ from verity_sdk.protocols.IssueCredential import IssueCredential
 from verity_sdk.protocols.IssuerSetup import IssuerSetup
 from verity_sdk.protocols.PresentProof import PresentProof
 from verity_sdk.protocols.Provision import Provision
+from verity_sdk.protocols.UpdateConfigs import UpdateConfigs
 from verity_sdk.protocols.UpdateEndpoint import UpdateEndpoint
 from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
 from verity_sdk.protocols.WriteSchema import WriteSchema
 from verity_sdk.utils import truncate_invite_details
 from verity_sdk.utils.Context import Context
 from verity_sdk.utils.Did import Did, create_new_did
+
+INSTITUTION_NAME = 'Faber College'
+LOGO_URL = 'http://robohash.org/235'
 
 context: Context
 issuer_did: str = ''
@@ -283,6 +287,8 @@ async def setup(loop):
 
     await update_webhook_endpoint()
 
+    await update_configs()
+
     await issuer_identifier(loop)
 
     if not issuer_did:
@@ -335,6 +341,11 @@ async def update_webhook_endpoint():
 
     # request that verity application use specified webhook endpoint
     await UpdateEndpoint(context).update()
+
+
+async def update_configs():
+    configs = UpdateConfigs(INSTITUTION_NAME, LOGO_URL)
+    await configs.update(context)
 
 
 async def issuer_identifier(loop):
