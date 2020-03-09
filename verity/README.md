@@ -54,6 +54,6 @@ The Verity application requires a public DID to be used on the Identity Network.
 
 Logs from the Verity application can be displayed by pressing **Enter** when requested, after the application has finished starting up.
 
-© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.
+© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
 
-© 2013&#8211;2020, ALL RIGHTS RESERVED, EVERNYM INC.
+© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
