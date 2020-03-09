@@ -12,57 +12,64 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
+import static com.evernym.verity.sdk.utils.ContextConstants.*;
+
 /**
  * An object used to hold the wallet handle and other configuration information. 
  * An instance if this object is passed around to many different API calls.
  */
 public final class Context implements AsJsonObject{
+    final private String version;
+
     final private WalletConfig walletConfig;
+    final private Wallet walletHandle;
+    final private String endpointUrl;
+
     final private String verityUrl;
     final private String verityPublicDID;
-    final private String verityPublicVerkey;
-    final private String verityPairwiseDID;
-    final private String verityPairwiseVerkey;
-    final private String sdkPairwiseDID;
-    final private String sdkPairwiseVerkey;
-    final private String endpointUrl;
-    final private Wallet walletHandle;
-
+    final private String verityPublicVerKey;
+    final private String domainDID;
+    final private String verityAgentVerKey;
+    final private String sdkVerKeyId;
+    final private String sdkVerKey;
 
     private boolean walletClosedFlag = false;
 
     Context( // Not a public constructor! Allows work with ContextBuilder
         WalletConfig walletConfig,
+        String version,
         String verityUrl,
         String verityPublicDID,
-        String verityPublicVerkey,
-        String verityPairwiseDID,
-        String verityPairwiseVerkey,
-        String sdkPairwiseDID,
-        String sdkPairwiseVerkey,
+        String verityPublicVerKey,
+        String domainDID,
+        String verityAgentVerKey,
+        String sdkVerKeyId,
+        String sdkVerKey,
         String endpointUrl
     ) throws WalletOpenException {
         this.walletConfig = walletConfig;
+        this.version = version;
         this.verityUrl = verityUrl;
         this.verityPublicDID = verityPublicDID;
-        this.verityPublicVerkey = verityPublicVerkey;
-        this.verityPairwiseDID = verityPairwiseDID;
-        this.verityPairwiseVerkey = verityPairwiseVerkey;
-        this.sdkPairwiseDID = sdkPairwiseDID;
-        this.sdkPairwiseVerkey = sdkPairwiseVerkey;
+        this.verityPublicVerKey = verityPublicVerKey;
+        this.domainDID = domainDID;
+        this.verityAgentVerKey = verityAgentVerKey;
+        this.sdkVerKeyId = sdkVerKeyId;
+        this.sdkVerKey = sdkVerKey;
         this.endpointUrl = endpointUrl;
         this.walletHandle = openWallet();
     }
 
     Context( // Not a public constructor! Allows work with ContextBuilder
             WalletConfig walletConfig,
+            String version,
             String verityUrl,
             String verityPublicDID,
-            String verityPublicVerkey,
-            String verityPairwiseDID,
-            String verityPairwiseVerkey,
-            String sdkPairwiseDID,
-            String sdkPairwiseVerkey,
+            String verityPublicVerKey,
+            String domainDID,
+            String verityAgentVerKey,
+            String sdkVerKeyId,
+            String sdkVerKey,
             String endpointUrl,
             Wallet handle
     ) throws WalletOpenException {
@@ -71,18 +78,17 @@ public final class Context implements AsJsonObject{
         }
 
         this.walletConfig = walletConfig;
+        this.version = version;
         this.verityUrl = verityUrl;
         this.verityPublicDID = verityPublicDID;
-        this.verityPublicVerkey = verityPublicVerkey;
-        this.verityPairwiseDID = verityPairwiseDID;
-        this.verityPairwiseVerkey = verityPairwiseVerkey;
-        this.sdkPairwiseDID = sdkPairwiseDID;
-        this.sdkPairwiseVerkey = sdkPairwiseVerkey;
+        this.verityPublicVerKey = verityPublicVerKey;
+        this.domainDID = domainDID;
+        this.verityAgentVerKey = verityAgentVerKey;
+        this.sdkVerKeyId = sdkVerKeyId;
+        this.sdkVerKey = sdkVerKey;
         this.endpointUrl = endpointUrl;
         this.walletHandle = handle;
     }
-
-
 
     private Wallet openWallet() throws WalletOpenException, JSONException {
         if (walletConfig == null) {
@@ -122,39 +128,43 @@ public final class Context implements AsJsonObject{
     }
 
     public WalletConfig walletConfig() throws UndefinedContextException {
-        return throwIfNull(walletConfig, "walletConfig");
+        return throwIfNull(walletConfig, WALLET_CONFIG);
     }
 
     public String verityUrl() throws UndefinedContextException {
-        return throwIfNull(verityUrl, "verityUrl");
+        return throwIfNull(verityUrl, VERITY_URL);
     }
 
     public String verityPublicDID() throws UndefinedContextException {
-        return throwIfNull(verityPublicDID, "verityPublicDID");
+        return throwIfNull(verityPublicDID, VERITY_PUBLIC_DID);
     }
 
-    public String verityPublicVerkey() throws UndefinedContextException {
-        return throwIfNull(verityPublicVerkey, "verityPublicVerkey");
+    public String verityPublicVerKey() throws UndefinedContextException {
+        return throwIfNull(verityPublicVerKey, VERITY_PUBLIC_VER_KEY);
     }
 
-    public String verityPairwiseDID() throws UndefinedContextException {
-        return throwIfNull(verityPairwiseDID, "verityPairwiseDID");
+    public String domainDID() throws UndefinedContextException {
+        return throwIfNull(domainDID, DOMAIN_DID);
     }
 
-    public String verityPairwiseVerkey() throws UndefinedContextException {
-        return throwIfNull(verityPairwiseVerkey, "verityPairwiseVerkey");
+    public String verityAgentVerKey() throws UndefinedContextException {
+        return throwIfNull(verityAgentVerKey, VERITY_AGENT_VER_KEY);
     }
 
-    public String sdkPairwiseDID() throws UndefinedContextException {
-        return throwIfNull(sdkPairwiseDID, "sdkPairwiseDID");
+    public String sdkVerKeyId() throws UndefinedContextException {
+        return throwIfNull(sdkVerKeyId, SDK_VER_KEY_ID);
     }
 
-    public String sdkPairwiseVerkey() throws UndefinedContextException {
-        return throwIfNull(sdkPairwiseVerkey, "sdkPairwiseVerkey");
+    public String sdkVerKey() throws UndefinedContextException {
+        return throwIfNull(sdkVerKey, SDK_VER_KEY);
     }
 
     public String endpointUrl() throws UndefinedContextException {
-        return throwIfNull(endpointUrl, "endpointUrl");
+        return throwIfNull(endpointUrl, ENDPOINT_URL);
+    }
+
+    public String version() throws UndefinedContextException {
+        return throwIfNull(version, VERSION);
     }
 
     public Wallet walletHandle() throws WalletClosedException {
@@ -173,11 +183,11 @@ public final class Context implements AsJsonObject{
         if(walletConfig != null) rtn.walletConfig(walletConfig);
         if(verityUrl != null) rtn.verityUrl(verityUrl);
         if(verityPublicDID != null) rtn.verityPublicDID(verityPublicDID);
-        if(verityPublicVerkey != null) rtn.verityPublicVerkey(verityPublicVerkey);
-        if(verityPairwiseDID != null) rtn.verityPairwiseDID(verityPairwiseDID);
-        if(verityPairwiseVerkey != null) rtn.verityPairwiseVerkey(verityPairwiseVerkey);
-        if(sdkPairwiseDID != null) rtn.sdkPairwiseDID(sdkPairwiseDID);
-        if(sdkPairwiseVerkey != null) rtn.sdkPairwiseVerkey(sdkPairwiseVerkey);
+        if(verityPublicVerKey != null) rtn.verityPublicVerKey(verityPublicVerKey);
+        if(domainDID != null) rtn.domainDID(domainDID);
+        if(verityAgentVerKey != null) rtn.verityAgentVerKey(verityAgentVerKey);
+        if(sdkVerKeyId != null) rtn.sdkVerKeyId(sdkVerKeyId);
+        if(sdkVerKey != null) rtn.sdkVerKey(sdkVerKey);
         if(endpointUrl != null) rtn.endpointUrl(endpointUrl);
 
         if (!walletClosedFlag) {
@@ -189,18 +199,42 @@ public final class Context implements AsJsonObject{
 
     @Override
     public JSONObject toJson() {
+        if (version.equals(V_0_5)) {
+            return toJson_0_5();
+        }
+        return toJson_1_0();
+    }
+
+    private JSONObject toJson_1_0() {
         JSONObject rtn = new JSONObject();
 
         if(walletConfig != null) walletConfig.addToJson(rtn);
 
-        if(verityUrl != null) rtn.put("verityUrl", verityUrl);
-        if(verityPublicDID != null) rtn.put("verityPublicDID", verityPublicDID);
-        if(verityPublicVerkey != null) rtn.put("verityPublicVerkey", verityPublicVerkey);
-        if(verityPairwiseDID != null) rtn.put("verityPairwiseDID", verityPairwiseDID);
-        if(verityPairwiseVerkey != null) rtn.put("verityPairwiseVerkey", verityPairwiseVerkey);
-        if(sdkPairwiseDID != null) rtn.put("sdkPairwiseDID", sdkPairwiseDID);
-        if(sdkPairwiseVerkey != null) rtn.put("sdkPairwiseVerkey", sdkPairwiseVerkey);
-        if(endpointUrl != null) rtn.put("endpointUrl", endpointUrl);
+        if(endpointUrl != null) rtn.put(ENDPOINT_URL, endpointUrl);
+        if(verityUrl != null) rtn.put(VERITY_URL, verityUrl);
+        if(verityPublicDID != null) rtn.put(VERITY_PUBLIC_DID, verityPublicDID);
+        if(verityPublicVerKey != null) rtn.put(VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
+        if(domainDID != null) rtn.put(DOMAIN_DID, domainDID);
+        if(verityAgentVerKey != null) rtn.put(VERITY_AGENT_VER_KEY, verityAgentVerKey);
+        if(sdkVerKeyId != null) rtn.put(SDK_VER_KEY_ID, sdkVerKeyId);
+        if(sdkVerKey != null) rtn.put(SDK_VER_KEY, sdkVerKey);
+
+        return rtn;
+    }
+
+    private JSONObject toJson_0_5() {
+        JSONObject rtn = new JSONObject();
+
+        if(walletConfig != null) walletConfig.addToJson(rtn);
+
+        if(endpointUrl != null) rtn.put(ENDPOINT_URL, endpointUrl);
+        if(verityUrl != null) rtn.put(VERITY_URL, verityUrl);
+        if(verityPublicDID != null) rtn.put(VERITY_PUBLIC_DID, verityPublicDID);
+        if(verityPublicVerKey != null) rtn.put(LEGACY_VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
+        if(domainDID != null) rtn.put(LEGACY_DOMAIN_DID, domainDID);
+        if(verityAgentVerKey != null) rtn.put(LEGACY_VERITY_AGENT_VER_KEY, verityAgentVerKey);
+        if(sdkVerKeyId != null) rtn.put(LEGACY_SDK_VER_KEY_ID, sdkVerKeyId);
+        if(sdkVerKey != null) rtn.put(LEGACY_SDK_VER_KEY, sdkVerKey);
 
         return rtn;
     }

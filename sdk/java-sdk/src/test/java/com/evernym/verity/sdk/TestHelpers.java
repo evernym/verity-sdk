@@ -23,11 +23,11 @@ public class TestHelpers {
                 .walletConfig(testWallet)
                 .verityUrl(verityUrl)
                 .verityPublicDID(testWallet.getVerityPublicVerkey())
-                .verityPublicVerkey(testWallet.getVerityPublicVerkey())
-                .verityPairwiseDID(testWallet.getVerityPairwiseDID())
-                .verityPairwiseVerkey(testWallet.getVerityPairwiseVerkey())
-                .sdkPairwiseDID(testWallet.getSdkPairwiseDID())
-                .sdkPairwiseVerkey(testWallet.getSdkPairwiseVerkey())
+                .verityPublicVerKey(testWallet.getVerityPublicVerkey())
+                .domainDID(testWallet.getVerityPairwiseDID())
+                .verityAgentVerKey(testWallet.getVerityPairwiseVerkey())
+                .sdkVerKeyId(testWallet.getSdkPairwiseDID())
+                .sdkVerKey(testWallet.getSdkPairwiseVerkey())
                 .endpointUrl(endpointUrl)
                 .build();
     }

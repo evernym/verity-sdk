@@ -32,8 +32,8 @@ public class ProvisionImpl extends Protocol implements Provision {
         String verityPairwiseVerKey = resp.getString("withPairwiseDIDVerKey");
 
         return context.toContextBuilder()
-                .verityPairwiseDID(verityPairwiseDID)
-                .verityPairwiseVerkey(verityPairwiseVerKey)
+                .domainDID(verityPairwiseDID)
+                .verityAgentVerKey(verityPairwiseVerKey)
                 .build();
     }
 
@@ -42,8 +42,8 @@ public class ProvisionImpl extends Protocol implements Provision {
         JSONObject message = new JSONObject();
         message.put("@id", Protocol.getNewId());
         message.put("@type", getMessageType(CREATE_AGENT));
-        message.put("fromDID", context.sdkPairwiseDID());
-        message.put("fromDIDVerKey", context.sdkPairwiseVerkey());
+        message.put("fromDID", context.sdkVerKeyId());
+        message.put("fromDIDVerKey", context.sdkVerKey());
 
         return message;
     }
@@ -54,9 +54,9 @@ public class ProvisionImpl extends Protocol implements Provision {
             context.walletHandle(),
             provisionSdkMsg(context),
             context.verityPublicDID(),
-            context.verityPublicVerkey(),
-            context.sdkPairwiseVerkey(),
-            context.verityPublicVerkey()
+            context.verityPublicVerKey(),
+            context.sdkVerKey(),
+            context.verityPublicVerKey()
         );
     }
 }

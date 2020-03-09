@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import static com.evernym.verity.sdk.utils.ContextConstants.*;
 import static com.evernym.verity.sdk.utils.VerityUtil.retrieveVerityPublicDid;
 import static com.evernym.verity.sdk.utils.WalletUtil.tryCreateWallet;
 
@@ -54,7 +56,7 @@ public class ContextBuilder {
 
         Context inter = new ContextBuilder()
                 .verityPublicDID(verityDid.did)
-                .verityPublicVerkey(verityDid.verkey)
+                .verityPublicVerKey(verityDid.verkey)
                 .walletConfig(wallet)
                 .verityUrl(verityUrl)
                 .build();
@@ -62,23 +64,14 @@ public class ContextBuilder {
         Did mime = Did.createNewDid(inter.walletHandle());
 
         return inter.toContextBuilder()
-                .sdkPairwiseDID(mime.did)
-                .sdkPairwiseVerkey(mime.verkey)
+                .sdkVerKeyId(mime.did)
+                .sdkVerKey(mime.verkey)
                 .build();
     }
 
     private Map<String, String> elements = new HashMap<>();
     private WalletConfig walletConfig;
     private Wallet walletHandle = null;
-
-    private final String verityUrl = "verityUrl";
-    private final String verityPublicDID = "verityPublicDID";
-    private final String verityPublicVerkey = "verityPublicVerkey";
-    private final String verityPairwiseDID = "verityPairwiseDID";
-    private final String verityPairwiseVerkey = "verityPairwiseVerkey";
-    private final String sdkPairwiseDID = "sdkPairwiseDID";
-    private final String sdkPairwiseVerkey = "sdkPairwiseVerkey";
-    private final String endpointUrl = "endpointUrl";
 
     private ContextBuilder() {}
 
@@ -95,35 +88,64 @@ public class ContextBuilder {
     }
 
     public ContextBuilder json(JSONObject json){
+        String version = json.optString(VERSION);
+        if (V_1_0.equals(version)) {
+            return json_1_0(json);
+        }
+        return json_0_5(json);
+    }
+
+    public ContextBuilder json_1_0(JSONObject json){
         WalletConfig w = DefaultWalletConfig.build(
                 json.getString("walletName"),
                 json.getString("walletKey"),
                 json.optString("walletPath", null)
         );
         this.walletConfig(w);
-        putElementIgnoreNull(verityUrl, json.optString(verityUrl));
-        putElementIgnoreNull(verityPublicDID, json.optString(verityPublicDID));
-        putElementIgnoreNull(verityPublicVerkey, json.optString(verityPublicVerkey));
-        putElementIgnoreNull(verityPairwiseDID, json.optString(verityPairwiseDID));
-        putElementIgnoreNull(verityPairwiseVerkey, json.optString(verityPairwiseVerkey));
-        putElementIgnoreNull(sdkPairwiseDID, json.optString(sdkPairwiseDID));
-        putElementIgnoreNull(sdkPairwiseVerkey, json.optString(sdkPairwiseVerkey));
-        putElementIgnoreNull(endpointUrl, json.optString(endpointUrl));
+        putElementIgnoreNull(ENDPOINT_URL, json.optString(ENDPOINT_URL));
+        putElementIgnoreNull(VERITY_URL, json.optString(VERITY_URL));
+        putElementIgnoreNull(VERITY_PUBLIC_DID, json.optString(VERITY_PUBLIC_DID));
+        putElementIgnoreNull(VERITY_PUBLIC_VER_KEY, json.optString(VERITY_PUBLIC_VER_KEY));
+        putElementIgnoreNull(DOMAIN_DID, json.optString(DOMAIN_DID));
+        putElementIgnoreNull(VERITY_AGENT_VER_KEY, json.optString(VERITY_AGENT_VER_KEY));
+        putElementIgnoreNull(SDK_VER_KEY_ID, json.optString(SDK_VER_KEY_ID));
+        putElementIgnoreNull(SDK_VER_KEY, json.optString(SDK_VER_KEY));
+        putElementIgnoreNull(VERSION, V_1_0);
 
+        return this;
+    }
+
+    private ContextBuilder json_0_5(JSONObject json){
+        WalletConfig w = DefaultWalletConfig.build(
+                json.getString("walletName"),
+                json.getString("walletKey"),
+                json.optString("walletPath", null)
+        );
+        this.walletConfig(w);
+        putElementIgnoreNull(ENDPOINT_URL, json.optString(ENDPOINT_URL));
+        putElementIgnoreNull(VERITY_URL, json.optString(VERITY_URL));
+        putElementIgnoreNull(VERITY_PUBLIC_DID, json.optString(VERITY_PUBLIC_DID));
+        putElementIgnoreNull(LEGACY_VERITY_PUBLIC_VER_KEY, json.optString(LEGACY_VERITY_PUBLIC_VER_KEY));
+        putElementIgnoreNull(LEGACY_DOMAIN_DID, json.optString(LEGACY_DOMAIN_DID));
+        putElementIgnoreNull(LEGACY_VERITY_AGENT_VER_KEY, json.optString(LEGACY_VERITY_AGENT_VER_KEY));
+        putElementIgnoreNull(LEGACY_SDK_VER_KEY_ID, json.optString(LEGACY_SDK_VER_KEY_ID));
+        putElementIgnoreNull(LEGACY_SDK_VER_KEY, json.optString(LEGACY_SDK_VER_KEY));
+        putElementIgnoreNull(VERSION, V_0_5);
         return this;
     }
 
     public ContextBuilder json(String json) {return json(new JSONObject(json));}
 
     public ContextBuilder walletConfig(WalletConfig config) {walletConfig = config; return this;}
-    public ContextBuilder verityUrl(String val) {return putElement(verityUrl, val);}
-    public ContextBuilder verityPublicDID(String val) {return putElement(verityPublicDID, val);}
-    public ContextBuilder verityPublicVerkey(String val) {return putElement(verityPublicVerkey, val);}
-    public ContextBuilder verityPairwiseDID(String val) {return putElement(verityPairwiseDID, val);}
-    public ContextBuilder verityPairwiseVerkey(String val) {return putElement(verityPairwiseVerkey, val);}
-    public ContextBuilder sdkPairwiseDID(String val) {return putElement(sdkPairwiseDID, val);}
-    public ContextBuilder sdkPairwiseVerkey(String val) {return putElement(sdkPairwiseVerkey, val);}
-    public ContextBuilder endpointUrl(String val) {return putElement(endpointUrl, val);}
+    public ContextBuilder verityUrl(String val) {return putElement(VERITY_URL, val);}
+    public ContextBuilder verityPublicDID(String val) {return putElement(VERITY_PUBLIC_DID, val);}
+    public ContextBuilder verityPublicVerKey(String val) {return putElement(VERITY_PUBLIC_VER_KEY, val);}
+    public ContextBuilder domainDID(String val) {return putElement(DOMAIN_DID, val);}
+    public ContextBuilder verityAgentVerKey(String val) {return putElement(VERITY_AGENT_VER_KEY, val);}
+    public ContextBuilder sdkVerKeyId(String val) {return putElement(SDK_VER_KEY_ID, val);}
+    public ContextBuilder sdkVerKey(String val) {return putElement(SDK_VER_KEY, val);}
+    public ContextBuilder endpointUrl(String val) {return putElement(ENDPOINT_URL, val);}
+
     ContextBuilder walletHandle(Wallet val) {
         walletHandle = val;
         return this;
@@ -138,27 +160,29 @@ public class ContextBuilder {
         if (walletHandle == null) {
             return new Context(
                     walletConfig,
-                    elements.get(verityUrl),
-                    elements.get(verityPublicDID),
-                    elements.get(verityPublicVerkey),
-                    elements.get(verityPairwiseDID),
-                    elements.get(verityPairwiseVerkey),
-                    elements.get(sdkPairwiseDID),
-                    elements.get(sdkPairwiseVerkey),
-                    elements.get(endpointUrl)
+                    elements.get(VERSION),
+                    elements.get(VERITY_URL),
+                    elements.get(VERITY_PUBLIC_DID),
+                    elements.get(VERITY_PUBLIC_VER_KEY),
+                    elements.get(DOMAIN_DID),
+                    elements.get(VERITY_AGENT_VER_KEY),
+                    elements.get(SDK_VER_KEY_ID),
+                    elements.get(SDK_VER_KEY),
+                    elements.get(ENDPOINT_URL)
             );
         }
         else {
             return new Context(
                     walletConfig,
-                    elements.get(verityUrl),
-                    elements.get(verityPublicDID),
-                    elements.get(verityPublicVerkey),
-                    elements.get(verityPairwiseDID),
-                    elements.get(verityPairwiseVerkey),
-                    elements.get(sdkPairwiseDID),
-                    elements.get(sdkPairwiseVerkey),
-                    elements.get(endpointUrl),
+                    elements.get(VERSION),
+                    elements.get(VERITY_URL),
+                    elements.get(VERITY_PUBLIC_DID),
+                    elements.get(VERITY_PUBLIC_VER_KEY),
+                    elements.get(DOMAIN_DID),
+                    elements.get(VERITY_AGENT_VER_KEY),
+                    elements.get(SDK_VER_KEY_ID),
+                    elements.get(SDK_VER_KEY),
+                    elements.get(ENDPOINT_URL),
                     walletHandle
             );
         }
