@@ -17,6 +17,7 @@ import com.evernym.verity.sdk.protocols.presentproof.RestrictionBuilder;
 import com.evernym.verity.sdk.protocols.provision.Provision;
 import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
 import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
+import com.evernym.verity.sdk.protocols.updateconfigs.UpdateConfigs;
 import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
 import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
 import com.evernym.verity.sdk.utils.Context;
@@ -105,6 +106,13 @@ public class App extends Helper {
         UpdateEndpoint.v0_6().update(context);
     }
 
+    void updateConfigs() throws IOException, VerityException {
+        String INSTITUTION_NAME = "Faber College";
+        String LOGO_URL = "http://robohash.org/235";
+
+        UpdateConfigs.v0_6(INSTITUTION_NAME, LOGO_URL).update(context);
+    }
+
     void setupIssuer() throws IOException, VerityException {
         // constructor for the Issuer Setup protocol
         IssuerSetup newIssuerSetup = IssuerSetup.v0_6();
@@ -174,6 +182,8 @@ public class App extends Helper {
         }
 
         updateWebhookEndpoint();
+
+        updateConfigs();
 
         issuerIdentifier();
 
