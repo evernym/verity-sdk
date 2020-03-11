@@ -9,8 +9,8 @@ public final class ContextConstants {
     public static final String ENDPOINT_URL = "endpointUrl";
     public static final String WALLET_CONFIG = "walletConfig";
     public static final String VERSION = "version";
-    public static final String V_0_5 = "0.5";
-    public static final String V_1_0 = "1.0";
+    public static final String V_0_1 = "0.1";
+    public static final String V_0_2 = "0.2";
 
     public static final String VERITY_URL = "verityUrl";
     public static final String VERITY_PUBLIC_DID = "verityPublicDID";

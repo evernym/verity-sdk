@@ -199,43 +199,38 @@ public final class Context implements AsJsonObject{
 
     @Override
     public JSONObject toJson() {
-        if (version.equals(V_0_5)) {
-            return toJson_0_5();
+        JSONObject rtn = new JSONObject();
+
+        if(version != null) rtn.put(VERSION, version);
+        if(walletConfig != null) walletConfig.addToJson(rtn);
+        if(endpointUrl != null) rtn.put(ENDPOINT_URL, endpointUrl);
+        if(verityUrl != null) rtn.put(VERITY_URL, verityUrl);
+
+        if (version == null || version.equals(V_0_1)) {
+            return toJson_0_1(rtn);
         }
-        return toJson_1_0();
+        return toJson_0_2(rtn);
     }
 
-    private JSONObject toJson_1_0() {
-        JSONObject rtn = new JSONObject();
+    private JSONObject toJson_0_2(JSONObject baseJsonObject) {
+        if(verityPublicDID != null) baseJsonObject.put(VERITY_PUBLIC_DID, verityPublicDID);
+        if(verityPublicVerKey != null) baseJsonObject.put(VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
+        if(domainDID != null) baseJsonObject.put(DOMAIN_DID, domainDID);
+        if(verityAgentVerKey != null) baseJsonObject.put(VERITY_AGENT_VER_KEY, verityAgentVerKey);
+        if(sdkVerKeyId != null) baseJsonObject.put(SDK_VER_KEY_ID, sdkVerKeyId);
+        if(sdkVerKey != null) baseJsonObject.put(SDK_VER_KEY, sdkVerKey);
 
-        if(walletConfig != null) walletConfig.addToJson(rtn);
-
-        if(endpointUrl != null) rtn.put(ENDPOINT_URL, endpointUrl);
-        if(verityUrl != null) rtn.put(VERITY_URL, verityUrl);
-        if(verityPublicDID != null) rtn.put(VERITY_PUBLIC_DID, verityPublicDID);
-        if(verityPublicVerKey != null) rtn.put(VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
-        if(domainDID != null) rtn.put(DOMAIN_DID, domainDID);
-        if(verityAgentVerKey != null) rtn.put(VERITY_AGENT_VER_KEY, verityAgentVerKey);
-        if(sdkVerKeyId != null) rtn.put(SDK_VER_KEY_ID, sdkVerKeyId);
-        if(sdkVerKey != null) rtn.put(SDK_VER_KEY, sdkVerKey);
-
-        return rtn;
+        return baseJsonObject;
     }
 
-    private JSONObject toJson_0_5() {
-        JSONObject rtn = new JSONObject();
+    private JSONObject toJson_0_1(JSONObject baseJsonObject) {
+        if(verityPublicDID != null) baseJsonObject.put(VERITY_PUBLIC_DID, verityPublicDID);
+        if(verityPublicVerKey != null) baseJsonObject.put(LEGACY_VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
+        if(domainDID != null) baseJsonObject.put(LEGACY_DOMAIN_DID, domainDID);
+        if(verityAgentVerKey != null) baseJsonObject.put(LEGACY_VERITY_AGENT_VER_KEY, verityAgentVerKey);
+        if(sdkVerKeyId != null) baseJsonObject.put(LEGACY_SDK_VER_KEY_ID, sdkVerKeyId);
+        if(sdkVerKey != null) baseJsonObject.put(LEGACY_SDK_VER_KEY, sdkVerKey);
 
-        if(walletConfig != null) walletConfig.addToJson(rtn);
-
-        if(endpointUrl != null) rtn.put(ENDPOINT_URL, endpointUrl);
-        if(verityUrl != null) rtn.put(VERITY_URL, verityUrl);
-        if(verityPublicDID != null) rtn.put(VERITY_PUBLIC_DID, verityPublicDID);
-        if(verityPublicVerKey != null) rtn.put(LEGACY_VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
-        if(domainDID != null) rtn.put(LEGACY_DOMAIN_DID, domainDID);
-        if(verityAgentVerKey != null) rtn.put(LEGACY_VERITY_AGENT_VER_KEY, verityAgentVerKey);
-        if(sdkVerKeyId != null) rtn.put(LEGACY_SDK_VER_KEY_ID, sdkVerKeyId);
-        if(sdkVerKey != null) rtn.put(LEGACY_SDK_VER_KEY, sdkVerKey);
-
-        return rtn;
+        return baseJsonObject;
     }
 }
