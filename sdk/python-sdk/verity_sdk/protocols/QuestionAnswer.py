@@ -16,4 +16,5 @@ class QuestionAnswer(CommittedAnswer):
                  valid_responses: List[str] = None,
                  signature_required: bool = True,
                  answer_str=None):
-        super().__init__(for_relationship, thread_id, question, descr, valid_responses, signature_required, answer_str, self.MSG_FAMILY, self.MSG_FAMILY_VERSION, COMMUNITY_MSG_QUALIFIER)
+        super().__init__(for_relationship, thread_id, question, descr, valid_responses, signature_required, answer_str,
+                         self.MSG_FAMILY, self.MSG_FAMILY_VERSION, COMMUNITY_MSG_QUALIFIER)

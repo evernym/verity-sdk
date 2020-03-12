@@ -1,5 +1,4 @@
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import get_message_type, get_problem_report_message_type, get_status_message_type
 from verity_sdk.utils.Context import Context
 
 
@@ -30,5 +29,5 @@ class UpdateEndpoint(Protocol):
     async def update_endpoint_msg_packed(self, context):
         return await self.get_message_bytes(context, await self.update_endpoint_msg(context))
 
-    async def update_endpoint(self, context):
+    async def update(self, context):
         await self.send_message(context, await self.update_endpoint_msg_packed(context))

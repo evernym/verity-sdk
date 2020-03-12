@@ -1,4 +1,3 @@
-from verity_sdk.utils import Context, get_message_type
 from verity_sdk.protocols.Protocol import Protocol
 
 

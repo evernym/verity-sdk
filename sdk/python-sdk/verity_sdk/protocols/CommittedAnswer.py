@@ -1,8 +1,6 @@
 from typing import List
 
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import Context, get_message_type, COMMUNITY_MSG_QUALIFIER
-
 
 class CommittedAnswer(Protocol):
     MSG_FAMILY = 'committedanswer'
@@ -14,6 +12,7 @@ class CommittedAnswer(Protocol):
     ANSWER_QUESTION = 'answer-question'
     ANSWER_GIVEN = 'answer-given'
 
+    #pylint:disable=too-many-arguments
     def __init__(self,
                  for_relationship: str,
                  thread_id: str = None,
@@ -21,8 +20,8 @@ class CommittedAnswer(Protocol):
                  descr: str = '',
                  valid_responses: List[str] = None,
                  signature_required: bool = True,
-                 answer_str = None,
-                 msg_family: str = MSG_FAMILY, # Used to override the msg_family for the
+                 answer_str=None,
+                 msg_family: str = MSG_FAMILY,  # Used to override the msg_family for the
                  msg_family_version: str = MSG_FAMILY_VERSION,
                  msg_qualifier: str = None):
         super().__init__(msg_family, msg_family_version, msg_qualifier, thread_id)
@@ -34,10 +33,9 @@ class CommittedAnswer(Protocol):
         self.signature_required: bool = signature_required
         self.answer_str: str = answer_str
 
-
     async def ask_msg(self, _):
         msg = self._get_base_message(self.ASK_QUESTION)
-        msg = self._add_thread(msg)
+        self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         msg['text'] = self.question
         msg['detail'] = self.descr
@@ -53,7 +51,7 @@ class CommittedAnswer(Protocol):
 
     async def answer_msg(self, _):
         msg = self._get_base_message(self.ANSWER_QUESTION)
-        msg = self._add_thread(msg)
+        self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         msg.response = self.answer_str
         return msg
@@ -71,7 +69,7 @@ class CommittedAnswer(Protocol):
         return msg
 
     async def status_msg_packed(self, context):
-        return self.get_message_bytes(context, await self.status_msg(context))
+        return await self.get_message_bytes(context, await self.status_msg(context))
 
     async def status(self, context):
         await self.send_message(context, await self.status_msg_packed(context))

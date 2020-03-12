@@ -1,7 +1,5 @@
-import abc
-
-from verity_sdk.utils import Context, pack_message_for_verity, uuid
-from verity_sdk.transports import send_message, send_packed_message
+from verity_sdk.utils import pack_message_for_verity, uuid
+from verity_sdk.transports import send_packed_message
 from verity_sdk.utils.MessageFamily import MessageFamily
 
 
@@ -23,6 +21,7 @@ class Protocol(MessageFamily):
             'thid': self.thread_id
         }
 
+    #pylint:disable=no-self-use
     def _add_relationship(self, msg, for_relationship):
         msg['~for_relationship'] = for_relationship
 

@@ -1,8 +1,6 @@
 from typing import List
 
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import Context, get_message_type, get_status_message_type
-
 
 class PresentProof(Protocol):
     MSG_FAMILY = 'present-proof'

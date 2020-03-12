@@ -19,7 +19,7 @@ async def test_write():
     context = await Context.create_with_config(await get_test_config())
     update_endpoint = UpdateEndpoint(context)
     update_endpoint.send = send_stub
-    msg = await update_endpoint.update()
+    msg = await update_endpoint.update(context)
     msg = await unpack_forward_message(context, msg)
 
     assert msg['@type'] == '{};spec/configs/0.6/UPDATE_COM_METHOD'.format(EVERNYM_MSG_QUALIFIER)
@@ -29,17 +29,3 @@ async def test_write():
     assert msg['comMethod']['value'] == context.endpoint_url
 
     await cleanup(context)
-
-
-def test_get_message_type():
-    assert UpdateEndpoint.get_message_type('message_name') == '{};spec/configs/0.6/message_name'.format(
-        EVERNYM_MSG_QUALIFIER)
-
-
-def test_get_problem_report_message_type():
-    assert UpdateEndpoint.get_problem_report_message_type() == '{};spec/configs/0.6/problem-report'.format(
-        EVERNYM_MSG_QUALIFIER)
-
-
-def test_get_status_message_type():
-    assert UpdateEndpoint.get_status_message_type() == '{};spec/configs/0.6/status'.format(EVERNYM_MSG_QUALIFIER)

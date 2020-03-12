@@ -1,6 +1,5 @@
-import requests
-
 from urllib.parse import urljoin
+import requests
 from verity_sdk.utils.Context import Context
 
 
