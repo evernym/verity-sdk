@@ -32,7 +32,7 @@ public class ContextTest extends JsonObjectAssertion {
             config.put("sdkPairwiseVerkey", testWallet.getSdkPairwiseVerkey());
             config.put("endpointUrl", endpointUrl);
             context = ContextBuilder.fromJson(config).build();
-            assertEqualsJSONObject(config.put("version", "0.1"), context.toJson());
+            assertEqualsJSONObject(withNewKeys(config.put("version", "0.2")), context.toJson());
 
             context.closeWallet();
         } catch(Exception e) {
@@ -62,12 +62,30 @@ public class ContextTest extends JsonObjectAssertion {
             config.put("endpointUrl", endpointUrl);
             config.put("version", "0.2");
             context = ContextBuilder.fromJson(config).build();
-            assertEqualsJSONObject(context.toJson(), config);
+            assertEqualsJSONObject(withNewKeys(config), context.toJson());
 
             context.closeWallet();
         } catch(Exception e) {
             e.printStackTrace();
             fail();
+        }
+    }
+
+    private JSONObject withNewKeys(JSONObject jsonObject) {
+        JSONObject config = new JSONObject();
+        jsonObject.toMap().forEach((s, o) ->
+            config.put(getNewKey(s), o));
+        return config;
+    }
+
+    private String getNewKey(String key) {
+        switch (key) {
+            case "verityPublicVerkey"       : return "verityPublicVerKey";
+            case "verityPairwiseDID"        : return "domainDID";
+            case "verityPairwiseVerkey"     : return "verityAgentVerKey";
+            case "sdkPairwiseVerkey"        : return "sdkVerKey";
+            case "sdkPairwiseDID"           : return "sdkVerKeyId";
+            default                         : return key;
         }
     }
 }

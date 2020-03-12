@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.handlers;
 
 import com.evernym.verity.sdk.exceptions.InvalidMessageTypeException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.utils.MsgFamilyBuilder;
 import org.json.JSONObject;
 
 /**
@@ -41,7 +42,14 @@ public class MessageHandler {
      * @param message the JSON structure of the agent message
      */
     public void handle(JSONObject message) throws InvalidMessageTypeException {
-        String msgName = this.messageFamily.messageName(message.getString("@type"));
+        String msgName;
+        String msgType = message.getString("@type");
+        if (this.messageFamily != null)
+            msgName = this.messageFamily.messageName(msgType);
+        else {
+            MessageFamily msgFamily = MsgFamilyBuilder.fromQualifiedMsgType(msgType);
+            msgName = msgFamily.messageName(msgType);
+        }
         this.messageHandler.handle(msgName, message);
     }
 }
