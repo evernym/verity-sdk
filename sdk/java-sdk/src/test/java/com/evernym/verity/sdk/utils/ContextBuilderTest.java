@@ -82,7 +82,7 @@ public class ContextBuilderTest {
             Did testDid = new Did("CV65RFpeCtPu82hNF9i61G", "7G3LhXFKXKTMv7XGx1Qc9wqkMbwcU2iLBHL8x1JXWWC2");
 
 
-            Context c = ContextBuilder.scratchContext(testWallet, "http://wwww.example.com", testDid);
+            Context c = ContextBuilder.scratchContext(testWallet, "http://wwww.example.com", testDid, null);
 
             c.sdkVerKeyId();
             c.sdkVerKey();

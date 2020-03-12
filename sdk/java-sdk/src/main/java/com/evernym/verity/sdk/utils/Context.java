@@ -205,32 +205,14 @@ public final class Context implements AsJsonObject{
         if(walletConfig != null) walletConfig.addToJson(rtn);
         if(endpointUrl != null) rtn.put(ENDPOINT_URL, endpointUrl);
         if(verityUrl != null) rtn.put(VERITY_URL, verityUrl);
+        if(verityPublicDID != null) rtn.put(VERITY_PUBLIC_DID, verityPublicDID);
+        if(verityPublicVerKey != null) rtn.put(VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
+        if(domainDID != null) rtn.put(DOMAIN_DID, domainDID);
+        if(verityAgentVerKey != null) rtn.put(VERITY_AGENT_VER_KEY, verityAgentVerKey);
+        if(sdkVerKeyId != null) rtn.put(SDK_VER_KEY_ID, sdkVerKeyId);
+        if(sdkVerKey != null) rtn.put(SDK_VER_KEY, sdkVerKey);
+        rtn.put(VERSION, V_0_2);
 
-        if (version == null || version.equals(V_0_1)) {
-            return toJson_0_1(rtn);
-        }
-        return toJson_0_2(rtn);
-    }
-
-    private JSONObject toJson_0_2(JSONObject baseJsonObject) {
-        if(verityPublicDID != null) baseJsonObject.put(VERITY_PUBLIC_DID, verityPublicDID);
-        if(verityPublicVerKey != null) baseJsonObject.put(VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
-        if(domainDID != null) baseJsonObject.put(DOMAIN_DID, domainDID);
-        if(verityAgentVerKey != null) baseJsonObject.put(VERITY_AGENT_VER_KEY, verityAgentVerKey);
-        if(sdkVerKeyId != null) baseJsonObject.put(SDK_VER_KEY_ID, sdkVerKeyId);
-        if(sdkVerKey != null) baseJsonObject.put(SDK_VER_KEY, sdkVerKey);
-
-        return baseJsonObject;
-    }
-
-    private JSONObject toJson_0_1(JSONObject baseJsonObject) {
-        if(verityPublicDID != null) baseJsonObject.put(VERITY_PUBLIC_DID, verityPublicDID);
-        if(verityPublicVerKey != null) baseJsonObject.put(LEGACY_VERITY_PUBLIC_VER_KEY, verityPublicVerKey);
-        if(domainDID != null) baseJsonObject.put(LEGACY_DOMAIN_DID, domainDID);
-        if(verityAgentVerKey != null) baseJsonObject.put(LEGACY_VERITY_AGENT_VER_KEY, verityAgentVerKey);
-        if(sdkVerKeyId != null) baseJsonObject.put(LEGACY_SDK_VER_KEY_ID, sdkVerKeyId);
-        if(sdkVerKey != null) baseJsonObject.put(LEGACY_SDK_VER_KEY, sdkVerKey);
-
-        return baseJsonObject;
+        return rtn;
     }
 }

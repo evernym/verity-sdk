@@ -17,33 +17,66 @@ import static com.evernym.verity.sdk.utils.WalletUtil.tryCreateWallet;
 
 public class ContextBuilder {
 
-    public static Context fromScratch(String walletId, String walletKey, String verityUrl, String domainDID, String verityAgentVerKey)
-            throws IOException, WalletException {
+    public static Context fromScratch(String walletId,
+                                      String walletKey,
+                                      String verityUrl,
+                                      String domainDID,
+                                      String verityAgentVerKey) throws IOException, WalletException {
+        return fromScratch(walletId, walletKey, verityUrl, domainDID, verityAgentVerKey, null);
+    }
 
+    public static Context fromScratch(String walletId,
+                                      String walletKey,
+                                      String verityUrl,
+                                      String domainDID,
+                                      String verityAgentVerKey,
+                                      String seed) throws IOException, WalletException {
         tryCreateWallet(walletId, walletKey);
-        return scratchContext(DefaultWalletConfig.build(walletId, walletKey), verityUrl, domainDID, verityAgentVerKey);
-    }
-
-    public static Context fromScratch(String walletId, String walletKey, String verityUrl)
-            throws IOException, WalletException {
-
-        tryCreateWallet(walletId, walletKey);
-        return scratchContext(DefaultWalletConfig.build(walletId, walletKey), verityUrl);
-    }
-
-    public static Context fromScratch(WalletConfig walletConfig, String verityUrl)
-            throws IOException, WalletException {
-
-        tryCreateWallet(walletConfig);
-        return scratchContext(walletConfig, verityUrl);
-    }
-
-    public static Context fromScratch(WalletConfig walletConfig, String verityUrl, String domainDID, String verityAgentVerKey)
-            throws IOException, WalletException {
-
-        tryCreateWallet(walletConfig);
-        Context inter = scratchContext(walletConfig, verityUrl);
+        Context inter = scratchContext(DefaultWalletConfig.build(walletId, walletKey), verityUrl, seed);
         return withProvisionedAgent(inter, domainDID, verityAgentVerKey);
+    }
+
+    public static Context fromScratch(WalletConfig walletConfig,
+                                      String verityUrl,
+                                      String domainDID,
+                                      String verityAgentVerKey) throws IOException, WalletException {
+        return fromScratch(walletConfig, verityUrl, domainDID, verityAgentVerKey, null);
+    }
+
+    public static Context fromScratch(WalletConfig walletConfig,
+                                      String verityUrl,
+                                      String domainDID,
+                                      String verityAgentVerKey,
+                                      String seed) throws IOException, WalletException {
+        tryCreateWallet(walletConfig);
+        Context inter = scratchContext(walletConfig, verityUrl, seed);
+        return withProvisionedAgent(inter, domainDID, verityAgentVerKey);
+    }
+
+    public static Context fromScratch(String walletId,
+                                      String walletKey,
+                                      String verityUrl) throws IOException, WalletException {
+        return fromScratch(walletId, walletKey, verityUrl, null);
+    }
+
+    public static Context fromScratch(String walletId,
+                                      String walletKey,
+                                      String verityUrl,
+                                      String seed) throws IOException, WalletException {
+        tryCreateWallet(walletId, walletKey);
+        return scratchContext(DefaultWalletConfig.build(walletId, walletKey), verityUrl, seed);
+    }
+
+    public static Context fromScratch(WalletConfig walletConfig,
+                                      String verityUrl) throws IOException, WalletException {
+        return fromScratch(walletConfig, verityUrl, null);
+    }
+
+    public static Context fromScratch(WalletConfig walletConfig,
+                                      String verityUrl,
+                                      String seed) throws IOException, WalletException {
+        tryCreateWallet(walletConfig);
+        return scratchContext(walletConfig, verityUrl, seed);
     }
 
     public static ContextBuilder fromJson(String json) {
@@ -58,19 +91,16 @@ public class ContextBuilder {
         return new ContextBuilder();
     }
 
-    protected static Context scratchContext(WalletConfig wallet, String verityUrl)
+    //********************
+    // NON-PUBLIC METHODS
+    //********************
+
+    protected static Context scratchContext(WalletConfig wallet, String verityUrl, String seed)
             throws WalletException, IOException {
 
         Did verityDid = retrieveVerityPublicDid(verityUrl);
 
-        return scratchContext(wallet, verityUrl, verityDid);
-    }
-
-    protected static Context scratchContext(WalletConfig wallet, String verityUrl, String domainDID, String verityAgentVerKey)
-            throws WalletException, IOException {
-
-        Context inter = scratchContext(wallet, verityUrl);
-        return withProvisionedAgent(inter, domainDID, verityAgentVerKey);
+        return scratchContext(wallet, verityUrl, verityDid, seed);
     }
 
     private static Context withProvisionedAgent(Context inter, String domainDID, String verityAgentVerKey)
@@ -81,7 +111,7 @@ public class ContextBuilder {
                 .build();
     }
 
-    protected static Context scratchContext(WalletConfig wallet, String verityUrl, Did verityDid)
+    protected static Context scratchContext(WalletConfig wallet, String verityUrl, Did verityDid, String seed)
             throws WalletException {
 
         Context inter = new ContextBuilder()
@@ -91,7 +121,7 @@ public class ContextBuilder {
                 .verityUrl(verityUrl)
                 .build();
 
-        Did mime = Did.createNewDid(inter.walletHandle());
+        Did mime = Did.createNewDid(inter.walletHandle(), seed);
 
         return inter.toContextBuilder()
                 .sdkVerKeyId(mime.did)
