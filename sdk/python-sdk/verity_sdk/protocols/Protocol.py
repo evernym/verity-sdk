@@ -1,41 +1,33 @@
 import abc
 
 from verity_sdk.utils import Context, pack_message_for_verity, uuid
-from verity_sdk.transports import send_message
+from verity_sdk.transports import send_message, send_packed_message
+from verity_sdk.utils.MessageFamily import MessageFamily
 
 
-class Protocol:
-    MSG_FAMILY = 'none'
-    MSG_FAMILY_VERSION = '0.0.0'
+class Protocol(MessageFamily):
 
-    messages: dict
-    thread_id: str
+    # Messages
+    STATUS = 'status-report'
+    PROBLEM_REPORT = 'problem-report'
 
-    def __init__(self, thread_id: str = None):
-        if thread_id:
+    def __init__(self, msg_family, msg_family_version, msg_qualifier=None, thread_id=None):
+        super().__init__(msg_family, msg_family_version, msg_qualifier)
+        if thread_id is not None:
             self.thread_id = thread_id
         else:
             self.thread_id = uuid()
 
-    @staticmethod
-    async def get_message(context: Context, message: dict) -> bytes:
-        return await pack_message_for_verity(context, message)
-
-    @staticmethod
-    async def send(context: Context, message: dict) -> bytes:
-        message = await Protocol.get_message(context, message)
-        send_message(context.verity_url, message)
-        return message
-
-    @staticmethod
-    def get_new_id():
-        return uuid()
-
-    @abc.abstractmethod
-    def define_messages(self):
-        pass
-
-    def get_thread_block(self) -> dict:
-        return {
+    def _add_thread(self, msg):
+        msg['~thread'] = {
             'thid': self.thread_id
         }
+
+    def _add_relationship(self, msg, for_relationship):
+        msg['~for_relationship'] = for_relationship
+
+    async def get_message_bytes(self, context, message):
+        return await pack_message_for_verity(context, message)
+
+    async def send_message(self, context, message):
+        await send_packed_message(context, message)
