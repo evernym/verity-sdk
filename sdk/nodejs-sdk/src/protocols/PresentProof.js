@@ -15,6 +15,7 @@ module.exports = class PresentProof extends Protocol {
 
     this.msgNames.PROOF_REQUEST = 'request'
     this.msgNames.GET_STATUS = 'get-status'
+    this.msgNames.PROOF_RESULT = 'proof-result'
   }
 
   async requestMsg (context) {

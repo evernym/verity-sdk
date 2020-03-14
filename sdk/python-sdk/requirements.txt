@@ -7,3 +7,9 @@ pylint-quotes==0.2.1
 pytest==3.6.4
 pytest-mock==1.11.2
 pytest-parallel==0.0.9
+aiohttp==3.5.4
+
+# Example Dependencies
+pyqrcode==1.2.1
+pypng==0.0.20
+halo==0.0.29

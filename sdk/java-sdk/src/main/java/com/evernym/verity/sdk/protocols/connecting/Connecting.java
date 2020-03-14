@@ -15,19 +15,19 @@ public interface Connecting extends MessageFamily {
     String CREATE_CONNECTION = "CREATE_CONNECTION";
     String GET_STATUS = "get-status";
 
-    static Connecting v_06(String sourceId) {
+    static Connecting v0_6(String sourceId) {
         return new ConnectingImpl(sourceId);
     }
 
-    static Connecting v_06(String sourceId, boolean includePublicDID) {
+    static Connecting v0_6(String sourceId, boolean includePublicDID) {
         return new ConnectingImpl(sourceId, includePublicDID);
     }
 
-    static Connecting v_06(String sourceId, String phoneNo) {
+    static Connecting v0_6(String sourceId, String phoneNo) {
         return new ConnectingImpl(sourceId, phoneNo);
     }
 
-    static Connecting v_06(String sourceId, String phoneNo, boolean includePublicDID) {
+    static Connecting v0_6(String sourceId, String phoneNo, boolean includePublicDID) {
         return new ConnectingImpl(sourceId, phoneNo, includePublicDID);
     }
 

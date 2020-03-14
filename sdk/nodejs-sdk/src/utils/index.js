@@ -1,5 +1,6 @@
 'use strict'
 const uuid = require('uuid')
+const URL = require('url').URL
 const indy = require('./indy')
 const request = require('request-promise-native')
 
@@ -80,4 +81,35 @@ exports.httpPost = async function (uri, message, contentType) {
 
 exports.randInt = function (max) {
   return Math.floor(Math.random() * Math.floor(max))
+}
+
+exports.truncateInviteDetailKeys = function (inviteDetails) {
+  const truncatedInviteDetails = {
+    sc: inviteDetails.statusCode,
+    id: inviteDetails.connReqId,
+    sm: inviteDetails.statusMsg,
+    t: inviteDetails.targetName,
+    version: inviteDetails.version,
+    s: {
+      n: inviteDetails.senderDetail.name,
+      d: inviteDetails.senderDetail.DID,
+      l: inviteDetails.senderDetail.logoUrl,
+      v: inviteDetails.senderDetail.verKey,
+      dp: {
+        d: inviteDetails.senderDetail.agentKeyDlgProof.agentDID,
+        k: inviteDetails.senderDetail.agentKeyDlgProof.agentDelegatedKey,
+        s: inviteDetails.senderDetail.agentKeyDlgProof.signature
+      }
+    },
+    sa: {
+      d: inviteDetails.senderAgencyDetail.DID,
+      e: inviteDetails.senderAgencyDetail.endpoint,
+      v: inviteDetails.senderAgencyDetail.verKey
+    }
+  }
+
+  if ('publicDID' in inviteDetails.senderDetail) {
+    truncatedInviteDetails.s.publicDID = inviteDetails.senderDetail.publicDID
+  }
+  return JSON.stringify(truncatedInviteDetails)
 }

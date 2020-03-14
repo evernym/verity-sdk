@@ -11,7 +11,7 @@ module.exports = class Context {
   }
 
   static async createWithConfig (config = {}) {
-    if (typeof config === 'string') {
+    if (typeof config === 'string' || Buffer.isBuffer(config)) {
       config = JSON.parse(config)
     }
     Context.validateConfig(config)

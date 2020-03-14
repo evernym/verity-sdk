@@ -1,12 +1,12 @@
 import json
+import requests
 
 from indy import wallet
 
+from verity_sdk.utils.Wallet import create_and_open_wallet, try_to_create_wallet
+
 
 class Context:
-    wallet_name: str
-    wallet_key: str
-    wallet_path: str
     verity_url: str
     verity_public_did: str
     verity_public_verkey: str
@@ -15,13 +15,59 @@ class Context:
     sdk_pairwise_did: str
     sdk_pairwise_verkey: str
     endpoint_url: str
+    wallet_name: str
+    wallet_path: str
+    wallet_key: str
     wallet_config: str
     wallet_credentials: str
     wallet_handle: int
     wallet_closed: bool
 
     @classmethod
-    async def create(cls, config):
+    async def create(cls, wallet_name: str, wallet_key: str, verity_url: str, endpoint_url: str,
+                     wallet_path: str = None):
+        context = cls()
+        context.set_wallet_config(wallet_name, wallet_path)
+        context.set_wallet_credentials(wallet_key)
+        context.wallet_name = wallet_name
+        context.wallet_key = wallet_key
+        context.verity_url = verity_url
+        context.endpoint_url = endpoint_url
+        await context.update_verity_info()
+        await context.open_wallet()
+        return context
+
+    def set_wallet_config(self, wallet_name, wallet_path=None):
+        wallet_config = {'id': wallet_name}
+
+        if wallet_path:
+            wallet_config['storage_config'] = {'path': wallet_path}
+
+        self.wallet_config = json.dumps(wallet_config)
+
+    def set_wallet_credentials(self, wallet_key):
+        self.wallet_credentials = json.dumps({'key': wallet_key})
+
+    async def update_verity_info(self):
+        full_url = f'{self.verity_url}/agency'
+        result = requests.get(full_url)
+        status_code = result.status_code
+        if status_code > 399:
+            raise IOError(f'Request failed! - {status_code} - {result.text}')
+
+        try:
+            msg = result.json()
+            self.verity_public_did = msg.get('DID')
+            self.verity_public_verkey = msg.get('verKey')
+        except ValueError as e:
+            raise IOError(f'Invalid and unexpected data from Verity -- response -- {e}')
+
+
+    async def open_wallet(self):
+        self.wallet_handle = await create_and_open_wallet(self.wallet_config, self.wallet_credentials)
+
+    @classmethod
+    async def create_with_config(cls, config):
         context = cls()
         config = json.loads(config)
 
@@ -37,13 +83,11 @@ class Context:
         context.sdk_pairwise_verkey = config.get('sdkPairwiseVerkey')
         context.endpoint_url = config.get('endpointUrl')
 
-        w_config = {'id': config['walletName']}
+        context.set_wallet_config(context.wallet_name, context.wallet_path)
+        context.set_wallet_credentials(context.wallet_key)
 
-        if context.wallet_path:
-            w_config['storage_config'] = {'path': context.wallet_path}
-
-        context.wallet_config = json.dumps(w_config)
-        context.wallet_credentials = json.dumps({'key': config['walletKey']})
+        # Ensure the wallet exists
+        await try_to_create_wallet(context.wallet_config, context.wallet_credentials)
 
         context.wallet_handle = await wallet.open_wallet(
             context.wallet_config,
@@ -57,12 +101,12 @@ class Context:
         await wallet.close_wallet(self.wallet_handle)
         self.wallet_closed = True
 
-    def to_json(self) -> str:
+    def to_json(self, indent=None) -> str:
         return json.dumps(
             {
                 'walletName': self.wallet_name,
                 'walletKey': self.wallet_key,
-                'walletPath': self.wallet_path,
+                'walletPath': self.wallet_path if hasattr(self, 'wallet_path') else None,
                 'verityUrl': self.verity_url,
                 'verityPublicDID': self.verity_public_did,
                 'verityPublicVerkey': self.verity_public_verkey,
@@ -71,5 +115,6 @@ class Context:
                 'sdkPairwiseDID': self.sdk_pairwise_did,
                 'sdkPairwiseVerkey': self.sdk_pairwise_verkey,
                 'endpointUrl': self.endpoint_url,
-            }
+            },
+            indent=indent
         )

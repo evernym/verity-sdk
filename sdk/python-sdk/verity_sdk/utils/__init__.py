@@ -88,6 +88,8 @@ def truncate_invite_details(invite_details: dict):
     if 'publicDID' in invite_details['senderDetail']:
         truncated_invite_details['s']['publicDID'] = invite_details['senderDetail']['publicDID']
 
+    return truncated_invite_details
+
 
 async def unpack_message(context: Context, message: bytes) -> Dict:
     jwe: bytes = await crypto.unpack_message(
@@ -115,3 +117,12 @@ def get_problem_report_message_type(msg_family: str, msg_family_version: str) ->
 
 def get_status_message_type(msg_family: str, msg_family_version: str) -> str:
     return get_message_type(msg_family, msg_family_version, 'status')
+
+class MsgType:
+    def __init__(self, msgType: str):
+        parts1 = msgType.split(';spec/')
+        self.msg_qualifier = parts1[0]
+        parts2 = parts1[1].split('/')
+        self.msg_family = parts2[0]
+        self.msg_family_version = parts2[1]
+        self.msg_name = parts2[2]

@@ -46,6 +46,24 @@ describe('Context', () => {
     await context.deleteWallet()
   }).timeout(5000)
 
+  it('should parse config if a JSON value', async () => {
+    let config = getTestConfig()
+    const context = await Context.createWithConfig(JSON.parse(config))
+    config = JSON.parse(config)
+    expect(context.verityUrl).to.equal(config.verityUrl)
+    expect(context.verityPublicDID).to.equal(config.verityPublicDID)
+    expect(context.verityPublicVerkey).to.equal(config.verityPublicVerkey)
+    expect(context.verityPairwiseDID).to.equal(config.verityPairwiseDID)
+    expect(context.verityPairwiseVerkey).to.equal(config.verityPairwiseVerkey)
+    expect(context.sdkPairwiseDID).to.equal(config.sdkPairwiseDID)
+    expect(context.sdkPairwiseVerkey).to.equal(config.sdkPairwiseVerkey)
+    expect(context.endpointUrl).to.equal(config.endpointUrl)
+    expect(context.walletConfig).to.equal(JSON.stringify({ id: config.walletName }))
+    expect(context.walletCredentials).to.equal(JSON.stringify({ key: config.walletKey }))
+    expect(context.walletHandle).to.be.a('number')
+    await context.deleteWallet()
+  }).timeout(5000)
+
   it('should reject invalid configuration', async () => {
     const requiredAttributes = [
       'verityUrl',

@@ -56,7 +56,7 @@ async def send_stub(context: Context, message: dict) -> bytes:
 async def test_context():
     test_config = await get_test_config()
 
-    context = await Context.create(test_config)
+    context = await Context.create_with_config(test_config)
     test_config = json.loads(test_config)
     assert context.wallet_name == test_config['walletName']
     assert context.wallet_key == test_config['walletKey']
@@ -84,7 +84,7 @@ def test_prepare_forward_message():
 @pytest.mark.asyncio
 async def test_pack_message_for_verity_and_unpack_forward_message():
     message = {'hello': 'world'}
-    context = await Context.create(await get_test_config())
+    context = await Context.create_with_config(await get_test_config())
     packed_message = await pack_message_for_verity(context, message)
     unpacked_message = await unpack_forward_message(context, packed_message)
     assert unpacked_message['hello'] == 'world'

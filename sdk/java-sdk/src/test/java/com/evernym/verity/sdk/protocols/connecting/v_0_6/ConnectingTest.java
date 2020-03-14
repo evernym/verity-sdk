@@ -18,7 +18,7 @@ public class ConnectingTest {
 
     @Test
     public void testGetMessageType() {
-        Connecting connecting = Connecting.v_06("none");
+        Connecting connecting = Connecting.v0_6("none");
         String msgName = "msg name";
         assertEquals(
             Util.getMessageType(
@@ -32,9 +32,38 @@ public class ConnectingTest {
     }
 
     @Test
+    public void testConstructorWithSourceId() throws VerityException {
+        ConnectingImpl connecting = (ConnectingImpl) Connecting.v0_6(sourceId);
+        assertEquals(sourceId, connecting.sourceId());
+        assertNull(phoneNumber, connecting.phoneNumber());
+        assertFalse(connecting.includePublicDID());
+        testConnectMsg(connecting, null, false);
+    }
+
+    @Test
+    public void testConstructorWithSourceIdAndUsePublicDid() throws VerityException {
+        ConnectingImpl connecting = (ConnectingImpl) Connecting.v0_6(sourceId, includePublicDID);
+        assertEquals(sourceId, connecting.sourceId());
+        assertNull(connecting.phoneNumber());
+        assertEquals(includePublicDID, connecting.includePublicDID());
+        testConnectMsg(connecting, null, includePublicDID);
+    }
+
+    @Test
+    public void testConstructorWithSourceIdAndPhoneNumber() throws VerityException {
+        ConnectingImpl connecting = (ConnectingImpl) Connecting.v0_6(sourceId, phoneNumber);
+        assertEquals(sourceId, connecting.sourceId());
+        assertEquals(phoneNumber, connecting.phoneNumber());
+        assertFalse(connecting.includePublicDID());
+        testConnectMsg(connecting, phoneNumber,false);
+    }
+
+    @Test
     public void testFullConstructor() throws VerityException {
-        Connecting connecting = Connecting.v_06(sourceId, phoneNumber, includePublicDID);
-        testConnectMsg(connecting);
+        ConnectingImpl connecting = (ConnectingImpl) Connecting.v0_6(sourceId, phoneNumber, includePublicDID);
+        assertEquals(phoneNumber, connecting.phoneNumber());
+        assertEquals(includePublicDID, connecting.includePublicDID());
+        testConnectMsg(connecting, phoneNumber, includePublicDID);
     }
 
     @Test
@@ -42,7 +71,7 @@ public class ConnectingTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            Connecting connecting = Connecting.v_06(sourceId, phoneNumber, includePublicDID);
+            Connecting connecting = Connecting.v0_6(sourceId, phoneNumber, includePublicDID);
             byte[] message = connecting.connectMsgPacked(context);
             JSONObject expectedMessage = connecting.connectMsg(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
@@ -61,7 +90,7 @@ public class ConnectingTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            Connecting connecting = Connecting.v_06(sourceId, phoneNumber, includePublicDID);
+            Connecting connecting = Connecting.v0_6(sourceId, phoneNumber, includePublicDID);
 
             byte [] statusMsg = connecting.statusMsgPacked(context);
             JSONObject expectedMessage = connecting.statusMsg(context);
@@ -76,7 +105,7 @@ public class ConnectingTest {
         }
     }
 
-    private void testConnectMsg(Connecting connecting) throws VerityException {
+    private void testConnectMsg(Connecting connecting, String phoneNumber, boolean includePublicDID) throws VerityException {
         Context context = TestHelpers.getContext();
         JSONObject msg = connecting.connectMsg(context);
         assertEquals(Util.getMessageType(connecting, Connecting.CREATE_CONNECTION), msg.getString("@type"));

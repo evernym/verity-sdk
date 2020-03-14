@@ -10,6 +10,7 @@ class IssueCredential(Protocol):
     OFFER_CREDENTIAL = 'send-offer'
     ISSUE_CREDENTIAL = 'issue-credential'
     GET_STATUS = 'get-status'
+    ASK_ACCEPT = 'ask-accept'
 
     # Status
     OFFER_SENT_TO_USER_STATUS = 0
@@ -28,7 +29,7 @@ class IssueCredential(Protocol):
                  name: str = None,
                  cred_def_id: str = None,
                  credential_values: dict = None,
-                 price: str = None):
+                 price: str = '0'):
         super().__init__(thread_id=thread_id)
         self.for_relationship = for_relationship
         self.name = name
