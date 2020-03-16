@@ -1,6 +1,8 @@
 from typing import List
 
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
+
 
 class PresentProof(Protocol):
     MSG_FAMILY = 'present-proof'
@@ -17,13 +19,19 @@ class PresentProof(Protocol):
                  name: str = None,
                  proof_attrs: List[dict] = None,
                  proof_predicates: List[dict] = None,
-                 revocation_interval: dict = None):
-        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION, thread_id=thread_id)
+                 # revocation_interval: dict = None # We don't current support this
+                 ):
+        super().__init__(
+            self.MSG_FAMILY,
+            self.MSG_FAMILY_VERSION,
+            msg_qualifier=EVERNYM_MSG_QUALIFIER,
+            thread_id=thread_id
+        )
         self.for_relationship: str = for_relationship
         self.name: str = name
         self.proof_attrs: List[dict] = proof_attrs
         self.proof_predicates: List[dict] = proof_predicates
-        self.revocation_interval: dict = revocation_interval or {}
+        # self.revocation_interval: dict = revocation_interval or {} # We don't current support this
 
     async def request_msg(self, _):
         msg = self._get_base_message(self.PROOF_REQUEST)

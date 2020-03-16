@@ -1,6 +1,8 @@
 from typing import List
 
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
+
 
 class CommittedAnswer(Protocol):
     MSG_FAMILY = 'committedanswer'
@@ -23,7 +25,7 @@ class CommittedAnswer(Protocol):
                  answer_str=None,
                  msg_family: str = MSG_FAMILY,  # Used to override the msg_family for the
                  msg_family_version: str = MSG_FAMILY_VERSION,
-                 msg_qualifier: str = None):
+                 msg_qualifier: str = COMMUNITY_MSG_QUALIFIER):
         super().__init__(msg_family, msg_family_version, msg_qualifier, thread_id)
 
         self.for_relationship: str = for_relationship

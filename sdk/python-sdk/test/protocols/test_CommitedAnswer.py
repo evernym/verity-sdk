@@ -1,6 +1,6 @@
 import pytest
 
-from test.test_utils import get_test_config, send_stub, cleanup
+from test.test_utils import get_test_config, cleanup
 from verity_sdk.protocols.CommittedAnswer import CommittedAnswer
 from verity_sdk.utils import unpack_forward_message, COMMUNITY_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
@@ -17,8 +17,8 @@ def test_init():
                                        signature_required)
 
     assert committed_answer.for_relationship == for_relationship
-    assert committed_answer.question_text == question_text
-    assert committed_answer.question_detail == question_detail
+    assert committed_answer.question == question_text
+    assert committed_answer.descr == question_detail
     assert committed_answer.valid_responses == valid_responses
     assert committed_answer.signature_required == signature_required
 
@@ -28,9 +28,7 @@ async def test_ask():
     context = await Context.create_with_config(await get_test_config())
     committed_answer = CommittedAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                        signature_required)
-    committed_answer.send = send_stub
-    msg = await committed_answer.ask(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = await committed_answer.ask_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
@@ -55,9 +53,7 @@ async def test_status():
     context = await Context.create_with_config(await get_test_config())
     committed_answer = CommittedAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                        signature_required)
-    committed_answer.send = send_stub
-    msg = await committed_answer.status(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = await committed_answer.status_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,

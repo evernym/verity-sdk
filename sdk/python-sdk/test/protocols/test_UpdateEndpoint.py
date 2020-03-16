@@ -1,8 +1,8 @@
 import pytest
 
-from test.test_utils import get_test_config, send_stub, cleanup
+from test.test_utils import get_test_config, cleanup
 from verity_sdk.protocols.UpdateEndpoint import UpdateEndpoint
-from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 
@@ -18,9 +18,7 @@ async def test_init():
 async def test_write():
     context = await Context.create_with_config(await get_test_config())
     update_endpoint = UpdateEndpoint(context)
-    update_endpoint.send = send_stub
-    msg = await update_endpoint.update(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = await update_endpoint.update_endpoint_msg(context)
 
     assert msg['@type'] == '{};spec/configs/0.6/UPDATE_COM_METHOD'.format(EVERNYM_MSG_QUALIFIER)
     assert msg['@id'] is not None

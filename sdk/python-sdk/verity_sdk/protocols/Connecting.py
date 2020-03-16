@@ -1,4 +1,4 @@
-from verity_sdk.utils import uuid
+from verity_sdk.utils import uuid, EVERNYM_MSG_QUALIFIER
 from verity_sdk.protocols.Protocol import Protocol
 
 
@@ -13,8 +13,10 @@ class Connecting(Protocol):
     GET_STATUS = 'get-status'
 
     def __init__(self, source_id: str = uuid(), phone_number: str = None, include_public_did: bool = False):
-        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION,
-                         thread_id=source_id)  # Connecting 0.6 uses the source_id as the thread_id. Should be resolved in 1.0.
+        super().__init__(self.MSG_FAMILY,
+                         self.MSG_FAMILY_VERSION,
+                         msg_qualifier=EVERNYM_MSG_QUALIFIER,
+                         thread_id=source_id)  # 0.6 uses the source_id as the thread_id. Should be resolved in 1.0.
         self.source_id = source_id
         self.phone_number = phone_number
         self.include_public_did = include_public_did

@@ -5,15 +5,18 @@ from indy import wallet
 
 from verity_sdk.utils.Wallet import create_and_open_wallet, try_to_create_wallet
 
+V_0_1 = "0.1"
+V_0_2 = "0.2"
+
 
 class Context:
     verity_url: str
     verity_public_did: str
     verity_public_verkey: str
-    verity_pairwise_did: str
-    verity_pairwise_verkey: str
-    sdk_pairwise_did: str
-    sdk_pairwise_verkey: str
+    domain_did: str
+    verity_agent_verkey: str
+    sdk_verkey_id: str
+    sdk_verkey: str
     endpoint_url: str
     wallet_name: str
     wallet_path: str
@@ -62,7 +65,6 @@ class Context:
         except ValueError as e:
             raise IOError(f'Invalid and unexpected data from Verity -- response -- {e}')
 
-
     async def open_wallet(self):
         self.wallet_handle = await create_and_open_wallet(self.wallet_config, self.wallet_credentials)
 
@@ -71,20 +73,14 @@ class Context:
         context = cls()
         config = json.loads(config)
 
-        context.wallet_name = config['walletName']
-        context.wallet_key = config['walletKey']
-        context.wallet_path = config.get('walletPath')
-        context.verity_url = config['verityUrl']
-        context.verity_public_did = config.get('verityPublicDID')
-        context.verity_public_verkey = config.get('verityPublicVerkey')
-        context.verity_pairwise_did = config.get('verityPairwiseDID')
-        context.verity_pairwise_verkey = config.get('verityPairwiseVerkey')
-        context.sdk_pairwise_did = config.get('sdkPairwiseDID')
-        context.sdk_pairwise_verkey = config.get('sdkPairwiseVerkey')
-        context.endpoint_url = config.get('endpointUrl')
+        version = config.get('version', V_0_1)
 
-        context.set_wallet_config(context.wallet_name, context.wallet_path)
-        context.set_wallet_credentials(context.wallet_key)
+        if V_0_1 == version:
+            context = cls.parse_v01(context, config)
+        elif V_0_2 == version:
+            context = cls.parse_v02(context, config)
+        else:
+            raise Exception(f"Invalid context version -- '{version}' is not supported")
 
         # Ensure the wallet exists
         await try_to_create_wallet(context.wallet_config, context.wallet_credentials)
@@ -93,7 +89,50 @@ class Context:
             context.wallet_config,
             context.wallet_credentials
         )
+
         context.wallet_closed = False
+
+        return context
+
+    @classmethod
+    def parse_v01(cls, context, config):
+        context.wallet_name = config['walletName']
+        context.wallet_key = config['walletKey']
+        context.wallet_path = config.get('walletPath')
+        context.verity_url = config['verityUrl']
+        context.verity_public_did = config.get('verityPublicDID')
+        context.verity_public_verkey = config.get('verityPublicVerkey')
+        context.domain_did = config.get('verityPairwiseDID')
+        context.verity_agent_verkey = config.get('verityPairwiseVerkey')
+        context.sdk_verkey_id = config.get('sdkPairwiseDID')
+        context.sdk_verkey = config.get('sdkPairwiseVerkey')
+        context.endpoint_url = config.get('endpointUrl')
+
+        context.set_wallet_config(context.wallet_name, context.wallet_path)
+        context.set_wallet_credentials(context.wallet_key)
+
+        return context
+
+    @classmethod
+    def parse_v02(cls, context, config):
+        context.wallet_name = config['walletName']
+        context.wallet_key = config['walletKey']
+        context.wallet_path = config.get('walletPath')
+        context.verity_url = config['verityUrl']
+
+        context.verity_public_did = config.get('verityPublicDID')
+        context.verity_public_verkey = config.get('verityPublicVerkey')
+
+        context.domain_did = config.get('domainDID')
+        context.verity_agent_verkey = config.get('verityAgentVerKey')
+
+        context.sdk_verkey_id = config.get('sdkVerKeyId')
+        context.sdk_verkey = config.get('sdkVerKey')
+
+        context.endpoint_url = config.get('endpointUrl')
+
+        context.set_wallet_config(context.wallet_name, context.wallet_path)
+        context.set_wallet_credentials(context.wallet_key)
 
         return context
 
@@ -109,12 +148,13 @@ class Context:
                 'walletPath': self.wallet_path if hasattr(self, 'wallet_path') else None,
                 'verityUrl': self.verity_url,
                 'verityPublicDID': self.verity_public_did,
-                'verityPublicVerkey': self.verity_public_verkey,
-                'verityPairwiseDID': self.verity_pairwise_did,
-                'verityPairwiseVerkey': self.verity_pairwise_verkey,
-                'sdkPairwiseDID': self.sdk_pairwise_did,
-                'sdkPairwiseVerkey': self.sdk_pairwise_verkey,
+                'verityPublicVerKey': self.verity_public_verkey,
+                'domainDID': self.domain_did,
+                'verityAgentVerKey': self.verity_agent_verkey,
+                'sdkVerKeyId': self.sdk_verkey_id,
+                'sdkVerKey': self.sdk_verkey,
                 'endpointUrl': self.endpoint_url,
+                'version': V_0_2,
             },
             indent=indent
         )

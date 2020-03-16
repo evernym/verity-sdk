@@ -1,8 +1,8 @@
 import pytest
 
-from test.test_utils import get_test_config, send_stub, cleanup
+from test.test_utils import get_test_config, cleanup
 from verity_sdk.protocols.QuestionAnswer import QuestionAnswer
-from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 for_relationship = 'some_did'
@@ -17,8 +17,8 @@ def test_init():
                                      signature_required)
 
     assert question_answer.for_relationship == for_relationship
-    assert question_answer.question_text == question_text
-    assert question_answer.question_detail == question_detail
+    assert question_answer.question == question_text
+    assert question_answer.descr == question_detail
     assert question_answer.valid_responses == valid_responses
     assert question_answer.signature_required == signature_required
 
@@ -28,12 +28,10 @@ async def test_ask():
     context = await Context.create_with_config(await get_test_config())
     question_answer = QuestionAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                      signature_required)
-    question_answer.send = send_stub
-    msg = await question_answer.ask(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = await question_answer.ask_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
-        EVERNYM_MSG_QUALIFIER,
+        COMMUNITY_MSG_QUALIFIER,
         QuestionAnswer.MSG_FAMILY,
         QuestionAnswer.MSG_FAMILY_VERSION,
         QuestionAnswer.ASK_QUESTION
@@ -55,12 +53,10 @@ async def test_status():
     context = await Context.create_with_config(await get_test_config())
     question_answer = QuestionAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                      signature_required)
-    question_answer.send = send_stub
-    msg = await question_answer.status(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = await question_answer.status_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
-        EVERNYM_MSG_QUALIFIER,
+        COMMUNITY_MSG_QUALIFIER,
         QuestionAnswer.MSG_FAMILY,
         QuestionAnswer.MSG_FAMILY_VERSION,
         QuestionAnswer.GET_STATUS

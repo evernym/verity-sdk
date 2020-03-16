@@ -48,10 +48,6 @@ async def cleanup(context: Context):
     await wallet.delete_wallet(context.wallet_config, context.wallet_credentials)
 
 
-async def send_stub(context: Context, message: dict) -> bytes:
-    return await Protocol.get_message(context, message)
-
-
 @pytest.mark.asyncio
 async def test_context():
     test_config = await get_test_config()
@@ -62,9 +58,9 @@ async def test_context():
     assert context.wallet_key == test_config['walletKey']
     assert context.verity_url == test_config['verityUrl']
     assert context.verity_public_verkey == test_config['verityPublicVerkey']
-    assert context.verity_pairwise_did == test_config['verityPairwiseDID']
-    assert context.verity_pairwise_verkey == test_config['verityPairwiseVerkey']
-    assert context.sdk_pairwise_verkey == test_config['sdkPairwiseVerkey']
+    assert context.domain_did == test_config['verityPairwiseDID']
+    assert context.verity_agent_verkey == test_config['verityPairwiseVerkey']
+    assert context.sdk_verkey == test_config['sdkPairwiseVerkey']
     assert context.endpoint_url == test_config['endpointUrl']
 
     await cleanup(context)

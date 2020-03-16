@@ -311,11 +311,11 @@ async def provision_agent() -> str:
     context = await Context.create(wallet_name, wallet_key, verity_url, '')
 
     # create and store sdk public/private key pair (identified by DID)
-    sdk_pairwise_did_verkey: Did = await create_new_did(context.wallet_handle)
+    sdk_key: Did = await create_new_did(context.wallet_handle)
 
     # add sdk did/verkey to Context
-    context.sdk_pairwise_did = sdk_pairwise_did_verkey.did
-    context.sdk_pairwise_verkey = sdk_pairwise_did_verkey.verkey
+    context.sdk_verkey_id = sdk_key.did
+    context.sdk_verkey = sdk_key.verkey
 
     # ask that an agent by provision (setup) and associated with created key pair
     context = await Provision().provision_sdk(context)

@@ -1,4 +1,6 @@
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
+
 
 class WriteSchema(Protocol):
     MSG_FAMILY = 'write-schema'
@@ -9,7 +11,11 @@ class WriteSchema(Protocol):
     STATUS = 'status-report'
 
     def __init__(self, name: str, version: str, attrs: [str]):
-        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION)
+        super().__init__(
+            self.MSG_FAMILY,
+            self.MSG_FAMILY_VERSION,
+            msg_qualifier=EVERNYM_MSG_QUALIFIER,
+        )
         self.name = name
         self.version = version
         self.attrs = attrs

@@ -1,4 +1,5 @@
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 
 
 class IssuerSetup(Protocol):
@@ -13,7 +14,11 @@ class IssuerSetup(Protocol):
     PROBLEM_REPORT = 'problem-report'
 
     def __init__(self):
-        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION)
+        super().__init__(
+            self.MSG_FAMILY,
+            self.MSG_FAMILY_VERSION,
+            msg_qualifier=EVERNYM_MSG_QUALIFIER
+        )
 
     async def create_msg(self, _):
         msg = self._get_base_message(self.CREATE)

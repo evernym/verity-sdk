@@ -1,4 +1,6 @@
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
+
 
 class IssueCredential(Protocol):
     MSG_FAMILY = 'issue-credential'
@@ -17,7 +19,10 @@ class IssueCredential(Protocol):
                  cred_def_id: str = None,
                  credential_values: dict = None,
                  price: str = '0'):
-        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION, thread_id=thread_id)
+        super().__init__(self.MSG_FAMILY,
+                         self.MSG_FAMILY_VERSION,
+                         msg_qualifier=EVERNYM_MSG_QUALIFIER,
+                         thread_id=thread_id)
         self.for_relationship: str = for_relationship
         self.name: str = name
         self.cred_def_id: str = cred_def_id

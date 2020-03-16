@@ -21,9 +21,9 @@ async def pack_message_for_verity(context: Context, message: dict) -> bytes:
     return await pack_message_for_verity_direct(
         wallet_handle=context.wallet_handle,
         message=message,
-        pairwise_remote_did=context.verity_pairwise_did,
-        pairwise_remote_verkey=context.verity_pairwise_verkey,
-        pairwise_local_verkey=context.sdk_pairwise_verkey,
+        pairwise_remote_did=context.domain_did,
+        pairwise_remote_verkey=context.verity_agent_verkey,
+        pairwise_local_verkey=context.sdk_verkey,
         public_verkey=context.verity_public_verkey
     )
 

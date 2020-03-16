@@ -1,4 +1,5 @@
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 
@@ -10,7 +11,11 @@ class UpdateEndpoint(Protocol):
     UPDATE_ENDPOINT = 'UPDATE_COM_METHOD'
 
     def __init__(self, context: Context):
-        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION)
+        super().__init__(
+            self.MSG_FAMILY,
+            self.MSG_FAMILY_VERSION,
+            msg_qualifier=EVERNYM_MSG_QUALIFIER,
+        )
         self.context: Context = context
 
 

@@ -1,4 +1,5 @@
 from verity_sdk.protocols.Protocol import Protocol
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 
 
 class WriteCredentialDefinition(Protocol):
@@ -10,7 +11,11 @@ class WriteCredentialDefinition(Protocol):
     STATUS = 'status-report'
 
     def __init__(self, name: str, schema_id: str, tag: str = None, revocation_details: dict = None):
-        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION)
+        super().__init__(
+            self.MSG_FAMILY,
+            self.MSG_FAMILY_VERSION,
+            msg_qualifier=EVERNYM_MSG_QUALIFIER,
+        )
         self.name = name
         self.schema_id = schema_id
         self.tag = tag
