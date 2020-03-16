@@ -6,9 +6,10 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static com.evernym.verity.sdk.TestHelpers.assertEqualsJSONObject;
+import static org.junit.Assert.fail;
 
-public class ContextTest extends JsonObjectAssertion {
+public class ContextTest {
 
     // TODO: Add more robust tests with bad configs.
 

@@ -5,10 +5,16 @@ import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
 import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.wallet.Wallet;
+import org.json.JSONObject;
 
 import java.util.UUID;
 
+import static org.junit.Assert.assertEquals;
+
 public class TestHelpers {
+    protected TestHelpers() {
+    }
+
     
     public static Context getContext() throws WalletException {
 
@@ -40,5 +46,12 @@ public class TestHelpers {
             WalletConfig config = context.walletConfig();
             Wallet.deleteWallet(config.config(), config.credential()).get();
         }
+    }
+
+    public static void assertEqualsJSONObject(JSONObject expected, JSONObject actual) {
+        assertEquals(expected.toMap().size(), actual.toMap().size());
+        expected.toMap().forEach((s, o) ->
+                assertEquals(actual.get(s), o)
+        );
     }
 }

@@ -104,7 +104,7 @@ public class ContextBuilder {
     }
 
     private static Context withProvisionedAgent(Context inter, String domainDID, String verityAgentVerKey)
-            throws WalletException, IOException {
+            throws WalletException {
         return inter.toContextBuilder()
                 .domainDID(domainDID)
                 .verityAgentVerKey(verityAgentVerKey)
@@ -182,7 +182,7 @@ public class ContextBuilder {
         putElementIgnoreNull(VERITY_AGENT_VER_KEY, json.optString(LEGACY_VERITY_AGENT_VER_KEY));
         putElementIgnoreNull(SDK_VER_KEY_ID, json.optString(LEGACY_SDK_VER_KEY_ID));
         putElementIgnoreNull(SDK_VER_KEY, json.optString(LEGACY_SDK_VER_KEY));
-        putElementIgnoreNull(VERSION, V_0_1);
+        putElementIgnoreNull(VERSION, V_0_2); // Converts to latest version -- NOT current version
         return this;
     }
 

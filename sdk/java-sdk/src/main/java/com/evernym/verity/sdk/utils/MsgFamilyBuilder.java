@@ -11,20 +11,25 @@ public class MsgFamilyBuilder {
 
     public static MessageFamily fromQualifiedMsgType(String qualifiedMessageType) {
         Matcher m = p.matcher(qualifiedMessageType);
-        m.find();
-        String qualifier = m.group(1);
-        String familyName = m.group(2);
-        String familyVersion = m.group(3);
+        if (m.find()) {
+            String qualifier = m.group(1);
+            String familyName = m.group(2);
+            String familyVersion = m.group(3);
 
-        return new MessageFamily() {
-            @Override
-            public String qualifier() { return qualifier;}
+            return new MessageFamily() {
+                @Override
+                public String qualifier() { return qualifier;}
 
-            @Override
-            public String family() { return familyName; }
+                @Override
+                public String family() { return familyName; }
 
-            @Override
-            public String version() { return familyVersion; }
-        };
-    };
+                @Override
+                public String version() { return familyVersion; }
+            };
+        }
+        else {
+            throw new RuntimeException(String.format("Invalid message type field, unable to parse Message Family for '%s'", qualifiedMessageType));
+        }
+
+    }
 }
