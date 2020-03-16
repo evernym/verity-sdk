@@ -1,6 +1,4 @@
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
-
 
 class IssueCredential(Protocol):
     MSG_FAMILY = 'issue-credential'
@@ -12,17 +10,6 @@ class IssueCredential(Protocol):
     GET_STATUS = 'get-status'
     ASK_ACCEPT = 'ask-accept'
 
-    # Status
-    OFFER_SENT_TO_USER_STATUS = 0
-    OFFER_ACCEPTED_BY_USER_STATUS = 1
-    CREDENTIAL_SENT_TO_USER_STATUS = 2
-
-    for_relationship: str
-    name: str
-    cred_def_id: str
-    credential_values: dict
-    price: str
-
     def __init__(self,
                  for_relationship: str,
                  thread_id: str = None,
@@ -30,58 +17,50 @@ class IssueCredential(Protocol):
                  cred_def_id: str = None,
                  credential_values: dict = None,
                  price: str = '0'):
-        super().__init__(thread_id=thread_id)
-        self.for_relationship = for_relationship
-        self.name = name
-        self.cred_def_id = cred_def_id
-        self.credential_values = credential_values
-        self.price = price
+        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION, thread_id=thread_id)
+        self.for_relationship: str = for_relationship
+        self.name: str = name
+        self.cred_def_id: str = cred_def_id
+        self.credential_values: dict = credential_values
+        self.price: str = price
 
-        self.define_messages()
 
-    def define_messages(self):
-        self.messages = {
-            self.OFFER_CREDENTIAL: {
-                '@type': IssueCredential.get_message_type(self.OFFER_CREDENTIAL),
-                '@id': self.get_new_id(),
-                '~for_relationship': self.for_relationship,
-                '~thread': self.get_thread_block(),
-                'name': self.name,
-                'credDefId': self.cred_def_id,
-                'credentialValues': self.credential_values,
-                'price': self.price
-            },
-            self.ISSUE_CREDENTIAL: {
-                '@type': IssueCredential.get_message_type(self.ISSUE_CREDENTIAL),
-                '@id': self.get_new_id(),
-                '~for_relationship': self.for_relationship,
-                '~thread': self.get_thread_block(),
-            },
-            self.GET_STATUS: {
-                '@type': IssueCredential.get_message_type(self.GET_STATUS),
-                '@id': self.get_new_id(),
-                '~for_relationship': self.for_relationship,
-                '~thread': self.get_thread_block(),
-            }
-        }
+    async def offer_credential_msg(self, _):
+        msg = self._get_base_message(self.OFFER_CREDENTIAL)
+        self._add_thread(msg)
+        self._add_relationship(msg, self.for_relationship)
+        msg['name'] = self.name
+        msg['credDefId'] = self.cred_def_id
+        msg['credentialValues'] = self.credential_values
+        msg['price'] = self.price
+        return msg
 
-    @staticmethod
-    def get_message_type(msg_name: str) -> str:
-        return get_message_type(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, msg_name)
+    async def offer_credential_msg_packed(self, context):
+        return await self.get_message_bytes(context, await self.offer_credential_msg(context))
 
-    @staticmethod
-    def get_problem_report_message_type() -> str:
-        return get_problem_report_message_type(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION)
+    async def offer_credential(self, context):
+        await self.send_message(context, await self.offer_credential_msg_packed(context))
 
-    @staticmethod
-    def get_status_message_type() -> str:
-        return get_status_message_type(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION)
+    async def issue_credential_msg(self, _):
+        msg = self._get_base_message(self.ISSUE_CREDENTIAL)
+        self._add_thread(msg)
+        self._add_relationship(msg, self.for_relationship)
+        return msg
 
-    async def offer_credential(self, context: Context) -> bytes:
-        return await self.send(context, self.messages[self.OFFER_CREDENTIAL])
+    async def issue_credential_msg_packed(self, context):
+        return await self.get_message_bytes(context, await self.issue_credential_msg(context))
 
-    async def issue_credential(self, context: Context) -> bytes:
-        return await self.send(context, self.messages[self.ISSUE_CREDENTIAL])
+    async def issue_credential(self, context):
+        await self.send_message(context, await self.issue_credential_msg_packed(context))
 
-    async def status(self, context: Context) -> bytes:
-        return await self.send(context, self.messages[self.GET_STATUS])
+    async def status_msg(self, _):
+        msg = self._get_base_message(self.GET_STATUS)
+        self._add_thread(msg)
+        self._add_relationship(msg, self.for_relationship)
+        return msg
+
+    async def status_msg_packed(self, context):
+        return await self.get_message_bytes(context, await self.status_msg(context))
+
+    async def status(self, context):
+        await self.send_message(context, await self.status_msg_packed(context))

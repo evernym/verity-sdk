@@ -2,7 +2,7 @@ import copy
 
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.transports import send_message
-from verity_sdk.utils import Context, get_message_type, pack_message_for_verity_direct, unpack_message
+from verity_sdk.utils import Context, pack_message_for_verity_direct, unpack_message
 
 class Provision(Protocol):
     MSG_FAMILY = 'agent-provisioning'
@@ -12,23 +12,13 @@ class Provision(Protocol):
     CREATE_AGENT = 'CREATE_AGENT'
 
     def __init__(self):
-        super().__init__()
+        super().__init__(self.MSG_FAMILY, self.MSG_FAMILY_VERSION)
 
-    def define_messages(self):
-        raise AttributeError('Context is required to build messages')
-
-    @staticmethod
-    def get_message_type(msg_name: str) -> str:
-        return get_message_type(Provision.MSG_FAMILY, Provision.MSG_FAMILY_VERSION, msg_name)
-
-    @staticmethod
-    def create_agent_msg(context: Context):
-        return {
-            '@id': Provision.get_new_id(),
-            '@type': Provision.get_message_type(Provision.CREATE_AGENT),
-            'fromDID': context.sdk_pairwise_did,
-            'fromDIDVerKey': context.sdk_pairwise_verkey
-        }
+    def create_agent_msg(self, context: Context):
+        msg = self._get_base_message(self.CREATE_AGENT)
+        msg['fromDID'] = context.sdk_pairwise_did
+        msg['fromDIDVerKey'] = context.sdk_pairwise_verkey
+        return msg
 
     async def provision_sdk(self, context: Context) -> Context:
         msg = await pack_message_for_verity_direct(

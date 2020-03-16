@@ -103,7 +103,7 @@ async def unpack_message(context: Context, message: bytes) -> Dict:
 def uuid() -> str:
     return str(uuid4())
 
-
+# TODO: Remove this function in favor of using MessageFamily
 def get_message_type(msg_family: str,
                      msg_family_version: str,
                      msg_name: str,
