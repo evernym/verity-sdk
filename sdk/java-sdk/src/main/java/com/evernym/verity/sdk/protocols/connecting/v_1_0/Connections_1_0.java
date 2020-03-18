@@ -9,7 +9,7 @@ import org.json.JSONObject;
 /**
  * Builds and sends a new encrypted agent message for the Connections protocol.
  */
-public class ConnectionsImpl extends Protocol implements Connecting {
+public class Connections_1_0 extends Protocol implements Connecting {
 
     public String qualifier() {return Util.COMMUNITY_MSG_QUALIFIER;}
     public String family() {return "connections";}
@@ -24,7 +24,7 @@ public class ConnectionsImpl extends Protocol implements Connecting {
      * @param parentThreadId id of invitation message
      * @param base64InviteURL received invitation's url
      */
-    public ConnectionsImpl(String parentThreadId, String label, String base64InviteURL) {
+    public Connections_1_0(String parentThreadId, String label, String base64InviteURL) {
         this.parentThreadId = parentThreadId;
         this.base64InviteURL = base64InviteURL;
         this.label = label;
@@ -34,7 +34,7 @@ public class ConnectionsImpl extends Protocol implements Connecting {
      * can be used by either inviter or invitee once it knows thread id
      * @param threadId
      */
-    public ConnectionsImpl(String threadId) {
+    public Connections_1_0(String threadId) {
         super(threadId);
     }
 

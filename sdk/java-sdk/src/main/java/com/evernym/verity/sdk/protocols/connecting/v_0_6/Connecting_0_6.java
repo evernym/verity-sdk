@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Builds and sends a new encrypted agent message for the Connection protocol.
  */
-public class ConnectingImpl extends Protocol implements Connecting {
+public class Connecting_0_6 extends Protocol implements Connecting {
 
     String sourceId;
     String phoneNumber;
@@ -30,7 +30,7 @@ public class ConnectingImpl extends Protocol implements Connecting {
     * Create connection without phone number
     * @param sourceId required optional param that sets an id of the connection
     */
-    public ConnectingImpl(String sourceId) {
+    public Connecting_0_6(String sourceId) {
         this(sourceId, null, false);
     }
 
@@ -39,7 +39,7 @@ public class ConnectingImpl extends Protocol implements Connecting {
     * @param sourceId required param that sets an id of the connection
     * @param includePublicDID optional param that indicates the connection invite should use the institution's public DID.
     */
-    public ConnectingImpl(String sourceId, boolean includePublicDID) {
+    public Connecting_0_6(String sourceId, boolean includePublicDID) {
         this(sourceId, null, includePublicDID);
     }
 
@@ -48,7 +48,7 @@ public class ConnectingImpl extends Protocol implements Connecting {
      * @param sourceId required param that sets an id of the connection
      * @param phoneNo optional param that sets the sms phone number for an identity holder
      */
-    public ConnectingImpl(String sourceId, String phoneNo) {
+    public Connecting_0_6(String sourceId, String phoneNo) {
         this(sourceId, phoneNo, false);
     }
 
@@ -58,7 +58,7 @@ public class ConnectingImpl extends Protocol implements Connecting {
     * @param phoneNo optional param that sets the sms phone number for an identity holder 
     * @param includePublicDID optional param that indicates the connection invite should use the institution's public DID.
     */
-    public ConnectingImpl(String sourceId, String phoneNo, boolean includePublicDID) {
+    public Connecting_0_6(String sourceId, String phoneNo, boolean includePublicDID) {
         super();
         this.sourceId = sourceId;
         this.phoneNumber = phoneNo;

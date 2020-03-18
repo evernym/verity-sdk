@@ -16,7 +16,7 @@ public class ConnectionsTest {
 
     @Test
     public void testGetMessageType() {
-        Connecting connecting = Connecting.v_10(parentThreadId, label, base64Url);
+        Connecting connecting = Connecting.v1_0(parentThreadId, label, base64Url);
         String msgName = "msg name";
         assertEquals(
             Util.getMessageType(

@@ -2,7 +2,7 @@ package com.evernym.verity.sdk.protocols.relationship;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
-import com.evernym.verity.sdk.protocols.relationship.v_1_0.RelationshipProvisioningImpl;
+import com.evernym.verity.sdk.protocols.relationship.v_1_0.RelationshipProvisioning_1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
@@ -11,12 +11,12 @@ import java.util.List;
 
 public interface RelationshipProvisioning extends MessageFamily {
 
-    static RelationshipProvisioning v_10() {
-        return new RelationshipProvisioningImpl();
+    static RelationshipProvisioning v1_0() {
+        return new RelationshipProvisioning_1_0();
     }
 
-    static RelationshipProvisioning v_10(String forRelationship, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
-        return new RelationshipProvisioningImpl(forRelationship, label, recipientKeys, routingKeys, did);
+    static RelationshipProvisioning v1_0(String forRelationship, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
+        return new RelationshipProvisioning_1_0(forRelationship, label, recipientKeys, routingKeys, did);
     }
 
     void createKey(Context context) throws IOException, VerityException;

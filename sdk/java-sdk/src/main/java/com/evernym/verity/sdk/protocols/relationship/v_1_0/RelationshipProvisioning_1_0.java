@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class RelationshipProvisioningImpl extends Protocol implements RelationshipProvisioning {
+public class RelationshipProvisioning_1_0 extends Protocol implements RelationshipProvisioning {
     public String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
     public String family() {return "relationship-provisioning";}
     public String version() {return "1.0";}
@@ -29,7 +29,7 @@ public class RelationshipProvisioningImpl extends Protocol implements Relationsh
     List<String> recipientKeys;
     List<String> routingKeys;
 
-    public RelationshipProvisioningImpl() {
+    public RelationshipProvisioning_1_0() {
 
     }
 
@@ -41,7 +41,7 @@ public class RelationshipProvisioningImpl extends Protocol implements Relationsh
      * @param routingKeys optional, routing keys
      * @param did optional, invitation with public DID
      */
-    public RelationshipProvisioningImpl(String forRelationship, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
+    public RelationshipProvisioning_1_0(String forRelationship, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
         super();
         ValidationUtil.checkOnlyOneOptionalFieldExists(Arrays.asList(did, recipientKeys));
         this.forRelationship = forRelationship;

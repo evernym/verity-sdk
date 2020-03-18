@@ -27,7 +27,7 @@ public class RelationshipProvisioningTest {
 
     @Test
     public void testGetMessageType() {
-        RelationshipProvisioning relationshipProvisioning = RelationshipProvisioning.v_10();
+        RelationshipProvisioning relationshipProvisioning = RelationshipProvisioning.v1_0();
         String msgName = "msg name";
         assertEquals(
             Util.getMessageType(
@@ -42,7 +42,7 @@ public class RelationshipProvisioningTest {
 
     @Test
     public void testCreateKeyMsg() throws VerityException, IOException {
-        RelationshipProvisioning relationshipProvisioning = RelationshipProvisioning.v_10();
+        RelationshipProvisioning relationshipProvisioning = RelationshipProvisioning.v1_0();
         JSONObject msg = relationshipProvisioning.createKeyMsg(TestHelpers.getContext());
         testCreateKeyMsg(msg);
     }
@@ -54,7 +54,7 @@ public class RelationshipProvisioningTest {
 
     @Test
     public void testInvitationWithDIDMsg() throws VerityException, IOException {
-        RelationshipProvisioning relationshipProvisioning = RelationshipProvisioning.v_10(forRelationship, label, null, null, did);
+        RelationshipProvisioning relationshipProvisioning = RelationshipProvisioning.v1_0(forRelationship, label, null, null, did);
         JSONObject msg = relationshipProvisioning.prepareInvitationMsg(TestHelpers.getContext());
         testInvitationWithDIDMsg(msg);
     }
@@ -70,7 +70,7 @@ public class RelationshipProvisioningTest {
     @Test
     public void testInvitationWithKeyMsg() throws VerityException, IOException {
 
-        RelationshipProvisioning relationshipProvisioning = RelationshipProvisioning.v_10(forRelationship, label, recipKeys, routingKeys, null);
+        RelationshipProvisioning relationshipProvisioning = RelationshipProvisioning.v1_0(forRelationship, label, recipKeys, routingKeys, null);
         JSONObject msg = relationshipProvisioning.prepareInvitationMsg(TestHelpers.getContext());
         testInvitationWithKeyMsg(msg);
     }

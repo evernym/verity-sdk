@@ -33,7 +33,7 @@ public class ConnectingTest {
 
     @Test
     public void testConstructorWithSourceId() throws VerityException {
-        ConnectingImpl connecting = (ConnectingImpl) Connecting.v0_6(sourceId);
+        Connecting_0_6 connecting = (Connecting_0_6) Connecting.v0_6(sourceId);
         assertEquals(sourceId, connecting.sourceId());
         assertNull(phoneNumber, connecting.phoneNumber());
         assertFalse(connecting.includePublicDID());
@@ -42,7 +42,7 @@ public class ConnectingTest {
 
     @Test
     public void testConstructorWithSourceIdAndUsePublicDid() throws VerityException {
-        ConnectingImpl connecting = (ConnectingImpl) Connecting.v0_6(sourceId, includePublicDID);
+        Connecting_0_6 connecting = (Connecting_0_6) Connecting.v0_6(sourceId, includePublicDID);
         assertEquals(sourceId, connecting.sourceId());
         assertNull(connecting.phoneNumber());
         assertEquals(includePublicDID, connecting.includePublicDID());
@@ -51,7 +51,7 @@ public class ConnectingTest {
 
     @Test
     public void testConstructorWithSourceIdAndPhoneNumber() throws VerityException {
-        ConnectingImpl connecting = (ConnectingImpl) Connecting.v0_6(sourceId, phoneNumber);
+        Connecting_0_6 connecting = (Connecting_0_6) Connecting.v0_6(sourceId, phoneNumber);
         assertEquals(sourceId, connecting.sourceId());
         assertEquals(phoneNumber, connecting.phoneNumber());
         assertFalse(connecting.includePublicDID());
@@ -60,7 +60,7 @@ public class ConnectingTest {
 
     @Test
     public void testFullConstructor() throws VerityException {
-        ConnectingImpl connecting = (ConnectingImpl) Connecting.v0_6(sourceId, phoneNumber, includePublicDID);
+        Connecting_0_6 connecting = (Connecting_0_6) Connecting.v0_6(sourceId, phoneNumber, includePublicDID);
         assertEquals(phoneNumber, connecting.phoneNumber());
         assertEquals(includePublicDID, connecting.includePublicDID());
         testConnectMsg(connecting, phoneNumber, includePublicDID);

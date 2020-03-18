@@ -4,7 +4,8 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
-import com.evernym.verity.sdk.protocols.connecting.v_0_6.ConnectingImpl;
+import com.evernym.verity.sdk.protocols.connecting.v_0_6.Connecting_0_6;
+import com.evernym.verity.sdk.protocols.connecting.v_1_0.Connections_1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
@@ -15,24 +16,24 @@ public interface Connecting extends MessageFamily {
     String CREATE_CONNECTION = "CREATE_CONNECTION";
     String GET_STATUS = "get-status";
 
-    static Connecting v0_6(String sourceId) {
-        return new ConnectingImpl(sourceId);
+    static Connecting_0_6 v0_6(String sourceId) {
+        return new Connecting_0_6(sourceId);
     }
 
-    static Connecting v0_6(String sourceId, boolean includePublicDID) {
-        return new ConnectingImpl(sourceId, includePublicDID);
+    static Connecting_0_6 v0_6(String sourceId, boolean includePublicDID) {
+        return new Connecting_0_6(sourceId, includePublicDID);
     }
 
-    static Connecting v0_6(String sourceId, String phoneNo) {
-        return new ConnectingImpl(sourceId, phoneNo);
+    static Connecting_0_6 v0_6(String sourceId, String phoneNo) {
+        return new Connecting_0_6(sourceId, phoneNo);
     }
 
-    static Connecting v0_6(String sourceId, String phoneNo, boolean includePublicDID) {
-        return new ConnectingImpl(sourceId, phoneNo, includePublicDID);
+    static Connecting_0_6 v0_6(String sourceId, String phoneNo, boolean includePublicDID) {
+        return new Connecting_0_6(sourceId, phoneNo, includePublicDID);
     }
 
-    static Connecting v_10(String parentThreadId, String label, String base64InviteURL) {
-        return new com.evernym.verity.sdk.protocols.connecting.v_1_0.ConnectionsImpl(parentThreadId, label, base64InviteURL);
+    static Connections_1_0 v1_0(String parentThreadId, String label, String base64InviteURL) {
+        return new Connections_1_0(parentThreadId, label, base64InviteURL);
     }
 
     /**
