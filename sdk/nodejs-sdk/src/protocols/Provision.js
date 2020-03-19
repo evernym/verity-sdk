@@ -1,7 +1,6 @@
 'use strict'
 const utils = require('../utils')
 const Protocol = require('./Protocol')
-const indy = require('../utils/indy')
 
 module.exports = class Provision extends Protocol {
   constructor (threadId = null) {

@@ -102,26 +102,25 @@ describe('Context', () => {
 
     const ctx = await Context.createWithConfig(v01Str)
 
-    expect(ctx.domainDID).to.equal("NTvSuSXzygyxWrF3scrhdc")
-    expect(ctx.verityAgentVerKey).to.equal("ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE")
-    expect(ctx.sdkVerKey).to.equal("HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh")
-    expect(ctx.sdkVerKeyId).to.equal("XNRkA8tboikwHD3x1Yh7Uz")
-    expect(ctx.version).to.equal("0.2")
-
+    expect(ctx.domainDID).to.equal('NTvSuSXzygyxWrF3scrhdc')
+    expect(ctx.verityAgentVerKey).to.equal('ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE')
+    expect(ctx.sdkVerKey).to.equal('HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh')
+    expect(ctx.sdkVerKeyId).to.equal('XNRkA8tboikwHD3x1Yh7Uz')
+    expect(ctx.version).to.equal('0.2')
   }).timeout(5000)
 
   it('should create valid context without provisioning', async () => {
     const ctx = await Context.create(
-      "test1",
-      "test1",
-      "https://vas-team1.pdev.evernym.com",
-      "NTvSuSXzygyxWrF3scrhdc",
-      "ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE",
-      "https://enazy4stgnrep.x.pipedream.net/",
-      "000000000000000000000000Team1VAS"
+      'test1',
+      'test1',
+      'https://vas-team1.pdev.evernym.com',
+      'NTvSuSXzygyxWrF3scrhdc',
+      'ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE',
+      'https://enazy4stgnrep.x.pipedream.net/',
+      '000000000000000000000000Team1VAS'
     )
-    
-    const expected =`{
+
+    const expected = `{
       "verityPublicVerKey": "ETLgZKeQEKxBW7gXA6FBn7nBwYhXFoogZLCCn5EeRSQV",
       "verityUrl": "https://vas-team1.pdev.evernym.com",
       "verityAgentVerKey": "ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE",

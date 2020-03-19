@@ -136,7 +136,7 @@ async function askQuestion (forDID) {
   })
   spinner.start()
   await committedAnswer.ask(context)
-  return await firstStep
+  return firstStep
 }
 
 //* ***********************

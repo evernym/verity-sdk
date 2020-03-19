@@ -2,13 +2,11 @@ __copyright__ = 'COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.'
 
 import asyncio
 import logging
-import traceback
-from asyncio.base_events import Server
-
 import pyqrcode
+import traceback
 from aiohttp import web
 from aiohttp.web_routedef import RouteTableDef
-
+from asyncio.base_events import Server
 from example.helper import *
 from verity_sdk.handlers import Handlers
 from verity_sdk.protocols.CommittedAnswer import CommittedAnswer
@@ -195,9 +193,9 @@ async def write_ledger_cred_def(loop, schema_id: str) -> str:
 
 
 async def ask_question(loop, for_did):
-    question_text = "Hi Alice, how are you today?"
-    question_detail = "Checking up on you today."
-    valid_responses = ["Great!", "Not so good."]
+    question_text = 'Hi Alice, how are you today?'
+    question_detail = 'Checking up on you today.'
+    valid_responses = ['Great!', 'Not so good.']
 
     question = CommittedAnswer(for_did, None, question_text, question_detail, valid_responses, True)
     first_step = loop.create_future()

@@ -3,8 +3,8 @@ const URL = require('url').URL
 const indy = require('./indy')
 const utils = require('./index')
 
-const V_0_1 = "0.1"
-const V_0_2 = "0.2"
+const V_0_1 = '0.1'
+const V_0_2 = '0.2'
 
 module.exports = class Context {
   constructor () {
@@ -18,24 +18,22 @@ module.exports = class Context {
     if (typeof config === 'string' || Buffer.isBuffer(config)) {
       config = JSON.parse(config)
     }
-    const {version = V_0_1} = config
+    const { version = V_0_1 } = config
 
-    if (V_0_1 == version) {
+    if (V_0_1 === version) {
       const rtn = Context.parseV01(config)
       await rtn.openWallet()
       return rtn
-    }
-    else if (V_0_2 == version) {
+    } else if (V_0_2 === version) {
       const rtn = Context.parseV02(config)
       await rtn.openWallet()
       return rtn
-    }
-    else {
+    } else {
       throw new Error(`Invalid context version -- '${version}' is not supported`)
     }
   }
 
-  static parseV01(config) {
+  static parseV01 (config) {
     Context.validateV01Config(config)
 
     const context = new Context()
@@ -55,7 +53,7 @@ module.exports = class Context {
     return context
   }
 
-  static parseV02(config) {
+  static parseV02 (config) {
     Context.validateV02Config(config)
 
     const context = new Context()
@@ -75,9 +73,7 @@ module.exports = class Context {
     return context
   }
 
-  
-
-  static async create(
+  static async create (
     walletName,
     walletKey,
     verityUrl,
@@ -85,22 +81,22 @@ module.exports = class Context {
     verityAgentVerKey = null,
     endpointUrl = null,
     seed = null
-    ) {
+  ) {
     const context = new Context()
     context.verityUrl = verityUrl
 
-    if(domainDID) {
+    if (domainDID) {
       context.domainDID = domainDID
     }
 
-    if(verityAgentVerKey) {
+    if (verityAgentVerKey) {
       context.verityAgentVerKey = verityAgentVerKey
     }
 
-    if(endpointUrl) {
+    if (endpointUrl) {
       context.endpointUrl = endpointUrl
     }
-    
+
     context.buildWalletConfig(walletName)
     context.buildWalletCredentails(walletKey)
 

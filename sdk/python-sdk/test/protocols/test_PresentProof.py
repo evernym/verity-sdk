@@ -2,7 +2,7 @@ import pytest
 
 from test.test_utils import get_test_config, cleanup
 from verity_sdk.protocols.PresentProof import PresentProof
-from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 for_relationship = 'some_did'

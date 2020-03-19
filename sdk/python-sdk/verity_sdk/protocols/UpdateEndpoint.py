@@ -1,6 +1,5 @@
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
-from verity_sdk.utils.Context import Context
 
 
 class UpdateEndpoint(Protocol):

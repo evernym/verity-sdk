@@ -6,8 +6,8 @@ from indy import wallet
 from verity_sdk.utils import Did
 from verity_sdk.utils.Wallet import create_and_open_wallet, try_to_create_wallet
 
-V_0_1 = "0.1"
-V_0_2 = "0.2"
+V_0_1 = '0.1'
+V_0_2 = '0.2'
 
 
 class Context:
@@ -29,7 +29,9 @@ class Context:
     version: str = V_0_2
 
     @classmethod
-    async def create(cls, wallet_name: str,
+    # pylint: disable=too-many-arguments
+    async def create(cls,
+                     wallet_name: str,
                      wallet_key: str,
                      verity_url: str,
                      domain_did: str = None,
@@ -100,7 +102,7 @@ class Context:
         elif V_0_2 == version:
             context = cls.parse_v02(context, config)
         else:
-            raise Exception(f"Invalid context version -- '{version}' is not supported")
+            raise Exception(f'Invalid context version -- "{version}" is not supported')
 
         # Ensure the wallet exists
         await try_to_create_wallet(context.wallet_config, context.wallet_credentials)
