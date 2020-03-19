@@ -65,10 +65,10 @@ public class Util {
         return packMessageForVerity(
                 handle,
                 message,
-                context.verityPairwiseDID(),
-                context.verityPairwiseVerkey(),
-                context.sdkPairwiseVerkey(),
-                context.verityPublicVerkey()
+                context.domainDID(),
+                context.verityAgentVerKey(),
+                context.sdkVerKey(),
+                context.verityPublicVerKey()
         );
     }
 

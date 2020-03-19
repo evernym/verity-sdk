@@ -35,7 +35,11 @@ exports.deleteWallet = async function (walletHandle, walletConfig, walletCredent
   await sdk.deleteWallet(walletConfig, walletCredentials)
 }
 
-exports.newDid = async function (context) {
+exports.newDid = async function (context, seed = null) {
   init()
-  return sdk.createAndStoreMyDid(context.walletHandle, {})
+  var param = {}
+  if (seed) {
+    param.seed = seed
+  }
+  return sdk.createAndStoreMyDid(context.walletHandle, param)
 }

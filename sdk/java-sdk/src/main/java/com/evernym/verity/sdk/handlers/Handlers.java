@@ -4,9 +4,8 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.utils.Context;
-import org.json.JSONObject;
-
 import com.evernym.verity.sdk.utils.Util;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -14,9 +13,8 @@ import java.util.ArrayList;
  * Stores an array of message handlers that are used when receiving an inbound message
  */
 public class Handlers {
-    private ArrayList<MessageHandler> messageHandlers = new ArrayList<MessageHandler>();
-    private MessageHandler defaultHandler;
-    private MessageHandler problemReportHandler;
+    private ArrayList<MessageHandler> messageHandlers = new ArrayList<>();
+    private DefaultMessageHandler defaultHandler;
 
     /**
      * Adds a MessageHandler for a message type to the list if current message handlers
@@ -24,23 +22,15 @@ public class Handlers {
      * @param messageHandler the handler function itself
      */
     public void addHandler(MessageFamily messageFamily, MessageHandler.Handler messageHandler) {
-        messageHandlers.add(new MessageHandler(messageFamily, messageHandler));
-    }
-
-    /**
-     * Adds a handler that is called for all problem report messages not handled directly.
-     * @param messageHandler the function that will be called
-     */
-    public void addProblemReportHandler(MessageHandler.Handler messageHandler) {
-        problemReportHandler = new MessageHandler(null, messageHandler);
+        messageHandlers.add(0, new MessageHandler(messageFamily, messageHandler));
     }
 
     /**
      * Adds a handler for all message types not handled by other message handlers
      * @param messageHandler the function that will be called
      */
-    public void addDefaultHandler(MessageHandler.Handler messageHandler) {
-        defaultHandler = new MessageHandler(null, messageHandler);
+    public void addDefaultHandler(DefaultMessageHandler.Handler messageHandler) {
+        defaultHandler = new DefaultMessageHandler(messageHandler);
     }
 
     /**
@@ -51,24 +41,16 @@ public class Handlers {
      */
     public void handleMessage(Context context, byte[] rawMessage) throws VerityException {
         JSONObject message = Util.unpackMessage(context, rawMessage);
-        boolean handled = false;
         for(MessageHandler messageHandler: messageHandlers) {
             if(messageHandler.handles(message)) {
                 messageHandler.handle(message);
-                handled = true;
+                return;
             }
         }
-        if(!handled) {
-            if(isProblemReport(message.getString("@type")) && problemReportHandler != null) {
-                problemReportHandler.handle(message);
-            } else if(defaultHandler != null) {
-                defaultHandler.handle(message);
-            }
-        }
-    }
 
-    static boolean isProblemReport(String messageType) {
-        return messageType.split("/")[3].equals("problem-report");
+        // call default if another handler is not called
+        if(defaultHandler != null) {
+            defaultHandler.handle(message);
+        }
     }
-    
 }

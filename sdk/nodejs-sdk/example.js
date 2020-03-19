@@ -30,7 +30,7 @@ async function example () {
 
   const forDID = await createConnection()
 
-  // await askQuestion(forDID)
+  await askQuestion(forDID)
 
   const schemaId = await writeLedgerSchema()
   const defId = await writeLedgerCredDef(schemaId)
@@ -108,36 +108,36 @@ async function createConnection () {
   return forDID // return owning DID for the connection
 }
 
-// //* ***********************
-// //        QUESTION
-// //* ***********************
-// async function askQuestion (forDID) {
-//   const questionText = 'Hi Alice, how are you today?'
-//   const questionDetail = 'Checking up on you today.'
-//   const validAnswers = ['Great!', 'Not so good.']
+//* ***********************
+//        QUESTION
+//* ***********************
+async function askQuestion (forDID) {
+  const questionText = 'Hi Alice, how are you today?'
+  const questionDetail = 'Checking up on you today.'
+  const validAnswers = ['Great!', 'Not so good.']
 
-//   const committedAnswer = new sdk.protocols.CommittedAnswer(forDID, null, questionText, null, questionDetail, validAnswers, true)
-//   var spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450) // Console spinner
+  const committedAnswer = new sdk.protocols.CommittedAnswer(forDID, null, questionText, null, questionDetail, validAnswers, true)
+  var spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450) // Console spinner
 
-//   var firstStep = new Promise((resolve) => {
-//     handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
-//       switch (msgName) {
-//         case committedAnswer.msgNames.ANSWER_GIVEN:
-//           spinner.stop()
-//           printMessage(msgName, message)
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case committedAnswer.msgNames.ANSWER_GIVEN:
+          spinner.stop()
+          printMessage(msgName, message)
 
-//           resolve(null)
-//           break
-//         default:
-//           printMessage(msgName, message)
-//           nonHandle('Message Name is not handled - ' + msgName)
-//       }
-//     })
-//   })
-//   spinner.start()
-//   await committedAnswer.ask(context)
-//   return await firstStep
-// }
+          resolve(null)
+          break
+        default:
+          printMessage(msgName, message)
+          nonHandle('Message Name is not handled - ' + msgName)
+      }
+    })
+  })
+  spinner.start()
+  await committedAnswer.ask(context)
+  return firstStep
+}
 
 //* ***********************
 //        SCHEMA

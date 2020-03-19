@@ -1,8 +1,8 @@
 import pytest
 
-from test.test_utils import get_test_config, send_stub, cleanup
+from test.test_utils import get_test_config, cleanup
 from verity_sdk.protocols.PresentProof import PresentProof
-from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 for_relationship = 'some_did'
@@ -18,22 +18,19 @@ revocation_interval = {'support_revocation': False}
 
 
 def test_init():
-    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates, revocation_interval)
+    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates)
 
     assert present_proof.for_relationship == for_relationship
     assert present_proof.name == name
     assert present_proof.proof_attrs == proof_attrs
     assert present_proof.proof_predicates == proof_predicates
-    assert present_proof.revocation_interval == revocation_interval
 
 
 @pytest.mark.asyncio
 async def test_request():
     context = await Context.create_with_config(await get_test_config())
-    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates, revocation_interval)
-    present_proof.send = send_stub
-    msg = await present_proof.request(context)
-    msg = await unpack_forward_message(context, msg)
+    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates)
+    msg = present_proof.request_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -48,7 +45,6 @@ async def test_request():
     assert msg['name'] == name
     assert msg['proofAttrs'] == proof_attrs
     assert msg['proofPredicates'] == proof_predicates
-    assert msg['revocationInterval'] == revocation_interval
 
     await cleanup(context)
 
@@ -56,10 +52,8 @@ async def test_request():
 @pytest.mark.asyncio
 async def test_status():
     context = await Context.create_with_config(await get_test_config())
-    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates, revocation_interval)
-    present_proof.send = send_stub
-    msg = await present_proof.status(context)
-    msg = await unpack_forward_message(context, msg)
+    present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates)
+    msg = present_proof.status_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

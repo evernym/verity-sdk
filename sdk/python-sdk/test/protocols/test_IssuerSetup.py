@@ -1,10 +1,9 @@
 import pytest
 
-from test.test_utils import get_test_config, send_stub, cleanup
+from test.test_utils import get_test_config, cleanup
 from verity_sdk.protocols.IssuerSetup import IssuerSetup
-from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
-
 
 
 def test_init():
@@ -15,9 +14,7 @@ def test_init():
 async def test_create():
     context = await Context.create_with_config(await get_test_config())
     issuer_setup = IssuerSetup()
-    issuer_setup.send = send_stub
-    msg = await issuer_setup.create(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = issuer_setup.create_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

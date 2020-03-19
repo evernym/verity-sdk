@@ -1,8 +1,8 @@
 import pytest
 
-from test.test_utils import get_test_config, send_stub, cleanup
+from test.test_utils import get_test_config, cleanup
 from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
-from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 
@@ -19,16 +19,13 @@ def test_init():
     assert write_cred_def.schema_id == schema_id
     assert write_cred_def.tag == tag
     assert write_cred_def.revocation_details == revocation_details
-    assert len(write_cred_def.messages) == 1
 
 
 @pytest.mark.asyncio
 async def test_write():
     context = await Context.create_with_config(await get_test_config())
     write_cred_def = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
-    write_cred_def.send = send_stub
-    msg = await write_cred_def.write(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = write_cred_def.write_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

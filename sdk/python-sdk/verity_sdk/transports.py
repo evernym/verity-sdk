@@ -1,17 +1,20 @@
+from urllib.parse import urljoin
 import requests
+from verity_sdk.utils.Context import Context
 
 
-def send_message(url: str, message: bytes):
+def msg_endpoint(url: str) -> str:
+    return urljoin(url, '/agency/msg')
+
+
+def send_packed_message(context: Context, message: bytes):
+    url = msg_endpoint(context.verity_url)
     try:
         return requests.post(
-            msg_endpoint(url),
+            url,
             data=message,
             headers={'Content-Type': 'application/octet-stream'}
         ).content
     except requests.RequestException as e:
         print('ERROR: Failed to POST message to {}'.format(url))
         raise e
-
-
-def msg_endpoint(url: str) -> str:
-    return url + '/agency/msg'

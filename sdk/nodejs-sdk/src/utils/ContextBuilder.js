@@ -16,24 +16,24 @@ module.exports = class ContextBuilder {
     this._verityPublicDID = did
   }
 
-  verityPublicVerkey (verkey) {
-    this._verityPublicVerkey = verkey
+  verityPublicVerKey (verkey) {
+    this._verityPublicVerKey = verkey
   }
 
-  verityPairwiseDID (did) {
-    this._verityPairwiseDID = did
+  domainDID (did) {
+    this._domainDID = did
   }
 
-  verityPairwiseVerkey (verkey) {
-    this._verityPairwiseVerkey = verkey
+  verityAgentVerKey (verkey) {
+    this._verityAgentVerKey = verkey
   }
 
-  sdkPairwiseDID (did) {
-    this._sdkPairwiseDID = did
+  sdkVerKeyId (did) {
+    this._sdkVerKeyId = did
   }
 
-  sdkPairwiseVerkey (verkey) {
-    this._sdkPairwiseVerkey = verkey
+  sdkVerKey (verkey) {
+    this._sdkVerKey = verkey
   }
 
   endpointUrl (url) {
@@ -56,11 +56,11 @@ module.exports = class ContextBuilder {
       context = await Context.create(this._walletName, this._walletKey, this._verityUrl, this._endpointUrl)
     }
     context.verityPublicDID = this._verityPublicDID
-    context.verityPublicVerkey = this._verityPublicVerkey
-    context.verityPairwiseDID = this._verityPairwiseDID
-    context.verityPairwiseVerkey = this._verityPairwiseVerkey
-    context.sdkPairwiseDID = this._sdkPairwiseDID
-    context.sdkPairwiseVerkey = this.sdkPairwiseVerkey
+    context.verityPublicVerKey = this._verityPublicVerKey
+    context.domainDID = this._domainDID
+    context.verityAgentVerKey = this._verityAgentVerKey
+    context.sdkVerKeyId = this._sdkVerKeyId
+    context.sdkVerKey = this.sdkVerKey
     return context
   }
 }

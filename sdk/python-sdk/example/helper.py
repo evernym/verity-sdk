@@ -24,12 +24,13 @@ def print_object(obj, prefix, preamble):
     print()
 
 
-def non_handled(msg: str, message=None):
+def non_handled(error_msg: str, received_message=None):
     global server
-    print_error(msg)
-    if message is not None:
-        print_error(message)
-    server.close()
+    print_error(error_msg)
+    if received_message is not None:
+        print_error(received_message)
+    if server:
+        server.close()
     sys.exit(1)
 
 
@@ -43,9 +44,8 @@ def load_context(file_path) -> str:
     return ""
 
 
-def default_handler(_, message):
-    print("Message not handled!")
-    print(message)
+def default_handler(message):
+    non_handled(f'Message name is not handled', message)
 
 
 def make_spinner(msg):

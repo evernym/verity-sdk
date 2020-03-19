@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import java.util.UUID;
 
+import static com.evernym.verity.sdk.utils.ContextConstants.V_0_1;
+import static com.evernym.verity.sdk.utils.ContextConstants.V_0_2;
 import static org.junit.Assert.*;
 
 public class ContextBuilderTest {
@@ -22,11 +24,11 @@ public class ContextBuilderTest {
             Context c = ContextBuilder
                     .blank()
                     .walletConfig(testWallet)
-                    .sdkPairwiseVerkey(verkey1)
+                    .sdkVerKey(verkey1)
                     .build();
 
             c.closeWallet();
-            assertEquals(verkey1, c.sdkPairwiseVerkey());
+            assertEquals(verkey1, c.sdkVerKey());
         }
     }
 
@@ -80,29 +82,29 @@ public class ContextBuilderTest {
             Did testDid = new Did("CV65RFpeCtPu82hNF9i61G", "7G3LhXFKXKTMv7XGx1Qc9wqkMbwcU2iLBHL8x1JXWWC2");
 
 
-            Context c = ContextBuilder.scratchContext(testWallet, "http://wwww.example.com", testDid);
+            Context c = ContextBuilder.scratchContext(testWallet, "http://wwww.example.com", testDid, null);
 
-            c.sdkPairwiseDID();
-            c.sdkPairwiseVerkey();
+            c.sdkVerKeyId();
+            c.sdkVerKey();
 
             try {
-                c.verityPairwiseDID();
+                c.domainDID();
                 fail( "Should throw UndefinedContextException" );
             } catch (UndefinedContextException ignored) {}
 
             try {
-                c.verityPairwiseVerkey();
+                c.verityAgentVerKey();
                 fail( "Should throw UndefinedContextException" );
             } catch (UndefinedContextException ignored) {}
 
-            assertEquals("7G3LhXFKXKTMv7XGx1Qc9wqkMbwcU2iLBHL8x1JXWWC2", c.verityPublicVerkey());
+            assertEquals("7G3LhXFKXKTMv7XGx1Qc9wqkMbwcU2iLBHL8x1JXWWC2", c.verityPublicVerKey());
 
             c.closeWallet();
         }
     }
 
     @Test
-    public void shouldCorrectlyParseConfig() {
+    public void shouldCorrectlyParseConfig_0_1() {
         String walletName = UUID.randomUUID().toString();
         String walletKey = UUID.randomUUID().toString();
         String endpointUrl = "http://localhost:4000";
@@ -124,11 +126,51 @@ public class ContextBuilderTest {
             assertEquals(String.format("{\"id\":\"%s\"}", walletName), context.walletConfig().config());
             assertEquals(String.format("{\"key\":\"%s\"}", walletKey), context.walletConfig().credential());
             assertEquals(verityUrl, context.verityUrl());
-            assertEquals(testWallet.getVerityPublicVerkey(), context.verityPublicVerkey());
-            assertEquals(testWallet.getVerityPairwiseVerkey(), context.verityPairwiseVerkey());
-            assertEquals(testWallet.getVerityPairwiseDID(), context.verityPairwiseDID());
-            assertEquals(testWallet.getSdkPairwiseVerkey(), context.sdkPairwiseVerkey());
             assertEquals(endpointUrl, context.endpointUrl());
+            assertEquals(V_0_2, context.version());
+            assertEquals(testWallet.getVerityPublicVerkey(), context.verityPublicVerKey());
+            assertEquals(testWallet.getVerityPairwiseVerkey(), context.verityAgentVerKey());
+            assertEquals(testWallet.getVerityPairwiseDID(), context.domainDID());
+            assertEquals(testWallet.getSdkPairwiseVerkey(), context.sdkVerKey());
+            assertNotNull(context.walletHandle());
+
+            context.closeWallet();
+        } catch(Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void shouldCorrectlyParseConfig_0_2() {
+        String walletName = UUID.randomUUID().toString();
+        String walletKey = UUID.randomUUID().toString();
+        String endpointUrl = "http://localhost:4000";
+        String verityUrl = "http://localhost:3000";
+        Context context;
+        try(TestWallet testWallet = new TestWallet(walletName, walletKey)) {
+            JSONObject config = new JSONObject();
+            config.put("walletName", walletName);
+            config.put("walletKey", walletKey);
+            config.put("endpointUrl", endpointUrl);
+            config.put("verityUrl", verityUrl);
+            config.put("verityPublicDID", testWallet.getVerityPublicDID());
+            config.put("verityPublicVerKey", testWallet.getVerityPublicVerkey());
+            config.put("domainDID", testWallet.getVerityPairwiseDID());
+            config.put("verityAgentVerKey", testWallet.getVerityPairwiseVerkey());
+            config.put("sdkVerKeyId", testWallet.getSdkPairwiseVerkey());
+            config.put("sdkVerKey", testWallet.getSdkPairwiseVerkey());
+            config.put("version", V_0_2);
+            context = ContextBuilder.fromJson(config).build();
+            assertEquals(String.format("{\"id\":\"%s\"}", walletName), context.walletConfig().config());
+            assertEquals(String.format("{\"key\":\"%s\"}", walletKey), context.walletConfig().credential());
+            assertEquals(verityUrl, context.verityUrl());
+            assertEquals(endpointUrl, context.endpointUrl());
+            assertEquals(V_0_2, context.version());
+            assertEquals(testWallet.getVerityPublicVerkey(), context.verityPublicVerKey());
+            assertEquals(testWallet.getVerityPairwiseVerkey(), context.verityAgentVerKey());
+            assertEquals(testWallet.getVerityPairwiseDID(), context.domainDID());
+            assertEquals(testWallet.getSdkPairwiseVerkey(), context.sdkVerKey());
             assertNotNull(context.walletHandle());
 
             context.closeWallet();
