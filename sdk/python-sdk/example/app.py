@@ -11,6 +11,7 @@ from aiohttp.web_routedef import RouteTableDef
 
 from example.helper import *
 from verity_sdk.handlers import Handlers
+from verity_sdk.protocols.CommittedAnswer import CommittedAnswer
 from verity_sdk.protocols.Connecting import Connecting
 from verity_sdk.protocols.IssueCredential import IssueCredential
 from verity_sdk.protocols.IssuerSetup import IssuerSetup
@@ -22,7 +23,6 @@ from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefini
 from verity_sdk.protocols.WriteSchema import WriteSchema
 from verity_sdk.utils import truncate_invite_details
 from verity_sdk.utils.Context import Context
-from verity_sdk.utils.Did import Did, create_new_did
 
 INSTITUTION_NAME = 'Faber College'
 LOGO_URL = 'http://robohash.org/235'
@@ -45,7 +45,7 @@ async def example(loop):
 
     for_did = await create_connection(loop)
 
-    # await ask_question(for_did)
+    await ask_question(loop, for_did)
 
     schema_id = await write_ledger_schema(loop)
     cred_def_id = await write_ledger_cred_def(loop, schema_id)
@@ -126,7 +126,6 @@ async def create_connection(loop):
 
 
 async def write_ledger_schema(loop) -> str:
-
     # input parameters for schema
     schema_name = 'Diploma'
     schema_version = get_random_version()
@@ -160,7 +159,6 @@ async def write_ledger_schema(loop) -> str:
 
 
 async def write_ledger_cred_def(loop, schema_id: str) -> str:
-
     # input parameters for cred definition
     cred_def_name = 'Trinity College Diplomas'
     cred_def_tag = 'latest'
@@ -193,11 +191,35 @@ async def write_ledger_cred_def(loop, schema_id: str) -> str:
     # request the cred def be writen to ledger
     await cred_def.write(context)
     cred_def_id = await first_step  # wait for operation to be complete
-    return cred_def_id # returns ledger cred def identifier
+    return cred_def_id  # returns ledger cred def identifier
+
+
+async def ask_question(loop, for_did):
+    question_text = "Hi Alice, how are you today?"
+    question_detail = "Checking up on you today."
+    valid_responses = ["Great!", "Not so good."]
+
+    question = CommittedAnswer(for_did, None, question_text, question_detail, valid_responses, True)
+    first_step = loop.create_future()
+
+    spinner = make_spinner('Waiting for Connect.Me to answer the question')  # Console spinner
+
+    async def receive_answer(msg_name, message):
+        spinner.stop_and_persist('Done')
+        print_message(msg_name, message)
+        if msg_name == CommittedAnswer.ANSWER_GIVEN:
+            first_step.set_result(None)
+        else:
+            non_handled(f'Message name is not handled - {msg_name}', message)
+
+    handlers.add_handler(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION, receive_answer)
+
+    spinner.start()
+
+    await question.ask(context)
 
 
 async def issue_credential(loop, for_did, cred_def_id):
-
     # input parameters for issue credential
     credential_name = 'Degree'
     credential_data = {
@@ -308,14 +330,7 @@ async def provision_agent() -> str:
     verity_url = console_input(f'Verity Application Endpoint').strip()
 
     # create initial Context
-    context = await Context.create(wallet_name, wallet_key, verity_url, '')
-
-    # create and store sdk public/private key pair (identified by DID)
-    sdk_key: Did = await create_new_did(context.wallet_handle)
-
-    # add sdk did/verkey to Context
-    context.sdk_verkey_id = sdk_key.did
-    context.sdk_verkey = sdk_key.verkey
+    context = await Context.create(wallet_name, wallet_key, verity_url)
 
     # ask that an agent by provision (setup) and associated with created key pair
     context = await Provision().provision_sdk(context)
@@ -340,7 +355,7 @@ async def update_webhook_endpoint():
     context.endpoint_url = webhook
 
     # request that verity application use specified webhook endpoint
-    await UpdateEndpoint(context).update()
+    await UpdateEndpoint().update(context)
 
 
 async def update_configs():
@@ -349,7 +364,6 @@ async def update_configs():
 
 
 async def issuer_identifier(loop):
-
     # constructor for the Issuer Setup protocol
     issuer_setup = IssuerSetup()
 
@@ -385,13 +399,12 @@ async def issuer_identifier(loop):
 
 
 async def setup_issuer(loop):
-
     # constructor for the Issuer Setup protocol
     issuer_setup = IssuerSetup()
 
     first_step = loop.create_future()
 
-    spinner = make_spinner('Waiting for setup to complete') # Console spinner
+    spinner = make_spinner('Waiting for setup to complete')  # Console spinner
 
     # handler for created issuer identifier message
     async def public_identifier_handler(msg_name, message):

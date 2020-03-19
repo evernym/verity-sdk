@@ -28,7 +28,7 @@ async def test_ask():
     context = await Context.create_with_config(await get_test_config())
     question_answer = QuestionAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                      signature_required)
-    msg = await question_answer.ask_msg(context)
+    msg = question_answer.ask_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
@@ -53,7 +53,7 @@ async def test_status():
     context = await Context.create_with_config(await get_test_config())
     question_answer = QuestionAnswer(for_relationship, None, question_text, question_detail, valid_responses,
                                      signature_required)
-    msg = await question_answer.status_msg(context)
+    msg = question_answer.status_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,

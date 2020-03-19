@@ -4,7 +4,6 @@ from verity_sdk.utils.MessageFamily import MessageFamily
 
 
 class Protocol(MessageFamily):
-
     # Messages
     STATUS = 'status-report'
     PROBLEM_REPORT = 'problem-report'
@@ -21,12 +20,14 @@ class Protocol(MessageFamily):
             'thid': self.thread_id
         }
 
-    #pylint:disable=no-self-use
-    def _add_relationship(self, msg, for_relationship):
+    @staticmethod
+    def _add_relationship(msg, for_relationship):
         msg['~for_relationship'] = for_relationship
 
-    async def get_message_bytes(self, context, message):
+    @staticmethod
+    async def get_message_bytes(context, message):
         return await pack_message_for_verity(context, message)
 
-    async def send_message(self, context, message):
-        await send_packed_message(context, message)
+    @staticmethod
+    async def send_message(context, message):
+        send_packed_message(context, message)

@@ -23,7 +23,7 @@ def test_init():
 async def test_write():
     context = await Context.create_with_config(await get_test_config())
     write_schema = WriteSchema(schema_name, schema_version, attrs)
-    msg = await write_schema.write_msg(context)
+    msg = write_schema.write_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

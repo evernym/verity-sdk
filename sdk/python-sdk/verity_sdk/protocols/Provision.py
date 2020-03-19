@@ -1,7 +1,7 @@
 import copy
 
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.transports import send_message
+from verity_sdk.transports import send_packed_message
 from verity_sdk.utils import Context, pack_message_for_verity_direct, unpack_message, EVERNYM_MSG_QUALIFIER
 
 
@@ -35,7 +35,7 @@ class Provision(Protocol):
             context.verity_public_verkey
         )
 
-        resp_bytes = send_message(context.verity_url, msg)
+        resp_bytes = send_packed_message(context, msg)
 
         resp = await unpack_message(context, resp_bytes)
         domain_did: str = resp['withPairwiseDID']

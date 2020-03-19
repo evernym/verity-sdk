@@ -21,7 +21,7 @@ class Connecting(Protocol):
         self.phone_number = phone_number
         self.include_public_did = include_public_did
 
-    async def connect_msg(self, _):
+    def connect_msg(self, _):
         msg = self._get_base_message(self.CREATE_CONNECTION)
         msg['sourceId'] = self.source_id
         msg['phoneNo'] = self.phone_number
@@ -29,18 +29,18 @@ class Connecting(Protocol):
         return msg
 
     async def connect_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.connect_msg(context))
+        return await self.get_message_bytes(context, self.connect_msg(context))
 
     async def connect(self, context):
         return await self.send_message(context, await self.connect_msg_packed(context))
 
-    async def status_msg(self, _):
+    def status_msg(self, _):
         msg = self._get_base_message(self.GET_STATUS)
         msg['sourceId'] = self.source_id
         return msg
 
     async def status_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.status_msg(context))
+        return await self.get_message_bytes(context, self.status_msg(context))
 
     async def status(self, context):
         await self.send_message(context, await self.status_msg_packed(context))

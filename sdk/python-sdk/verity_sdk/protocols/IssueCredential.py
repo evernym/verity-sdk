@@ -29,8 +29,7 @@ class IssueCredential(Protocol):
         self.credential_values: dict = credential_values
         self.price: str = price
 
-
-    async def offer_credential_msg(self, _):
+    def offer_credential_msg(self, _):
         msg = self._get_base_message(self.OFFER_CREDENTIAL)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -41,31 +40,31 @@ class IssueCredential(Protocol):
         return msg
 
     async def offer_credential_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.offer_credential_msg(context))
+        return await self.get_message_bytes(context, self.offer_credential_msg(context))
 
     async def offer_credential(self, context):
         await self.send_message(context, await self.offer_credential_msg_packed(context))
 
-    async def issue_credential_msg(self, _):
+    def issue_credential_msg(self, _):
         msg = self._get_base_message(self.ISSUE_CREDENTIAL)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         return msg
 
     async def issue_credential_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.issue_credential_msg(context))
+        return await self.get_message_bytes(context, self.issue_credential_msg(context))
 
     async def issue_credential(self, context):
         await self.send_message(context, await self.issue_credential_msg_packed(context))
 
-    async def status_msg(self, _):
+    def status_msg(self, _):
         msg = self._get_base_message(self.GET_STATUS)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         return msg
 
     async def status_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.status_msg(context))
+        return await self.get_message_bytes(context, self.status_msg(context))
 
     async def status(self, context):
         await self.send_message(context, await self.status_msg_packed(context))

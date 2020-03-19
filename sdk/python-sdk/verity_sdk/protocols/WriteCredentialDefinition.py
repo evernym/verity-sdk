@@ -21,7 +21,7 @@ class WriteCredentialDefinition(Protocol):
         self.tag = tag
         self.revocation_details = revocation_details
 
-    async def write_msg(self, _):
+    def write_msg(self, _):
         msg = self._get_base_message(self.WRITE_CRED_DEF)
         msg['name'] = self.name
         msg['schemaId'] = self.schema_id
@@ -30,7 +30,7 @@ class WriteCredentialDefinition(Protocol):
         return msg
 
     async def write_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.write_msg(context))
+        return await self.get_message_bytes(context, self.write_msg(context))
 
     async def write(self, context):
         await self.send_message(context, await self.write_msg_packed(context))

@@ -22,7 +22,7 @@ def test_init():
 async def test_connect():
     context = await Context.create_with_config(await get_test_config())
     connecting = Connecting(source_id, phone_number, include_public_did)
-    msg = await connecting.connect_msg(context)
+    msg = connecting.connect_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -42,7 +42,7 @@ async def test_connect():
 async def test_status():
     context = await Context.create_with_config(await get_test_config())
     connecting = Connecting(source_id, phone_number, include_public_did)
-    msg = await connecting.status_msg(context)
+    msg = connecting.status_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

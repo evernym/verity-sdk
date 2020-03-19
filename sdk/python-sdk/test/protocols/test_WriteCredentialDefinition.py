@@ -25,7 +25,7 @@ def test_init():
 async def test_write():
     context = await Context.create_with_config(await get_test_config())
     write_cred_def = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
-    msg = await write_cred_def.write_msg(context)
+    msg = write_cred_def.write_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

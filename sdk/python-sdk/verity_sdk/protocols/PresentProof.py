@@ -33,7 +33,7 @@ class PresentProof(Protocol):
         self.proof_predicates: List[dict] = proof_predicates
         # self.revocation_interval: dict = revocation_interval or {} # We don't current support this
 
-    async def request_msg(self, _):
+    def request_msg(self, _):
         msg = self._get_base_message(self.PROOF_REQUEST)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -44,19 +44,19 @@ class PresentProof(Protocol):
         return msg
 
     async def request_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.request_msg(context))
+        return await self.get_message_bytes(context, self.request_msg(context))
 
     async def request(self, context):
         await self.send_message(context, await self.request_msg_packed(context))
 
-    async def status_msg(self, _):
+    def status_msg(self, _):
         msg = self._get_base_message(self.GET_STATUS)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         return msg
 
     async def status_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.status_msg(context))
+        return await self.get_message_bytes(context, self.status_msg(context))
 
     async def status(self, context):
         await self.send_message(context, await self.status_msg_packed(context))

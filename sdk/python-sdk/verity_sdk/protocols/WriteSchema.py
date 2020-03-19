@@ -20,7 +20,7 @@ class WriteSchema(Protocol):
         self.version = version
         self.attrs = attrs
 
-    async def write_msg(self, _):
+    def write_msg(self, _):
         msg = self._get_base_message(self.WRITE_SCHEMA)
         msg['name'] = self.name
         msg['version'] = self.version
@@ -28,7 +28,7 @@ class WriteSchema(Protocol):
         return msg
 
     async def write_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.write_msg(context))
+        return await self.get_message_bytes(context, self.write_msg(context))
 
     async def write(self, context):
         await self.send_message(context, await self.write_msg_packed(context))

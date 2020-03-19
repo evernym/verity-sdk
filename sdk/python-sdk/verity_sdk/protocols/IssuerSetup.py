@@ -20,22 +20,22 @@ class IssuerSetup(Protocol):
             msg_qualifier=EVERNYM_MSG_QUALIFIER
         )
 
-    async def create_msg(self, _):
+    def create_msg(self, _):
         msg = self._get_base_message(self.CREATE)
         return msg
 
     async def create_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.create_msg(context))
+        return await self.get_message_bytes(context, self.create_msg(context))
 
     async def create(self, context):
         await self.send_message(context, await self.create_msg_packed(context))
 
-    async def current_public_identifier_msg(self, _):
+    def current_public_identifier_msg(self, _):
         msg = self._get_base_message(self.CURRENT_PUBLIC_IDENTIFIER)
         return msg
 
     async def current_public_identifier_msg_packed(self, context):
-        return await self.get_message_bytes(context, await self.current_public_identifier_msg(context))
+        return await self.get_message_bytes(context, self.current_public_identifier_msg(context))
 
     async def current_public_identifier(self, context):
         await self.send_message(context, await self.current_public_identifier_msg_packed(context))

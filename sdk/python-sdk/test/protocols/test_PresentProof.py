@@ -30,7 +30,7 @@ def test_init():
 async def test_request():
     context = await Context.create_with_config(await get_test_config())
     present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates)
-    msg = await present_proof.request_msg(context)
+    msg = present_proof.request_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -53,7 +53,7 @@ async def test_request():
 async def test_status():
     context = await Context.create_with_config(await get_test_config())
     present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates)
-    msg = await present_proof.status_msg(context)
+    msg = present_proof.status_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

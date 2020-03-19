@@ -30,7 +30,7 @@ async def test_provision_sdk(mocker):
         [context.sdk_verkey],
         context.verity_public_verkey,
     )
-    mock = mocker.patch('verity_sdk.protocols.Provision.send_message')
+    mock = mocker.patch('verity_sdk.protocols.Provision.send_packed_message')
     mock.return_value = response_msg
 
     provision = Provision()
@@ -41,10 +41,10 @@ async def test_provision_sdk(mocker):
 
     mock.assert_called_once()
     call_args = mock.call_args
-    url = call_args[0][0]
+    context_arg = call_args[0][0]
     sent_msg = call_args[0][1]
 
-    assert url == context.verity_url
+    assert context_arg.verity_url == context.verity_url
 
     sent_msg = await unpack_forward_message(context, sent_msg)
     assert sent_msg['@type'] == '{};spec/{}/{}/{}'.format(

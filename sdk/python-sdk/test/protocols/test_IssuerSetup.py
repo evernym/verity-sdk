@@ -14,7 +14,7 @@ def test_init():
 async def test_create():
     context = await Context.create_with_config(await get_test_config())
     issuer_setup = IssuerSetup()
-    msg = await issuer_setup.create_msg(context)
+    msg = issuer_setup.create_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

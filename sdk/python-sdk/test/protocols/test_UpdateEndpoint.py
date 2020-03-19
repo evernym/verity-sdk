@@ -7,18 +7,10 @@ from verity_sdk.utils.Context import Context
 
 
 @pytest.mark.asyncio
-async def test_init():
-    context = await Context.create_with_config(await get_test_config())
-    update_endpoint = UpdateEndpoint(context)
-    assert update_endpoint.context.endpoint_url == context.endpoint_url
-    await cleanup(context)
-
-
-@pytest.mark.asyncio
 async def test_write():
     context = await Context.create_with_config(await get_test_config())
-    update_endpoint = UpdateEndpoint(context)
-    msg = await update_endpoint.update_endpoint_msg(context)
+    update_endpoint = UpdateEndpoint()
+    msg = update_endpoint.update_endpoint_msg(context)
 
     assert msg['@type'] == '{};spec/configs/0.6/UPDATE_COM_METHOD'.format(EVERNYM_MSG_QUALIFIER)
     assert msg['@id'] is not None

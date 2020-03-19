@@ -66,6 +66,33 @@ async def test_context():
     await cleanup(context)
 
 
+@pytest.mark.asyncio
+async def test_v01_to_v02():
+    wallet_name = uuid()
+    wallet_key = uuid()
+    v01Str = f"""{{
+      "verityPublicVerkey": "ETLgZKeQEKxBW7gXA6FBn7nBwYhXFoogZLCCn5EeRSQV",
+      "verityPairwiseDID": "NTvSuSXzygyxWrF3scrhdc",
+      "verityUrl": "https://vas-team1.pdev.evernym.com",
+      "verityPairwiseVerkey": "ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE",
+      "walletName": "{wallet_name}",
+      "walletKey": "{wallet_key}",
+      "sdkPairwiseVerkey": "HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh",
+      "verityPublicDID": "Rgj7LVEonrMzcRC1rhkx76",
+      "sdkPairwiseDID": "XNRkA8tboikwHD3x1Yh7Uz"
+    }}"""
+
+    ctx = await Context.create_with_config(v01Str)
+    await ctx.close_wallet()
+
+    assert ctx.domain_did == 'NTvSuSXzygyxWrF3scrhdc'
+    assert ctx.verity_agent_verkey == 'ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE'
+    assert ctx.sdk_verkey == 'HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh'
+    assert ctx.sdk_verkey_id == 'XNRkA8tboikwHD3x1Yh7Uz'
+    assert ctx.version == '0.2'
+
+
+
 def test_prepare_forward_message():
     test_did = '123'
     message = b'{"hello": "world"}'

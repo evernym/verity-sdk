@@ -31,7 +31,7 @@ def test_init():
 async def test_offer_credential():
     context = await Context.create_with_config(await get_test_config())
     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
-    msg = await issue_credential.offer_credential_msg(context)
+    msg = issue_credential.offer_credential_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -57,7 +57,7 @@ async def test_offer_credential():
 async def test_issue_credential():
     context = await Context.create_with_config(await get_test_config())
     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
-    msg = await issue_credential.issue_credential_msg(context)
+    msg = issue_credential.issue_credential_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -77,7 +77,7 @@ async def test_issue_credential():
 async def test_status():
     context = await Context.create_with_config(await get_test_config())
     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
-    msg = await issue_credential.status_msg(context)
+    msg = issue_credential.status_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

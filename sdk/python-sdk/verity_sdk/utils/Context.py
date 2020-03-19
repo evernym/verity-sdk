@@ -3,6 +3,7 @@ import requests
 
 from indy import wallet
 
+from verity_sdk.utils import Did
 from verity_sdk.utils.Wallet import create_and_open_wallet, try_to_create_wallet
 
 V_0_1 = "0.1"
@@ -25,9 +26,16 @@ class Context:
     wallet_credentials: str
     wallet_handle: int
     wallet_closed: bool
+    version: str = V_0_2
 
     @classmethod
-    async def create(cls, wallet_name: str, wallet_key: str, verity_url: str, endpoint_url: str,
+    async def create(cls, wallet_name: str,
+                     wallet_key: str,
+                     verity_url: str,
+                     domain_did: str = None,
+                     verity_agent_verkey: str = None,
+                     endpoint_url: str = None,
+                     seed: str = None,
                      wallet_path: str = None):
         context = cls()
         context.set_wallet_config(wallet_name, wallet_path)
@@ -35,9 +43,21 @@ class Context:
         context.wallet_name = wallet_name
         context.wallet_key = wallet_key
         context.verity_url = verity_url
-        context.endpoint_url = endpoint_url
+
         await context.update_verity_info()
         await context.open_wallet()
+
+        context.endpoint_url = endpoint_url
+
+        context.domain_did = domain_did
+
+        context.verity_agent_verkey = verity_agent_verkey
+
+        sdk_key = await Did.create_new_did(context.wallet_handle, seed=seed)
+
+        context.sdk_verkey_id = sdk_key.did
+        context.sdk_verkey = sdk_key.verkey
+
         return context
 
     def set_wallet_config(self, wallet_name, wallet_path=None):
@@ -121,7 +141,7 @@ class Context:
         context.verity_url = config['verityUrl']
 
         context.verity_public_did = config.get('verityPublicDID')
-        context.verity_public_verkey = config.get('verityPublicVerkey')
+        context.verity_public_verkey = config.get('verityPublicVerKey')
 
         context.domain_did = config.get('domainDID')
         context.verity_agent_verkey = config.get('verityAgentVerKey')
