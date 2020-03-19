@@ -21,7 +21,7 @@ class Handler {
 class Handlers {
   constructor () {
     this.handlers = {}
-    this.defaultHandler = null
+    this.defaultHandler = null // function that takes a raw message
   }
 
   addHandler (msgFamily, msgFamilyVersion, handlerFunction) {
@@ -33,8 +33,8 @@ class Handlers {
     return Handlers.buildHandlersKey(msgFamily, msgFamilyVersion) in this.handlers
   }
 
-  setDefaultHandler (handlerFunction) {
-    this.defaultHandler = handlerFunction
+  setDefaultHandler (defaultHandlerFunction) {
+    this.defaultHandler = defaultHandlerFunction
   }
 
   async handleMessage (context, rawMessage) {
@@ -46,7 +46,7 @@ class Handlers {
       await this.handlers[handlersKey].handlerFunction(msgType.msgName, message)
     } else {
       if (this.defaultHandler) {
-        await this.defaultHandler(msgType.msgName, message)
+        await this.defaultHandler(message)
       }
     }
   }

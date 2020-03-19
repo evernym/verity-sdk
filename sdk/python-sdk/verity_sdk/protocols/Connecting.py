@@ -1,4 +1,4 @@
-from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type, uuid
+from verity_sdk.utils import uuid, EVERNYM_MSG_QUALIFIER
 from verity_sdk.protocols.Protocol import Protocol
 
 
@@ -12,52 +12,35 @@ class Connecting(Protocol):
     CONN_REQ_ACCEPTED = 'CONN_REQ_ACCEPTED'
     GET_STATUS = 'get-status'
 
-    # Status
-    AWAITING_RESPONSE_STATUS = 0
-    INVITE_ACCEPTED_STATUS = 1
-
-    source_id: str
-    phone_number: str
-    include_public_did: bool
-
-    def __init__(self, source_id: str = None, phone_number: str = None, include_public_did: bool = False):
-        super().__init__()
-        self.source_id = source_id if source_id is not None else uuid()
+    def __init__(self, source_id: str = uuid(), phone_number: str = None, include_public_did: bool = False):
+        super().__init__(self.MSG_FAMILY,
+                         self.MSG_FAMILY_VERSION,
+                         msg_qualifier=EVERNYM_MSG_QUALIFIER,
+                         thread_id=source_id)  # 0.6 uses the source_id as the thread_id. Should be resolved in 1.0.
+        self.source_id = source_id
         self.phone_number = phone_number
         self.include_public_did = include_public_did
 
-        self.define_messages()
+    def connect_msg(self, _):
+        msg = self._get_base_message(self.CREATE_CONNECTION)
+        msg['sourceId'] = self.source_id
+        msg['phoneNo'] = self.phone_number
+        msg['includePublicDID'] = self.include_public_did
+        return msg
 
-    def define_messages(self):
-        self.messages = {
-            self.CREATE_CONNECTION: {
-                '@type': Connecting.get_message_type(self.CREATE_CONNECTION),
-                '@id': self.get_new_id(),
-                'sourceId': self.source_id,
-                'phoneNo': self.phone_number,
-                'includePublicDID': self.include_public_did
-            },
-            self.GET_STATUS: {
-                '@type': Connecting.get_message_type(self.GET_STATUS),
-                '@id': self.get_new_id(),
-                'sourceId': self.source_id,
-            }
-        }
+    async def connect_msg_packed(self, context):
+        return await self.get_message_bytes(context, self.connect_msg(context))
 
-    @staticmethod
-    def get_message_type(msg_name: str) -> str:
-        return get_message_type(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, msg_name)
+    async def connect(self, context):
+        return await self.send_message(context, await self.connect_msg_packed(context))
 
-    @staticmethod
-    def get_problem_report_message_type() -> str:
-        return get_problem_report_message_type(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION)
+    def status_msg(self, _):
+        msg = self._get_base_message(self.GET_STATUS)
+        msg['sourceId'] = self.source_id
+        return msg
 
-    @staticmethod
-    def get_status_message_type() -> str:
-        return get_status_message_type(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION)
+    async def status_msg_packed(self, context):
+        return await self.get_message_bytes(context, self.status_msg(context))
 
-    async def connect(self, context: Context) -> bytes:
-        return await self.send(context, self.messages[self.CREATE_CONNECTION])
-
-    async def status(self, context: Context) -> bytes:
-        return await self.send(context, self.messages[self.GET_STATUS])
+    async def status(self, context):
+        await self.send_message(context, await self.status_msg_packed(context))

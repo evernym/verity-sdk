@@ -21,9 +21,9 @@ async def pack_message_for_verity(context: Context, message: dict) -> bytes:
     return await pack_message_for_verity_direct(
         wallet_handle=context.wallet_handle,
         message=message,
-        pairwise_remote_did=context.verity_pairwise_did,
-        pairwise_remote_verkey=context.verity_pairwise_verkey,
-        pairwise_local_verkey=context.sdk_pairwise_verkey,
+        pairwise_remote_did=context.domain_did,
+        pairwise_remote_verkey=context.verity_agent_verkey,
+        pairwise_local_verkey=context.sdk_verkey,
         public_verkey=context.verity_public_verkey
     )
 
@@ -103,7 +103,7 @@ async def unpack_message(context: Context, message: bytes) -> Dict:
 def uuid() -> str:
     return str(uuid4())
 
-
+# TODO: Remove this function in favor of using MessageFamily
 def get_message_type(msg_family: str,
                      msg_family_version: str,
                      msg_name: str,

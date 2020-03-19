@@ -1,7 +1,7 @@
 from typing import List
 
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import Context, get_message_type, COMMUNITY_MSG_QUALIFIER
+from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
 
 
 class CommittedAnswer(Protocol):
@@ -11,64 +11,67 @@ class CommittedAnswer(Protocol):
     # Messages
     ASK_QUESTION = 'ask-question'
     GET_STATUS = 'get-status'
+    ANSWER_QUESTION = 'answer-question'
+    ANSWER_GIVEN = 'answer-given'
 
-    # Status
-    QUESTION_SENT_STATUS = 0
-    QUESTION_ANSWERED_STATUS = 1
-
-    for_relationship: str
-    question_text: str
-    question_detail: str
-    valid_responses: List[str]
-    signature_required: bool
-
+    #pylint:disable=too-many-arguments
     def __init__(self,
                  for_relationship: str,
                  thread_id: str = None,
-                 question_text: str = None,
-                 question_detail: str = None,
+                 question: str = None,
+                 descr: str = '',
                  valid_responses: List[str] = None,
-                 signature_required: bool = True):
-        super().__init__(thread_id=thread_id)
-        self.for_relationship = for_relationship
-        self.question_text = question_text
-        self.question_detail = question_detail
-        self.valid_responses = valid_responses
-        self.signature_required = signature_required
+                 signature_required: bool = True,
+                 answer_str=None,
+                 msg_family: str = MSG_FAMILY,  # Used to override the msg_family for the
+                 msg_family_version: str = MSG_FAMILY_VERSION,
+                 msg_qualifier: str = COMMUNITY_MSG_QUALIFIER):
+        super().__init__(msg_family, msg_family_version, msg_qualifier, thread_id)
 
-        self.define_messages()
+        self.for_relationship: str = for_relationship
+        self.question: str = question
+        self.descr: str = descr
+        self.valid_responses: List[str] = valid_responses
+        self.signature_required: bool = signature_required
+        self.answer_str: str = answer_str
 
-    def define_messages(self):
-        self.messages = {
-            self.ASK_QUESTION: {
-                '@type': CommittedAnswer.get_message_type(self.ASK_QUESTION),
-                '@id': self.get_new_id(),
-                '~for_relationship': self.for_relationship,
-                '~thread': self.get_thread_block(),
-                'text': self.question_text,
-                'detail': self.question_detail,
-                'valid_responses': self.valid_responses,
-                'signature_required': self.signature_required,
-            },
-            self.GET_STATUS: {
-                '@type': CommittedAnswer.get_message_type(self.GET_STATUS),
-                '@id': self.get_new_id(),
-                '~for_relationship': self.for_relationship,
-                '~thread': self.get_thread_block(),
-            }
-        }
+    def ask_msg(self, _):
+        msg = self._get_base_message(self.ASK_QUESTION)
+        self._add_thread(msg)
+        self._add_relationship(msg, self.for_relationship)
+        msg['text'] = self.question
+        msg['detail'] = self.descr
+        msg['valid_responses'] = self.valid_responses or []
+        msg['signature_required'] = self.signature_required
+        return msg
 
-    @staticmethod
-    def get_message_type(msg_name: str) -> str:
-        return get_message_type(
-            CommittedAnswer.MSG_FAMILY,
-            CommittedAnswer.MSG_FAMILY_VERSION,
-            msg_name,
-            COMMUNITY_MSG_QUALIFIER
-        )
+    async def ask_msg_packed(self, context):
+        return await self.get_message_bytes(context, self.ask_msg(context))
 
-    async def ask(self, context: Context) -> bytes:
-        return await self.send(context, self.messages[self.ASK_QUESTION])
+    async def ask(self, context):
+        await self.send_message(context, await self.ask_msg_packed(context))
 
-    async def status(self, context: Context) -> bytes:
-        return await self.send(context, self.messages[self.GET_STATUS])
+    def answer_msg(self, _):
+        msg = self._get_base_message(self.ANSWER_QUESTION)
+        self._add_thread(msg)
+        self._add_relationship(msg, self.for_relationship)
+        msg.response = self.answer_str
+        return msg
+
+    async def answer_msg_packed(self, context):
+        return await self.get_message_bytes(context, self.answer_msg(context))
+
+    async def answer(self, context):
+        await self.send_message(context, await self.answer_msg_packed(context))
+
+    def status_msg(self, _):
+        msg = self._get_base_message(self.GET_STATUS)
+        self._add_thread(msg)
+        self._add_relationship(msg, self.for_relationship)
+        return msg
+
+    async def status_msg_packed(self, context):
+        return await self.get_message_bytes(context, self.status_msg(context))
+
+    async def status(self, context):
+        await self.send_message(context, await self.status_msg_packed(context))

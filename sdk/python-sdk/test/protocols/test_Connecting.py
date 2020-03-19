@@ -1,8 +1,8 @@
 import pytest
 
-from test.test_utils import get_test_config, send_stub, cleanup
+from test.test_utils import get_test_config, cleanup
 from verity_sdk.protocols.Connecting import Connecting
-from verity_sdk.utils import unpack_forward_message, EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 source_id = '12345'
@@ -16,16 +16,13 @@ def test_init():
     assert connecting.source_id == source_id
     assert connecting.phone_number == phone_number
     assert connecting.include_public_did == include_public_did
-    assert len(connecting.messages) == 2
 
 
 @pytest.mark.asyncio
 async def test_connect():
     context = await Context.create_with_config(await get_test_config())
     connecting = Connecting(source_id, phone_number, include_public_did)
-    connecting.send = send_stub
-    msg = await connecting.connect(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = connecting.connect_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -45,9 +42,7 @@ async def test_connect():
 async def test_status():
     context = await Context.create_with_config(await get_test_config())
     connecting = Connecting(source_id, phone_number, include_public_did)
-    connecting.send = send_stub
-    msg = await connecting.status(context)
-    msg = await unpack_forward_message(context, msg)
+    msg = connecting.status_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

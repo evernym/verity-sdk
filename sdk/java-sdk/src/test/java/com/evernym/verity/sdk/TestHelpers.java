@@ -5,10 +5,16 @@ import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
 import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.wallet.Wallet;
+import org.json.JSONObject;
 
 import java.util.UUID;
 
+import static org.junit.Assert.assertEquals;
+
 public class TestHelpers {
+    protected TestHelpers() {
+    }
+
     
     public static Context getContext() throws WalletException {
 
@@ -23,11 +29,11 @@ public class TestHelpers {
                 .walletConfig(testWallet)
                 .verityUrl(verityUrl)
                 .verityPublicDID(testWallet.getVerityPublicVerkey())
-                .verityPublicVerkey(testWallet.getVerityPublicVerkey())
-                .verityPairwiseDID(testWallet.getVerityPairwiseDID())
-                .verityPairwiseVerkey(testWallet.getVerityPairwiseVerkey())
-                .sdkPairwiseDID(testWallet.getSdkPairwiseDID())
-                .sdkPairwiseVerkey(testWallet.getSdkPairwiseVerkey())
+                .verityPublicVerKey(testWallet.getVerityPublicVerkey())
+                .domainDID(testWallet.getVerityPairwiseDID())
+                .verityAgentVerKey(testWallet.getVerityPairwiseVerkey())
+                .sdkVerKeyId(testWallet.getSdkPairwiseDID())
+                .sdkVerKey(testWallet.getSdkPairwiseVerkey())
                 .endpointUrl(endpointUrl)
                 .build();
     }
@@ -40,5 +46,12 @@ public class TestHelpers {
             WalletConfig config = context.walletConfig();
             Wallet.deleteWallet(config.config(), config.credential()).get();
         }
+    }
+
+    public static void assertEqualsJSONObject(JSONObject expected, JSONObject actual) {
+        assertEquals(expected.toMap().size(), actual.toMap().size());
+        expected.toMap().forEach((s, o) ->
+                assertEquals(actual.get(s), o)
+        );
     }
 }

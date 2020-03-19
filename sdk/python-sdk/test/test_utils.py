@@ -1,10 +1,7 @@
 import json
 from uuid import uuid4 as uuid
-
 import pytest
 from indy import did, wallet
-
-from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.utils import prepare_forward_message, pack_message_for_verity, \
     unpack_forward_message, get_message_type, get_problem_report_message_type, \
     EVERNYM_MSG_QUALIFIER, get_status_message_type
@@ -48,10 +45,6 @@ async def cleanup(context: Context):
     await wallet.delete_wallet(context.wallet_config, context.wallet_credentials)
 
 
-async def send_stub(context: Context, message: dict) -> bytes:
-    return await Protocol.get_message(context, message)
-
-
 @pytest.mark.asyncio
 async def test_context():
     test_config = await get_test_config()
@@ -62,12 +55,39 @@ async def test_context():
     assert context.wallet_key == test_config['walletKey']
     assert context.verity_url == test_config['verityUrl']
     assert context.verity_public_verkey == test_config['verityPublicVerkey']
-    assert context.verity_pairwise_did == test_config['verityPairwiseDID']
-    assert context.verity_pairwise_verkey == test_config['verityPairwiseVerkey']
-    assert context.sdk_pairwise_verkey == test_config['sdkPairwiseVerkey']
+    assert context.domain_did == test_config['verityPairwiseDID']
+    assert context.verity_agent_verkey == test_config['verityPairwiseVerkey']
+    assert context.sdk_verkey == test_config['sdkPairwiseVerkey']
     assert context.endpoint_url == test_config['endpointUrl']
 
     await cleanup(context)
+
+
+@pytest.mark.asyncio
+async def test_v01_to_v02():
+    wallet_name = uuid()
+    wallet_key = uuid()
+    v01Str = f"""{{
+      "verityPublicVerkey": "ETLgZKeQEKxBW7gXA6FBn7nBwYhXFoogZLCCn5EeRSQV",
+      "verityPairwiseDID": "NTvSuSXzygyxWrF3scrhdc",
+      "verityUrl": "https://vas-team1.pdev.evernym.com",
+      "verityPairwiseVerkey": "ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE",
+      "walletName": "{wallet_name}",
+      "walletKey": "{wallet_key}",
+      "sdkPairwiseVerkey": "HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh",
+      "verityPublicDID": "Rgj7LVEonrMzcRC1rhkx76",
+      "sdkPairwiseDID": "XNRkA8tboikwHD3x1Yh7Uz"
+    }}"""
+
+    ctx = await Context.create_with_config(v01Str)
+    await ctx.close_wallet()
+
+    assert ctx.domain_did == 'NTvSuSXzygyxWrF3scrhdc'
+    assert ctx.verity_agent_verkey == 'ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE'
+    assert ctx.sdk_verkey == 'HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh'
+    assert ctx.sdk_verkey_id == 'XNRkA8tboikwHD3x1Yh7Uz'
+    assert ctx.version == '0.2'
+
 
 
 def test_prepare_forward_message():

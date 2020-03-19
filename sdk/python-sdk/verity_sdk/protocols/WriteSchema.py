@@ -1,7 +1,5 @@
-from typing import List
-
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import Context, get_message_type, get_problem_report_message_type, get_status_message_type
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 
 
 class WriteSchema(Protocol):
@@ -12,43 +10,25 @@ class WriteSchema(Protocol):
     WRITE_SCHEMA = 'write'
     STATUS = 'status-report'
 
-    # Status
-    WRITE_SUCCESSFUL_STATUS = 0
-
-    # Data members
-    name: str
-    version: str
-    attrs: List[str]
-
     def __init__(self, name: str, version: str, attrs: [str]):
-        super().__init__()
+        super().__init__(
+            self.MSG_FAMILY,
+            self.MSG_FAMILY_VERSION,
+            msg_qualifier=EVERNYM_MSG_QUALIFIER,
+        )
         self.name = name
         self.version = version
         self.attrs = attrs
-        self.define_messages()
 
-    def define_messages(self):
-        self.messages = {
-            self.WRITE_SCHEMA: {
-                '@type': WriteSchema.get_message_type(self.WRITE_SCHEMA),
-                '@id': self.get_new_id(),
-                'name': self.name,
-                'version': self.version,
-                'attrNames': self.attrs
-            }
-        }
+    def write_msg(self, _):
+        msg = self._get_base_message(self.WRITE_SCHEMA)
+        msg['name'] = self.name
+        msg['version'] = self.version
+        msg['attrNames'] = self.attrs
+        return msg
 
-    @staticmethod
-    def get_message_type(msg_name: str) -> str:
-        return get_message_type(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION, msg_name)
+    async def write_msg_packed(self, context):
+        return await self.get_message_bytes(context, self.write_msg(context))
 
-    @staticmethod
-    def get_problem_report_message_type() -> str:
-        return get_problem_report_message_type(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION)
-
-    @staticmethod
-    def get_status_message_type() -> str:
-        return get_status_message_type(WriteSchema.MSG_FAMILY, WriteSchema.MSG_FAMILY_VERSION)
-
-    async def write(self, context: Context) -> bytes:
-        return await self.send(context, self.messages[self.WRITE_SCHEMA])
+    async def write(self, context):
+        await self.send_message(context, await self.write_msg_packed(context))

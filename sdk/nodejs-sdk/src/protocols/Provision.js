@@ -1,7 +1,6 @@
 'use strict'
 const utils = require('../utils')
 const Protocol = require('./Protocol')
-const indy = require('../utils/indy')
 
 module.exports = class Provision extends Protocol {
   constructor (threadId = null) {
@@ -14,10 +13,9 @@ module.exports = class Provision extends Protocol {
   }
 
   async provisionSdkMsg (context) {
-    const msg = this._getBaseMessage(this.msgNames.CREATE_AGENT);
-    [context.sdkPairwiseDID, context.sdkPairwiseVerkey] = await indy.newDid(context)
-    msg.fromDID = context.sdkPairwiseDID
-    msg.fromDIDVerKey = context.sdkPairwiseVerkey
+    const msg = this._getBaseMessage(this.msgNames.CREATE_AGENT)
+    msg.fromDID = context.sdkVerKeyId
+    msg.fromDIDVerKey = context.sdkVerKey
     return msg
   }
 
@@ -27,9 +25,9 @@ module.exports = class Provision extends Protocol {
       context.walletHandle,
       msg,
       context.verityPublicDID,
-      context.verityPublicVerkey,
-      context.sdkPairwiseVerkey,
-      context.verityPublicVerkey
+      context.verityPublicVerKey,
+      context.sdkVerKey,
+      context.verityPublicVerKey
     )
   }
 
@@ -38,8 +36,8 @@ module.exports = class Provision extends Protocol {
     const rawResponse = await utils.sendPackedMessage(context, packedMessage)
     const jweBytes = Buffer.from(rawResponse, 'utf8')
     const response = await utils.unpackMessage(context, jweBytes)
-    context.verityPairwiseDID = response.withPairwiseDID
-    context.verityPairwiseVerkey = response.withPairwiseDIDVerKey
+    context.domainDID = response.withPairwiseDID
+    context.verityAgentVerKey = response.withPairwiseDIDVerKey
     return context
   }
 }

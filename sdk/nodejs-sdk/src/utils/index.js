@@ -17,10 +17,10 @@ exports.packMessageForVerity = async function (context, message) {
   return exports.packMessage(
     context.walletHandle,
     message,
-    context.verityPairwiseDID,
-    context.verityPairwiseVerkey,
-    context.sdkPairwiseVerkey,
-    context.verityPublicVerkey
+    context.domainDID,
+    context.verityAgentVerKey,
+    context.sdkVerKey,
+    context.verityPublicVerKey
   )
 }
 

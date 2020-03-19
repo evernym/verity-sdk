@@ -9,6 +9,7 @@ def is_problem_report(message_type: str) -> bool:
 
 
 HandlerFunction = NewType('HandlerFunction', Callable[[str, dict], Awaitable[None]])
+DefaultHandlerFunction = NewType('DefaultHandlerFunction', Callable[[dict], Awaitable[None]])
 
 
 class Handler:
@@ -26,19 +27,19 @@ class Handler:
         if '@type' not in message:
             logging.error('message does not contain an "@type" attribute')
             return False
-        msgType = MsgType(message['@type'])
-        return msgType.msg_family == self.msg_family and msgType.msg_family_version == self.msg_family_version
+        msg_type = MsgType(message['@type'])
+        return msg_type.msg_family == self.msg_family and msg_type.msg_family_version == self.msg_family_version
 
     async def handle(self, msg_name: str, message: dict):
         await self.handler_function(msg_name, message)
 
-    async def __call__(self, msg_name: str, message: dict): # Added for clarity and flexibility. Same as `self.handle`.
+    async def __call__(self, msg_name: str, message: dict):  # Added for clarity and flexibility. Same as `self.handle`.
         await self.handler_function(msg_name, message)
 
 
 class Handlers:
     handlers: Dict[str, Handler]
-    default_handler: HandlerFunction
+    default_handler: DefaultHandlerFunction
 
     def __init__(self):
         self.handlers = {}
@@ -48,12 +49,13 @@ class Handlers:
             msg_family: str,
             msg_family_version: str,
             handler_function: HandlerFunction):
-        self.handlers[Handlers.build_handlers_key(msg_family, msg_family_version)] = Handler(msg_family, msg_family_version, handler_function)
+        key = Handlers.build_handlers_key(msg_family, msg_family_version)
+        self.handlers[key] = Handler(msg_family, msg_family_version, handler_function)
 
     def has_handler(self, msg_family: str, msg_family_version: str):
         return Handlers.build_handlers_key(msg_family, msg_family_version) in self.handlers
 
-    def set_default_handler(self, handler_function: HandlerFunction):
+    def set_default_handler(self, handler_function: DefaultHandlerFunction):
         self.default_handler = handler_function
 
     async def handle_message(self, context: Context, raw_message: bytes):
@@ -61,10 +63,11 @@ class Handlers:
         msg_type = MsgType(message['@type'])
 
         if self.has_handler(msg_type.msg_family, msg_type.msg_family_version):
-            await self.handlers[Handlers.build_handlers_key(msg_type.msg_family, msg_type.msg_family_version)].handle(msg_type.msg_name, message)
+            key = Handlers.build_handlers_key(msg_type.msg_family, msg_type.msg_family_version)
+            await self.handlers[key].handle(msg_type.msg_name, message)
         else:
             if self.default_handler is not None:
-                await self.default_handler(msg_type.msg_name, message)
+                await self.default_handler(message)
             else:
                 logging.warning('Unable to handle message, and no default handler was defined')
 

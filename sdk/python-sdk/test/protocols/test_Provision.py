@@ -27,24 +27,24 @@ async def test_provision_sdk(mocker):
     response_msg = await crypto.pack_message(
         context.wallet_handle,
         json.dumps(response),
-        [context.sdk_pairwise_verkey],
+        [context.sdk_verkey],
         context.verity_public_verkey,
     )
-    mock = mocker.patch('verity_sdk.protocols.Provision.send_message')
+    mock = mocker.patch('verity_sdk.protocols.Provision.send_packed_message')
     mock.return_value = response_msg
 
     provision = Provision()
     context = await provision.provision_sdk(context)
 
-    assert context.verity_pairwise_did == pw_did
-    assert context.verity_pairwise_verkey == pw_verkey
+    assert context.domain_did == pw_did
+    assert context.verity_agent_verkey == pw_verkey
 
     mock.assert_called_once()
     call_args = mock.call_args
-    url = call_args[0][0]
+    context_arg = call_args[0][0]
     sent_msg = call_args[0][1]
 
-    assert url == context.verity_url
+    assert context_arg.verity_url == context.verity_url
 
     sent_msg = await unpack_forward_message(context, sent_msg)
     assert sent_msg['@type'] == '{};spec/{}/{}/{}'.format(
@@ -54,7 +54,7 @@ async def test_provision_sdk(mocker):
         Provision.CREATE_AGENT
     )
     assert sent_msg['@id'] is not None
-    assert sent_msg['fromDID'] == context.sdk_pairwise_did
-    assert sent_msg['fromDIDVerKey'] == context.sdk_pairwise_verkey
+    assert sent_msg['fromDID'] == context.sdk_verkey_id
+    assert sent_msg['fromDIDVerKey'] == context.sdk_verkey
 
     await cleanup(context)

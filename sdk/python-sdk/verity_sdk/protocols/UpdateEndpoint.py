@@ -1,6 +1,5 @@
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import get_message_type, get_problem_report_message_type, get_status_message_type
-from verity_sdk.utils.Context import Context
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 
 
 class UpdateEndpoint(Protocol):
@@ -10,39 +9,29 @@ class UpdateEndpoint(Protocol):
     # Messages
     UPDATE_ENDPOINT = 'UPDATE_COM_METHOD'
 
-    context: Context
+    def __init__(self):
+        super().__init__(
+            self.MSG_FAMILY,
+            self.MSG_FAMILY_VERSION,
+            msg_qualifier=EVERNYM_MSG_QUALIFIER,
+        )
 
-    def __init__(self, context: Context):
-        super().__init__()
-        self.context = context
-        self.define_messages()
-
-    def define_messages(self):
+    def update_endpoint_msg(self, context):
         COM_METHOD_TYPE = 2
-
-        self.messages = {
-            self.UPDATE_ENDPOINT: {
-                '@type': UpdateEndpoint.get_message_type(self.UPDATE_ENDPOINT),
-                '@id': UpdateEndpoint.get_new_id(),
-                'comMethod': {
-                    'id': 'webhook',
-                    'type': COM_METHOD_TYPE,
-                    'value': self.context.endpoint_url
-                }
-            }
+        if context.endpoint_url is None or context.endpoint_url == '':
+            raise Exception('Unable to update endpoint because context.endpoint_url is not defined')
+        msg = self._get_base_message(self.UPDATE_ENDPOINT)
+        msg['comMethod'] = {
+            'id': 'webhook',
+            'type': COM_METHOD_TYPE,
+            'value': context.endpoint_url
         }
+        return msg
 
-    @staticmethod
-    def get_message_type(msg_name: str) -> str:
-        return get_message_type(UpdateEndpoint.MSG_FAMILY, UpdateEndpoint.MSG_FAMILY_VERSION, msg_name)
+    async def update_endpoint_msg_packed(self, context):
+        msg = self.update_endpoint_msg(context)
+        return await self.get_message_bytes(context, msg)
 
-    @staticmethod
-    def get_problem_report_message_type() -> str:
-        return get_problem_report_message_type(UpdateEndpoint.MSG_FAMILY, UpdateEndpoint.MSG_FAMILY_VERSION)
-
-    @staticmethod
-    def get_status_message_type() -> str:
-        return get_status_message_type(UpdateEndpoint.MSG_FAMILY, UpdateEndpoint.MSG_FAMILY_VERSION)
-
-    async def update(self) -> bytes:
-        return await self.send(self.context, self.messages[self.UPDATE_ENDPOINT])
+    async def update(self, context):
+        bytes_to_send = await self.update_endpoint_msg_packed(context)
+        await self.send_message(context, bytes_to_send)
