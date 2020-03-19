@@ -28,7 +28,7 @@ public class MsgFamilyBuilder {
             };
         }
         else {
-            throw new RuntimeException(String.format("Invalid message type field, unable to parse Message Family for '%s'", qualifiedMessageType));
+            throw new IllegalStateException(String.format("Invalid message type field, unable to parse Message Family for '%s'", qualifiedMessageType));
         }
 
     }

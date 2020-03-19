@@ -22,7 +22,7 @@ public class Handlers {
      * @param messageHandler the handler function itself
      */
     public void addHandler(MessageFamily messageFamily, MessageHandler.Handler messageHandler) {
-        messageHandlers.add(new MessageHandler(messageFamily, messageHandler));
+        messageHandlers.add(0, new MessageHandler(messageFamily, messageHandler));
     }
 
     /**

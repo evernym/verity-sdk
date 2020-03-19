@@ -127,7 +127,7 @@ public class ContextBuilderTest {
             assertEquals(String.format("{\"key\":\"%s\"}", walletKey), context.walletConfig().credential());
             assertEquals(verityUrl, context.verityUrl());
             assertEquals(endpointUrl, context.endpointUrl());
-            assertEquals(V_0_1, context.version());
+            assertEquals(V_0_2, context.version());
             assertEquals(testWallet.getVerityPublicVerkey(), context.verityPublicVerKey());
             assertEquals(testWallet.getVerityPairwiseVerkey(), context.verityAgentVerKey());
             assertEquals(testWallet.getVerityPairwiseDID(), context.domainDID());

@@ -26,7 +26,6 @@ public class ContextConversionTest {
                     "  \"verityPublicDID\": \"Rgj7LVEonrMzcRC1rhkx76\",\n" +
                     "  \"sdkPairwiseDID\": \"XNRkA8tboikwHD3x1Yh7Uz\"\n" +
                     "}";
-            System.out.println(v01Str);
             Context ctx = ContextBuilder.fromJson(v01Str).build();
             ctx.closeWallet();
 
