@@ -11,12 +11,12 @@ import java.util.List;
 
 public interface RelationshipProvisioning extends MessageFamily {
 
-    static RelationshipProvisioning v1_0() {
+    static RelationshipProvisioning_1_0 v1_0() {
         return new RelationshipProvisioning_1_0();
     }
 
-    static RelationshipProvisioning v1_0(String forRelationship, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
-        return new RelationshipProvisioning_1_0(forRelationship, label, recipientKeys, routingKeys, did);
+    static RelationshipProvisioning_1_0 v1_0(String forRelationship, String threadId, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
+        return new RelationshipProvisioning_1_0(forRelationship, threadId, label, recipientKeys, routingKeys, did);
     }
 
     void createKey(Context context) throws IOException, VerityException;

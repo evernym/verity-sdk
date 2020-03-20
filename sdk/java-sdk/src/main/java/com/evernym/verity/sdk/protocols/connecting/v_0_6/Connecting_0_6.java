@@ -26,6 +26,8 @@ public class Connecting_0_6 extends Protocol implements Connecting {
     public String family() {return "connecting";}
     public String version() {return "0.6";}
 
+    public Connecting_0_6() {
+    }
     /**
     * Create connection without phone number
     * @param sourceId required optional param that sets an id of the connection

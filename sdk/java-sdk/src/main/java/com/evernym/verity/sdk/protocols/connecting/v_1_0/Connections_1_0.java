@@ -19,6 +19,10 @@ public class Connections_1_0 extends Protocol implements Connecting {
     String base64InviteURL;
     String label;
 
+    public Connections_1_0() {
+
+    }
+
     /**
      * this is used by invitee to respond to an invitation
      * @param parentThreadId id of invitation message
