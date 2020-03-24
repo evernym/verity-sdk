@@ -6,8 +6,6 @@ import org.json.JSONArray;
 
 import java.util.List;
 
-import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
-
 public class CredPreviewBuilder extends BaseMsgBuilder<CredPreviewBuilder> implements AsJsonObject  {
 
     public static CredPreviewBuilder blank() {
@@ -15,7 +13,15 @@ public class CredPreviewBuilder extends BaseMsgBuilder<CredPreviewBuilder> imple
     }
 
     public CredPreviewBuilder attributes(List<CredPreviewAttribute> attributes) {
-        JSONArray ja = makeArray(attributes);
+        JSONArray ja = new JSONArray();
+        if(attributes != null) {
+            for(CredPreviewAttribute i: attributes) {
+                if(i != null) {
+                    ja.put(i.toJson());
+                }
+            }
+        }
+
         addToJSON("attributes", ja);
         return this;
     }
