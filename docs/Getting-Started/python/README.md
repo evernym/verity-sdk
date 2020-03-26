@@ -4,15 +4,19 @@
 
 [Stand Up an Evaluation Verity Application](../../../README.md#cloud)
 
+---
+
 This procedure shows you how to set up your Python development environment to use the Verity SDK. As desired, 
 run the example application to see a demonstration of how the interactions take place. 
 
 **Prerequisites**
 
 Install the following items:
-* `libindy` - Follow the instructions on the [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
-* `Ngrok` - Follow the instructions on the [Ngrok website](https://ngrok.com/download).
-* `Python3` - Follow the instructions on the [Python3 website](https://www.python.org/downloads/)
+* `libindy` -- Install a stable version. Follow the instructions on the 
+[indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
+* `Ngrok` -- This is a temporary installation to facilitate early experimentation. 
+Follow the instructions on the [Ngrok website](https://ngrok.com/download).
+* `Python3` -- Follow the instructions on the [Python3 website](https://www.python.org/downloads/)
 
 > **NOTE:** Verify that you have read access to the Public PyPi repo.
 
@@ -63,6 +67,8 @@ Go to the directory where you extracted the tarball.
    ```sh
    python3 app.py
    ```
+
+--- 
 
 ### Next Step
 

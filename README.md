@@ -3,7 +3,7 @@
 ## Overview
 
 The goal of the Verity SDK is to provide easy application integration with the Verity server. This 
-integration provides the basis for SSI (self-sovereign identity)-enabled workflows such as creating 
+integration provides the basis for SSI-enabled workflows such as creating 
 connections, issuing credentials, requesting proof, and general pairwise interactions. The SDK 
 uses `libindy` and Agent-to-Agent protocols to securely authenticate and communicate with the 
 Verity server. With the creation of language-specific bindings, developers can quickly integrate 
@@ -19,9 +19,9 @@ without heavy involvement in the interactions.
 
 The instructions for this SDK use the following terms:
 
-* **Verity server instance** - An demo version of the Verity server for testing the SDK
+* **Verity server instance** -- A demo version of the Verity server for testing the SDK
 
-* **Example application** - A sample application provided by Evernym that demonstrates the basic 
+* **Example application** -- A sample application provided by Evernym that demonstrates the basic 
 steps involved in various Connect.Me transactions
 
 ## Setup 
@@ -30,7 +30,7 @@ These are the general steps for setting up the Verity SDK for development:
 
 1. Stand up a Verity server instance in the cloud. 
 2. Download and integrate the language-specific library of your choice.
-3. **Optional** - Run the example application against the Verity server instance.
+3. **Optional** -- Run the example application against the Verity server instance.
 
 At this point you will be ready to write and test your application.
 
@@ -39,11 +39,12 @@ At this point you will be ready to write and test your application.
 
 ## 1. Stand up a Verity server instance in the cloud
 
-Contact your Evernym account manager for instructions.
+Evernym will stand up a Verity server instance for you and provision it. 
+Contact us for instructions on connecting to it.
 
-## Firewall Rules
+### Firewall Rules
 
-Using the Verity server instance requires the following rules in your firewall:
+Using the Verity SDK requires the following rules in your firewall:
 
 | Direction | Protocol | Port           | MIME Type                |
 | --------- | -------- | -------------- | -------------------------|
@@ -52,6 +53,7 @@ Using the Verity server instance requires the following rules in your firewall:
 | Inbound   | HTTP     | [user-defined] | application/octet-stream |
 | Inbound   | HTTPS    | [user-defined] | application/octet-stream |
 
+---
 
 ### Next Step
 
