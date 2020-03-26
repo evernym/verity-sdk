@@ -4,15 +4,19 @@
 
 [Stand Up an Evaluation Verity Application](../../../README.md#cloud)
 
+---
+
 This procedure shows you how to set up your NodeJs development environment to use the Verity SDK. As desired, 
 run the example application to see a demonstration of how the interactions take place. 
 
 **Prerequisites**
 
 Install the following items:
-* `libindy` - Follow the instructions on the [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
-* `Ngrok` - Follow the instructions on the [Ngrok website](https://ngrok.com/download).
-* `NodeJs` - Follow the instructions on the [NodeJs website](https://nodejs.org/en/).
+* `libindy` -- Install a stable version. Follow the instructions on the 
+[indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
+* `Ngrok` -- This is a temporary installation to facilitate early experimentation. 
+Follow the instructions on the [Ngrok website](https://ngrok.com/download).
+* `NodeJs` -- Follow the instructions on the [NodeJs website](https://nodejs.org/en/).
 
 > **NOTE:** Verify that you have read access to the Public NPM repo.
 
@@ -62,7 +66,8 @@ Go to the directory where you extracted the tarball.
    ```sh
    node example.js
    ``` 
-   
+
+---
 ### Next Step
 
 Continue to [Interactions](../Interactions.md).
