@@ -43,14 +43,12 @@ public class RelationshipProvisioning_1_0 extends Protocol implements Relationsh
      */
     public RelationshipProvisioning_1_0(String forRelationship, String threadId, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
         super(threadId);
-        System.out.println("### 111");
         ValidationUtil.checkOnlyOneOptionalFieldExists(Arrays.asList(did, recipientKeys));
         this.forRelationship = forRelationship;
         this.did = did;
         this.label = label;
         this.recipientKeys = recipientKeys;
         this.routingKeys = routingKeys;
-        System.out.println("### 222");
     }
 
     @Override
@@ -76,7 +74,6 @@ public class RelationshipProvisioning_1_0 extends Protocol implements Relationsh
 
     @Override
     public JSONObject prepareInvitationMsg(Context context) {
-        System.out.println("### 333");
         JSONObject js = InvitationBuilder
                 .blank()
                 .type(prepareMessageType())
@@ -88,7 +85,6 @@ public class RelationshipProvisioning_1_0 extends Protocol implements Relationsh
                 .routingKeys(routingKeys)
                 .build()
                 .toJson();
-        System.out.println("### 444: "  + js);
         return addThread(js);
     }
 
