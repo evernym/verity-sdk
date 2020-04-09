@@ -4,7 +4,8 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_preview.CredPreviewAttribute;
-import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.proposal.CredProposalBuilder;
+import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.offer.OfferCredBuilder;
+import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.proposal.ProposeCredBuilder;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -16,7 +17,7 @@ import java.util.*;
 /**
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
-public class IssueCredentialImpl extends Protocol implements IssueCredential {
+public class IssueCredential_1_0 extends Protocol implements IssueCredential {
 
     public String qualifier() {return Util.COMMUNITY_MSG_QUALIFIER;}
     public String family() { return "issue-credential";}
@@ -25,7 +26,8 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
     // flag if this instance started the interaction
     boolean created = false;
 
-    String PROPOSE_CREDENTIAL = "send-proposal";
+    String SEND_PROPOSAL = "send-proposal";
+    String SEND_OFFER = "send-offer";
 
     String forRelationship;
     String comment;
@@ -42,7 +44,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
      *
      * @param forRelationship pairwise relationship identifier
      */
-    public IssueCredentialImpl(String forRelationship,
+    public IssueCredential_1_0(String forRelationship,
                                List<CredPreviewAttribute> attributes,
                                String comment,
                                String schemaIssuerId,
@@ -69,7 +71,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
         this.created = true;
     }
 
-    public IssueCredentialImpl(String forRelationship, String threadId) {
+    public IssueCredential_1_0(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
     }
@@ -89,11 +91,11 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
             throw new IllegalArgumentException("Unable to propose credentials when NOT starting the interaction");
         }
 
-        JSONObject js = CredProposalBuilder
+        JSONObject js = ProposeCredBuilder
                 .blank()
-                .type(getMessageType(PROPOSE_CREDENTIAL))
-                .id(getNewId())
                 .forRelationship(forRelationship)
+                .type(getMessageType(SEND_PROPOSAL))
+                .id(getNewId())
                 .comment(comment)
                 .schemaIssuerDid(schemaIssuerId)
                 .schemaId(schemaId)
@@ -119,18 +121,34 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
      * @param context an instance of Context configured with the results of the provision_sdk.py script
      */
     @Override
-    public void offerCredential(Context context) {
-        throw new UnsupportedOperationException();
+    public void offerCredential(Context context) throws IOException, VerityException {
+        send(context, offerCredentialMsg(context));
     }
 
     @Override
     public JSONObject offerCredentialMsg(Context context) {
-        throw new UnsupportedOperationException();
+        if(!created) {
+            throw new IllegalArgumentException("Unable to offer credentials when NOT starting the interaction");
+        }
+
+        JSONObject js = OfferCredBuilder
+                .blank()
+                .forRelationship(forRelationship)
+                .type(getMessageType(SEND_OFFER))
+                .id(getNewId())
+                .comment(comment)
+                .credential
+        Previous(attributes, this)
+                .build()
+                .toJson();
+        addThread(js);
+        return js;
+
     }
 
     @Override
-    public byte[] offerCredentialMsgPacked(Context context) {
-        throw new UnsupportedOperationException();
+    public byte[] offerCredentialMsgPacked(Context context) throws VerityException {
+        return packMsg(context, offerCredentialMsg(context));
     }
 
     @Override

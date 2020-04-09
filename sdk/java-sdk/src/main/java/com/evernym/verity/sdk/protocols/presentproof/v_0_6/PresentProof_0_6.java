@@ -1,8 +1,12 @@
-package com.evernym.verity.sdk.protocols.presentproof;
+package com.evernym.verity.sdk.protocols.presentproof.v_0_6;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.presentproof.Attribute;
+import com.evernym.verity.sdk.protocols.presentproof.Predicate;
+import com.evernym.verity.sdk.protocols.presentproof.PresentProof;
 import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -12,7 +16,15 @@ import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
 /**
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
-public class PresentProofImpl extends Protocol implements PresentProof {
+public class PresentProof_0_6 extends Protocol implements PresentProof {
+
+    public String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
+    public String family() {return "present-proof";}
+    public String version() {return "0.6";}
+
+    String PROOF_REQUEST = "request";
+    String GET_STATUS = "get-status";
+
     // flag if this instance started the interaction
     boolean created = false;
 
@@ -21,7 +33,12 @@ public class PresentProofImpl extends Protocol implements PresentProof {
     Attribute[] proofAttrs;
     Predicate[] proofPredicates;
 
-    public PresentProofImpl(String forRelationship, String threadId) {
+    //FIXME: only needed 'Undefined interface' in agency?
+    public PresentProof_0_6() {
+
+    }
+
+    public PresentProof_0_6(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
     }
@@ -32,7 +49,7 @@ public class PresentProofImpl extends Protocol implements PresentProof {
      * @param name The name of the proof request
      * @param proofAttrs The requested attributes of the proof request
      */
-    public PresentProofImpl(String forRelationship, String name, Attribute[] proofAttrs) {
+    public PresentProof_0_6(String forRelationship, String name, Attribute[] proofAttrs) {
         this(forRelationship, name, proofAttrs, null);
     }
 
@@ -43,7 +60,7 @@ public class PresentProofImpl extends Protocol implements PresentProof {
      * @param proofAttrs The requested attributes of the proof request
      * @param proofPredicates The requested predicates of the proof request
      */
-    public PresentProofImpl(String forRelationship, String name, Attribute[] proofAttrs, Predicate[] proofPredicates) {
+    public PresentProof_0_6(String forRelationship, String name, Attribute[] proofAttrs, Predicate[] proofPredicates) {
         super();
         this.forRelationship = forRelationship;
         this.name = name;

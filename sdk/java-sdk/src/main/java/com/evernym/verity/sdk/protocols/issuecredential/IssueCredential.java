@@ -4,7 +4,8 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
-import com.evernym.verity.sdk.protocols.issuecredential.v_0_6.IssueCredentialImpl;
+import com.evernym.verity.sdk.protocols.issuecredential.v_0_6.IssueCredential_0_6;
+import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.IssueCredential_1_0;
 import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_preview.CredPreviewAttribute;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
@@ -16,28 +17,29 @@ import java.util.Map;
 public interface IssueCredential extends MessageFamily {
 
 
-    static IssueCredential v0_6(String forRelationship,
+    static IssueCredential_0_6 v0_6(String forRelationship,
                                 String name,
                                 Map<String, String> values,
                                 String credDefId) {
-        return new IssueCredentialImpl(forRelationship, name, values, credDefId);
+        return new IssueCredential_0_6(forRelationship, name, values, credDefId);
     }
 
-    static IssueCredential v0_6(String forRelationship,
+    static IssueCredential_0_6 v0_6(String forRelationship,
                                 String threadId) {
-        return new IssueCredentialImpl(forRelationship, threadId);
+        return new IssueCredential_0_6(forRelationship, threadId);
     }
 
-    static IssueCredential v1_0(String forRelationship, List<CredPreviewAttribute> attributes,
+    static IssueCredential_1_0 v1_0(String forRelationship, List<CredPreviewAttribute> attributes,
                                 String comment, String schemaIssuerId, String schemaId, String schemaName,
                                 String schemaVersion, String credDefId, String issuerDID) {
-        return new com.evernym.verity.sdk.protocols.issuecredential.v_1_0.IssueCredentialImpl(
-                forRelationship, attributes, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID);
+        return new IssueCredential_1_0(
+                forRelationship, attributes, comment, schemaIssuerId, schemaId, schemaName,
+                schemaVersion, credDefId, issuerDID);
     }
 
-    static IssueCredential v1_0(String forRelationship,
+    static IssueCredential_1_0 v1_0(String forRelationship,
                                 String threadId) {
-        return new com.evernym.verity.sdk.protocols.issuecredential.v_1_0.IssueCredentialImpl(forRelationship, threadId);
+        return new IssueCredential_1_0(forRelationship, threadId);
     }
 
     /**

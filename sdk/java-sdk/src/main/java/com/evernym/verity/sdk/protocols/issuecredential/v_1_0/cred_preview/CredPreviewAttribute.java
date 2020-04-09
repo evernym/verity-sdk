@@ -6,7 +6,7 @@ import org.json.JSONObject;
 public class CredPreviewAttribute implements AsJsonObject {
     JSONObject data;
 
-    public CredPreviewAttribute(String name, String mimeType, String value) {
+    public CredPreviewAttribute(String name, String value, String mimeType) {
         this.data = new JSONObject()
                 .put("name", name)
                 .put("value", value);

@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
-public class IssueCredentialImpl extends Protocol implements IssueCredential {
+public class IssueCredential_0_6 extends Protocol implements IssueCredential {
 
     public String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
     public String family() { return "issue-credential";}
@@ -34,13 +34,17 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
     Map<String, String> values;
     String price;
 
+    //FIXME: only needed 'Undefined interface' in agency?
+    public IssueCredential_0_6() {
+    }
+
     /**
      * Creates a new credential
      * @param name The name of credential.
      * @param credDefId The credDefId of the credential definition being used
      * @param values key-value pairs of credential attribute fields with the specified params defined in the credential definition
      */
-    public IssueCredentialImpl(String forRelationship, String name, Map<String, String> values, String credDefId) {
+    public IssueCredential_0_6(String forRelationship, String name, Map<String, String> values, String credDefId) {
         super();
         this.forRelationship = forRelationship;
         this.name = name;
@@ -50,7 +54,7 @@ public class IssueCredentialImpl extends Protocol implements IssueCredential {
         this.created = true;
     }
 
-    public IssueCredentialImpl(String forRelationship, String threadId) {
+    public IssueCredential_0_6(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
     }

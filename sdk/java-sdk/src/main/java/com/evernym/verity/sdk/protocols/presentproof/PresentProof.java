@@ -4,8 +4,8 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.presentproof.v_0_6.PresentProof_0_6;
 import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -14,22 +14,16 @@ import java.io.IOException;
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
 public interface PresentProof extends MessageFamily {
-    default String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
-    default String family() {return "present-proof";}
-    default String version() {return "0.6";}
 
-    String PROOF_REQUEST = "request";
-    String GET_STATUS = "get-status";
-
-    static PresentProof v0_6(String forRelationship,
+    static PresentProof_0_6 v0_6(String forRelationship,
                              String name,
                              Attribute...attributes) {
-        return new PresentProofImpl(forRelationship, name, attributes);
+        return new PresentProof_0_6(forRelationship, name, attributes);
     }
 
-    static PresentProof v0_6(String forRelationship,
+    static PresentProof_0_6 v0_6(String forRelationship,
                              String threadId) {
-        return new PresentProofImpl(forRelationship, threadId);
+        return new PresentProof_0_6(forRelationship, threadId);
     }
 
     static Attribute attribute(String name, Restriction...restrictions) {
