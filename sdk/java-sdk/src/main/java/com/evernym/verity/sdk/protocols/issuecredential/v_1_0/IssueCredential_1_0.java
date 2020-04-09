@@ -137,8 +137,7 @@ public class IssueCredential_1_0 extends Protocol implements IssueCredential {
                 .type(getMessageType(SEND_OFFER))
                 .id(getNewId())
                 .comment(comment)
-                .credential
-        Previous(attributes, this)
+                .credentialPreview(attributes, this)
                 .build()
                 .toJson();
         addThread(js);

@@ -19,7 +19,7 @@ public class OfferCredBuilder extends CredRestrictionBuilder<OfferCredBuilder> {
         return this;
     }
 
-    public OfferCredBuilder credentialPrevious(List<CredPreviewAttribute> attributes, MessageFamily msgFamily) {
+    public OfferCredBuilder credentialPreview(List<CredPreviewAttribute> attributes, MessageFamily msgFamily) {
         JSONObject jsonObject = CredPreviewBuilder
                 .blank()
                 .type(msgFamily.getMessageType("credential-preview"))
