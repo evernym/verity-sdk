@@ -2,6 +2,21 @@ package com.evernym.verity.sdk.protocols.common;
 
 public abstract class CredRestrictionBuilder<T> extends BaseMsgBuilder<T> {
 
+    public T name(String val) {
+        addToJSON("name", val);
+        return self();
+    }
+
+    public T comment(String val) {
+        addToJSON("comment", val);
+        return self();
+    }
+
+    public T price(String val) {
+        addToJSON("price", val);
+        return self();
+    }
+
     public T schemaId(String val) {
         addToJSON("schema_id", val);
         return self();

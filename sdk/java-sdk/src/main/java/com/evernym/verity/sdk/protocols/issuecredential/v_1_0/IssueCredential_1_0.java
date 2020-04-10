@@ -30,6 +30,7 @@ public class IssueCredential_1_0 extends Protocol implements IssueCredential {
     String SEND_OFFER = "send-offer";
 
     String forRelationship;
+    String name;
     String comment;
     List<CredPreviewAttribute> attributes;
     String schemaIssuerId;
@@ -38,6 +39,7 @@ public class IssueCredential_1_0 extends Protocol implements IssueCredential {
     String schemaVersion;
     String credDefId;
     String issuerDID;
+    String price;
 
 
     /**
@@ -45,29 +47,33 @@ public class IssueCredential_1_0 extends Protocol implements IssueCredential {
      * @param forRelationship pairwise relationship identifier
      */
     public IssueCredential_1_0(String forRelationship,
+                               String name,
+                               String credDefId,
                                List<CredPreviewAttribute> attributes,
                                String comment,
                                String schemaIssuerId,
                                String schemaId,
                                String schemaName,
                                String schemaVersion,
-                               String credDefId,
-                               String issuerDID) {
+                               String issuerDID,
+                               String price) {
         super();
         ValidationUtil.checkRequiredField(forRelationship, "forRelationship");
-        ValidationUtil.checkAtLeastOneOptionalFieldExists(Arrays.asList(
-                attributes, comment, schemaIssuerId, schemaId, schemaName, schemaVersion, credDefId, issuerDID)
-        );
+        ValidationUtil.checkRequiredField(name, "name");
+        ValidationUtil.checkRequiredField(credDefId, "credDefId");
 
         this.forRelationship = forRelationship;
+        this.name = name;
+        this.credDefId = credDefId;
+
         this.attributes = attributes;
         this.comment = comment;
         this.schemaIssuerId = schemaIssuerId;
         this.schemaId = schemaId;
         this.schemaName = schemaName;
         this.schemaVersion = schemaVersion;
-        this.credDefId = credDefId;
         this.issuerDID = issuerDID;
+        this.price = price;
         this.created = true;
     }
 
@@ -136,7 +142,10 @@ public class IssueCredential_1_0 extends Protocol implements IssueCredential {
                 .forRelationship(forRelationship)
                 .type(getMessageType(SEND_OFFER))
                 .id(getNewId())
+                .name(name)
+                .credDefId(credDefId)
                 .comment(comment)
+                .price(price)
                 .credentialPreview(attributes, this)
                 .build()
                 .toJson();

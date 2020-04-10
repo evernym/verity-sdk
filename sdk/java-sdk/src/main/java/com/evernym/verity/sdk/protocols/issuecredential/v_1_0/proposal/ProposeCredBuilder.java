@@ -25,7 +25,7 @@ public class ProposeCredBuilder extends CredRestrictionBuilder<ProposeCredBuilde
                 .attributes(attributes)
                 .build()
                 .toJson();
-        addToJSON("credentialProposal", jsonObject);
+        addToJSON("credential_proposal", jsonObject);
         return this;
     }
 

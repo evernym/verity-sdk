@@ -29,12 +29,13 @@ public interface IssueCredential extends MessageFamily {
         return new IssueCredential_0_6(forRelationship, threadId);
     }
 
-    static IssueCredential_1_0 v1_0(String forRelationship, List<CredPreviewAttribute> attributes,
-                                String comment, String schemaIssuerId, String schemaId, String schemaName,
-                                String schemaVersion, String credDefId, String issuerDID) {
+    static IssueCredential_1_0 v1_0(String forRelationship, String name, String credDefId,
+                                    List<CredPreviewAttribute> attributes, String comment,
+                                    String schemaIssuerId, String schemaId, String schemaName,
+                                    String schemaVersion, String issuerDID, String price) {
         return new IssueCredential_1_0(
-                forRelationship, attributes, comment, schemaIssuerId, schemaId, schemaName,
-                schemaVersion, credDefId, issuerDID);
+                forRelationship, name, credDefId, attributes, comment, schemaIssuerId,
+                schemaId, schemaName, schemaVersion, issuerDID, price);
     }
 
     static IssueCredential_1_0 v1_0(String forRelationship,

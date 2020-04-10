@@ -16,7 +16,6 @@ import static org.junit.Assert.*;
 public class IssueCredentialTest {
 
     private String forRelationship = "...someDid...";
-
     private List<CredPreviewAttribute> attributes = new ArrayList<CredPreviewAttribute>();
 
     public IssueCredentialTest() {
@@ -40,7 +39,7 @@ public class IssueCredentialTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithRequiredFieldAsNull() throws VerityException {
-        IssueCredential.v1_0(
+        IssueCredential.v1_0(null, null,
                 null, null, null,null,
                 null,null, null,null, null);
     }
@@ -48,7 +47,7 @@ public class IssueCredentialTest {
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithAllOptionalAsNull() throws VerityException {
         IssueCredential.v1_0(
-                forRelationship, null, null,null,
+                forRelationship, null, null, null, null,null,
                 null,null, null,null, null);
     }
 
@@ -56,8 +55,8 @@ public class IssueCredentialTest {
     public void testValidConstructor() throws VerityException {
         Context context = TestHelpers.getContext();
         IssueCredential testProtocol = IssueCredential.v1_0(
-                forRelationship, null, "driver license",null,
-                null,null, null,null, null);
+                forRelationship, "driver license", "cred-def-id", null, null,
+                null,null, null,null, null, null);
         testProposalMessage(testProtocol.proposeCredentialMsg(context));
     }
 
@@ -66,11 +65,12 @@ public class IssueCredentialTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
+            String name = "cred-name";
+            String credDefId = "cred-def-id";
             IssueCredential testProtocol = IssueCredential.v1_0(
-                    forRelationship,
-                    attributes,
-                    "comment",
-                    null, null, null, null, null, null);
+                    forRelationship, name, credDefId,
+                    attributes, null, "comment", null,
+                    null, null, null, null);
 
             byte [] offerMsg = testProtocol.proposeCredentialMsgPacked(context);
             JSONObject unpackedProposedMessage = Util.unpackForwardMessage(context, offerMsg);

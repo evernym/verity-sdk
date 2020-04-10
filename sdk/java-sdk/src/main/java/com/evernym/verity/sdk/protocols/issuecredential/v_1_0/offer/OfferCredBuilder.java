@@ -14,11 +14,6 @@ public class OfferCredBuilder extends CredRestrictionBuilder<OfferCredBuilder> {
         return new OfferCredBuilder();
     }
 
-    public OfferCredBuilder comment(String comment) {
-        addToJSON("comment", comment);
-        return this;
-    }
-
     public OfferCredBuilder credentialPreview(List<CredPreviewAttribute> attributes, MessageFamily msgFamily) {
         JSONObject jsonObject = CredPreviewBuilder
                 .blank()
@@ -26,7 +21,7 @@ public class OfferCredBuilder extends CredRestrictionBuilder<OfferCredBuilder> {
                 .attributes(attributes)
                 .build()
                 .toJson();
-        addToJSON("credentialPreview", jsonObject);
+        addToJSON("credential_preview", jsonObject);
         return this;
     }
 
