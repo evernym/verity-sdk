@@ -18,24 +18,43 @@ public interface IssueCredential extends MessageFamily {
 
 
     static IssueCredential_0_6 v0_6(String forRelationship,
-                                String name,
-                                Map<String, String> values,
-                                String credDefId) {
+                                    String name,
+                                    Map<String, String> values,
+                                    String credDefId) {
+
         return new IssueCredential_0_6(forRelationship, name, values, credDefId);
     }
 
     static IssueCredential_0_6 v0_6(String forRelationship,
-                                String threadId) {
+                                    String threadId) {
+
         return new IssueCredential_0_6(forRelationship, threadId);
     }
 
-    static IssueCredential_1_0 v1_0(String forRelationship, String name, String credDefId,
-                                    List<CredPreviewAttribute> attributes, String comment,
-                                    String schemaIssuerId, String schemaId, String schemaName,
-                                    String schemaVersion, String issuerDID, String price) {
+    static IssueCredential_1_0 v1_0(String forRelationship,
+                                    String name,
+                                    String credDefId,
+                                    List<CredPreviewAttribute> attributes,
+                                    String comment,
+                                    String schemaIssuerId,
+                                    String schemaId,
+                                    String schemaName,
+                                    String schemaVersion,
+                                    String issuerDID,
+                                    String price) {
+
         return new IssueCredential_1_0(
-                forRelationship, name, credDefId, attributes, comment, schemaIssuerId,
-                schemaId, schemaName, schemaVersion, issuerDID, price);
+                forRelationship,
+                name,
+                credDefId,
+                attributes,
+                comment,
+                schemaIssuerId,
+                schemaId,
+                schemaName,
+                schemaVersion,
+                issuerDID,
+                price);
     }
 
     static IssueCredential_1_0 v1_0(String forRelationship,
