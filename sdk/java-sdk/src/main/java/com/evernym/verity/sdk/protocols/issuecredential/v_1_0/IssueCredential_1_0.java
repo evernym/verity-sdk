@@ -4,6 +4,7 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_preview.CredPreviewAttribute;
+import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_req.CredReqBuilder;
 import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.offer.OfferCredBuilder;
 import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.proposal.ProposeCredBuilder;
 import com.evernym.verity.sdk.utils.Context;
@@ -28,6 +29,7 @@ public class IssueCredential_1_0 extends Protocol implements IssueCredential {
 
     String SEND_PROPOSAL = "send-proposal";
     String SEND_OFFER = "send-offer";
+    String SEND_REQ_CRED = "send-req-cred";
 
     String forRelationship;
     String name;
@@ -149,7 +151,9 @@ public class IssueCredential_1_0 extends Protocol implements IssueCredential {
                 .credentialPreview(attributes, this)
                 .build()
                 .toJson();
+
         addThread(js);
+
         return js;
 
     }
@@ -160,18 +164,34 @@ public class IssueCredential_1_0 extends Protocol implements IssueCredential {
     }
 
     @Override
-    public void requestCredential(Context context) {
-        throw new UnsupportedOperationException();
+    public void requestCredential(Context context) throws IOException, VerityException {
+        send(context, requestCredentialMsg(context));
     }
 
     @Override
     public JSONObject requestCredentialMsg(Context context) {
-        throw new UnsupportedOperationException();
+        if(!created) {
+            throw new IllegalArgumentException("Unable to request credential when NOT starting the interaction");
+        }
+
+        JSONObject js = CredReqBuilder
+                .blank()
+                .forRelationship(forRelationship)
+                .type(getMessageType(SEND_REQ_CRED))
+                .id(getNewId())
+                .credDefId(credDefId)
+                .comment(comment)
+                .build()
+                .toJson();
+
+        addThread(js);
+
+        return js;
     }
 
     @Override
-    public byte[] requestCredentialMsgPacked(Context context) {
-        throw new UnsupportedOperationException();
+    public byte[] requestCredentialMsgPacked(Context context) throws VerityException {
+        return packMsg(context, requestCredentialMsg(context));
     }
 
     /**
