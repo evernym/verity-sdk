@@ -3,20 +3,23 @@ package com.evernym.verity.sdk.protocols.issue_cred.v_1_0;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
-import com.evernym.verity.sdk.protocols.issuecredential.v_1_0.cred_preview.CredPreviewAttribute;
+import com.evernym.verity.sdk.protocols.issuecredential.v1_0.CredPreviewAttribute;
+import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 
 public class IssueCredentialTest {
 
     private String forRelationship = "...someDid...";
-    private List<CredPreviewAttribute> attributes = new ArrayList<CredPreviewAttribute>();
+    private List<CredPreviewAttribute> attributes = new ArrayList<>();
 
     public IssueCredentialTest() {
         attributes.add(new CredPreviewAttribute("name", null, "Jose Smith"));
@@ -26,7 +29,7 @@ public class IssueCredentialTest {
 
     @Test
     public void testGetMessageType() {
-        IssueCredential testProtocol = IssueCredential.v1_0(
+        IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(
                 forRelationship,
                 "dummy-thread-id"
         );
@@ -38,14 +41,14 @@ public class IssueCredentialTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorWithRequiredFieldAsNull() throws VerityException {
+    public void testConstructorWithRequiredFieldAsNull() {
         IssueCredential.v1_0(null, null,
                 null, null, null,null,
                 null,null, null,null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructorWithAllOptionalAsNull() throws VerityException {
+    public void testConstructorWithAllOptionalAsNull() {
         IssueCredential.v1_0(
                 forRelationship, null, null, null, null,null,
                 null,null, null,null, null);
@@ -54,7 +57,7 @@ public class IssueCredentialTest {
     @Test
     public void testValidConstructor() throws VerityException {
         Context context = TestHelpers.getContext();
-        IssueCredential testProtocol = IssueCredential.v1_0(
+        IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(
                 forRelationship, "driver license", "cred-def-id", null, null,
                 null,null, null,null, null, null);
         testProposalMessage(testProtocol.proposeCredentialMsg(context));
@@ -67,7 +70,7 @@ public class IssueCredentialTest {
             context = TestHelpers.getContext();
             String name = "cred-name";
             String credDefId = "cred-def-id";
-            IssueCredential testProtocol = IssueCredential.v1_0(
+            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(
                     forRelationship, name, credDefId,
                     attributes, null, "comment", null,
                     null, null, null, null);
@@ -94,7 +97,7 @@ public class IssueCredentialTest {
         assertNotNull(msg.getJSONObject("~thread").getString("thid"));
         assertEquals(forRelationship, msg.getString("~for_relationship"));
 
-        ArrayList<Boolean> optionalFieldCheckResults = new ArrayList<Boolean>();
+        ArrayList<Boolean> optionalFieldCheckResults = new ArrayList<>();
 
         optionalFieldCheckResults.add(msg.has("credential_proposal"));
         optionalFieldCheckResults.add(msg.has("comment"));

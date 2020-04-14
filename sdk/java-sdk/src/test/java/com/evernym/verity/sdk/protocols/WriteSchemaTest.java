@@ -4,6 +4,7 @@ import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
+import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -13,14 +14,14 @@ import static org.junit.Assert.*;
 
 public class WriteSchemaTest {
 
-    private String schemaName = "test schema";
-    private String schemaVersion = "0.0.1";
-    private String attr1 = "name";
-    private String attr2 = "degree";
+    private final String schemaName = "test schema";
+    private final String schemaVersion = "0.0.1";
+    private final String attr1 = "name";
+    private final String attr2 = "degree";
 
     @Test
     public void testGetMessageType() {
-        WriteSchema testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1);
+        WriteSchemaV0_6 testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1);
         String msgName = "msg name";
         assertEquals(
                 Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
@@ -30,7 +31,7 @@ public class WriteSchemaTest {
     @Test
     public void testConstructor() throws WalletException, UndefinedContextException {
         Context context = TestHelpers.getContext();
-        WriteSchema writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
+        WriteSchemaV0_6 writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
         JSONObject msg = writeSchema.writeMsg(context);
 
         assertEquals(schemaName, msg.get("name"));
@@ -54,7 +55,7 @@ public class WriteSchemaTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            WriteSchema testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
+            WriteSchemaV0_6 testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
             byte[] message = testProtocol.writeMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
             assertEquals(

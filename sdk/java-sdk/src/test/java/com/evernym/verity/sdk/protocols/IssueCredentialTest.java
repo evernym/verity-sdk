@@ -3,6 +3,7 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
+import com.evernym.verity.sdk.protocols.issuecredential.v0_6.IssueCredentialV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -29,7 +30,7 @@ public class IssueCredentialTest {
 
     @Test
     public void testGetMessageType() {
-        IssueCredential testProtocol = IssueCredential.v0_6(
+        IssueCredentialV0_6 testProtocol = IssueCredential.v0_6(
                 forRelationship,
                 credentialName,
                 credentialValues,
@@ -45,7 +46,7 @@ public class IssueCredentialTest {
     @Test
     public void testConstructor() throws VerityException {
         Context context = TestHelpers.getContext();
-        IssueCredential testProtocol = IssueCredential.v0_6(
+        IssueCredentialV0_6 testProtocol = IssueCredential.v0_6(
                 forRelationship,
                 credentialName,
                 credentialValues,
@@ -63,6 +64,7 @@ public class IssueCredentialTest {
         assertEquals(forRelationship, msg.getString("~for_relationship"));
         assertEquals(credentialName, msg.getString("name"));
         assertEquals(credDefId, msg.getString("credDefId"));
+        //noinspection AssertEqualsBetweenInconvertibleTypes
         assertEquals(credentialValues, msg.getJSONObject("credentialValues").toMap());
         assertEquals(price, msg.getString("price"));
     }
@@ -82,7 +84,7 @@ public class IssueCredentialTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            IssueCredential testProtocol = IssueCredential.v0_6(
+            IssueCredentialV0_6 testProtocol = IssueCredential.v0_6(
                     forRelationship,
                     credentialName,
                     credentialValues,

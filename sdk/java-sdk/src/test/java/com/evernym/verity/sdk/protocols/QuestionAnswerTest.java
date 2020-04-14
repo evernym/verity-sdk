@@ -3,6 +3,7 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.questionanswer.QuestionAnswer;
+import com.evernym.verity.sdk.protocols.questionanswer.v1_0.QuestionAnswerV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -12,15 +13,15 @@ import static org.junit.Assert.*;
 
 public class QuestionAnswerTest {
 
-    private String forRelationship = "abcd12345";
-    private String questionText = "Question text";
-    private String questionDetail = "Optional question detail";
-    private String[] validResponses = {"Yes", "No"};
-    private boolean requireSignature = true;
+    private final String forRelationship = "abcd12345";
+    private final String questionText = "Question text";
+    private final String questionDetail = "Optional question detail";
+    private final String[] validResponses = {"Yes", "No"};
+    private final boolean requireSignature = true;
 
     @Test
     public void testGetMessageType() {
-        QuestionAnswer questionAnswer = QuestionAnswer.v1_0(
+        QuestionAnswerV1_0 questionAnswer = QuestionAnswer.v1_0(
                 forRelationship,
                 questionText,
                 questionDetail,
@@ -39,7 +40,7 @@ public class QuestionAnswerTest {
     @Test
     public void testConstructor() throws VerityException {
         Context context = TestHelpers.getContext();
-        QuestionAnswer questionAnswer = QuestionAnswer.v1_0(
+        QuestionAnswerV1_0 questionAnswer = QuestionAnswer.v1_0(
                 forRelationship,
                 questionText,
                 questionDetail,
@@ -61,17 +62,12 @@ public class QuestionAnswerTest {
         assertNotNull(msg.getJSONArray("valid_responses"));
     }
 
-    private void testStatusMessage(JSONObject msg) {
-        assertNotNull(msg.getString("@id"));
-        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
-    }
-
     @Test
     public void testAsk() throws Exception {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            QuestionAnswer questionAnswer = QuestionAnswer.v1_0(
+            QuestionAnswerV1_0 questionAnswer = QuestionAnswer.v1_0(
                     forRelationship,
                     questionText,
                     questionDetail,

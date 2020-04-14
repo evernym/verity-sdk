@@ -1,0 +1,27 @@
+package com.evernym.verity.sdk.protocols.relationship.v1_0;
+
+import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.Util;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+public interface RelationshipV1_0 extends MessageFamily {
+    String QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    String FAMILY = "relationship-provisioning";
+    String VERSION = "1.0";
+
+    default String qualifier() {return QUALIFIER;}
+    default String family() { return FAMILY;}
+    default String version() {return VERSION;}
+
+    void createKey(Context context) throws IOException, VerityException;
+    JSONObject createKeyMsg(Context context) throws IOException, VerityException;
+    byte[] createKeyMsgPacked(Context context) throws IOException, VerityException;
+
+    void prepareInvitation(Context context) throws IOException, VerityException;
+    JSONObject prepareInvitationMsg(Context context) throws IOException, VerityException;
+    byte[] prepareInvitationMsgPacked(Context context) throws IOException, VerityException;
+}

@@ -8,18 +8,25 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
+import com.evernym.verity.sdk.protocols.connecting.v0_6.ConnectingV0_6;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
+import com.evernym.verity.sdk.protocols.issuecredential.v0_6.IssueCredentialV0_6;
 import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
-import com.evernym.verity.sdk.protocols.presentproof.Attribute;
+import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.PresentProof;
-import com.evernym.verity.sdk.protocols.presentproof.Restriction;
-import com.evernym.verity.sdk.protocols.presentproof.RestrictionBuilder;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.PresentProofV0_6;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.Restriction;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.RestrictionBuilder;
 import com.evernym.verity.sdk.protocols.provision.Provision;
 import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
+import com.evernym.verity.sdk.protocols.questionanswer.v1_0.CommittedAnswerV1_0;
 import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
 import com.evernym.verity.sdk.protocols.updateconfigs.UpdateConfigs;
 import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
+import com.evernym.verity.sdk.protocols.writecreddef.v0_6.WriteCredentialDefinitionV0_6;
 import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
+import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
 import com.evernym.verity.sdk.utils.Util;
@@ -115,7 +122,7 @@ public class App extends Helper {
 
     void setupIssuer() throws IOException, VerityException {
         // constructor for the Issuer Setup protocol
-        IssuerSetup newIssuerSetup = IssuerSetup.v0_6();
+        IssuerSetupV0_6 newIssuerSetup = IssuerSetup.v0_6();
 
         AtomicBoolean setupComplete = new AtomicBoolean(false); // spinlock bool
 
@@ -146,7 +153,7 @@ public class App extends Helper {
 
     void issuerIdentifier() throws IOException, VerityException {
         // constructor for the Issuer Setup protocol
-        IssuerSetup issuerSetup = IssuerSetup.v0_6();
+        IssuerSetupV0_6 issuerSetup = IssuerSetup.v0_6();
 
         AtomicBoolean issuerComplete = new AtomicBoolean(false); // spinlock bool
 
@@ -204,7 +211,7 @@ public class App extends Helper {
         // Step 1
 
         // Constructor for the Connecting API
-        Connecting connecting = Connecting.v0_6(UUID.randomUUID().toString(), true);
+        ConnectingV0_6 connecting = Connecting.v0_6(UUID.randomUUID().toString(), true);
 
         // handler for the response to the request to start the Connecting protocol.
         AtomicBoolean startConnectionComplete = new AtomicBoolean(false); // spinlock bool
@@ -256,7 +263,7 @@ public class App extends Helper {
         String questionDetail = "Checking up on you today.";
         String[] validResponses = {"Great!", "Not so good."};
 
-        CommittedAnswer committedAnswer = CommittedAnswer.v1_0(
+        CommittedAnswerV1_0 committedAnswer = CommittedAnswer.v1_0(
                 forDID,
                 questionText,
                 questionDetail,
@@ -287,7 +294,7 @@ public class App extends Helper {
         String schemaVersion = "0.1";
 
         // constructor for the Write Schema protocol
-        WriteSchema writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, "name", "degree");
+        WriteSchemaV0_6 writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, "name", "degree");
 
         AtomicBoolean schemaComplete = new AtomicBoolean(false); // spinlock bool
         AtomicReference<String> schemaIdRef = new AtomicReference<>();
@@ -321,7 +328,7 @@ public class App extends Helper {
         String credDefTag = "latest";
 
         // constructor for the Write Credential Definition protocol
-        WriteCredentialDefinition def = WriteCredentialDefinition.v0_6(credDefName, schemaId, credDefTag);
+        WriteCredentialDefinitionV0_6 def = WriteCredentialDefinition.v0_6(credDefName, schemaId, credDefTag);
 
         AtomicBoolean defComplete = new AtomicBoolean(false); // spinlock bool
         AtomicReference<String> defIdRef = new AtomicReference<>();
@@ -354,7 +361,7 @@ public class App extends Helper {
         credentialData.put("name", "Joe Smith");
         credentialData.put("degree", "Bachelors");
         // constructor for the Issue Credential protocol
-        IssueCredential issue = IssueCredential.v0_6(forDID, credentialName, credentialData, defId);
+        IssueCredentialV0_6 issue = IssueCredential.v0_6(forDID, credentialName, credentialData, defId);
 
         AtomicBoolean offerComplete = new AtomicBoolean(false); // spinlock bool
 
@@ -389,11 +396,11 @@ public class App extends Helper {
                 .issuerDid(issuerDID)
                 .build();
 
-        Attribute nameAttr = PresentProof.attribute("name", restriction);
-        Attribute degreeAttr = PresentProof.attribute("degree", restriction);
+        Attribute nameAttr = PresentProofV0_6.attribute("name", restriction);
+        Attribute degreeAttr = PresentProofV0_6.attribute("degree", restriction);
 
         // constructor for the Present Proof protocol
-        PresentProof proof = PresentProof.v0_6(forDID, proofName, nameAttr, degreeAttr);
+        PresentProofV0_6 proof = PresentProof.v0_6(forDID, proofName, nameAttr, degreeAttr);
 
         AtomicBoolean proofComplete = new AtomicBoolean(false); // spinlock bool
 

@@ -2,10 +2,11 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.presentproof.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.PresentProof;
-import com.evernym.verity.sdk.protocols.presentproof.Restriction;
-import com.evernym.verity.sdk.protocols.presentproof.RestrictionBuilder;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.Attribute;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.PresentProofV0_6;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.Restriction;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.RestrictionBuilder;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONArray;
@@ -27,11 +28,11 @@ public class PresentProofTest {
             .blank()
             .issuerDid("UOISDFOPUASOFIUSAF")
             .build();
-    private Attribute attr1 = PresentProof.attribute("age", r1);
+    private Attribute attr1 = PresentProofV0_6.attribute("age", r1);
 
     @Test
     public void testGetMessageType() {
-        PresentProof testProtocol = PresentProof.v0_6(forRelationship, "");
+        PresentProofV0_6 testProtocol = PresentProof.v0_6(forRelationship, "");
         String msgName = "msg name";
         assertEquals(Util.getMessageType(
                 Util.EVERNYM_MSG_QUALIFIER,
@@ -44,7 +45,7 @@ public class PresentProofTest {
     @Test
     public void testConstructorWithAttr() throws VerityException {
         Context context = TestHelpers.getContext();
-        PresentProof testProtocol = PresentProof.v0_6(forRelationship, proofRequestName, attr1);
+        PresentProofV0_6 testProtocol = PresentProof.v0_6(forRelationship, proofRequestName, attr1);
 
         JSONObject msg = testProtocol.requestMsg(context);
         testRequestMsgMessages(msg);
@@ -79,7 +80,7 @@ public class PresentProofTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            PresentProof presentProof = PresentProof.v0_6(forRelationship, proofRequestName, attr1);
+            PresentProofV0_6 presentProof = PresentProof.v0_6(forRelationship, proofRequestName, attr1);
             byte [] message = presentProof.requestMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
             assertEquals(
@@ -99,7 +100,7 @@ public class PresentProofTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            PresentProof testProtocol = PresentProof.v0_6(forRelationship, UUID.randomUUID().toString());
+            PresentProofV0_6 testProtocol = PresentProof.v0_6(forRelationship, UUID.randomUUID().toString());
             byte [] message = testProtocol.statusMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
             assertEquals(
