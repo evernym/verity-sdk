@@ -1,15 +1,16 @@
-package com.evernym.verity.sdk.protocols.issuersetup.v0_6;
+package com.evernym.verity.sdk.protocols.issuersetup;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class IssuerSetupImplV0_6 extends Protocol implements IssuerSetupV0_6 {
+class IssuerSetupImplV0_6 extends Protocol implements IssuerSetupV0_6 {
 
-    public IssuerSetupImplV0_6() {
+    IssuerSetupImplV0_6() {
         super();
     }
 

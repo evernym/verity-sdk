@@ -1,6 +1,5 @@
 package com.evernym.verity.sdk.protocols.updateconfigs;
 
-import com.evernym.verity.sdk.protocols.updateconfigs.v0_6.UpdateConfigsImplV0_6;
 import com.evernym.verity.sdk.protocols.updateconfigs.v0_6.UpdateConfigsV0_6;
 
 public class UpdateConfigs {

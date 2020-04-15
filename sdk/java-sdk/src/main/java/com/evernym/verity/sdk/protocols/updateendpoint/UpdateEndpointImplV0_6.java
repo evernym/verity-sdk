@@ -1,16 +1,17 @@
-package com.evernym.verity.sdk.protocols.updateendpoint.v0_6;
+package com.evernym.verity.sdk.protocols.updateendpoint;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class UpdateEndpointImplV0_6 extends Protocol implements UpdateEndpointV0_6 {
+class UpdateEndpointImplV0_6 extends Protocol implements UpdateEndpointV0_6 {
 
-    public UpdateEndpointImplV0_6() {
+    UpdateEndpointImplV0_6() {
         super();
     }
 

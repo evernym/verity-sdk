@@ -1,6 +1,5 @@
 package com.evernym.verity.sdk.protocols.questionanswer;
 
-import com.evernym.verity.sdk.protocols.questionanswer.v1_0.QuestionAnswerImplV1_0;
 import com.evernym.verity.sdk.protocols.questionanswer.v1_0.QuestionAnswerV1_0;
 
 public class QuestionAnswer {

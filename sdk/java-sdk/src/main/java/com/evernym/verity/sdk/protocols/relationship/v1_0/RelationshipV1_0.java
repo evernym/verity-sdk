@@ -10,16 +10,16 @@ import java.io.IOException;
 
 public interface RelationshipV1_0 extends MessageFamily {
     String QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
-    String FAMILY = "relationship-provisioning";
+    String FAMILY = "relationship";
     String VERSION = "1.0";
 
     default String qualifier() {return QUALIFIER;}
     default String family() { return FAMILY;}
     default String version() {return VERSION;}
 
-    void createKey(Context context) throws IOException, VerityException;
-    JSONObject createKeyMsg(Context context) throws IOException, VerityException;
-    byte[] createKeyMsgPacked(Context context) throws IOException, VerityException;
+    void create(Context context) throws IOException, VerityException;
+    JSONObject createMsg(Context context) throws IOException, VerityException;
+    byte[] createMsgPacked(Context context) throws IOException, VerityException;
 
     void prepareInvitation(Context context) throws IOException, VerityException;
     JSONObject prepareInvitationMsg(Context context) throws IOException, VerityException;

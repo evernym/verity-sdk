@@ -1,6 +1,5 @@
 package com.evernym.verity.sdk.protocols.updateendpoint;
 
-import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointImplV0_6;
 import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointV0_6;
 
 public class UpdateEndpoint {

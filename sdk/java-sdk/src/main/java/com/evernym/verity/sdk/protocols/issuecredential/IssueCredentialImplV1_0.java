@@ -1,7 +1,8 @@
-package com.evernym.verity.sdk.protocols.issuecredential.v1_0;
+package com.evernym.verity.sdk.protocols.issuecredential;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.issuecredential.v1_0.*;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ValidationUtil;
 import org.json.JSONObject;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
-public class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
+class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     // flag if this instance started the interaction
     boolean created = false;
 
@@ -33,11 +34,7 @@ public class IssueCredentialImplV1_0 extends Protocol implements IssueCredential
     String price;
 
 
-    /**
-     *
-     * @param forRelationship pairwise relationship identifier
-     */
-    public IssueCredentialImplV1_0(String forRelationship,
+    IssueCredentialImplV1_0(String forRelationship,
                                    String name,
                                    String credDefId,
                                    List<CredPreviewAttribute> attributes,
@@ -68,15 +65,12 @@ public class IssueCredentialImplV1_0 extends Protocol implements IssueCredential
         this.created = true;
     }
 
-    public IssueCredentialImplV1_0(String forRelationship, String threadId) {
+    IssueCredentialImplV1_0(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
     }
 
-    /**
-     * Sends the proposal message to the connection
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     */
+
     @Override
     public void proposeCredential(Context context) throws IOException, VerityException {
         send(context, proposeCredentialMsg(context));
@@ -113,10 +107,6 @@ public class IssueCredentialImplV1_0 extends Protocol implements IssueCredential
         return packMsg(context, proposeCredentialMsg(context));
     }
 
-    /**
-     * Sends the credential offer message to the connection
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     */
     @Override
     public void offerCredential(Context context) throws IOException, VerityException {
         send(context, offerCredentialMsg(context));
@@ -183,10 +173,6 @@ public class IssueCredentialImplV1_0 extends Protocol implements IssueCredential
         return packMsg(context, requestCredentialMsg(context));
     }
 
-    /**
-     * Sends the issue credential message to the connection
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     */
     @Override
     public void issueCredential(Context context) {
         throw new UnsupportedOperationException();

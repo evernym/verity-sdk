@@ -1,6 +1,5 @@
 package com.evernym.verity.sdk.protocols.writeschema;
 
-import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaImplV0_6;
 import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 
 public class WriteSchema {

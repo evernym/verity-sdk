@@ -1,7 +1,10 @@
-package com.evernym.verity.sdk.protocols.presentproof.v0_6;
+package com.evernym.verity.sdk.protocols.presentproof;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.Attribute;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.Predicate;
+import com.evernym.verity.sdk.protocols.presentproof.v0_6.PresentProofV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -13,7 +16,7 @@ import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
 /**
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
-public class PresentProofImplV0_6 extends Protocol implements PresentProofV0_6 {
+class PresentProofImplV0_6 extends Protocol implements PresentProofV0_6 {
 
     public String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
     public String family() {return "present-proof";}
@@ -30,23 +33,18 @@ public class PresentProofImplV0_6 extends Protocol implements PresentProofV0_6 {
     Attribute[] proofAttrs;
     Predicate[] proofPredicates;
 
-    //FIXME: only needed 'Undefined interface' in agency?
-    public PresentProofImplV0_6() {
+//    //FIXME: only needed 'Undefined interface' in agency?
+//    public PresentProofImplV0_6() {
+//
+//    }
 
-    }
-
-    public PresentProofImplV0_6(String forRelationship, String threadId) {
+    PresentProofImplV0_6(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
     }
 
-    /**
-     * Initializes the proof request object
-     * @param forRelationship DID of relationship where proof request will be sent to
-     * @param name The name of the proof request
-     * @param proofAttrs The requested attributes of the proof request
-     */
-    public PresentProofImplV0_6(String forRelationship, String name, Attribute[] proofAttrs) {
+
+    PresentProofImplV0_6(String forRelationship, String name, Attribute[] proofAttrs) {
         this(forRelationship, name, proofAttrs, null);
     }
 
@@ -57,7 +55,7 @@ public class PresentProofImplV0_6 extends Protocol implements PresentProofV0_6 {
      * @param proofAttrs The requested attributes of the proof request
      * @param proofPredicates The requested predicates of the proof request
      */
-    public PresentProofImplV0_6(String forRelationship, String name, Attribute[] proofAttrs, Predicate[] proofPredicates) {
+    PresentProofImplV0_6(String forRelationship, String name, Attribute[] proofAttrs, Predicate[] proofPredicates) {
         super();
         this.forRelationship = forRelationship;
         this.name = name;

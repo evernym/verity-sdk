@@ -1,9 +1,9 @@
-package com.evernym.verity.sdk.protocols.connecting.v0_6;
+package com.evernym.verity.sdk.protocols.connecting;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.TestUtil;
-import com.evernym.verity.sdk.protocols.connecting.Connecting;
+import com.evernym.verity.sdk.protocols.connecting.v0_6.ConnectingV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -33,7 +33,7 @@ public class ConnectingTest {
 
     @Test
     public void testConstructorWithSourceId() throws VerityException {
-        ConnectingImplV0_6 connecting = Connecting.v0_6(sourceId);
+        ConnectingImplV0_6 connecting = (ConnectingImplV0_6) Connecting.v0_6(sourceId);
         assertEquals(sourceId, connecting.sourceId());
         assertNull(phoneNumber, connecting.phoneNumber());
         assertFalse(connecting.includePublicDID());
@@ -42,7 +42,7 @@ public class ConnectingTest {
 
     @Test
     public void testConstructorWithSourceIdAndUsePublicDid() throws VerityException {
-        ConnectingImplV0_6 connecting = Connecting.v0_6(sourceId, includePublicDID);
+        ConnectingImplV0_6 connecting = (ConnectingImplV0_6) Connecting.v0_6(sourceId, includePublicDID);
         assertEquals(sourceId, connecting.sourceId());
         assertNull(connecting.phoneNumber());
         assertEquals(includePublicDID, connecting.includePublicDID());
@@ -51,7 +51,7 @@ public class ConnectingTest {
 
     @Test
     public void testConstructorWithSourceIdAndPhoneNumber() throws VerityException {
-        ConnectingImplV0_6 connecting = Connecting.v0_6(sourceId, phoneNumber);
+        ConnectingImplV0_6 connecting = (ConnectingImplV0_6) Connecting.v0_6(sourceId, phoneNumber);
         assertEquals(sourceId, connecting.sourceId());
         assertEquals(phoneNumber, connecting.phoneNumber());
         assertFalse(connecting.includePublicDID());
@@ -60,7 +60,7 @@ public class ConnectingTest {
 
     @Test
     public void testFullConstructor() throws VerityException {
-        ConnectingImplV0_6 connecting = Connecting.v0_6(sourceId, phoneNumber, includePublicDID);
+        ConnectingImplV0_6 connecting = (ConnectingImplV0_6) Connecting.v0_6(sourceId, phoneNumber, includePublicDID);
         assertEquals(phoneNumber, connecting.phoneNumber());
         assertEquals(includePublicDID, connecting.includePublicDID());
         testConnectMsg(connecting, phoneNumber, includePublicDID);

@@ -1,7 +1,8 @@
-package com.evernym.verity.sdk.protocols.issuecredential.v0_6;
+package com.evernym.verity.sdk.protocols.issuecredential;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.issuecredential.v0_6.IssueCredentialV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 /**
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
-public class IssueCredentialImplV0_6 extends Protocol implements IssueCredentialV0_6 {
+class IssueCredentialImplV0_6 extends Protocol implements IssueCredentialV0_6 {
     String OFFER_CREDENTIAL = "send-offer";
     String ISSUE_CREDENTIAL = "issue-credential";
     String GET_STATUS = "get-status";
@@ -29,13 +30,8 @@ public class IssueCredentialImplV0_6 extends Protocol implements IssueCredential
 //    public IssueCredentialImplV0_6() {
 //    }
 
-    /**
-     * Creates a new credential
-     * @param name The name of credential.
-     * @param credDefId The credDefId of the credential definition being used
-     * @param values key-value pairs of credential attribute fields with the specified params defined in the credential definition
-     */
-    public IssueCredentialImplV0_6(String forRelationship, String name, Map<String, String> values, String credDefId) {
+
+    IssueCredentialImplV0_6(String forRelationship, String name, Map<String, String> values, String credDefId) {
         super();
         this.forRelationship = forRelationship;
         this.name = name;
@@ -45,7 +41,7 @@ public class IssueCredentialImplV0_6 extends Protocol implements IssueCredential
         this.created = true;
     }
 
-    public IssueCredentialImplV0_6(String forRelationship, String threadId) {
+    IssueCredentialImplV0_6(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
     }

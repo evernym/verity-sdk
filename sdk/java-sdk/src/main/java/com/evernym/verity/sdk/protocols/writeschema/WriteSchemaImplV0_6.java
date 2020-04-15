@@ -1,9 +1,10 @@
-package com.evernym.verity.sdk.protocols.writeschema.v0_6;
+package com.evernym.verity.sdk.protocols.writeschema;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,7 +17,7 @@ import java.io.IOException;
  * SDK/enterprise.
  */
 
-public class WriteSchemaImplV0_6 extends Protocol implements WriteSchemaV0_6 {
+class WriteSchemaImplV0_6 extends Protocol implements WriteSchemaV0_6 {
 
     String name;
     String version;

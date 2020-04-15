@@ -1,37 +1,28 @@
-package com.evernym.verity.sdk.protocols.connecting.v1_0;
+package com.evernym.verity.sdk.protocols.connecting;
 
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
-/**
- * Builds and sends a new encrypted agent message for the Connections protocol.
- */
-public class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
+
+class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     String parentThreadId;
     String base64InviteURL;
     String label;
 
-    public ConnectionsImplV1_0() {
+    ConnectionsImplV1_0() {
 
     }
 
-    /**
-     * this is used by invitee to respond to an invitation
-     * @param parentThreadId id of invitation message
-     * @param base64InviteURL received invitation's url
-     */
-    public ConnectionsImplV1_0(String parentThreadId, String label, String base64InviteURL) {
+
+    ConnectionsImplV1_0(String parentThreadId, String label, String base64InviteURL) {
         this.parentThreadId = parentThreadId;
         this.base64InviteURL = base64InviteURL;
         this.label = label;
     }
 
-    /**
-     * can be used by either inviter or invitee once it knows thread id
-     * @param threadId
-     */
-    public ConnectionsImplV1_0(String threadId) {
+    ConnectionsImplV1_0(String threadId) {
         super(threadId);
     }
 

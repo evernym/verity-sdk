@@ -1,8 +1,9 @@
-package com.evernym.verity.sdk.protocols.provision.v0_6;
+package com.evernym.verity.sdk.protocols.provision;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.provision.v0_6.ProvisionV0_6;
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
@@ -10,19 +11,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class ProvisionImplV0_6 extends Protocol implements ProvisionV0_6 {
-    public ProvisionImplV0_6() {
+class ProvisionImplV0_6 extends Protocol implements ProvisionV0_6 {
+    ProvisionImplV0_6() {
         super();
     }
 
-    /**
-     * Sends the connection create message to Verity
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
-     * @return new Context with provisioned details
-     */
+
     public Context provisionSdk(Context context) throws IOException, UndefinedContextException, WalletException {
         HTTPTransport transport = new HTTPTransport();
         byte[] respBytes = transport.sendSyncMessage(context.verityUrl(), provisionSdkMsgPacked(context));
