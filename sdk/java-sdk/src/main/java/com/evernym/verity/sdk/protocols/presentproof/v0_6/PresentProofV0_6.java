@@ -5,6 +5,7 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -13,6 +14,14 @@ import java.io.IOException;
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
 public interface PresentProofV0_6 extends MessageFamily {
+
+    String QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    String FAMILY = "present-proof";
+    String VERSION = "0.6";
+
+    default String qualifier() {return QUALIFIER;}
+    default String family() { return FAMILY;}
+    default String version() {return VERSION;}
 
     static Attribute attribute(String name, Restriction...restrictions) {
         return new Attribute(name, restrictions);

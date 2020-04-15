@@ -21,7 +21,6 @@ public class RelationshipTest {
     String did = "did1";
     String label = "Alice";
     String forRelationship = "did1";
-    String serviceEndpoint = "service-endpoint";
     ArrayList<String> recipKeys = new ArrayList<> (Arrays.asList("1a", "2b"));
     ArrayList<String> routingKeys = new ArrayList<> (Arrays.asList("3c", "4d"));
 
@@ -29,12 +28,11 @@ public class RelationshipTest {
     @Test
     public void testGetMessageType() {
         RelationshipV1_0 relationshipProvisioning = Relationship.v1_0(
-                "",
-                "",
-                "",
-                emptyList(),
-                emptyList(),
-                ""
+                "forRelationship",
+                "threadId",
+                "label",
+                recipKeys,
+                emptyList()
         );
         String msgName = "msg name";
         assertEquals(
@@ -49,49 +47,40 @@ public class RelationshipTest {
     }
 
     @Test
-    public void testCreateKeyMsg() throws VerityException, IOException {
-        RelationshipV1_0 relationshipProvisioning = Relationship.v1_0(
-                "",
-                "",
-                "",
-                emptyList(),
-                emptyList(),
-                "NhhHXi83n2mePEteXMkAaw"
-        );
+    public void testCreateMsg() throws VerityException, IOException {
+        RelationshipV1_0 relationshipProvisioning = Relationship.v1_0();
         JSONObject msg = relationshipProvisioning.createMsg(TestHelpers.getContext());
-        testCreateKeyMsg(msg);
+        testCreateMsg(msg);
     }
 
-    private void testCreateKeyMsg(JSONObject msg) {
+    private void testCreateMsg(JSONObject msg) {
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/create", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
     }
 
     @Test
-    public void testInvitationWithDIDMsg() throws VerityException, IOException {
-        RelationshipV1_0 relationshipProvisioning = Relationship.v1_0(
+    public void testPrepareInvitationWithDID() throws VerityException, IOException {
+        RelationshipV1_0 relationship = Relationship.v1_0(
                 forRelationship,
                 "threadId",
                 label,
-                null,
-                null,
                 did);
-        JSONObject msg = relationshipProvisioning.prepareInvitationMsg(TestHelpers.getContext());
-        testInvitationWithDIDMsg(msg);
+        JSONObject msg = relationship.prepareInvitationMsg(TestHelpers.getContext());
+        testPrepareInvitationWithDID(msg);
     }
 
-    private void testInvitationWithDIDMsg(JSONObject msg) {
+    private void testPrepareInvitationWithDID(JSONObject msg) {
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/prepare-invite", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertNotNull(forRelationship, msg.getString("~for_relationship"));
-        assertEquals(did, msg.getString("did"));
         assertEquals(label, msg.getString("label"));
+        assertEquals(did, msg.getString("did"));
     }
 
     @Test
     public void testInvitationWithKeyMsg() throws VerityException, IOException {
 
-        RelationshipV1_0 relationshipProvisioning = Relationship.v1_0(forRelationship, "threadId", label, recipKeys, routingKeys, null);
+        RelationshipV1_0 relationshipProvisioning = Relationship.v1_0(forRelationship, "threadId", label, recipKeys, routingKeys);
         JSONObject msg = relationshipProvisioning.prepareInvitationMsg(TestHelpers.getContext());
         testInvitationWithKeyMsg(msg);
     }

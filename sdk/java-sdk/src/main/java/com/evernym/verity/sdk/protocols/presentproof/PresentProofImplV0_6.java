@@ -18,10 +18,6 @@ import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
  */
 class PresentProofImplV0_6 extends Protocol implements PresentProofV0_6 {
 
-    public String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
-    public String family() {return "present-proof";}
-    public String version() {return "0.6";}
-
     String PROOF_REQUEST = "request";
     String GET_STATUS = "get-status";
 

@@ -15,8 +15,7 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 
 class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     final static String CREATE = "create";
-
-    String PREPARE_INVITE = "prepare-invite";
+    final static String PREPARE_INVITE = "prepare-invite";
 
     String forRelationship;
     String did;
@@ -24,7 +23,19 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     List<String> recipientKeys;
     List<String> routingKeys;
 
-    RelationshipImplV1_0(String forRelationship, String threadId, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
+    RelationshipImplV1_0() {
+
+    }
+
+    RelationshipImplV1_0(String forRelationship, String threadId, String label, List<String> recipientKeys, List<String> routingKeys) {
+        this(forRelationship, threadId, label, recipientKeys, routingKeys, null);
+    }
+
+    RelationshipImplV1_0(String forRelationship, String threadId, String label, String did) {
+        this(forRelationship, threadId, label, null, null, did);
+    }
+
+    private RelationshipImplV1_0(String forRelationship, String threadId, String label, List<String> recipientKeys, List<String> routingKeys, String did) {
         super(threadId);
         if(recipientKeys != null && recipientKeys.isEmpty()) recipientKeys = null;
         ValidationUtil.checkOnlyOneOptionalFieldExists(Arrays.asList(did, recipientKeys));
@@ -65,6 +76,8 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
         if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
         if(recipientKeys != null) rtn.put("recipient_keys", recipientKeys);
         if(routingKeys != null) rtn.put("routing_keys", routingKeys);
+
+        addThread(rtn);
         return rtn;
     }
 
