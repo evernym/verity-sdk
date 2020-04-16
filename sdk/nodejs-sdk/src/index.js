@@ -11,9 +11,9 @@ module.exports = {
     IssuerSetup: require('./protocols/IssuerSetup'),
     WriteSchema: require('./protocols/WriteSchema'),
     WriteCredentialDefinition: require('./protocols/WriteCredentialDefinition'),
-    Connecting: require('./protocols/Connecting'),
-    IssueCredential: require('./protocols/IssueCredential'),
-    PresentProof: require('./protocols/PresentProof'),
+    Connecting: require('./protocols/connection/Connecting'),
+    IssueCredential: require('./protocols/issue-credential/IssueCredential'),
+    PresentProof: require('./protocols/proof-presentation/PresentProof'),
     CommittedAnswer: require('./protocols/CommittedAnswer')
   },
   utils: require('./utils/index'),
