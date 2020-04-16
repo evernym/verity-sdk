@@ -1,10 +1,6 @@
 package com.evernym.verity.sdk.protocols.issuecredential.v1_0;
 
-import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.protocols.common.CredRestrictionBuilder;
-import org.json.JSONObject;
-
-import java.util.List;
 
 public class ProposeCredBuilder extends CredRestrictionBuilder<ProposeCredBuilder> {
 
@@ -14,17 +10,6 @@ public class ProposeCredBuilder extends CredRestrictionBuilder<ProposeCredBuilde
 
     public ProposeCredBuilder comment(String comment) {
         addToJSON("comment", comment);
-        return this;
-    }
-
-    public ProposeCredBuilder proposal(List<CredPreviewAttribute> attributes, MessageFamily msgFamily) {
-        JSONObject jsonObject = CredPreviewBuilder
-                .blank()
-                .type(msgFamily.getMessageType("credential-preview"))
-                .attributes(attributes)
-                .build()
-                .toJson();
-        addToJSON("credential_proposal", jsonObject);
         return this;
     }
 

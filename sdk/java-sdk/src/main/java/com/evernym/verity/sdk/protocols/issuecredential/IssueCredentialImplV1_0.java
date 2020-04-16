@@ -8,7 +8,7 @@ import com.evernym.verity.sdk.utils.ValidationUtil;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Builds and sends a message asking Verity to issue a credential to a connection
@@ -22,45 +22,24 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     String SEND_REQ_CRED = "send-req-cred";
 
     String forRelationship;
-    String name;
-    String comment;
-    List<CredPreviewAttribute> attributes;
-    String schemaIssuerId;
-    String schemaId;
-    String schemaName;
-    String schemaVersion;
     String credDefId;
-    String issuerDID;
+    Map<String, String> values;
+    String comment;
     String price;
 
-
     IssueCredentialImplV1_0(String forRelationship,
-                                   String name,
-                                   String credDefId,
-                                   List<CredPreviewAttribute> attributes,
-                                   String comment,
-                                   String schemaIssuerId,
-                                   String schemaId,
-                                   String schemaName,
-                                   String schemaVersion,
-                                   String issuerDID,
-                                   String price) {
+                            String credDefId,
+                            Map<String, String> values,
+                            String comment,
+                            String price) {
         super();
         ValidationUtil.checkRequiredField(forRelationship, "forRelationship");
-        ValidationUtil.checkRequiredField(name, "name");
         ValidationUtil.checkRequiredField(credDefId, "credDefId");
 
         this.forRelationship = forRelationship;
-        this.name = name;
         this.credDefId = credDefId;
-
-        this.attributes = attributes;
+        this.values = values;
         this.comment = comment;
-        this.schemaIssuerId = schemaIssuerId;
-        this.schemaId = schemaId;
-        this.schemaName = schemaName;
-        this.schemaVersion = schemaVersion;
-        this.issuerDID = issuerDID;
         this.price = price;
         this.created = true;
     }
@@ -87,14 +66,9 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
                 .forRelationship(forRelationship)
                 .type(getMessageType(SEND_PROPOSAL))
                 .id(getNewId())
-                .comment(comment)
-                .schemaIssuerDid(schemaIssuerId)
-                .schemaId(schemaId)
-                .schemaName(schemaName)
-                .schemaVersion(schemaVersion)
                 .credDefId(credDefId)
-                .issuerDid(issuerDID)
-                .proposal(attributes, this)
+                .credValues(values)
+                .comment(comment)
                 .build()
                 .toJson();
         addThread(js);
@@ -123,11 +97,10 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
                 .forRelationship(forRelationship)
                 .type(getMessageType(SEND_OFFER))
                 .id(getNewId())
-                .name(name)
                 .credDefId(credDefId)
+                .credValues(values)
                 .comment(comment)
                 .price(price)
-                .credentialPreview(attributes, this)
                 .build()
                 .toJson();
 

@@ -1,10 +1,8 @@
 package com.evernym.verity.sdk.protocols.issuecredential;
 
 import com.evernym.verity.sdk.protocols.issuecredential.v0_6.IssueCredentialV0_6;
-import com.evernym.verity.sdk.protocols.issuecredential.v1_0.CredPreviewAttribute;
 import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 
-import java.util.List;
 import java.util.Map;
 
 public class IssueCredential {
@@ -43,28 +41,16 @@ public class IssueCredential {
 
     public static IssueCredentialV1_0 v1_0(
             String forRelationship,
-            String name,
             String credDefId,
-            List<CredPreviewAttribute> attributes,
+            Map<String, String> values,
             String comment,
-            String schemaIssuerId,
-            String schemaId,
-            String schemaName,
-            String schemaVersion,
-            String issuerDID,
             String price) {
 
         return new IssueCredentialImplV1_0(
                 forRelationship,
-                name,
                 credDefId,
-                attributes,
+                values,
                 comment,
-                schemaIssuerId,
-                schemaId,
-                schemaName,
-                schemaVersion,
-                issuerDID,
                 price);
     }
 
