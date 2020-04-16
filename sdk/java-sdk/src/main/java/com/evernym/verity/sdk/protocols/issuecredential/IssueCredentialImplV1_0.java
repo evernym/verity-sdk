@@ -17,9 +17,9 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     // flag if this instance started the interaction
     boolean created = false;
 
-    String SEND_PROPOSAL = "send-proposal";
-    String SEND_OFFER = "send-offer";
-    String SEND_REQ_CRED = "send-req-cred";
+    String SEND_PROPOSAL = "proposal";
+    String SEND_OFFER = "offer";
+    String SEND_REQ_CRED = "req-cred";
 
     String forRelationship;
     String credDefId;

@@ -65,7 +65,7 @@ public class IssueCredentialTest {
             byte [] offerMsg = testProtocol.proposeCredentialMsgPacked(context);
             JSONObject unpackedProposedMessage = Util.unpackForwardMessage(context, offerMsg);
             assertEquals(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/send-proposal",
+                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/proposal",
                     unpackedProposedMessage.getString("@type")
             );
         } catch(Exception e) {
@@ -79,7 +79,7 @@ public class IssueCredentialTest {
     //below are helper methods
 
     private void testProposalMessage(JSONObject msg) {
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/send-proposal", msg.getString("@type"));
+        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/proposal", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertNotNull(msg.getJSONObject("~thread").getString("thid"));
         assertNotNull(msg.getString("cred_def_id"));
