@@ -6,7 +6,6 @@ import com.evernym.verity.sdk.protocols.presentproof.v0_6.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.v0_6.Predicate;
 import com.evernym.verity.sdk.protocols.presentproof.v0_6.PresentProofV0_6;
 import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;

@@ -1,69 +1,78 @@
 package com.evernym.verity.sdk.protocols.connecting;
 
+import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 
 class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
-    String parentThreadId;
-    String base64InviteURL;
+
+    String forRelationship;
     String label;
+    String base64InviteURL;
+
+    String SEND_ACCEPT_INVITE = "accept";
+    String GET_STATUS = "status";
 
     ConnectionsImplV1_0() {
 
-    }
-
-
-    ConnectionsImplV1_0(String parentThreadId, String label, String base64InviteURL) {
-        this.parentThreadId = parentThreadId;
-        this.base64InviteURL = base64InviteURL;
-        this.label = label;
     }
 
     ConnectionsImplV1_0(String threadId) {
         super(threadId);
     }
 
-    //non supported
-
-    @Override
-    public void connect(Context context){
-        throw new UnsupportedOperationException();
+    ConnectionsImplV1_0(String label, String base64InviteURL) {
+        this.label = label;
+        this.base64InviteURL = base64InviteURL;
     }
 
     @Override
-    public JSONObject connectMsg(Context context) { throw new UnsupportedOperationException(); }
-
-    @Override
-    public byte[] connectMsgPacked(Context context){
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void status(Context context) {
-        throw new UnsupportedOperationException();
+    public void status(Context context) throws IOException, VerityException {
+        send(context, statusMsg(context));
     }
 
     @Override
     public JSONObject statusMsg(Context context) {
-        throw new UnsupportedOperationException();
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(GET_STATUS));
+        msg.put("@id", getNewId());
+        msg.put("~for_relationship", forRelationship);
+        addThread(msg);
+
+        return msg;
     }
 
     @Override
-    public byte[] statusMsgPacked(Context context){
-        throw new UnsupportedOperationException();
+    public byte[] statusMsgPacked(Context context) throws VerityException {
+        return packMsg(context, statusMsg(context));
     }
 
     @Override
     public JSONObject acceptMsg(Context context) {
-        throw new UnsupportedOperationException();
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(SEND_ACCEPT_INVITE));
+        msg.put("@id", getNewId());
+        msg.put("~for_relationship", forRelationship);
+        addThread(msg);
+
+        msg.put("label", label);
+        msg.put("invite_url", base64InviteURL);
+
+        return msg;
     }
 
     @Override
-    public void accept(Context context) { throw new UnsupportedOperationException(); }
+    public void accept(Context context) throws VerityException, IOException {
+        send(context, acceptMsg(context));
+    }
 
     @Override
-    public byte[] acceptMsgPacked(Context context) { throw new UnsupportedOperationException(); }
+    public byte[] acceptMsgPacked(Context context) throws VerityException {
+        return packMsg(context, acceptMsg(context));
+    }
 }

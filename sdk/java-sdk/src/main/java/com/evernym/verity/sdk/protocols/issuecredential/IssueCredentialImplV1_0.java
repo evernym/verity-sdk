@@ -14,12 +14,16 @@ import java.util.Map;
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
 class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
+
     // flag if this instance started the interaction
     boolean created = false;
 
     String SEND_PROPOSAL = "proposal";
     String SEND_OFFER = "offer";
-    String SEND_REQ_CRED = "req-cred";
+    String SEND_REQ_CRED = "request";
+    String SEND_ISSUE_CRED = "issue";
+    String SEND_REJECT = "reject";
+    String SEND_STATUS = "status";
 
     String forRelationship;
     String credDefId;
@@ -61,18 +65,17 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
             throw new IllegalArgumentException("Unable to propose credentials when NOT starting the interaction");
         }
 
-        JSONObject js = ProposeCredBuilder
-                .blank()
-                .forRelationship(forRelationship)
-                .type(getMessageType(SEND_PROPOSAL))
-                .id(getNewId())
-                .credDefId(credDefId)
-                .credValues(values)
-                .comment(comment)
-                .build()
-                .toJson();
-        addThread(js);
-        return js;
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(SEND_PROPOSAL));
+        msg.put("@id", getNewId());
+        msg.put("~for_relationship", forRelationship);
+        addThread(msg);
+
+        msg.put("cred_def_id", credDefId);
+        msg.put("credential_values", values);
+        msg.put("comment", comment);
+
+        return msg;
     }
 
 
@@ -92,21 +95,18 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
             throw new IllegalArgumentException("Unable to offer credentials when NOT starting the interaction");
         }
 
-        JSONObject js = OfferCredBuilder
-                .blank()
-                .forRelationship(forRelationship)
-                .type(getMessageType(SEND_OFFER))
-                .id(getNewId())
-                .credDefId(credDefId)
-                .credValues(values)
-                .comment(comment)
-                .price(price)
-                .build()
-                .toJson();
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(SEND_OFFER));
+        msg.put("@id", getNewId());
+        msg.put("~for_relationship", forRelationship);
+        addThread(msg);
 
-        addThread(js);
+        msg.put("cred_def_id", credDefId);
+        msg.put("credential_values", values);
+        msg.put("comment", comment);
+        msg.put("price", price);
 
-        return js;
+        return msg;
 
     }
 
@@ -126,19 +126,16 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
             throw new IllegalArgumentException("Unable to request credential when NOT starting the interaction");
         }
 
-        JSONObject js = CredReqBuilder
-                .blank()
-                .forRelationship(forRelationship)
-                .type(getMessageType(SEND_REQ_CRED))
-                .id(getNewId())
-                .credDefId(credDefId)
-                .comment(comment)
-                .build()
-                .toJson();
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(SEND_REQ_CRED));
+        msg.put("@id", getNewId());
+        msg.put("~for_relationship", forRelationship);
+        addThread(msg);
 
-        addThread(js);
+        msg.put("cred_def_id", credDefId);
+        msg.put("comment", comment);
 
-        return js;
+        return msg;
     }
 
     @Override
@@ -147,47 +144,78 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     }
 
     @Override
-    public void issueCredential(Context context) {
-        throw new UnsupportedOperationException();
+    public void issueCredential(Context context) throws IOException, VerityException{
+        send(context, issueCredentialMsg(context));
     }
 
     @Override
     public JSONObject issueCredentialMsg(Context context) {
-        throw new UnsupportedOperationException();
+
+        if(!created) {
+            throw new IllegalArgumentException("Unable to issue credential when NOT starting the interaction");
+        }
+
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(SEND_ISSUE_CRED));
+        msg.put("@id", getNewId());
+        msg.put("~for_relationship", forRelationship);
+        addThread(msg);
+
+        msg.put("comment", comment);
+
+        return msg;
     }
 
     @Override
-    public byte[] issueCredentialMsgPacked(Context context) {
-        throw new UnsupportedOperationException();
+    public byte[] issueCredentialMsgPacked(Context context) throws VerityException{
+        return packMsg(context, issueCredentialMsg(context));
     }
 
     @Override
-    public void reject(Context context) {
-        throw new UnsupportedOperationException();
+    public void reject(Context context) throws IOException, VerityException {
+        send(context, rejectMsg(context));
     }
 
     @Override
     public JSONObject rejectMsg(Context context) {
-        throw new UnsupportedOperationException();
+        if(!created) {
+            throw new IllegalArgumentException("Unable to reject when NOT starting the interaction");
+        }
+
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(SEND_REJECT));
+        msg.put("@id", getNewId());
+        msg.put("~for_relationship", forRelationship);
+        addThread(msg);
+
+        msg.put("comment", comment);
+
+        return msg;
     }
 
     @Override
-    public byte[] rejectMsgPacked(Context context) {
-        throw new UnsupportedOperationException();
+    public byte[] rejectMsgPacked(Context context) throws VerityException {
+        return packMsg(context, rejectMsg(context));
     }
 
     @Override
-    public void status(Context context) {
-        throw new UnsupportedOperationException();
+    public void status(Context context) throws IOException, VerityException {
+        send(context, statusMsg(context));
     }
 
     @Override
     public JSONObject statusMsg(Context context) {
-        throw new UnsupportedOperationException();
+
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(SEND_STATUS));
+        msg.put("@id", getNewId());
+        msg.put("~for_relationship", forRelationship);
+        addThread(msg);
+        return msg;
     }
 
     @Override
-    public byte[] statusMsgPacked(Context context) {
-        throw new UnsupportedOperationException();
+    public byte[] statusMsgPacked(Context context) throws VerityException {
+        return packMsg(context, statusMsg(context));
     }
 }
