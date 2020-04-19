@@ -110,7 +110,9 @@ public class App extends Helper {
         String INSTITUTION_NAME = "Faber College";
         String LOGO_URL = "http://robohash.org/235";
 
-        UpdateConfigs.v0_6(INSTITUTION_NAME, LOGO_URL).update(context);
+        UpdateConfigs updateConfigs = UpdateConfigs.v0_6(INSTITUTION_NAME, LOGO_URL)
+        updateConfigs.update(context);
+        updateConfigs.status(context);
     }
 
     void setupIssuer() throws IOException, VerityException {
