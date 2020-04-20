@@ -74,7 +74,7 @@ public class IssueCredentialTest extends TestBase {
     @Test
     public void testIssueCred() throws Exception {
         withContext ( context -> {
-            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, null);
+            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, threadId);
             byte [] msg = testProtocol.issueCredentialMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, msg);
             testIssueCredMessage(unpackedMessage);

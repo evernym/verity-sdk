@@ -151,10 +151,6 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     @Override
     public JSONObject issueCredentialMsg(Context context) {
 
-        if(!created) {
-            throw new IllegalArgumentException("Unable to issue credential when NOT starting the interaction");
-        }
-
         JSONObject msg = new JSONObject();
         msg.put("@type", getMessageType(SEND_ISSUE_CRED));
         msg.put("@id", getNewId());
