@@ -21,6 +21,8 @@ public interface UpdateConfigs extends MessageFamily {
 
     static UpdateConfigs v0_6(String name, String logoUrl) { return new UpdateConfigsImpl(name, logoUrl); }
 
+    static UpdateConfigs v0_6() { return new UpdateConfigsImpl(); }
+
     /**
      *
      * @param context

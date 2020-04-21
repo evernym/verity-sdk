@@ -39,6 +39,11 @@ public interface QuestionAnswer extends MessageFamily {
         return new QuestionAnswerImpl(forRelationship, threadId, answer);
     }
 
+    static QuestionAnswer v1_0(String forRelationship,
+                               String threadId) {
+        return new QuestionAnswerImpl(forRelationship, threadId);
+    }
+
     /**
      * Sends the question message to Verity
      * @param context an instance of Context configured with the results of the provision_sdk.py script

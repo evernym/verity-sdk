@@ -20,6 +20,10 @@ public class UpdateConfigsImpl extends Protocol implements UpdateConfigs {
         this.logoUrl = logoUrl;
     }
 
+    UpdateConfigsImpl() {
+        super();
+    }
+
     @Override
     public void update(Context context) throws IOException, VerityException {
         send(context, updateMsg(context));

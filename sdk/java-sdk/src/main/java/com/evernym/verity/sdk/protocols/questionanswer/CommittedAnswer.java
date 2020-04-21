@@ -39,6 +39,11 @@ public interface CommittedAnswer extends MessageFamily {
         return new CommittedAnswerImpl(forRelationship, threadId, answer);
     }
 
+    static CommittedAnswer v1_0(String forRelationship,
+                                String threadId) {
+        return new CommittedAnswerImpl(forRelationship, threadId);
+    }
+
     /**
      * Sends the question message to Verity
      * @param context an instance of Context configured with the results of the provision_sdk.py script

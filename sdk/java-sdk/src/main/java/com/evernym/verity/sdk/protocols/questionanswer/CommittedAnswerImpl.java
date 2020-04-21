@@ -16,4 +16,8 @@ public class CommittedAnswerImpl extends AskCommonImpl implements CommittedAnswe
     public CommittedAnswerImpl(String forRelationship, String threadId, String answer) {
         super(forRelationship, threadId, answer);
     }
+
+    public CommittedAnswerImpl(String forRelationship, String threadId) {
+        super(forRelationship, threadId);
+    }
 }

@@ -18,4 +18,8 @@ public class QuestionAnswerImpl extends AskCommonImpl implements QuestionAnswer 
                               String answer) {
         super(forRelationship, threadId, answer);
     }
+
+    public QuestionAnswerImpl(String forRelationship, String threadId) {
+        super(forRelationship, threadId);
+    }
 }
