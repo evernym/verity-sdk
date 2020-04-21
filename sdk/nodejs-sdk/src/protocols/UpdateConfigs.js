@@ -1,3 +1,5 @@
+'use strict'
+const utils = require('../utils')
 const Protocol = require('./Protocol')
 
 module.exports = class UpdateConfigs extends Protocol {
@@ -17,8 +19,8 @@ module.exports = class UpdateConfigs extends Protocol {
   async updateMsg () {
     var msg = this._getBaseMessage(this.msgNames.UPDATE_CONFIGS)
     msg.configs = [
-        {name: 'name', value: this.name},
-        {name: 'logoUrl', value: this.logoUrl}
+      { name: 'name', value: this.name },
+      { name: 'logoUrl', value: this.logoUrl }
     ]
 
     return msg
