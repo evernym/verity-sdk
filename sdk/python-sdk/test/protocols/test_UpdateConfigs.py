@@ -6,7 +6,7 @@ from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 name = 'Name1'
-logo_url = "http://logo.url"
+logo_url = 'http://logo.url'
 
 
 def test_init():
