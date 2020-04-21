@@ -53,6 +53,11 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
         this.answer = answer;
     }
 
+    public AskCommonImpl(String forRelationship, String threadId) {
+        super(threadId);
+        this.forRelationship = forRelationship;
+    }
+
     public void ask(Context context) throws IOException, VerityException {
         send(context, askMsg(context));
     }
