@@ -19,8 +19,16 @@ public interface UpdateConfigs extends MessageFamily {
     String UPDATE_CONFIGS = "update";
     String GET_STATUS = "get-status";
 
+    /**
+     * Parameterized constructor
+     * @param name Organization name
+     * @param logoUrl Organization logo url
+     */
     static UpdateConfigs v0_6(String name, String logoUrl) { return new UpdateConfigsImpl(name, logoUrl); }
 
+    /**
+     * Construtor useful only for status
+     */
     static UpdateConfigs v0_6() { return new UpdateConfigsImpl(); }
 
     /**
