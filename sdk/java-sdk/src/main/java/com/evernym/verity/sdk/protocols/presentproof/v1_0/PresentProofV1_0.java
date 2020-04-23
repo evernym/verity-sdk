@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols.presentproof.v0_6;
+package com.evernym.verity.sdk.protocols.presentproof.v1_0;
 
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
@@ -16,21 +16,21 @@ import java.io.IOException;
 /**
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
-public interface PresentProofV0_6 extends MessageFamily {
+public interface PresentProofV1_0 extends MessageFamily {
 
-    String QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    String QUALIFIER = Util.COMMUNITY_MSG_QUALIFIER;
     String FAMILY = "present-proof";
-    String VERSION = "0.6";
+    String VERSION = "1.0";
 
     default String qualifier() {return QUALIFIER;}
     default String family() { return FAMILY;}
     default String version() {return VERSION;}
 
-    static Attribute attribute(String name, Restriction...restrictions) {
+    static Attribute attribute(String name, Restriction... restrictions) {
         return new Attribute(name, restrictions);
     }
 
-    static Predicate predicate(String name, int value, Restriction...restrictions) {
+    static Predicate predicate(String name, int value, Restriction... restrictions) {
         return new Predicate(name, value, restrictions);
     }
 

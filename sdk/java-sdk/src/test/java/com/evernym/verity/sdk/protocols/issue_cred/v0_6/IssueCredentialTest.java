@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols;
+package com.evernym.verity.sdk.protocols.issue_cred.v0_6;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;

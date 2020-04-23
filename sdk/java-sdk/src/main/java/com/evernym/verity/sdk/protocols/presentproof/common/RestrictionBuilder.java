@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols.presentproof.v0_6;
+package com.evernym.verity.sdk.protocols.presentproof.common;
 
 import com.evernym.verity.sdk.protocols.common.CredRestrictionBuilder;
 

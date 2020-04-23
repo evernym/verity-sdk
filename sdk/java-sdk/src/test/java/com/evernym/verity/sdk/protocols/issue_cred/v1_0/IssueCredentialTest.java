@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols.issue_cred.v_1_0;
+package com.evernym.verity.sdk.protocols.issue_cred.v1_0;
 
 import com.evernym.verity.sdk.TestBase;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
