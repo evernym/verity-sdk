@@ -1,7 +1,7 @@
 const Protocol = require('../Protocol')
 const utils = require('../utils')
 
-module.exports = class ConnectingV1 extends Protocol {
+module.exports = class ConnectingV10 extends Protocol {
   constructor (label, base64InviteURL, threadId = null) {
     const msgFamily = 'connections'
     const msgFamilyVersion = '1.0'
@@ -11,10 +11,6 @@ module.exports = class ConnectingV1 extends Protocol {
     this.label = label
     this.base64InviteURL = base64InviteURL
 
-    this.addMsgNames()
-  }
-
-  addMsgNames () {
     this.msgNames.SEND_ACCEPT_INVITE = 'accept'
     this.msgNames.GET_STATUS = 'status'
   }

@@ -1,7 +1,7 @@
 const Protocol = require('../Protocol')
 const utils = require('../utils')
 
-module.exports = class IssueCredentialV1 extends Protocol {
+module.exports = class IssueCredentialV10 extends Protocol {
   constructor (forRelationship,
     credDefId = '',
     values = {},
@@ -20,10 +20,6 @@ module.exports = class IssueCredentialV1 extends Protocol {
     this.price = price
     this.created = threadId === null
 
-    this.addMsgNames()
-  }
-
-  addMsgNames () {
     this.msgNames.OFFER_CREDENTIAL = 'offer'
     this.msgNames.PROPOSE_CREDENTIAL = 'proposal'
     this.msgNames.ISSUE_CREDENTIAL = 'issue'
