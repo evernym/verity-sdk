@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
+import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -13,7 +14,7 @@ public class UpdateEndpointTest {
 
     @Test
     public void testGetMessageType() {
-        UpdateEndpoint testProtocol = UpdateEndpoint.v0_6();
+        UpdateEndpointV0_6 testProtocol = UpdateEndpoint.v0_6();
         String msgName = "msg name";
         assertEquals(
                 Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
@@ -26,7 +27,7 @@ public class UpdateEndpointTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            UpdateEndpoint testProtocol = UpdateEndpoint.v0_6();
+            UpdateEndpointV0_6 testProtocol = UpdateEndpoint.v0_6();
             JSONObject msg = testProtocol.updateMsg(context);
 
             assertEquals(
@@ -53,7 +54,7 @@ public class UpdateEndpointTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            UpdateEndpoint testProtocol = UpdateEndpoint.v0_6();
+            UpdateEndpointV0_6 testProtocol = UpdateEndpoint.v0_6();
             byte [] message = testProtocol.updateMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
             assertEquals(

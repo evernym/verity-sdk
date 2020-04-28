@@ -1,97 +1,56 @@
 package com.evernym.verity.sdk.protocols.connecting;
 
-import com.evernym.verity.sdk.exceptions.UndefinedContextException;
-import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.exceptions.WalletException;
-import com.evernym.verity.sdk.protocols.MessageFamily;
-import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.Util;
-import org.json.JSONObject;
+import com.evernym.verity.sdk.protocols.connecting.v0_6.ConnectingV0_6;
+import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
 
-import java.io.IOException;
+/**
+ * Builds and sends a new encrypted agent message for the Connections protocol.
+ */
+public class Connecting {
+    private Connecting(){}
 
-public interface Connecting extends MessageFamily {
-    String CREATE_CONNECTION = "CREATE_CONNECTION";
-    String GET_STATUS = "get-status";
-
-    default String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
-    default String family() {return "connecting";}
-    default String version() {return "0.6";}
-
-    static Connecting v0_6(String sourceId) {
-        return new ConnectingImpl(sourceId);
+    /**
+     * Create connection without phone number
+     * @param sourceId required optional param that sets an id of the connection
+     */
+    public static ConnectingV0_6 v0_6(String sourceId) {
+        return new ConnectingImplV0_6(sourceId);
     }
 
-    static Connecting v0_6(String sourceId, boolean includePublicDID) {
-        return new ConnectingImpl(sourceId, includePublicDID);
+    /**
+     * Create connection without a phone number that uses a public DID.
+     * @param sourceId required param that sets an id of the connection
+     * @param includePublicDID optional param that indicates the connection invite should use the institution's public DID.
+     */
+    public static ConnectingV0_6 v0_6(String sourceId, boolean includePublicDID) {
+        return new ConnectingImplV0_6(sourceId, includePublicDID);
     }
 
-    static Connecting v0_6(String sourceId, String phoneNo) {
-        return new ConnectingImpl(sourceId, phoneNo);
+    /**
+     * Create connection with phone number
+     * @param sourceId required param that sets an id of the connection
+     * @param phoneNo optional param that sets the sms phone number for an identity holder
+     */
+    public static ConnectingV0_6 v0_6(String sourceId, String phoneNo) {
+        return new ConnectingImplV0_6(sourceId, phoneNo);
     }
 
-    static Connecting v0_6(String sourceId, String phoneNo, boolean includePublicDID) {
-        return new ConnectingImpl(sourceId, phoneNo, includePublicDID);
+    /**
+     * Create connection with phone number that uses a public DID
+     * @param sourceId required param that sets an id of the connection
+     * @param phoneNo optional param that sets the sms phone number for an identity holder
+     * @param includePublicDID optional param that indicates the connection invite should use the institution's public DID.
+     */
+    public static ConnectingV0_6 v0_6(String sourceId, String phoneNo, boolean includePublicDID) {
+        return new ConnectingImplV0_6(sourceId, phoneNo, includePublicDID);
     }
 
-    static Connecting interaction(String threadId) {
-        return new ConnectingImpl(null); // FIXME
+    /**
+     * this is used by invitee to respond to an invitation
+     * @param base64InviteURL received invitation's url
+     */
+    public static ConnectionsV1_0 v1_0(String label, String base64InviteURL) {
+        return new ConnectionsImplV1_0(label, base64InviteURL);
     }
 
-    String sourceId();
-    String phoneNumber();
-    boolean includePublicDID();
-
-    /**
-     * Sends the connection create message to Verity
-     *
-     * @param context an instance of the Context object configured to a Verity Application
-     * @throws IOException               when the HTTP library fails to post to the agency endpoint
-     * @throws UndefinedContextException when the context doesn't have enough information for this operation
-     * @throws WalletException when there are issues with encryption and decryption
-     */
-    void connect(Context context) throws IOException, VerityException;
-
-    /**
-     *
-     * @return
-     * @throws VerityException
-     */
-    JSONObject connectMsg(Context context) throws VerityException;
-
-    /**
-     *
-     * @param context an instance of the Context object configured to a Verity Application
-     * @return
-     * @throws VerityException
-     */
-    byte[] connectMsgPacked(Context context) throws VerityException;
-
-    /**
-     * Sends the get status message to the connection
-     * @param context an instance of the Context object configured to a Verity Application
-     * @throws IOException               when the HTTP library fails to post to the agency endpoint
-     * @throws UndefinedContextException when the context doesn't have enough information for this operation
-     * @throws WalletException when there are issues with encryption and decryption
-     */
-    void status(Context context) throws IOException, VerityException;
-
-    /**
-     *
-     * @return
-     * @throws VerityException
-     */
-    JSONObject statusMsg(Context context) throws VerityException;
-
-    /**
-     *
-     * @param context an instance of the Context object configured to a Verity Application
-     * @return
-     * @throws VerityException
-     */
-    byte[] statusMsgPacked(Context context) throws VerityException;
-
-    void accept(Context context) throws IOException, VerityException;
-    void acceptMsg(Context context) throws IOException, VerityException;
-    void acceptMsgPacked(Context context) throws IOException, VerityException;
 }

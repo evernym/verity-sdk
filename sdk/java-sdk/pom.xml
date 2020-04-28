@@ -6,7 +6,7 @@
 
   <groupId>com.evernym.verity</groupId>
   <artifactId>verity-sdk</artifactId>
-  <version>0.1.7-SNAPSHOT</version>
+  <version>0.1.8-SNAPSHOT</version>
 
   <name>Verity SDK</name>
 
@@ -33,7 +33,7 @@
     <dependency>
       <groupId>org.hyperledger</groupId>
       <artifactId>indy</artifactId>
-      <version>1.10.1</version>
+      <version>1.15.0</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>

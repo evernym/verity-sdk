@@ -3,6 +3,7 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
+import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -16,7 +17,7 @@ public class IssuerSetupTest {
     public void testGetMessageType() {
         String msgName = "msg name";
 
-        IssuerSetup t = IssuerSetup.v0_6();
+        IssuerSetupV0_6 t = IssuerSetup.v0_6();
 
         String expectedType = Util.getMessageType(
                 Util.EVERNYM_MSG_QUALIFIER,
@@ -30,7 +31,7 @@ public class IssuerSetupTest {
     @Test
     public void testCreateMessages() throws WalletException {
         Context context = TestHelpers.getContext();
-        IssuerSetup p = IssuerSetup.v0_6();
+        IssuerSetupV0_6 p = IssuerSetup.v0_6();
         JSONObject msg = p.createMsg(context);
         assertEquals(
                 "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/create",
@@ -44,7 +45,7 @@ public class IssuerSetupTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            IssuerSetup testProtocol = IssuerSetup.v0_6();
+            IssuerSetupV0_6 testProtocol = IssuerSetup.v0_6();
             byte[] message = testProtocol.createMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
             assertEquals(

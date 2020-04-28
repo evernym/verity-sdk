@@ -1,79 +1,55 @@
 package com.evernym.verity.sdk.protocols.writecreddef;
 
-import com.evernym.verity.sdk.exceptions.UndefinedContextException;
-import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.exceptions.WalletException;
-import com.evernym.verity.sdk.protocols.MessageFamily;
-import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.Util;
-import org.json.JSONObject;
-
-import java.io.IOException;
+import com.evernym.verity.sdk.protocols.writecreddef.v0_6.RevocationRegistryConfig;
+import com.evernym.verity.sdk.protocols.writecreddef.v0_6.WriteCredentialDefinitionV0_6;
 
 /**
- * Builds and sends an encrypted agent message to Verity asking Verity to 
- * write a new Credential Definition to the ledger on behalf of the 
+ * Builds and sends an encrypted agent message to Verity asking Verity to
+ * write a new Credential Definition to the ledger on behalf of the
  * SDK/enterprise.
  */
-public interface WriteCredentialDefinition extends MessageFamily {
-    default String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
-    default String family() {return "write-cred-def";}
-    default String version() {return "0.6";}
+public class WriteCredentialDefinition {
+    private WriteCredentialDefinition() {}
 
-    String WRITE_CRED_DEF = "write";
 
-    static WriteCredentialDefinition v0_6(String name, String schemaId) {
-        return new WriteCredentialDefinitionImpl(name, schemaId);
-    }
-
-    static WriteCredentialDefinition v0_6(String name, String schemaId, String tag) {
-        return new WriteCredentialDefinitionImpl(name, schemaId, tag);
-    }
-
-    static WriteCredentialDefinition v0_6(String name, String schemaId, RevocationRegistryConfig revocation) {
-        return new WriteCredentialDefinitionImpl(name, schemaId, revocation);
-    }
-
-    static WriteCredentialDefinition v0_6(String name, String schemaId, String tag, RevocationRegistryConfig revocation) {
-        return new WriteCredentialDefinitionImpl(name,schemaId, tag, revocation);
-    }
-
-    static RevocationRegistryConfig disabledRegistryConfig() {
-        JSONObject json = new JSONObject();
-        json.put("support_revocation", false);
-        return new RevocationRegistryConfig(json);
-    }
-
-    static RevocationRegistryConfig revocationRegistryConfig(String tailsFile, int totalCredentials) {
-        JSONObject json = new JSONObject();
-        json.put("support_revocation", true);
-        json.put("tails_file", tailsFile);
-        json.put("max_creds", totalCredentials);
-        return new RevocationRegistryConfig(json);
+    /**
+     * Initializes the CredDef object
+     * @param name The name of the new credential definition
+     * @param schemaId The id of the schema this credential definition will be based on
+     */
+    public static WriteCredentialDefinitionV0_6 v0_6(String name, String schemaId) {
+        return new WriteCredentialDefinitionImplV0_6(name, schemaId);
     }
 
     /**
-     * Sends the write request message to Verity
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @throws IOException               when the HTTP library fails to post to the agency endpoint
-     * @throws UndefinedContextException when the context doesn't have enough information for this operation
-     * @throws WalletException when there are issues with encryption and decryption
+     * Initializes the CredDef object
+     * @param name The name of the new credential definition
+     * @param schemaId The id of the schema this credential definition will be based on
+     * @param tag An optional tag for the credential definition
      */
-    void write(Context context) throws IOException, VerityException;
+    public static WriteCredentialDefinitionV0_6 v0_6(String name, String schemaId, String tag) {
+        return new WriteCredentialDefinitionImplV0_6(name, schemaId, tag);
+    }
 
     /**
-     *
-     * @param context
-     * @return
-     * @throws UndefinedContextException
+     * Initializes the CredDef object
+     * @param name The name of the new credential definition
+     * @param schemaId The id of the schema this credential definition will be based on
+     * @param revocation the revocation object defining revocation support. See libvcx documentation for more details.
      */
-    JSONObject writeMsg(Context context) throws UndefinedContextException;
+    public static WriteCredentialDefinitionV0_6 v0_6(String name, String schemaId, RevocationRegistryConfig revocation) {
+        return new WriteCredentialDefinitionImplV0_6(name, schemaId, revocation);
+    }
 
     /**
-     *
-     * @param context
-     * @return
-     * @throws VerityException
+     * Initializes the CredDef object
+     * @param name The name of the new credential definition
+     * @param schemaId The id of the schema this credential definition will be based on
+     * @param tag An optional tag for the credential definition
+     * @param revocation the revocation object defining revocation support. See libvcx documentation for more details.
      */
-    byte[] writeMsgPacked(Context context) throws VerityException;
+    public static WriteCredentialDefinitionV0_6 v0_6(String name, String schemaId, String tag, RevocationRegistryConfig revocation) {
+        return new WriteCredentialDefinitionImplV0_6(name,schemaId, tag, revocation);
+    }
+
 }

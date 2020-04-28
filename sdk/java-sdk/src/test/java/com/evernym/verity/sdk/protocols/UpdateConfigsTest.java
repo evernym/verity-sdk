@@ -3,6 +3,7 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.updateconfigs.UpdateConfigs;
+import com.evernym.verity.sdk.protocols.updateconfigs.v0_6.UpdateConfigsV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONArray;
@@ -16,12 +17,12 @@ import static org.junit.Assert.*;
 
 public class UpdateConfigsTest {
 
-    private String name = "Name1";
-    private String logoUrl = "http://logo.url";
+    private final String name = "Name1";
+    private final String logoUrl = "http://logo.url";
 
     @Test
     public void testGetMessageType() {
-        UpdateConfigs testProtocol = UpdateConfigs.v0_6(name, logoUrl);
+        UpdateConfigsV0_6 testProtocol = UpdateConfigs.v0_6(name, logoUrl);
         String msgName = "msg name";
         assertEquals(Util.getMessageType(
                 Util.EVERNYM_MSG_QUALIFIER,
@@ -34,7 +35,7 @@ public class UpdateConfigsTest {
     @Test
     public void testConstructorWithAttr() throws VerityException {
         Context context = TestHelpers.getContext();
-        UpdateConfigs testProtocol = UpdateConfigs.v0_6(name, logoUrl);
+        UpdateConfigsV0_6 testProtocol = UpdateConfigs.v0_6(name, logoUrl);
 
         JSONObject msg = testProtocol.updateMsg(context);
         testUpdateMsgMessages(msg);
@@ -46,7 +47,7 @@ public class UpdateConfigsTest {
     @Test
     public void testConstructorWithoutAttr() throws VerityException {
         Context context = TestHelpers.getContext();
-        UpdateConfigs testProtocol = UpdateConfigs.v0_6();
+        UpdateConfigsV0_6 testProtocol = UpdateConfigs.v0_6();
 
         JSONObject msg2 = testProtocol.statusMsg(context);
         testStatusMsg(msg2);
@@ -80,7 +81,7 @@ public class UpdateConfigsTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            UpdateConfigs testProtocol = UpdateConfigs.v0_6(name, logoUrl);
+            UpdateConfigsV0_6 testProtocol = UpdateConfigs.v0_6(name, logoUrl);
             byte [] message = testProtocol.updateMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
             testUpdateMsgMessages(unpackedMessage);
@@ -97,7 +98,7 @@ public class UpdateConfigsTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            UpdateConfigs testProtocol = UpdateConfigs.v0_6();
+            UpdateConfigsV0_6 testProtocol = UpdateConfigs.v0_6();
             byte [] message = testProtocol.statusMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
             testStatusMsg(unpackedMessage);

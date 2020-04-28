@@ -27,13 +27,16 @@ public abstract class Protocol {
         this(UUID.randomUUID().toString());
     }
 
+    public String getThreadId() {
+        return threadId;
+    }
+
     private final String threadId;
 
-    protected JSONObject addThread(JSONObject msg) {
+    protected void addThread(JSONObject msg) {
         JSONObject threadBlock = new JSONObject();
         threadBlock.put("thid", threadId);
         msg.put("~thread", threadBlock);
-        return msg;
     }
 
     /**
@@ -44,11 +47,10 @@ public abstract class Protocol {
      * @throws WalletException when there are issues with encryption and decryption
      * @throws UndefinedContextException when the context don't have enough information for this operation
      */
-    protected byte[] send(Context context, JSONObject message) throws IOException, VerityException {
+    protected void send(Context context, JSONObject message) throws IOException, VerityException {
         byte[] messageToSend = packMsg(context, message);
         Transport transport = new HTTPTransport();
         transport.sendMessage(context.verityUrl(), messageToSend);
-        return messageToSend;
     }
 
     /**

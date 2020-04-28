@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutionException;
  * Static helper functions used for packaging and unpackaging messages
  */
 public class Util {
-    public static String EVERNYM_MSG_QUALIFIER = "did:sov:123456789abcdefghi1234";
-    public static String COMMUNITY_MSG_QUALIFIER = "did:sov:BzCbsNYhMrjHiqZDTUASHg";
+    public static final String EVERNYM_MSG_QUALIFIER = "did:sov:123456789abcdefghi1234";
+    public static final String COMMUNITY_MSG_QUALIFIER = "did:sov:BzCbsNYhMrjHiqZDTUASHg";
 
     public static byte[] packMessageForVerity(Wallet walletHandle,
                                               JSONObject message,
