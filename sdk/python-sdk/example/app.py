@@ -9,7 +9,6 @@ from aiohttp.web_routedef import RouteTableDef
 from asyncio.base_events import Server
 from example.helper import *
 from verity_sdk.handlers import Handlers
-from verity_sdk.protocols.CommittedAnswer import CommittedAnswer
 from verity_sdk.protocols.Connecting import Connecting
 from verity_sdk.protocols.IssueCredential import IssueCredential
 from verity_sdk.protocols.IssuerSetup import IssuerSetup
@@ -43,7 +42,7 @@ async def example(loop):
 
     for_did = await create_connection(loop)
 
-    await ask_question(loop, for_did)
+    # await ask_question(loop, for_did)
 
     schema_id = await write_ledger_schema(loop)
     cred_def_id = await write_ledger_cred_def(loop, schema_id)
@@ -192,29 +191,29 @@ async def write_ledger_cred_def(loop, schema_id: str) -> str:
     return cred_def_id  # returns ledger cred def identifier
 
 
-async def ask_question(loop, for_did):
-    question_text = 'Hi Alice, how are you today?'
-    question_detail = 'Checking up on you today.'
-    valid_responses = ['Great!', 'Not so good.']
-
-    question = CommittedAnswer(for_did, None, question_text, question_detail, valid_responses, True)
-    first_step = loop.create_future()
-
-    spinner = make_spinner('Waiting for Connect.Me to answer the question')  # Console spinner
-
-    async def receive_answer(msg_name, message):
-        spinner.stop_and_persist('Done')
-        print_message(msg_name, message)
-        if msg_name == CommittedAnswer.ANSWER_GIVEN:
-            first_step.set_result(None)
-        else:
-            non_handled(f'Message name is not handled - {msg_name}', message)
-
-    handlers.add_handler(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION, receive_answer)
-
-    spinner.start()
-
-    await question.ask(context)
+# async def ask_question(loop, for_did):
+#     question_text = 'Hi Alice, how are you today?'
+#     question_detail = 'Checking up on you today.'
+#     valid_responses = ['Great!', 'Not so good.']
+#
+#     question = CommittedAnswer(for_did, None, question_text, question_detail, valid_responses, True)
+#     first_step = loop.create_future()
+#
+#     spinner = make_spinner('Waiting for Connect.Me to answer the question')  # Console spinner
+#
+#     async def receive_answer(msg_name, message):
+#         spinner.stop_and_persist('Done')
+#         print_message(msg_name, message)
+#         if msg_name == CommittedAnswer.ANSWER_GIVEN:
+#             first_step.set_result(None)
+#         else:
+#             non_handled(f'Message name is not handled - {msg_name}', message)
+#
+#     handlers.add_handler(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION, receive_answer)
+#
+#     spinner.start()
+#
+#     await question.ask(context)
 
 
 async def issue_credential(loop, for_did, cred_def_id):

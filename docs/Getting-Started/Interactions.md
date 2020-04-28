@@ -6,6 +6,7 @@ Language-specific setup:
 * [Java](/docs/Getting-Started/java/README.md)
 * [NodeJs](/docs/Getting-Started/nodejs/README.md)
 * [Python](/docs/Getting-Started/python/README.md)
+---
 
 After you launch the example application in the previous step, the example process completes 
 a series of interactions:
@@ -15,6 +16,10 @@ a series of interactions:
    During setup, three tasks are being accomplished:
    
    1. Provisioning an Agent
+
+   > **NOTE:** When you run the provisioning script during your own tests, make sure you do not 
+   run the script more than one time; otherwise, you will get an error and will need to contact 
+   Evernym for next steps.
 
    2. Registering a webhook
 
