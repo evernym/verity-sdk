@@ -2,7 +2,7 @@ package com.evernym.verity.sdk.protocols.issuecredential;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
-import com.evernym.verity.sdk.protocols.issuecredential.v1_0.*;
+import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ValidationUtil;
 import org.json.JSONObject;
