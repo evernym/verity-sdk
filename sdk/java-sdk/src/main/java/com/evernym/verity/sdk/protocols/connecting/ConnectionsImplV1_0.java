@@ -15,8 +15,8 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     String label;
     String base64InviteURL;
 
-    String SEND_ACCEPT_INVITE = "accept";
-    String GET_STATUS = "status";
+    String ACCEPT_INVITE = "accept";
+    String STATUS = "status";
 
     ConnectionsImplV1_0() {
 
@@ -39,7 +39,7 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     @Override
     public JSONObject statusMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(GET_STATUS));
+        msg.put("@type", getMessageType(STATUS));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
@@ -55,7 +55,7 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     @Override
     public JSONObject acceptMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(SEND_ACCEPT_INVITE));
+        msg.put("@type", getMessageType(ACCEPT_INVITE));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
