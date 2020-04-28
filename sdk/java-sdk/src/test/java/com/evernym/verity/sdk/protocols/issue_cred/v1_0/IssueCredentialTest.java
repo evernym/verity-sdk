@@ -115,7 +115,7 @@ public class IssueCredentialTest extends TestBase {
 
     private void testProposalMessage(JSONObject msg) {
         testCommonProposeAndOfferMsg(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/proposal", msg.getString("@type"));
+        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/propose", msg.getString("@type"));
     }
 
     private void testOfferMessage(JSONObject msg) {

@@ -18,12 +18,12 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     // flag if this instance started the interaction
     boolean created = false;
 
-    String SEND_PROPOSAL = "proposal";
-    String SEND_OFFER = "offer";
-    String SEND_REQ_CRED = "request";
-    String SEND_ISSUE_CRED = "issue";
-    String SEND_REJECT = "reject";
-    String SEND_STATUS = "status";
+    String PROPOSE = "propose";
+    String OFFER = "offer";
+    String REQUEST = "request";
+    String ISSUE = "issue";
+    String REJECT = "reject";
+    String STATUS = "status";
 
     String forRelationship;
     String credDefId;
@@ -66,7 +66,7 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
         }
 
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(SEND_PROPOSAL));
+        msg.put("@type", getMessageType(PROPOSE));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
@@ -96,7 +96,7 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
         }
 
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(SEND_OFFER));
+        msg.put("@type", getMessageType(OFFER));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
@@ -127,7 +127,7 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
         }
 
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(SEND_REQ_CRED));
+        msg.put("@type", getMessageType(REQUEST));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
@@ -152,7 +152,7 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     public JSONObject issueCredentialMsg(Context context) {
 
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(SEND_ISSUE_CRED));
+        msg.put("@type", getMessageType(ISSUE));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
@@ -179,7 +179,7 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
         }
 
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(SEND_REJECT));
+        msg.put("@type", getMessageType(REJECT));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
@@ -203,7 +203,7 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     public JSONObject statusMsg(Context context) {
 
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(SEND_STATUS));
+        msg.put("@type", getMessageType(STATUS));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
