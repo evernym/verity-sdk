@@ -13,19 +13,20 @@ import java.util.Map;
 /**
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
+@SuppressWarnings("CPD-START")
 class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
 
     // flag if this instance started the interaction
     boolean created = false;
 
-    String PROPOSE = "propose";
-    String OFFER = "offer";
-    String REQUEST = "request";
-    String ISSUE = "issue";
-    String REJECT = "reject";
-    String STATUS = "status";
+    final String PROPOSE = "propose";
+    final String OFFER = "offer";
+    final String REQUEST = "request";
+    final String ISSUE = "issue";
+    final String REJECT = "reject";
+    final String STATUS = "status";
 
-    String forRelationship;
+    final String forRelationship;
     String credDefId;
     Map<String, String> values;
     String comment;

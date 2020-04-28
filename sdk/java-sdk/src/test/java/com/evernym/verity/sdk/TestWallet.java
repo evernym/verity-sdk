@@ -18,7 +18,7 @@ public class TestWallet implements AutoCloseable, WalletConfig {
     private final String verityPairwiseVerkey;
     private final String sdkPairwiseDID;
     private final String sdkPairwiseVerkey;
-    private DefaultWalletConfig walletConfig;
+    private final DefaultWalletConfig walletConfig;
 
     public TestWallet(String walletName, String walletKey) throws WalletException {
         try {

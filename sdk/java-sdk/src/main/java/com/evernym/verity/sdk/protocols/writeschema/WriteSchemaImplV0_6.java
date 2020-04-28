@@ -19,9 +19,9 @@ import java.io.IOException;
 
 class WriteSchemaImplV0_6 extends Protocol implements WriteSchemaV0_6 {
 
-    String name;
-    String version;
-    String[] attrs;
+    final String name;
+    final String version;
+    final String[] attrs;
 
     /**
      * Creates a Schema from a list of attributes

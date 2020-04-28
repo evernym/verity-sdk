@@ -8,15 +8,15 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-
+@SuppressWarnings("CPD-START")
 class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
 
     String forRelationship;
     String label;
     String base64InviteURL;
 
-    String ACCEPT_INVITE = "accept";
-    String STATUS = "status";
+    final String ACCEPT_INVITE = "accept";
+    final String STATUS = "status";
 
     ConnectionsImplV1_0() {
 

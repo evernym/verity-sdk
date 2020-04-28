@@ -17,8 +17,8 @@ import static org.junit.Assert.*;
 
 public class UpdateConfigsTest {
 
-    private String name = "Name1";
-    private String logoUrl = "http://logo.url";
+    private final String name = "Name1";
+    private final String logoUrl = "http://logo.url";
 
     @Test
     public void testGetMessageType() {

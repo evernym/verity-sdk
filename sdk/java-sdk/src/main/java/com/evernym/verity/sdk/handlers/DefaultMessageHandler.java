@@ -6,7 +6,7 @@ import org.json.JSONObject;
  * Defines how to handle a message of a certain type and optionally with a particular status
  */
 public class DefaultMessageHandler {
-    private Handler messageHandler;
+    private final Handler messageHandler;
 
     public interface Handler {
         void handle(JSONObject message);

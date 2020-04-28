@@ -15,15 +15,16 @@ import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
 /**
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
+@SuppressWarnings("CPD-START")
 class PresentProofImplV0_6 extends Protocol implements PresentProofV0_6 {
 
-    String PROOF_REQUEST = "request";
-    String GET_STATUS = "get-status";
+    final String PROOF_REQUEST = "request";
+    final String GET_STATUS = "get-status";
 
     // flag if this instance started the interaction
     boolean created = false;
 
-    String forRelationship;
+    final String forRelationship;
     String name;
     Attribute[] proofAttrs;
     Predicate[] proofPredicates;

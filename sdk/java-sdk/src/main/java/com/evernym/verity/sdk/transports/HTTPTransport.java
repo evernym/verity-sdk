@@ -13,7 +13,7 @@ import java.io.IOException;
  * Support for sending messages using the HTTP transport
  */
 public class HTTPTransport extends Transport {
-    private CloseableHttpClient httpClient;
+    private final CloseableHttpClient httpClient;
 
     public HTTPTransport() {
         this.httpClient = HttpClientBuilder.create().build();

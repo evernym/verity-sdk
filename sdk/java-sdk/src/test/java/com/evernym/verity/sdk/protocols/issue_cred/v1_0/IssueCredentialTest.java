@@ -7,18 +7,20 @@ import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class IssueCredentialTest extends TestBase {
 
-    private String forRelationship = "...someDid...";
-    private Map<String, String> values = new HashMap<>();
-    private String credDefId = "cred-def-id";
-    private String comment = "some comment";
-    private String price = "0";
-    private String threadId = "some thread id";
+    private final String forRelationship = "...someDid...";
+    private final Map<String, String> values = new HashMap<>();
+    private final String credDefId = "cred-def-id";
+    private final String comment = "some comment";
+    private final String price = "0";
+    private final String threadId = "some thread id";
 
     public IssueCredentialTest() {
         values.put("name", "Jose Smith");

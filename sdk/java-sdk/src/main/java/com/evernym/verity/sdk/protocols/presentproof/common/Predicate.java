@@ -14,7 +14,7 @@ public class Predicate implements AsJsonObject  {
                 .put("restrictions", makeArray(restrictions));
     }
 
-    JSONObject data;
+    final JSONObject data;
     @Override
     public JSONObject toJson() {
         return data;

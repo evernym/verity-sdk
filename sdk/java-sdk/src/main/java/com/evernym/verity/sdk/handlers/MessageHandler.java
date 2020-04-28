@@ -9,8 +9,8 @@ import org.json.JSONObject;
  * Defines how to handle a message of a certain type and optionally with a particular status
  */
 public class MessageHandler {
-    private MessageFamily messageFamily;
-    private Handler messageHandler;
+    private final MessageFamily messageFamily;
+    private final Handler messageHandler;
 
     public interface Handler {
         void handle(String msgName, JSONObject message);

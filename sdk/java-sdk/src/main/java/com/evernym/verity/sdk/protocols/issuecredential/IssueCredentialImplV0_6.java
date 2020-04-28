@@ -13,14 +13,14 @@ import java.util.Map;
  * Builds and sends a message asking Verity to issue a credential to a connection
  */
 class IssueCredentialImplV0_6 extends Protocol implements IssueCredentialV0_6 {
-    String OFFER_CREDENTIAL = "send-offer";
-    String ISSUE_CREDENTIAL = "issue-credential";
-    String GET_STATUS = "get-status";
+    final String OFFER_CREDENTIAL = "send-offer";
+    final String ISSUE_CREDENTIAL = "issue-credential";
+    final String GET_STATUS = "get-status";
 
     // flag if this instance started the interaction
     boolean created = false;
 
-    String forRelationship;
+    final String forRelationship;
     String name;
     String credDefId;
     Map<String, String> values;

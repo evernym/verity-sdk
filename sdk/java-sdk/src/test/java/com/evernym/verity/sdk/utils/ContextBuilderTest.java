@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static com.evernym.verity.sdk.utils.ContextConstants.V_0_1;
 import static com.evernym.verity.sdk.utils.ContextConstants.V_0_2;
 import static org.junit.Assert.*;
 

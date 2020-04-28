@@ -11,19 +11,22 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
+import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 
 /**
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
+@SuppressWarnings("CPD-START")
 class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
 
-    String PROOF_REQUEST = "request";
-    String STATUS = "status";
+    final String PROOF_REQUEST = "request";
+    final String STATUS = "status";
+    final String REJECT = "reject";
 
     // flag if this instance started the interaction
     boolean created = false;
 
-    String forRelationship;
+    final String forRelationship;
     String name;
     Attribute[] proofAttrs;
     Predicate[] proofPredicates;
@@ -37,6 +40,10 @@ class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
 
     PresentProofImplV1_0(String forRelationship, String name, Attribute[] proofAttrs) {
         this(forRelationship, name, proofAttrs, null);
+    }
+
+    PresentProofImplV1_0(String forRelationship, String name, Predicate[] proofPredicates) {
+        this(forRelationship, name, null, proofPredicates);
     }
 
     /**
@@ -95,6 +102,27 @@ class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
     @Override
     public byte[] acceptMsgPacked(Context context) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void reject(Context context, String reason) throws IOException, VerityException {
+        send(context, rejectMsg(context, reason));
+    }
+
+    @Override
+    public JSONObject rejectMsg(Context context, String reason) {
+        JSONObject msg = new JSONObject();
+        msg.put("@type", getMessageType(REJECT));
+        msg.put("@id", getNewId());
+        addThread(msg);
+        msg.put("~for_relationship", this.forRelationship);
+        if(!isNullOrWhiteSpace(reason)) msg.put("reason", reason);
+        return msg;
+    }
+
+    @Override
+    public byte[] rejectMsgPacked(Context context, String reason) throws VerityException {
+        return packMsg(context, rejectMsg(context, reason));
     }
 
 

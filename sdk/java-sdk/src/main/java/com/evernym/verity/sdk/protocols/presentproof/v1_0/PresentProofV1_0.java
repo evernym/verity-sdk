@@ -16,6 +16,7 @@ import java.io.IOException;
 /**
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
+@SuppressWarnings("CPD-START")
 public interface PresentProofV1_0 extends MessageFamily {
 
     String QUALIFIER = Util.COMMUNITY_MSG_QUALIFIER;
@@ -54,6 +55,13 @@ public interface PresentProofV1_0 extends MessageFamily {
     JSONObject acceptMsg(Context context) throws VerityException;
 
     byte[] acceptMsgPacked(Context context) throws VerityException;
+
+
+    void reject(Context context, String reason) throws IOException, VerityException;
+
+    JSONObject rejectMsg(Context context, String reason) throws VerityException, IOException;
+
+    byte[] rejectMsgPacked(Context context, String reason) throws VerityException, IOException;
 
     /**
      * Sends the status request message to Verity
