@@ -18,7 +18,7 @@ import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
 class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
 
     String PROOF_REQUEST = "request";
-    String GET_STATUS = "get-status";
+    String STATUS = "status";
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -71,9 +71,9 @@ class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
         addThread(msg);
         msg.put("~for_relationship", this.forRelationship);
         msg.put("name", this.name);
-        msg.put("proofAttrs", makeArray(proofAttrs));
+        msg.put("proof_attrs", makeArray(proofAttrs));
         if (this.proofPredicates != null)
-            msg.put("proofPredicates", makeArray(proofPredicates));
+            msg.put("proof_predicates", makeArray(proofPredicates));
         return msg;
     }
 
@@ -105,7 +105,7 @@ class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
     @Override
     public JSONObject statusMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(GET_STATUS));
+        msg.put("@type", getMessageType(STATUS));
         msg.put("@id", getNewId());
         addThread(msg);
         msg.put("~for_relationship", this.forRelationship);
