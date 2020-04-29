@@ -24,4 +24,9 @@ public class CommittedAnswer {
                                            String answer) {
         return new CommittedAnswerImplV1_0(forRelationship, threadId, answer);
     }
+
+    public static CommittedAnswerV1_0 v1_0(String forRelationship,
+                                           String threadId) {
+        return new CommittedAnswerImplV1_0(forRelationship, threadId);
+    }
 }
