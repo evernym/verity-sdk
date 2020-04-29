@@ -2,18 +2,19 @@ from typing import Dict
 
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
+from verity_sdk.utils.Exeptions import WrongSetupException
 
 
 class IssueCredential(Protocol):
-    MSG_FAMILY = "issue-credential"
-    MSG_FAMILY_VERSION = "1.0"
+    MSG_FAMILY = 'issue-credential'
+    MSG_FAMILY_VERSION = '1.0'
 
-    PROPOSE = "propose"
-    OFFER = "offer"
-    REQUEST = "request"
-    ISSUE = "issue"
-    REJECT = "reject"
-    STATUS = "status"
+    PROPOSE = 'propose'
+    OFFER = 'offer'
+    REQUEST = 'request'
+    ISSUE = 'issue'
+    REJECT = 'reject'
+    STATUS = 'status'
 
     def __init__(self,
                  for_relationship: str,
@@ -37,6 +38,9 @@ class IssueCredential(Protocol):
         self.price = price
 
     def propose_credential_msg(self):
+        if not self.created:
+            raise WrongSetupException('Unable to propose credentials when NOT starting the interaction')
+
         msg = self._get_base_message(self.PROPOSE)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -52,6 +56,9 @@ class IssueCredential(Protocol):
         await self.send_message(context, await self.propose_credential_msg_packed(context))
 
     def offer_credential_msg(self):
+        if not self.created:
+            raise WrongSetupException('Unable to offer credentials when NOT starting the interaction')
+
         msg = self._get_base_message(self.OFFER)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -68,6 +75,9 @@ class IssueCredential(Protocol):
         await self.send_message(context, await self.offer_credential_msg_packed(context))
 
     def request_credential_msg(self):
+        if not self.created:
+            raise WrongSetupException('Unable to request credential when NOT starting the interaction')
+
         msg = self._get_base_message(self.REQUEST)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -95,6 +105,9 @@ class IssueCredential(Protocol):
         await self.send_message(context, await self.issue_credential_msg_packed(context))
 
     def reject_msg(self):
+        if not self.created:
+            raise WrongSetupException('Unable to reject when NOT starting the interaction')
+
         msg = self._get_base_message(self.REJECT)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)

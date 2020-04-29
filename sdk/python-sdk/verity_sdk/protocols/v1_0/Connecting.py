@@ -3,11 +3,11 @@ from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
 
 
 class Connecting(Protocol):
-    MSG_FAMILY = "connections"
-    MSG_FAMILY_VERSION = "1.0"
+    MSG_FAMILY = 'connections'
+    MSG_FAMILY_VERSION = '1.0'
 
-    ACCEPT_INVITE = "accept"
-    STATUS = "status"
+    ACCEPT_INVITE = 'accept'
+    STATUS = 'status'
 
     def __init__(self,
                  for_relationship: str,

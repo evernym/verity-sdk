@@ -1,14 +1,15 @@
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
+from verity_sdk.utils.Exeptions import WrongSetupException
 
 
 class PresentProof(Protocol):
-    MSG_FAMILY = "present-proof"
-    MSG_FAMILY_VERSION = "1.0"
+    MSG_FAMILY = 'present-proof'
+    MSG_FAMILY_VERSION = '1.0'
 
-    PROOF_REQUEST = "request"
-    STATUS = "status"
-    REJECT = "reject"
+    PROOF_REQUEST = 'request'
+    STATUS = 'status'
+    REJECT = 'reject'
 
     def __init__(self,
                  for_relationship: str,
@@ -29,6 +30,8 @@ class PresentProof(Protocol):
         self.created = thread_id is None
 
     def request_msg(self):
+        if not self.created:
+            raise WrongSetupException('Unable to request presentation when NOT starting the interaction')
         msg = self._get_base_message(self.PROOF_REQUEST)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -60,7 +63,8 @@ class PresentProof(Protocol):
         msg = self._get_base_message(self.REJECT)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
-        msg['reason'] = reason
+        if reason:
+            msg['reason'] = reason
         return msg
 
     async def reject_msg_packed(self, context, reason):
