@@ -18,15 +18,13 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     final String ACCEPT_INVITE = "accept";
     final String STATUS = "status";
 
-    ConnectionsImplV1_0() {
-
-    }
-
-    ConnectionsImplV1_0(String threadId) {
+    ConnectionsImplV1_0(String forRelationship, String threadId) {
         super(threadId);
+        this.forRelationship = forRelationship;
     }
 
-    ConnectionsImplV1_0(String label, String base64InviteURL) {
+    ConnectionsImplV1_0(String forRelationship, String label, String base64InviteURL) {
+        this.forRelationship = forRelationship;
         this.label = label;
         this.base64InviteURL = base64InviteURL;
     }
