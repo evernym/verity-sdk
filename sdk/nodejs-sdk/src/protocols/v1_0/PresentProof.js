@@ -1,5 +1,5 @@
 const Protocol = require('../Protocol')
-const utils = require('../utils')
+const utils = require('../../utils')
 
 module.exports = class PresentProofV1x0 extends Protocol {
   constructor (forRelationship,
@@ -21,6 +21,7 @@ module.exports = class PresentProofV1x0 extends Protocol {
 
     this.msgNames.PROOF_REQUEST = 'request'
     this.msgNames.GET_STATUS = 'get-status'
+    this.msgNames.REJECT = 'reject'
   }
 
   async request (context) {
@@ -32,6 +33,9 @@ module.exports = class PresentProofV1x0 extends Protocol {
   }
 
   requestMsg () {
+    if (!this.created) {
+      throw new utils.WrongSetupError('Unable to request presentation when NOT starting the interaction')
+    }
     var msg = this._getBaseMessage(this.msgNames.PROOF_REQUEST)
     msg['~for_relationship'] = this.forRelationship
     msg.name = this.name
@@ -57,6 +61,24 @@ module.exports = class PresentProofV1x0 extends Protocol {
     var msg = this._getBaseMessage(this.msgNames.GET_STATUS)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
+    return msg
+  }
+
+  async reject (context, reason) {
+    await this.sendMessage(context, await this.rejectMsgPacked(context, reason))
+  }
+
+  async rejectMsgPacked (context, reason) {
+    await this.getMessageBytes(context, this.rejectMsgPacked(reason))
+  }
+
+  rejectMsg (reason) {
+    var msg = this._getBaseMessage(this.msgNames.REJECT)
+    msg['~for_relationship'] = this.forRelationship
+    msg = this._addThread(msg)
+    if (reason) {
+      msg.reason = reason
+    }
     return msg
   }
 }

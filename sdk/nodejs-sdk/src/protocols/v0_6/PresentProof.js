@@ -1,6 +1,6 @@
 'use strict'
-const utils = require('../utils')
-const Protocol = require('./Protocol')
+const utils = require('../../utils')
+const Protocol = require('../Protocol')
 
 module.exports = class PresentProof extends Protocol {
   constructor (forRelationship, threadId = null, name = null, attributes = null, predicates = null) {

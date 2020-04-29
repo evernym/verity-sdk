@@ -1,5 +1,5 @@
 const Protocol = require('../Protocol')
-const utils = require('../utils')
+const utils = require('../../utils')
 
 module.exports = class ConnectingV10 extends Protocol {
   constructor (label, base64InviteURL, threadId = null) {

@@ -1,5 +1,5 @@
 const Protocol = require('../Protocol')
-const utils = require('../utils')
+const utils = require('../../utils')
 
 module.exports = class IssueCredentialV10 extends Protocol {
   constructor (forRelationship,
@@ -37,6 +37,10 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   offerCredentialMsg () {
+    if (!this.created) {
+      throw new utils.WrongSetupError('Unable to offer credentials when NOT starting the interaction')
+    }
+
     var msg = this._getBaseMessage(this.msgNames.OFFER_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
@@ -44,6 +48,7 @@ module.exports = class IssueCredentialV10 extends Protocol {
     msg.price = this.price
     msg.values = this.values
     msg = this._addThread(msg)
+
     return msg
   }
 
@@ -56,12 +61,17 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   proposeCredentialMsg () {
+    if (!this.created) {
+      throw new utils.WrongSetupError('Unable to propose credentials when NOT starting the interaction')
+    }
+
     var msg = this._getBaseMessage(this.msgNames.PROPOSE_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
     msg.comment = this.comment
     msg.values = this.values
     msg = this._addThread(msg)
+
     return msg
   }
 
@@ -74,11 +84,16 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   requestCredentialMsg () {
+    if (!this.created) {
+      throw new utils.WrongSetupError('Unable to request credential when NOT starting the interaction')
+    }
+
     var msg = this._getBaseMessage(this.msgNames.REQUEST_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
     msg.comment = this.comment
     msg = this._addThread(msg)
+
     return msg
   }
 
@@ -107,10 +122,15 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   rejectMsg () {
+    if (!this.created) {
+      throw new utils.WrongSetupError('Unable to reject when NOT starting the interaction')
+    }
+
     var msg = this._getBaseMessage(this.msgNames.REJECT_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.comment = this.comment
     msg = this._addThread(msg)
+
     return msg
   }
 
