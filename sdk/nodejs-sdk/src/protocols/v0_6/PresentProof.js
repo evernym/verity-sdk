@@ -2,7 +2,7 @@
 const utils = require('../utils')
 const Protocol = require('./Protocol')
 
-module.exports = class PresentProofV06 extends Protocol {
+module.exports = class PresentProof extends Protocol {
   constructor (forRelationship, threadId = null, name = null, attributes = null, predicates = null) {
     const msgFamily = 'present-proof'
     const msgFamilyVersion = '0.6'

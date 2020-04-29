@@ -2,7 +2,7 @@
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
 
-module.exports = class IssueCredentialV06 extends Protocol {
+module.exports = class IssueCredential extends Protocol {
   constructor (forRelationship, threadId = null, name = null, values = null, credDefId = null) {
     const msgFamily = 'issue-credential'
     const msgFamilyVersion = '0.6'

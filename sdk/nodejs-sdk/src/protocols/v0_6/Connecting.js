@@ -3,7 +3,7 @@ const uuid = require('uuid')
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
 
-module.exports = class ConnectingV0x6 extends Protocol {
+module.exports = class Connecting extends Protocol {
   constructor (threadId = null, sourceId = uuid(), phoneNumber = null, includePublicDID = false) {
     const msgFamily = 'connecting'
     const msgFamilyVersion = '0.6'
