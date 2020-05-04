@@ -1,7 +1,8 @@
 import json
 import requests
+from base58 import b58encode
 
-from indy import wallet
+from indy import wallet, crypto
 
 from verity_sdk.utils import Did
 from verity_sdk.utils.Wallet import create_and_open_wallet, try_to_create_wallet
@@ -180,3 +181,9 @@ class Context:
             },
             indent=indent
         )
+
+    async def rest_api_token(self) -> str:
+        verkey = self.sdk_verkey
+        b = await crypto.crypto_sign(self.wallet_handle, verkey, verkey.encode('utf-8'))
+        t = b58encode(b).decode("utf-8")
+        return verkey + ":" + t

@@ -1,14 +1,15 @@
 import json
 from uuid import uuid4 as uuid
 import pytest
-from indy import did, wallet
+from indy import wallet
 from verity_sdk.utils import prepare_forward_message, pack_message_for_verity, \
     unpack_forward_message, get_message_type, get_problem_report_message_type, \
     EVERNYM_MSG_QUALIFIER, get_status_message_type
 from verity_sdk.utils.Context import Context
+from verity_sdk.utils.Did import create_new_did
 
 
-async def get_test_config():
+async def get_test_config(seed=None):
     test_config = {
         'walletName': str(uuid()),
         'walletKey': str(uuid()),
@@ -24,17 +25,17 @@ async def get_test_config():
     wallet_credentials = json.dumps({'key': test_config['walletKey']})
     await wallet.create_wallet(wallet_config, wallet_credentials)
     wallet_handle = await wallet.open_wallet(wallet_config, wallet_credentials)
-    [their_public_did, their_public_verkey] = await did.create_and_store_my_did(wallet_handle, '{}')
-    [their_did, their_verkey] = await did.create_and_store_my_did(wallet_handle, '{}')
-    [my_did, my_verkey] = await did.create_and_store_my_did(wallet_handle, '{}')
+    their_public = await create_new_did(wallet_handle)
+    their = await create_new_did(wallet_handle)
+    my = await create_new_did(wallet_handle, seed)
     await wallet.close_wallet(wallet_handle)
 
-    test_config['verityPublicDID'] = their_public_did
-    test_config['verityPublicVerkey'] = their_public_verkey
-    test_config['verityPairwiseDID'] = their_did
-    test_config['verityPairwiseVerkey'] = their_verkey
-    test_config['sdkPairwiseDID'] = my_did
-    test_config['sdkPairwiseVerkey'] = my_verkey
+    test_config['verityPublicDID'] = their_public.did
+    test_config['verityPublicVerkey'] = their_public.verkey
+    test_config['verityPairwiseDID'] = their.did
+    test_config['verityPairwiseVerkey'] = their.verkey
+    test_config['sdkPairwiseDID'] = my.did
+    test_config['sdkPairwiseVerkey'] = my.verkey
 
     return json.dumps(test_config)
 
@@ -87,7 +88,6 @@ async def test_v01_to_v02():
     assert ctx.sdk_verkey == 'HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh'
     assert ctx.sdk_verkey_id == 'XNRkA8tboikwHD3x1Yh7Uz'
     assert ctx.version == '0.2'
-
 
 
 def test_prepare_forward_message():

@@ -13,7 +13,8 @@ setuptools.setup(
     description='The official Python SDK for Evernym\'s Verity',
     install_requires=[
         'python3-indy~=1.10.1',
-        'requests~=2.22'
+        'requests~=2.22',
+        'base58~=2.0.0'
     ],
     python_requires='~=3.6',
     long_description=long_description,
