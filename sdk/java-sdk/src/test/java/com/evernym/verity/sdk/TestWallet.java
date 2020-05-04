@@ -1,11 +1,10 @@
 package com.evernym.verity.sdk;
 
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.utils.Did;
 import com.evernym.verity.sdk.wallet.DefaultWalletConfig;
 import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.did.Did;
-import org.hyperledger.indy.sdk.did.DidResults;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 
@@ -21,20 +20,24 @@ public class TestWallet implements AutoCloseable, WalletConfig {
     private final DefaultWalletConfig walletConfig;
 
     public TestWallet(String walletName, String walletKey) throws WalletException {
+        this(walletName, walletKey, null);
+    }
+
+    public TestWallet(String walletName, String walletKey, String seed) throws WalletException {
         try {
             walletConfig = DefaultWalletConfig.build(walletName, walletKey);
             Wallet.createWallet(walletConfig.config(), walletConfig.credential()).get();
             Wallet walletHandle = Wallet.openWallet(walletConfig.config(), walletConfig.credential()).get();
 
-            DidResults.CreateAndStoreMyDidResult theirResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.verityPublicDID = theirResult.getDid();
-            this.verityPublicVerkey = theirResult.getVerkey();
-            DidResults.CreateAndStoreMyDidResult theirPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.verityPairwiseVerkey = theirPairwiseResult.getVerkey();
-            this.verityPairwiseDID = theirPairwiseResult.getDid();
-            DidResults.CreateAndStoreMyDidResult myPairwiseResult = Did.createAndStoreMyDid(walletHandle, "{}").get();
-            this.sdkPairwiseDID = myPairwiseResult.getDid();
-            this.sdkPairwiseVerkey = myPairwiseResult.getVerkey();
+            Did theirResult = Did.createNewDid(walletHandle);
+            this.verityPublicDID = theirResult.did;
+            this.verityPublicVerkey = theirResult.verkey;
+            Did theirPairwiseResult = Did.createNewDid(walletHandle);
+            this.verityPairwiseVerkey = theirPairwiseResult.verkey;
+            this.verityPairwiseDID = theirPairwiseResult.did;
+            Did myPairwiseResult = Did.createNewDid(walletHandle, seed);
+            this.sdkPairwiseDID = myPairwiseResult.did;
+            this.sdkPairwiseVerkey = myPairwiseResult.verkey;
 
             walletHandle.closeWallet().get();
         } catch (InterruptedException | ExecutionException | IndyException e) {
