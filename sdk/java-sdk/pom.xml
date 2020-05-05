@@ -36,9 +36,9 @@
       <version>1.15.0</version>
     </dependency>
     <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.61</version>
+      <groupId>org.bitcoinj</groupId>
+      <artifactId>bitcoinj-core</artifactId>
+      <version>0.15.8</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>

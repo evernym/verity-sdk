@@ -1,7 +1,7 @@
 import pytest
 
 from test.test_utils import get_test_config, cleanup
-from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
+from verity_sdk.protocols.v0_6.WriteCredentialDefinition import WriteCredentialDefinition
 from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
