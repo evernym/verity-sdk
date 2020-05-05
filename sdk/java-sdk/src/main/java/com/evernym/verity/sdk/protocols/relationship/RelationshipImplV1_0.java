@@ -44,6 +44,7 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
                 .put("@type", getMessageType(CREATE))
                 .put("@id", getNewId())
                 .put("label", label);
+        addThread(rtn);
         return rtn;
     }
 
