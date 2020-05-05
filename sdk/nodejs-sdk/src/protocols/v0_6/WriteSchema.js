@@ -1,6 +1,6 @@
 'use strict'
-const utils = require('../utils')
-const Protocol = require('./Protocol')
+const utils = require('../../utils')
+const Protocol = require('../Protocol')
 
 module.exports = class WriteSchema extends Protocol {
   constructor (name, version, attrs, threadId = null) {

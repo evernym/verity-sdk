@@ -1,6 +1,6 @@
 'use strict'
-const utils = require('../utils')
-const Protocol = require('./Protocol')
+const utils = require('../../utils')
+const Protocol = require('../Protocol')
 
 const COM_METHOD_TYPE = 2
 
