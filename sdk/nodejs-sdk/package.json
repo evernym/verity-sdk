@@ -1,6 +1,6 @@
 {
   "name": "verity-sdk",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "The official Node.js SDK for Evernym's Verity",
   "main": "src/index.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "cli-spinner": "^0.2.10"
   },
   "dependencies": {
+    "bs58": "^4.0.1",
     "indy-sdk": "^1.14.1-dev-1427",
     "request-promise-native": "^1.0.8"
   }

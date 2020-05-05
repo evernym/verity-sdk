@@ -136,4 +136,19 @@ describe('Context', () => {
 
     expect(ctx.getConfig()).to.eql(JSON.parse(expected))
   }).timeout(5000)
+
+  it('should create valid Rest API Token', async () => {
+    const ctx = await Context.create(
+      'test2',
+      'test1',
+      'https://vas-team1.pdev.evernym.com',
+      'NTvSuSXzygyxWrF3scrhdc',
+      'ChXRWjQdrrLyksbPQZfaS3JekA4xLgD5Jg7GzXhc9zqE',
+      'https://enazy4stgnrep.x.pipedream.net/',
+      '000000000000000000000000Team1VAS'
+    )
+
+    expect(await ctx.restApiToken()).to.eql('HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh' +
+      ':4Wf6JtGy9enwwXVKcUgADPq7Pnf9T2YZ8LupMEVxcQQf98uuRYxWGHLAwXWp8DtaEYHo4cUeExDjApMfvLJQ48Kp')
+  }).timeout(5000)
 })

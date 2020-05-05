@@ -1,15 +1,15 @@
 package com.evernym.verity.sdk.utils;
 
-import com.evernym.verity.sdk.exceptions.UndefinedContextException;
-import com.evernym.verity.sdk.exceptions.WalletCloseException;
-import com.evernym.verity.sdk.exceptions.WalletClosedException;
-import com.evernym.verity.sdk.exceptions.WalletOpenException;
+import com.evernym.verity.sdk.exceptions.*;
 import com.evernym.verity.sdk.wallet.WalletConfig;
+import org.bitcoinj.core.Base58;
 import org.hyperledger.indy.sdk.IndyException;
+import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 
 import static com.evernym.verity.sdk.utils.ContextConstants.*;
@@ -165,6 +165,23 @@ public final class Context implements AsJsonObject{
 
     public String version() throws UndefinedContextException {
         return throwIfNull(version, VERSION);
+    }
+
+    public String restApiToken() throws VerityException, IndyException {
+        try {
+            String verkey = sdkVerKey();
+            byte[] signature = Crypto.cryptoSign(
+                    walletHandle(),
+                    verkey,
+                    verkey.getBytes(StandardCharsets.UTF_8)
+            ).get();
+            return verkey +":" + Base58.encode(signature);
+        } catch (InterruptedException | ExecutionException e) {
+            if(e.getCause() instanceof IndyException) throw (IndyException) e.getCause();
+            else {
+                throw new VerityException("Signing verkey did not complete", e);
+            }
+        }
     }
 
     public Wallet walletHandle() throws WalletClosedException {
