@@ -181,6 +181,10 @@ module.exports = class Context {
     return config
   }
 
+  async restApiToken () {
+    return indy.restApiToken(this)
+  }
+
   async closeWallet () {
     return indy.closeWallet(this.walletHandle)
   }

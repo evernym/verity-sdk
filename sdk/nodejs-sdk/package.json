@@ -28,6 +28,7 @@
     "cli-spinner": "^0.2.10"
   },
   "dependencies": {
+    "bs58": "^4.0.1",
     "indy-sdk": "^1.14.1-dev-1427",
     "request-promise-native": "^1.0.8"
   }
