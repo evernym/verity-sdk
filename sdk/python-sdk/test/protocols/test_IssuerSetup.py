@@ -1,7 +1,7 @@
 import pytest
 
 from test.test_utils import get_test_config, cleanup
-from verity_sdk.protocols.IssuerSetup import IssuerSetup
+from verity_sdk.protocols.v0_6.IssuerSetup import IssuerSetup
 from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 

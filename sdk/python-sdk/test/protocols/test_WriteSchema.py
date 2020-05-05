@@ -1,5 +1,5 @@
 import pytest
-from verity_sdk.protocols.WriteSchema import WriteSchema
+from verity_sdk.protocols.v0_6.WriteSchema import WriteSchema
 from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 

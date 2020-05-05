@@ -9,15 +9,15 @@ from aiohttp.web_routedef import RouteTableDef
 from asyncio.base_events import Server
 from example.helper import *
 from verity_sdk.handlers import Handlers
-from verity_sdk.protocols.Connecting import Connecting
-from verity_sdk.protocols.IssueCredential import IssueCredential
-from verity_sdk.protocols.IssuerSetup import IssuerSetup
-from verity_sdk.protocols.PresentProof import PresentProof
-from verity_sdk.protocols.Provision import Provision
-from verity_sdk.protocols.UpdateConfigs import UpdateConfigs
-from verity_sdk.protocols.UpdateEndpoint import UpdateEndpoint
-from verity_sdk.protocols.WriteCredentialDefinition import WriteCredentialDefinition
-from verity_sdk.protocols.WriteSchema import WriteSchema
+from verity_sdk.protocols.v0_6.Connecting import Connecting
+from verity_sdk.protocols.v0_6.IssueCredential import IssueCredential
+from verity_sdk.protocols.v0_6.IssuerSetup import IssuerSetup
+from verity_sdk.protocols.v0_6.PresentProof import PresentProof
+from verity_sdk.protocols.v0_6.Provision import Provision
+from verity_sdk.protocols.v0_6.UpdateConfigs import UpdateConfigs
+from verity_sdk.protocols.v0_6.UpdateEndpoint import UpdateEndpoint
+from verity_sdk.protocols.v0_6.WriteCredentialDefinition import WriteCredentialDefinition
+from verity_sdk.protocols.v0_6.WriteSchema import WriteSchema
 from verity_sdk.utils import truncate_invite_details
 from verity_sdk.utils.Context import Context
 

@@ -185,5 +185,5 @@ class Context:
     async def rest_api_token(self) -> str:
         verkey = self.sdk_verkey
         b = await crypto.crypto_sign(self.wallet_handle, verkey, verkey.encode('utf-8'))
-        t = b58encode(b).decode("utf-8")
-        return verkey + ":" + t
+        t = b58encode(b).decode('utf-8')
+        return verkey + ':' + t

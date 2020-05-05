@@ -1,7 +1,7 @@
 import pytest
 
 from test.test_utils import get_test_config, cleanup
-from verity_sdk.protocols.QuestionAnswer import QuestionAnswer
+from verity_sdk.protocols.v1_0.QuestionAnswer import QuestionAnswer
 from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
