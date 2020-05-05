@@ -18,16 +18,16 @@ import static org.junit.Assert.*;
 
 public class PresentProofTest {
 
-    private String forRelationship = "...someDid...";
-    private String proofRequestName = "Name Check";
-    private JSONArray proofPredicates = getPredicates();
-    private JSONObject revocationInterval = getRevocationInterval();
+    private final String forRelationship = "...someDid...";
+    private final String proofRequestName = "Name Check";
+    private final JSONArray proofPredicates = getPredicates();
+    private final JSONObject revocationInterval = getRevocationInterval();
 
-    private Restriction r1 = RestrictionBuilder
+    private final Restriction r1 = RestrictionBuilder
             .blank()
             .issuerDid("UOISDFOPUASOFIUSAF")
             .build();
-    private Attribute attr1 = PresentProofV0_6.attribute("age", r1);
+    private final Attribute attr1 = PresentProofV0_6.attribute("age", r1);
 
     @Test
     public void testGetMessageType() {

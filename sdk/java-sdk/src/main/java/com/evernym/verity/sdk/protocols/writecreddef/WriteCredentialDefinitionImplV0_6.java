@@ -12,10 +12,10 @@ import java.io.IOException;
 
 class WriteCredentialDefinitionImplV0_6 extends Protocol implements WriteCredentialDefinitionV0_6 {
 
-    String name;
-    protected String schemaId;
-    String tag;
-    RevocationRegistryConfig revocationConfig;
+    final String name;
+    protected final String schemaId;
+    final String tag;
+    final RevocationRegistryConfig revocationConfig;
 
     WriteCredentialDefinitionImplV0_6(String name, String schemaId) {
         this(name, schemaId, null, null);

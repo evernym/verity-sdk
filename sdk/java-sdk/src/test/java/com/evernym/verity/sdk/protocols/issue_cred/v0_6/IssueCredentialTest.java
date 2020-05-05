@@ -16,11 +16,10 @@ import static org.junit.Assert.*;
 
 public class IssueCredentialTest {
 
-    private String forRelationship = "...someDid...";
-    private String credentialName = "Bachelors Degree";
-    private String credDefId = "...someCredDefId...";
-    private Map<String, String> credentialValues = new HashMap<>();
-    private String price = "0";
+    private final String forRelationship = "...someDid...";
+    private final String credentialName = "Bachelors Degree";
+    private final String credDefId = "...someCredDefId...";
+    private final Map<String, String> credentialValues = new HashMap<>();
 
     public IssueCredentialTest() {
         credentialValues.put("name", "Jose Smith");
@@ -66,7 +65,7 @@ public class IssueCredentialTest {
         assertEquals(credDefId, msg.getString("credDefId"));
         //noinspection AssertEqualsBetweenInconvertibleTypes
         assertEquals(credentialValues, msg.getJSONObject("credentialValues").toMap());
-        assertEquals(price, msg.getString("price"));
+        assertEquals("0", msg.getString("price"));
     }
     private void testIssueMsg(JSONObject msg) {
         assertNotNull(msg.getString("@id"));

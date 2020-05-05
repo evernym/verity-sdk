@@ -8,25 +8,23 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-
+@SuppressWarnings("CPD-START")
 class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
 
     String forRelationship;
     String label;
     String base64InviteURL;
 
-    String SEND_ACCEPT_INVITE = "accept";
-    String GET_STATUS = "status";
+    final String ACCEPT_INVITE = "accept";
+    final String STATUS = "status";
 
-    ConnectionsImplV1_0() {
-
-    }
-
-    ConnectionsImplV1_0(String threadId) {
+    ConnectionsImplV1_0(String forRelationship, String threadId) {
         super(threadId);
+        this.forRelationship = forRelationship;
     }
 
-    ConnectionsImplV1_0(String label, String base64InviteURL) {
+    ConnectionsImplV1_0(String forRelationship, String label, String base64InviteURL) {
+        this.forRelationship = forRelationship;
         this.label = label;
         this.base64InviteURL = base64InviteURL;
     }
@@ -39,7 +37,7 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     @Override
     public JSONObject statusMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(GET_STATUS));
+        msg.put("@type", getMessageType(STATUS));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
@@ -55,7 +53,7 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     @Override
     public JSONObject acceptMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(SEND_ACCEPT_INVITE));
+        msg.put("@type", getMessageType(ACCEPT_INVITE));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);

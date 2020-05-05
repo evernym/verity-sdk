@@ -4,7 +4,7 @@ import com.evernym.verity.sdk.utils.AsJsonObject;
 import org.json.JSONObject;
 
 public class Restriction implements AsJsonObject {
-    JSONObject data;
+    final JSONObject data;
 
     protected Restriction(JSONObject data) {
         this.data = data;

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class MsgFamilyBuilder {
 
-    static Pattern p = Pattern.compile("(did:.*:.*);spec/(.*)/(.*)/(.*)");
+    static final Pattern p = Pattern.compile("(did:.*:.*);spec/(.*)/(.*)/(.*)");
 
     public static MessageFamily fromQualifiedMsgType(String qualifiedMessageType) {
         Matcher m = p.matcher(qualifiedMessageType);

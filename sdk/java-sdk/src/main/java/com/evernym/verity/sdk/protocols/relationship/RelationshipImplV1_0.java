@@ -48,10 +48,9 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
 
     @Override
     public JSONObject createMsg(Context context) {
-        JSONObject rtn = new JSONObject()
+        return new JSONObject()
             .put("@type", getMessageType(CREATE))
             .put("@id", getNewId());
-        return rtn;
     }
 
     @Override

@@ -129,7 +129,7 @@ public class ContextBuilder {
                 .build();
     }
 
-    private Map<String, String> elements = new HashMap<>();
+    private final Map<String, String> elements = new HashMap<>();
     private WalletConfig walletConfig;
     private Wallet walletHandle = null;
 

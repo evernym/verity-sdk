@@ -1,6 +1,7 @@
 package com.evernym.verity.sdk.protocols.presentproof;
 
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
+import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
 import com.evernym.verity.sdk.protocols.presentproof.v0_6.PresentProofV0_6;
 import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
 
@@ -33,6 +34,20 @@ public class PresentProof {
                                         Attribute...proofAttrs) {
         return new PresentProofImplV1_0(forRelationship, name, proofAttrs);
     }
+
+    public static PresentProofV1_0 v1_0(String forRelationship,
+                                        String name,
+                                        Predicate...proofPredicate) {
+        return new PresentProofImplV1_0(forRelationship, name, proofPredicate);
+    }
+
+    public static PresentProofV1_0 v1_0(String forRelationship,
+                                        String name,
+                                        Attribute[] proofAttrs,
+                                        Predicate[] proofPredicate) {
+        return new PresentProofImplV1_0(forRelationship, name, proofAttrs, proofPredicate);
+    }
+
 
     public static PresentProofV1_0 v1_0(String forRelationship,
                                         String threadId) {

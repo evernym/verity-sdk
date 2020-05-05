@@ -11,17 +11,14 @@ import java.io.IOException;
 
 
 public interface UpdateConfigsV0_6 extends MessageFamily {
+
     String QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
-    String FAMILY = "configs";
+    String FAMILY = "update-configs";
     String VERSION = "0.6";
 
     default String qualifier() {return QUALIFIER;}
     default String family() { return FAMILY;}
     default String version() {return VERSION;}
-
-    String UPDATE_CONFIGS = "UPDATE_CONFIGS";
-
-
 
     /**
      *
@@ -46,4 +43,28 @@ public interface UpdateConfigsV0_6 extends MessageFamily {
      * @throws VerityException
      */
     byte[] updateMsgPacked(Context context) throws VerityException;
+
+    /**
+     *
+     * @param context
+     * @throws IOException
+     * @throws VerityException
+     */
+    void status(Context context) throws IOException, VerityException;
+
+    /**
+     *
+     * @param context
+     * @return
+     * @throws UndefinedContextException
+     */
+    JSONObject statusMsg(Context context) throws UndefinedContextException;
+
+    /**
+     *
+     * @param context
+     * @return
+     * @throws VerityException
+     */
+    byte[] statusMsgPacked(Context context) throws VerityException;
 }

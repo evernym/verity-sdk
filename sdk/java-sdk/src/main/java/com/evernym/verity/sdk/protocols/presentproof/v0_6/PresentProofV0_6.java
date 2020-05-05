@@ -16,6 +16,7 @@ import java.io.IOException;
 /**
  * Builds and sends a message to Verity asking it to send a Proof Request to a connection
  */
+@SuppressWarnings("CPD-START")
 public interface PresentProofV0_6 extends MessageFamily {
 
     String QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;

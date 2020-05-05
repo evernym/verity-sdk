@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
 
 public class Attribute implements AsJsonObject {
-    JSONObject data;
+    final JSONObject data;
 
     public Attribute(String name, Restriction... restrictions){
         this.data = new JSONObject()

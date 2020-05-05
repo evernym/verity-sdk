@@ -13,6 +13,7 @@ import java.io.IOException;
 /**
  * Builds and sends a new encrypted agent message for the Question protocol.
  */
+@SuppressWarnings("CPD-START")
 public interface QuestionAnswerV1_0 extends MessageFamily {
     String QUALIFIER = Util.COMMUNITY_MSG_QUALIFIER;
     String FAMILY = "questionanswer";

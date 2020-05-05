@@ -18,4 +18,8 @@ class CommittedAnswerImplV1_0 extends AskCommonImpl implements CommittedAnswerV1
     CommittedAnswerImplV1_0(String forRelationship, String threadId, String answer) {
         super(forRelationship, threadId, answer);
     }
+
+    CommittedAnswerImplV1_0(String forRelationship, String threadId) {
+        super(forRelationship, threadId);
+    }
 }

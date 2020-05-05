@@ -23,4 +23,9 @@ public class QuestionAnswer {
                                    String answer) {
         return new QuestionAnswerImplV1_0(forRelationship, threadId, answer);
     }
+
+    public static QuestionAnswerV1_0 v1_0(String forRelationship,
+                                          String threadId) {
+        return new QuestionAnswerImplV1_0(forRelationship, threadId);
+    }
 }

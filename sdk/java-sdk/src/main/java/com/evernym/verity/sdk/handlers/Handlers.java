@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * Stores an array of message handlers that are used when receiving an inbound message
  */
 public class Handlers {
-    private ArrayList<MessageHandler> messageHandlers = new ArrayList<>();
+    private final ArrayList<MessageHandler> messageHandlers = new ArrayList<>();
     private DefaultMessageHandler defaultHandler;
 
     /**

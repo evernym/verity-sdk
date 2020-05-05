@@ -3,6 +3,7 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.exceptions.InvalidMessageTypeException;
 
 public interface MessageFamily {
+
     String qualifier();
     String family();
     String version();

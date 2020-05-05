@@ -18,11 +18,11 @@ import static org.junit.Assert.assertNotNull;
 
 public class RelationshipTest {
 
-    String did = "did1";
-    String label = "Alice";
-    String forRelationship = "did1";
-    ArrayList<String> recipKeys = new ArrayList<> (Arrays.asList("1a", "2b"));
-    ArrayList<String> routingKeys = new ArrayList<> (Arrays.asList("3c", "4d"));
+    final String did = "did1";
+    final String label = "Alice";
+    final String forRelationship = "did1";
+    final ArrayList<String> recipKeys = new ArrayList<> (Arrays.asList("1a", "2b"));
+    final ArrayList<String> routingKeys = new ArrayList<> (Arrays.asList("3c", "4d"));
 
 
     @Test

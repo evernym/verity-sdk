@@ -14,16 +14,16 @@ import java.io.IOException;
  */
 public abstract class AskCommonImpl extends Protocol implements MessageFamily {
 
-    String forRelationship;
+    final String forRelationship;
     String questionText;
     String questionDetail;
     String[] validResponses;
     String answer;
     private boolean signatureRequired;
 
-    public static String ASK_QUESTION = "ask-question";
-    public static String ANSWER_QUESTION = "answer-question";
-    public static String GET_STATUS = "get-status";
+    public static final String ASK_QUESTION = "ask-question";
+    public static final String ANSWER_QUESTION = "answer-question";
+    public static final String GET_STATUS = "get-status";
 
 
     public AskCommonImpl(String forRelationship,
@@ -51,6 +51,11 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
         super(threadId);
         this.forRelationship = forRelationship;
         this.answer = answer;
+    }
+
+    public AskCommonImpl(String forRelationship, String threadId) {
+        super(threadId);
+        this.forRelationship = forRelationship;
     }
 
     public void ask(Context context) throws IOException, VerityException {

@@ -20,4 +20,9 @@ class QuestionAnswerImplV1_0 extends AskCommonImpl implements QuestionAnswerV1_0
                                   String answer) {
         super(forRelationship, threadId, answer);
     }
+
+    QuestionAnswerImplV1_0(String forRelationship,
+                           String threadId) {
+        super(forRelationship, threadId);
+    }
 }

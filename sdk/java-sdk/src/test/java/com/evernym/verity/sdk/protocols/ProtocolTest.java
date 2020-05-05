@@ -9,8 +9,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 class SomeProtocol extends Protocol {
-  private static String MSG_FAMILY = "some-protocol";
-  private static String MSG_FAMILY_VERSION = "9.9.9";
+  private static final String MSG_FAMILY = "some-protocol";
+  private static final String MSG_FAMILY_VERSION = "9.9.9";
 
   SomeProtocol() {
     super();

@@ -11,8 +11,8 @@ import static org.junit.Assert.assertNotNull;
 
 public class ConnectionsTest extends TestBase {
 
-    String label = "Alice";
-    String base64Url = "<TBD>";
+    final String label = "Alice";
+    final String base64Url = "<TBD>";
 
     @Test
     public void testGetMessageType() {
