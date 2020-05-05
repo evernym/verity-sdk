@@ -1,5 +1,6 @@
 'use strict'
 const sdk = require('indy-sdk')
+const bs58 = require('bs58')
 let initialized = false
 
 function init () {
@@ -42,4 +43,12 @@ exports.newDid = async function (context, seed = null) {
     param.seed = seed
   }
   return sdk.createAndStoreMyDid(context.walletHandle, param)
+}
+
+exports.restApiToken = async function (context) {
+  init()
+  const t = bs58.encode(
+    await sdk.cryptoSign(context.walletHandle, context.sdkVerKey, Buffer.from(context.sdkVerKey, 'utf-8'))
+  )
+  return context.sdkVerKey + ':' + t
 }
