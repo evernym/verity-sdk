@@ -2,40 +2,25 @@ package com.evernym.verity.sdk.protocols.relationship;
 
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 
-import java.util.List;
-
 public class Relationship {
-    private Relationship() {}
 
     /**
      * used by inviter/invitee to create relationship
+     * @param label label to be used in invitation
      * @return
      */
-    public static RelationshipV1_0 v1_0() {
-        return new RelationshipImplV1_0();
+    public static RelationshipV1_0 v1_0(String label) {
+        return new RelationshipImplV1_0(label);
     }
 
     /**
-     * used by inviter to prepare a invitation message with keys
+     * used by inviter to get a connection invitation message
      * @param forRelationship relationship identifier
      * @param threadId thread identifier
-     * @param label required, suggested label for the connection
-     * @param recipientKeys required, recipient keys
-     * @param routingKeys optional, routing keys
      */
-    public static RelationshipV1_0 v1_0(String forRelationship, String threadId, String label, List<String> recipientKeys, List<String> routingKeys) {
-        return new RelationshipImplV1_0(forRelationship, threadId, label, recipientKeys, routingKeys);
+    public static RelationshipV1_0 v1_0(String forRelationship, String threadId) {
+        return new RelationshipImplV1_0(forRelationship, threadId);
     }
 
-    /**
-     * used by inviter to prepare a invitation message with DID
-     * @param forRelationship relationship identifier
-     * @param threadId thread identifier
-     * @param label required, suggested label for the connection
-     * @param did required, invitation with public DID
-     */
-    public static RelationshipV1_0 v1_0(String forRelationship, String threadId, String label, String did) {
-        return new RelationshipImplV1_0(forRelationship, threadId, label, did);
-    }
 
 }
