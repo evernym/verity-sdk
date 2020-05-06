@@ -38,11 +38,11 @@ module.exports = class Relationship extends Protocol {
     return msg
   }
 
-  async currentPublicIdentifierMsgPacked (context) {
-    return this.getMessageBytes(context, await this.currentPublicIdentifierMsg(context))
+  async connectionInvitationMsgPacked (context) {
+    return this.getMessageBytes(context, await this.connectionInvitationMsg(context))
   }
 
-  async currentPublicIdentifier (context) {
-    await this.sendMessage(context, await this.currentPublicIdentifierMsgPacked(context))
+  async connectionInvitation (context) {
+    await this.sendMessage(context, await this.connectionInvitationMsgPacked(context))
   }
 }
