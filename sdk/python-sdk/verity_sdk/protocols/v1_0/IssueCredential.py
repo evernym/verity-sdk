@@ -18,8 +18,8 @@ class IssueCredential(Protocol):
 
     def __init__(self,
                  for_relationship: str,
-                 cred_def_id: str,
                  thread_id: str = None,
+                 cred_def_id: str = None,
                  values: Dict[str, str] = None,
                  comment: str = None,
                  price: int = 0):

@@ -13,10 +13,11 @@ class PresentProof(Protocol):
 
     def __init__(self,
                  for_relationship: str,
-                 name: str,
+                 thread_id: str = None,
+                 name: str = None,
                  proof_attrs=None,
-                 proof_predicates=None,
-                 thread_id: str = None):
+                 proof_predicates=None
+                 ):
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
