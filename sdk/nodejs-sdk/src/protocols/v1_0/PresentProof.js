@@ -20,7 +20,7 @@ module.exports = class PresentProofV1x0 extends Protocol {
     this.created = threadId == null
 
     this.msgNames.PROOF_REQUEST = 'request'
-    this.msgNames.GET_STATUS = 'get-status'
+    this.msgNames.STATUS = 'status'
     this.msgNames.REJECT = 'reject'
   }
 
@@ -29,7 +29,7 @@ module.exports = class PresentProofV1x0 extends Protocol {
   }
 
   async requestMsgPacked (context) {
-    await this.getMessageBytes(context, this.requestMsg())
+    return this.getMessageBytes(context, this.requestMsg())
   }
 
   requestMsg () {
@@ -40,10 +40,10 @@ module.exports = class PresentProofV1x0 extends Protocol {
     msg['~for_relationship'] = this.forRelationship
     msg.name = this.name
     if (this.attributes) {
-      msg.proofAttrs = this.attributes
+      msg.proof_attrs = this.attributes
     }
-    if (this.predicates) {
-      msg.proofPredicates = this.predicates
+    if (this.predicates && this.predicates.length > 0) {
+      msg.proof_predicates = this.predicates
     }
     msg = this._addThread(msg)
     return msg
@@ -54,11 +54,11 @@ module.exports = class PresentProofV1x0 extends Protocol {
   }
 
   async statusMsgPacked (context) {
-    await this.getMessageBytes(context, this.statusMsg())
+    return this.getMessageBytes(context, this.statusMsg())
   }
 
   statusMsg () {
-    var msg = this._getBaseMessage(this.msgNames.GET_STATUS)
+    var msg = this._getBaseMessage(this.msgNames.STATUS)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     return msg
@@ -69,7 +69,7 @@ module.exports = class PresentProofV1x0 extends Protocol {
   }
 
   async rejectMsgPacked (context, reason) {
-    await this.getMessageBytes(context, this.rejectMsgPacked(reason))
+    return this.getMessageBytes(context, this.rejectMsgPacked(reason))
   }
 
   rejectMsg (reason) {

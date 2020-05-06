@@ -20,7 +20,7 @@ module.exports = class ConnectingV10 extends Protocol {
   }
 
   async acceptMsgPascked (context) {
-    await this.getMessageBytes(context, this.acceptMsg())
+    return this.getMessageBytes(context, this.acceptMsg())
   }
 
   acceptMsg () {
