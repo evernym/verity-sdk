@@ -3,11 +3,11 @@ const utils = require('../../utils')
 
 module.exports = class IssueCredentialV10 extends Protocol {
   constructor (forRelationship,
+    threadId = null,
     credDefId = '',
     values = {},
     comment = '',
-    price = 0,
-    threadId = null) {
+    price = 0) {
     const msgFamily = 'issue-credential'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.COMMUNITY_MSG_QUALIFIER
