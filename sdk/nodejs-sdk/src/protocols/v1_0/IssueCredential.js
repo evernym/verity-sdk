@@ -46,7 +46,7 @@ module.exports = class IssueCredentialV10 extends Protocol {
     msg.cred_def_id = this.credDefId
     msg.comment = this.comment
     msg.price = this.price
-    msg.values = this.values
+    msg.credential_values = this.values
     msg = this._addThread(msg)
 
     return msg
@@ -69,7 +69,7 @@ module.exports = class IssueCredentialV10 extends Protocol {
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
     msg.comment = this.comment
-    msg.values = this.values
+    msg.credential_values = this.values
     msg = this._addThread(msg)
 
     return msg
@@ -139,7 +139,7 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   async statusMsgPacked (context) {
-    return this.getMessageBytes(context, this.rejectMsg())
+    return this.getMessageBytes(context, this.statusMsg())
   }
 
   statusMsg () {
