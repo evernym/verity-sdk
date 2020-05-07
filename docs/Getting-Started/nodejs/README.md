@@ -36,18 +36,37 @@ Go to the directory where you extracted the tarball.
    ```
    
 ## Run the Application
+1. **Start `ngrok`**
 
-1. **Start `Ngrok`**
-
-   `Ngrok` allows the Verity server instance to reach a webhook endpoint that the example application starts. 
-   By default, the example application uses port `4000`, so Ngrok must be started to proxy to that local port:
+   The Verity server instance is not running in the same local environment as the example application. The Verity server instance communicates with the SDK via a webhook. This webhook must be accessible by the Verity server instance, but the example application can only start a local webhook endpoint. `ngrok` is used to provide a publicly available endpoint that tunnels to the local webhook endpoint that is started by the Example App. 
    
+   See [Ngrok's product page](https://ngrok.com/product) for a more detailed description of what Ngrok is and what it does. 
+   
+   The example application uses port `4000` by default for the webhook endpoint. So, `ngrok` much be launched pointing to `4000`.
+   
+   Starting `ngrok` command. 
    ```sh
    ngrok http 4000
    ```
    
-   `Ngrok` should be running at the same time as the example application, and the endpoint should be given 
-   to the example during the *Setup* interaction.
+   After starting, `ngrok` should provide output that looks like this:
+   ```sh
+   ngrok by @inconshreveable
+                                                                             
+   Session Status                online
+   Session Expires               6 hours, 11 minutes
+   Version                       2.3.35
+   Region                        United States (us)
+   Web Interface                 http://127.0.0.1:4040
+   Forwarding                    http://a74616ad.ngrok.io -> http://localhost:9003
+   Forwarding                    https://a74616ad.ngrok.io -> http://localhost:9003 
+   ```
+   
+   The `Forwarding` URL is what must be given to the example application during the **Setup** interaction (see interactions below). For the above output, it would be `https://a74616ad.ngrok.io` but ever time `ngrok` is started a new URL will be generated, but it will have the following format:
+   
+   `https://<id>.ngrok.io`
+   
+   > **NOTE:** `ngrok` must be left running during the whole time that the example application is running.
 
 <a id="connectme"></a>
 
