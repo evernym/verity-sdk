@@ -21,7 +21,7 @@ public interface RelationshipV1_0 extends MessageFamily {
     JSONObject createMsg(Context context) throws IOException, VerityException;
     byte[] createMsgPacked(Context context) throws IOException, VerityException;
 
-    void prepareInvitation(Context context) throws IOException, VerityException;
-    JSONObject prepareInvitationMsg(Context context) throws IOException, VerityException;
-    byte[] prepareInvitationMsgPacked(Context context) throws IOException, VerityException;
+    void connectionInvitation(Context context) throws IOException, VerityException;
+    JSONObject connectionInvitationMsg(Context context) throws IOException, VerityException;
+    byte[] connectionInvitationMsgPacked(Context context) throws IOException, VerityException;
 }

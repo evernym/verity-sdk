@@ -15,15 +15,18 @@ public class TestHelpers {
     protected TestHelpers() {
     }
 
-    
     public static Context getContext() throws WalletException {
+        return getContext(null);
+    }
+
+    public static Context getContext(String seed) throws WalletException {
 
         String walletName = UUID.randomUUID().toString();
         String walletKey = UUID.randomUUID().toString();
         String endpointUrl = "http://localhost:3000";
         String verityUrl = "http://localhost:3000";
 
-        TestWallet testWallet = new TestWallet(walletName, walletKey);
+        TestWallet testWallet = new TestWallet(walletName, walletKey, seed);
         return ContextBuilder
                 .blank()
                 .walletConfig(testWallet)

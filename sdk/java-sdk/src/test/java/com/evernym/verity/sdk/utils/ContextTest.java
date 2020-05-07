@@ -1,12 +1,16 @@
 package com.evernym.verity.sdk.utils;
 
+import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.TestWallet;
+import com.evernym.verity.sdk.exceptions.VerityException;
+import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.UUID;
 
 import static com.evernym.verity.sdk.TestHelpers.assertEqualsJSONObject;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class ContextTest {
@@ -70,6 +74,16 @@ public class ContextTest {
             e.printStackTrace();
             fail();
         }
+    }
+
+    @Test
+    public void restApiToken() throws VerityException, IndyException {
+        Context c = TestHelpers.getContext("000000000000000000000000Team1VAS");
+        String t = c.restApiToken();
+        String e = "HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh" +
+                ":4Wf6JtGy9enwwXVKcUgADPq7Pnf9T2YZ8LupMEVxcQQf98uuRYxWGHLAwXWp8DtaEYHo4cUeExDjApMfvLJQ48Kp";
+        assertEquals(e, t);
+
     }
 
     private JSONObject withNewKeys(JSONObject jsonObject) {

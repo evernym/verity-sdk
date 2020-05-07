@@ -3,11 +3,14 @@ const uuid = require('uuid')
 const URL = require('url').URL
 const indy = require('./indy')
 const request = require('request-promise-native')
+const WrongSetupError = require('./WrongSetupError')
 
 exports.constants = {
   EVERNYM_MSG_QUALIFIER: 'did:sov:123456789abcdefghi1234',
   COMMUNITY_MSG_QUALIFIER: 'did:sov:BzCbsNYhMrjHiqZDTUASHg'
 }
+
+exports.WrongSetupError = WrongSetupError
 
 exports.miniId = function () {
   return uuid().split('-')[0]
