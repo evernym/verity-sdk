@@ -21,6 +21,7 @@ import com.evernym.verity.sdk.protocols.presentproof.v0_6.RestrictionBuilder;
 import com.evernym.verity.sdk.protocols.provision.Provision;
 import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
 import com.evernym.verity.sdk.protocols.questionanswer.v1_0.CommittedAnswerV1_0;
+import com.evernym.verity.sdk.protocols.updateconfigs.v0_6.UpdateConfigsV0_6;
 import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
 import com.evernym.verity.sdk.protocols.updateconfigs.UpdateConfigs;
 import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
@@ -117,7 +118,7 @@ public class App extends Helper {
         String INSTITUTION_NAME = "Faber College";
         String LOGO_URL = "http://robohash.org/235";
 
-        UpdateConfigs updateConfigs = UpdateConfigs.v0_6(INSTITUTION_NAME, LOGO_URL)
+        UpdateConfigsV0_6 updateConfigs = UpdateConfigs.v0_6(INSTITUTION_NAME, LOGO_URL);
         updateConfigs.update(context);
         updateConfigs.status(context);
     }

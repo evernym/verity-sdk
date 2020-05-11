@@ -34,6 +34,11 @@ Go to the directory where you extracted the tarball.
    ```sh
    pip install -r requirements.txt
    ```
+3. Build and install `verity-sdk` to local packages 
+
+    ```sh
+    python setup.py develop 
+    ```
    
 ## Run the Application
 1. **Start `ngrok`**

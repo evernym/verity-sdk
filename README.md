@@ -1,4 +1,4 @@
-# verity-sdk Repo
+# Verity SDK
 
 ## Overview
 
@@ -11,8 +11,8 @@ their backend services into the world of SSI with minimal overhead.
 
 ## Architecture
 
-By design, Verity SDK is largely stateless (requiring only a small set of configuration contexts 
-and a single public/private key), which allows applications to orchestrate SSI integrations 
+By design, Verity SDK is largely stateless (requiring only a small configuration context 
+and a single public/private key pair), which allows applications to orchestrate SSI integrations 
 without heavy involvement in the interactions.
 
 ## Terminology
