@@ -91,5 +91,11 @@ Go to the directory where you extracted the tarball.
 
 Continue to [Interactions](../Interactions.md).
 
+---
+> **NOTE:** A Verity-SDK Context can also be used with the Verity REST API. Use the `restApiToken` method on the Context object to get the required API key. 
+>
+>See the Open API docs for the Verity REST API at https://app.swaggerhub.com/apis/evernym/verity-rest-api/0.6 
+
+
  
 © 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
