@@ -1,4 +1,4 @@
-# Release Notes - Verity Version 1.8 (0.4.88971934.01eadf6) - May 11 2020
+# Release Notes - Verity version 1.8 (0.4.88971934.01eadf6) - May 11 2020
 
 
 
