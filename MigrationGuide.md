@@ -1,4 +1,4 @@
-##Mirgration Guide 
+##Migration Guide 
 
 ### `0.1.0-beta` to `0.2.0-beta`
 The `0.2.0-beta` added better support for multiple versions of a protocol. As such, the Verity-SDK API required the ability to distinguish between different versions. This required changes to the API. These changes are limited to the import statements and interfaces used.

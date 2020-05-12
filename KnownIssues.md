@@ -5,4 +5,4 @@ customers may run into:
 
 * **VE-1177** -- If you run the provisioning script more than one time using the SDK
 you will get an error. If you encounter this error contact Evernym for next steps.
-* **VE-1411** - REST GET UpdateConfigs endpoint doesn't work properly 
+* **VE-1411** -- REST GET UpdateConfigs endpoint doesn't work properly 
