@@ -1,18 +1,32 @@
-# verity-sdk Repo
+# Verity SDK
 
 ## Overview
 
-The goal of the Verity SDK is to provide easy application integration with the Verity server. This 
-integration provides the basis for SSI-enabled workflows such as creating 
-connections, issuing credentials, requesting proof, and general pairwise interactions. The SDK 
+The goal of the Verity SDK is to provide easy application integration with the Verity server. 
+The Verifiable Credentials data model defines Issuer, Verifier and the Holder. Issuer is an 
+organization that creates and issues Verifiable Credentials to individuals, also known as Holders. 
+Holders typically have a digital wallet app to store credentials securely and control how those 
+credentials are being shared with Verifiers. Verifier is an organization that verifies information 
+from the credentials that Holders have stored on their digital wallet app.
+
+With Verity SDK, you can enable issuing or verifying or both functions into your project and interact
+with individuals using Connect.Me or some other compatible digital wallet app.
+
+Verity SDK provides methods that enable you to initiate basic SSI protocols such are 
+establishing a DID connection between your organization and individuals, issuing a 
+Verifiable Credential to individual and requesting and validating Proofs from individuals. 
+Besides SSI protocols, Verity SDK provides methods for writing Schemas and 
+Credential Definitions to the ledger.
+
+The SDK 
 uses `libindy` and Agent-to-Agent protocols to securely authenticate and communicate with the 
 Verity server. With the creation of language-specific bindings, developers can quickly integrate 
 their backend services into the world of SSI with minimal overhead.
 
 ## Architecture
 
-By design, Verity SDK is largely stateless (requiring only a small set of configuration contexts 
-and a single public/private key), which allows applications to orchestrate SSI integrations 
+By design, Verity SDK is largely stateless (requiring only a small configuration context 
+and a single public/private key pair), which allows applications to orchestrate SSI integrations 
 without heavy involvement in the interactions.
 
 ## Terminology
