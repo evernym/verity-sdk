@@ -7,6 +7,8 @@ const indy = require('../src/utils/indy')
 const Context = require('../src/utils/Context')
 const getTestConfig = require('./test_Context').getTestConfig
 
+module.exports.getTestContext = getTestContext
+
 async function getTestContext () {
   const context = await Context.createWithConfig(getTestConfig());
   [context.verityPublicDID, context.verityPublicVerKey] = await indy.newDid(context);
