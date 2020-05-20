@@ -10,7 +10,7 @@ class Provision(Protocol):
     MSG_FAMILY_VERSION = '0.7'
 
     # Messages
-    CREATE_AGENT = 'CREATE_AGENT'
+    CREATE_EDGE_AGENT = 'create-edge-agent'
 
     def __init__(self):
         super().__init__(
@@ -35,12 +35,8 @@ class Provision(Protocol):
         )
 
     def provision_msg(self, context: Context):
-        keys = {
-            "fromVerKey": context.sdk_verkey
-        }
-
-        msg = self._get_base_message(self.CREATE_AGENT)
-        msg['requesterKeys'] = keys
+        msg = self._get_base_message(self.CREATE_EDGE_AGENT)
+        msg['requesterVk'] = context.sdk_verkey
 
         return msg
 

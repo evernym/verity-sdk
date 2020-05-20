@@ -12,9 +12,9 @@ async def test_message():
 
     msg = p.provision_msg(context)
 
-    assert msg['requesterKeys'] is not None
-    assert msg['requesterKeys']['fromVerKey'] == context.sdk_verkey
-    assert msg['@type'] == 'did:sov:123456789abcdefghi1234;spec/agent-provisioning/0.7/CREATE_AGENT'
+    assert msg['requesterVk'] is not None
+    assert msg['requesterVk'] == context.sdk_verkey
+    assert msg['@type'] == 'did:sov:123456789abcdefghi1234;spec/agent-provisioning/0.7/create-edge-agent'
 
 
 @pytest.mark.asyncio

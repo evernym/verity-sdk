@@ -12,7 +12,7 @@ describe('Provision', () => {
     const ctx = await helpers.getTestContext()
     const p = new Provision()
     const msg = p.provisionMsg(ctx)
-    expect(msg.requesterKeys.fromVerKey).to.equal(ctx.sdkVerKey)
+    expect(msg.requesterVk).to.equal(ctx.sdkVerKey)
   }).timeout(5000)
 
   it('should build CREATE msg correctly', async () => {

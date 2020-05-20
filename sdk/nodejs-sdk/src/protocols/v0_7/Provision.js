@@ -9,7 +9,7 @@ module.exports = class Provision extends Protocol {
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
-    this.msgNames.CREATE_AGENT = 'CREATE_AGENT'
+    this.msgNames.CREATE_EDGE_AGENT = 'create-edge-agent'
   }
 
   async sendToVerity (context, packedMsg) {
@@ -19,11 +19,8 @@ module.exports = class Provision extends Protocol {
   }
 
   provisionMsg (context) {
-    const keys = {
-      fromVerKey: context.sdkVerKey
-    }
-    const msg = this._getBaseMessage(this.msgNames.CREATE_AGENT)
-    msg.requesterKeys = keys
+    const msg = this._getBaseMessage(this.msgNames.CREATE_EDGE_AGENT)
+    msg.requesterVk = context.sdkVerKey
     return msg
   }
 
