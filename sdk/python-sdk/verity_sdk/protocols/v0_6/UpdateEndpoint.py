@@ -24,7 +24,11 @@ class UpdateEndpoint(Protocol):
         msg['comMethod'] = {
             'id': 'webhook',
             'type': COM_METHOD_TYPE,
-            'value': context.endpoint_url
+            'value': context.endpoint_url,
+            'packaging': {
+                'pkgType': '1.0',
+                'recipientKeys': [context.sdk_verkey]
+            }
         }
         return msg
 

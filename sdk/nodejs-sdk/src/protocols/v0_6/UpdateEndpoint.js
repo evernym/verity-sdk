@@ -23,6 +23,10 @@ module.exports = class UpdateEndpoint extends Protocol {
       id: 'webhook',
       type: COM_METHOD_TYPE,
       value: context.endpointUrl
+      packaging: {
+        pkgType: '1.0',
+        recipientKeys: [context.sdkVerKey]
+      }
     }
     return msg
   }
