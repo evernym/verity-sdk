@@ -34,13 +34,10 @@ class ProvisionImplV0_7 extends Protocol implements ProvisionV0_7 {
 
     @Override
     public JSONObject provisionMsg(Context context) throws UndefinedContextException {
-        JSONObject requesterKeys = new JSONObject()
-                .put("fromVerKey", context.sdkVerKey());
-
         return new JSONObject()
                 .put("@id", Protocol.getNewId())
-                .put("@type", getMessageType(CREATE_AGENT))
-                .put("requesterKeys", requesterKeys);
+                .put("@type", getMessageType(CREATE_EDGE_AGENT))
+                .put("requesterVk", context.sdkVerKey());
     }
 
     @Override

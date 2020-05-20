@@ -15,7 +15,7 @@ public interface ProvisionV0_7 extends MessageFamily {
     default String version() {return "0.7";}
 
     // Messages
-    String CREATE_AGENT = "CREATE_AGENT";
+    String CREATE_EDGE_AGENT = "create-edge-agent";
 
 
 

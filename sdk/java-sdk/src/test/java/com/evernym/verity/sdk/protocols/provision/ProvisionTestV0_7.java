@@ -20,7 +20,7 @@ public class ProvisionTestV0_7 {
 
         ProvisionV0_7 p = Provision.v0_7();
         JSONObject msg = p.provisionMsg(context);
-        assertEquals(msg.getJSONObject("requesterKeys").getString("fromVerKey"), context.sdkVerKey());
+        assertEquals(msg.getString("requesterVk"), context.sdkVerKey());
     }
 
     @Test
