@@ -17,5 +17,7 @@ async def test_write():
     assert msg['comMethod']['id'] == 'webhook'
     assert msg['comMethod']['type'] == 2
     assert msg['comMethod']['value'] == context.endpoint_url
+    assert msg['comMethod']['packaging']['pkgType'] == '1.0'
+    assert msg['comMethod']['packaging']['recipientKeys'] == [context.sdk_verkey]
 
     await cleanup(context)

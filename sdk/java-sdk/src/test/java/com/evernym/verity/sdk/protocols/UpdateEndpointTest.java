@@ -8,6 +8,8 @@ import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 public class UpdateEndpointTest {
@@ -41,6 +43,16 @@ public class UpdateEndpointTest {
             assertNotNull(msg.getString("@id"));
             assertEquals("webhook", msg.getJSONObject("comMethod").getString("id"));
             assertEquals(2, msg.getJSONObject("comMethod").getInt("type"));
+            assertEquals(
+                    "1.0",
+                    msg.getJSONObject("comMethod").getJSONObject("packaging").getString("pkgType")
+            );
+            ArrayList<String> expectedReceipientKeys = new ArrayList<String>();
+            expectedReceipientKeys.add(context.sdkVerKey());
+            assertEquals(
+                    expectedReceipientKeys,
+                    msg.getJSONObject("comMethod").getJSONObject("packaging").getJSONArray("recipientKeys").toList()
+            );
         } catch(Exception e) {
             e.printStackTrace();
             fail();
