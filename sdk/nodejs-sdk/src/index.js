@@ -26,6 +26,9 @@ module.exports = {
       WriteCredentialDefinition: require('./protocols/v0_6/WriteCredentialDefinition'),
       WriteSchema: require('./protocols/v0_6/WriteSchema')
     },
+    v0_7: {
+      Provision: require('./protocols/v0_7/Provision')
+    },
     v1_0: {
       Connecting: require('./protocols/v1_0/Connecting'),
       IssueCredential: require('./protocols/v1_0/IssueCredential'),

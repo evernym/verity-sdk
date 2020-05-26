@@ -22,12 +22,12 @@ class ProvisionImplV0_6 extends Protocol implements ProvisionV0_6 {
         byte[] respBytes = transport.sendSyncMessage(context.verityUrl(), provisionSdkMsgPacked(context));
 
         JSONObject resp = Util.unpackMessage(context, respBytes);
-        String verityPairwiseDID = resp.getString("withPairwiseDID");
-        String verityPairwiseVerKey = resp.getString("withPairwiseDIDVerKey");
+        String domainDID = resp.getString("withPairwiseDID");
+        String verityAgentVerKey = resp.getString("withPairwiseDIDVerKey");
 
         return context.toContextBuilder()
-                .domainDID(verityPairwiseDID)
-                .verityAgentVerKey(verityPairwiseVerKey)
+                .domainDID(domainDID)
+                .verityAgentVerKey(verityAgentVerKey)
                 .build();
     }
 
