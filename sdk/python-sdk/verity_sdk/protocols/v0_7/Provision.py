@@ -19,10 +19,10 @@ class Provision(Protocol):
             msg_qualifier=EVERNYM_MSG_QUALIFIER,
         )
 
-    async def sendToVerity(self, context: Context, packed_msg: bytes) -> bytes:
+    async def send_to_verity(self, context: Context, packed_msg: bytes) -> dict:
         resp_bytes = send_packed_message(context, packed_msg)
 
-        await unpack_message(context, resp_bytes)
+        return await unpack_message(context, resp_bytes)
 
     async def provision_msg_packed(self, context: Context):
         return await pack_message_for_verity_direct(
@@ -43,7 +43,7 @@ class Provision(Protocol):
     async def provision(self, context: Context) -> Context:
         msg = await self.provision_msg_packed(context)
 
-        resp = self.sendToVerity(context, msg)
+        resp = await self.send_to_verity(context, msg)
 
         domain_did: str = resp['selfDID']
         verity_agent_verkey: str = resp['agentVerKey']
