@@ -22,7 +22,7 @@ async def test_process_message():
     context = await Context.create_with_config(await get_test_config())
     p = Provision()
 
-    def mock_send(_, __):
+    async def mock_send(_, __):
         return {
             'selfDID': '4ut8tgCBdUMCYZrJh5JS4o',
             'agentVerKey': '38fBEUX2sUQF7ZsY6epz1cbCvfBfDbQghUZUzFP6JChE'
