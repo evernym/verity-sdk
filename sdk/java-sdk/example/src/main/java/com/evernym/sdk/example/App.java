@@ -61,12 +61,12 @@ public class App extends Helper {
 
 //        askQuestion(forDID);
 
-//        String schemaId = writeLedgerSchema();
-//        String defId = writeLedgerCredDef(schemaId);
+        String schemaId = writeLedgerSchema();
+        String defId = writeLedgerCredDef(schemaId);
 
-//        issueCredential(forDID, defId);
+        issueCredential(relDID, defId);
 
-//        requestProof(forDID);
+        requestProof(relDID);
     }
 
 
@@ -248,45 +248,38 @@ public class App extends Helper {
         
         relProvisioning.create(context);
 
-        // wait for response from verity application
         waitFor(startRelationshipComplete, "Waiting to start relationship");
 
-        // Step 2
         RelationshipV1_0 relationship = Relationship.v1_0(relDID.get(), threadId.get());
         relationship.connectionInvitation(context);
-        // wait for invite
         waitFor(invitationComplete, "Waiting for invite");
+
         // return owning DID for the connection
         return relDID.get();
-
-        // Inviter Send Create - The controller sends a message (to it's agent) to create a new relationship (pairwise key)
-        // Inviter receives a Created Msg
-        // Inviter prepares invitation
-        // Inviter delivers Invite offline
-        // Invitee creates new relationship (pairwise key)
-
     }
 
     private String createConnection(String relDID) throws IOException, VerityException {
 
         // Constructor for the Connecting API
         ConnectionsV1_0 listener = Connecting.v1_0("", "");
+        AtomicBoolean requestReceived = new AtomicBoolean(false);
         AtomicBoolean startResponse = new AtomicBoolean(false);
 
         //FIXME: Inviter sends response automatically when the invitee sends the request.
         // I do not believe this handler is setup in time to capture the `resonse-sent`
         handle(listener, (String msgName, JSONObject message) -> {
-            if("response-sent".equals(msgName)) {
+            if("request-received".equals(msgName)) {
+                requestReceived.set(true);
+            } else if("response-sent".equals(msgName)) {
                 startResponse.set(true);
-
             } else {
                 nonHandled("Message Name is not handled - "+msgName);
             }
         });
 
+        waitFor(requestReceived, "Waiting to receive Request");
         waitFor(startResponse, "Responding to connection request");
         return relDID;
-
     }
 
 //    private void askQuestion(String forDID) throws IOException, VerityException {
@@ -394,13 +387,21 @@ public class App extends Helper {
         // constructor for the Issue Credential protocol
         IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0");
 
-        AtomicBoolean offerComplete = new AtomicBoolean(false); // spinlock bool
+        AtomicBoolean offerSent = new AtomicBoolean(false); // spinlock bool
+        AtomicBoolean credRequested = new AtomicBoolean(false); // spinlock bool
+        AtomicBoolean credSent = new AtomicBoolean(false); // spinlock bool
 
         // handler for 'ask_accept` message when the offer for credential is accepted
         handle(issue, (String msgName, JSONObject message) -> {
-            if("accept-request".equals(msgName)) {
+            if("sent".equals(msgName) && !offerSent.get()) {
+                offerSent.set(true);
+            }
+            else if("accept-request".equals(msgName)) {
                 printlnMessage(msgName, message);
-                offerComplete.set(true);
+                credRequested.set(true);
+            }
+            else if("sent".equals(msgName)) {
+                credSent.set(true);
             }
             else {
                 nonHandled("Message Name is not handled - "+msgName);
@@ -409,11 +410,14 @@ public class App extends Helper {
 
         // request that credential is offered
         issue.offerCredential(context);
+        waitFor(offerSent, "Wait for offer to be sent");
+
         // wait for connect.me user to accept offer
-        waitFor(offerComplete, "Wait for Connect.me to accept the Credential Offer");
+        waitFor(credRequested, "Wait for Connect.me to request the credential");
 
         // request that credential be issued
         issue.issueCredential(context);
+        waitFor(credSent, "Wait for Credential to be sent");
 
         Thread.sleep(3000); // Give time for Credential to get to mobile device
     }
