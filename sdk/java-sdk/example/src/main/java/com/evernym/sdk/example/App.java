@@ -7,15 +7,17 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
+import com.evernym.verity.sdk.protocols.relationship.Relationship;
+import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
-import com.evernym.verity.sdk.protocols.connecting.v0_6.ConnectingV0_6;
+import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
-import com.evernym.verity.sdk.protocols.issuecredential.v0_6.IssueCredentialV0_6;
+import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
 import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.PresentProof;
-import com.evernym.verity.sdk.protocols.presentproof.v0_6.PresentProofV0_6;
+import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
 import com.evernym.verity.sdk.protocols.presentproof.common.Restriction;
 import com.evernym.verity.sdk.protocols.presentproof.common.RestrictionBuilder;
 import com.evernym.verity.sdk.protocols.provision.Provision;
@@ -36,9 +38,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -56,16 +56,17 @@ public class App extends Helper {
     public void example() throws IOException, VerityException, InterruptedException {
         setup();
 
-        String forDID = createConnection();
+        String relDID = createRelationship();
+        createConnection(relDID);
 
 //        askQuestion(forDID);
 
-        String schemaId = writeLedgerSchema();
-        String defId = writeLedgerCredDef(schemaId);
+//        String schemaId = writeLedgerSchema();
+//        String defId = writeLedgerCredDef(schemaId);
 
-        issueCredential(forDID, defId);
+//        issueCredential(forDID, defId);
 
-        requestProof(forDID);
+//        requestProof(forDID);
     }
 
 
@@ -83,7 +84,7 @@ public class App extends Helper {
         Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
 
         // ask that an agent by provision (setup) and associated with created key pair
-        return Provision.v0_6().provisionSdk(ctx);
+        return Provision.v0_7().provision(ctx);
     }
 
     Context loadContext(File contextFile) throws IOException, WalletOpenException {
@@ -206,30 +207,31 @@ public class App extends Helper {
         Files.write(contextFile.toPath(), context.toJson().toString(2).getBytes());
     }
 
-    private String createConnection() throws IOException, VerityException {
-        // Connecting protocol has to steps
-        // 1. Start the protocol and receive the invite
-        //  2. Wait for the other participant to accept the invite
-
-        // Step 1
-
-        // Constructor for the Connecting API
-        ConnectingV0_6 connecting = Connecting.v0_6(UUID.randomUUID().toString(), true);
+    private String createRelationship() throws IOException, VerityException {
+        RelationshipV1_0 relProvisioning = Relationship.v1_0("inviter");
 
         // handler for the response to the request to start the Connecting protocol.
-        AtomicBoolean startConnectionComplete = new AtomicBoolean(false); // spinlock bool
-        AtomicBoolean connectionComplete = new AtomicBoolean(false); // spinlock bool
+        AtomicBoolean startRelationshipComplete = new AtomicBoolean(false);
+        AtomicBoolean invitationComplete = new AtomicBoolean(false);
+        AtomicReference<String> threadId = new AtomicReference<>();
         AtomicReference<String> relDID = new AtomicReference<>();
-        handle(connecting, (String msgName, JSONObject message) -> {
-            if("CONN_REQUEST_RESP".equals(msgName))
+
+        handle(relProvisioning, (String msgName, JSONObject message) -> {
+            if("created".equals(msgName))
             {
                 printlnMessage(msgName, message);
-                JSONObject invite = message.getJSONObject("inviteDetail");
-                relDID.set(invite.getJSONObject("senderDetail").getString("DID"));
-                String truncatedInvite = Util.truncateInviteDetails(invite).toString();
+                printlnMessage("RYAN MARSH TEST", message);
+                threadId.set(message.getJSONObject("~thread").getString("thid"));
+                relDID.set(message.getString("did"));
+
+                startRelationshipComplete.set(true);
+            }
+            else if("invitation".equals(msgName)){
+                printlnMessage(msgName, message);
+                String inviteURL = message.getString("inviteURL");
 
                 try {
-                    QRCode.from(truncatedInvite).withSize(500, 500)
+                    QRCode.from(inviteURL).withSize(500, 500)
                             .writeTo(new FileOutputStream(new File("qrcode.png")));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -237,59 +239,85 @@ public class App extends Helper {
 
                 println("QR code at: qrcode.png");
 
-                startConnectionComplete.set(true);
-            }
-            else if("CONN_REQ_ACCEPTED".equals(msgName)){
-                printlnMessage(msgName, message);
-                connectionComplete.set(true);
+                invitationComplete.set(true);
             }
             else {
-                nonHandled("Message Name is not handled - "+msgName);
+                nonHandled("Message Name is not handled - " + msgName);
             }
         });
+        
+        relProvisioning.create(context);
 
-        // starts the connecting protocol
-        connecting.connect(context); // Send the connection create message to Verity
         // wait for response from verity application
-        waitFor(startConnectionComplete, "Waiting to start connection");
+        waitFor(startRelationshipComplete, "Waiting to start relationship");
 
         // Step 2
-
-        // wait for acceptance from connect.me user
-        waitFor(connectionComplete, "Waiting for Connect.Me to accept connection");
+        RelationshipV1_0 relationship = Relationship.v1_0(relDID.get(), threadId.get());
+        relationship.connectionInvitation(context);
+        // wait for invite
+        waitFor(invitationComplete, "Waiting for invite");
         // return owning DID for the connection
         return relDID.get();
+
+        // Inviter Send Create - The controller sends a message (to it's agent) to create a new relationship (pairwise key)
+        // Inviter receives a Created Msg
+        // Inviter prepares invitation
+        // Inviter delivers Invite offline
+        // Invitee creates new relationship (pairwise key)
+
     }
 
-    private void askQuestion(String forDID) throws IOException, VerityException {
-        String questionText = "Hi Alice, how are you today?";
-        String questionDetail = "Checking up on you today.";
-        String[] validResponses = {"Great!", "Not so good."};
+    private String createConnection(String relDID) throws IOException, VerityException {
 
-        CommittedAnswerV1_0 committedAnswer = CommittedAnswer.v1_0(
-                forDID,
-                questionText,
-                questionDetail,
-                validResponses,
-                true);
+        // Constructor for the Connecting API
+        ConnectionsV1_0 listener = Connecting.v1_0("", "");
+        AtomicBoolean startResponse = new AtomicBoolean(false);
 
+        //FIXME: Inviter sends response automatically when the invitee sends the request.
+        // I do not believe this handler is setup in time to capture the `resonse-sent`
+        handle(listener, (String msgName, JSONObject message) -> {
+            if("response-sent".equals(msgName)) {
+                startResponse.set(true);
 
-        AtomicBoolean questionComplete = new AtomicBoolean(false); // spinlock bool
-        handle(committedAnswer, (String msgName, JSONObject message) -> {
-            if("answer-given".equals(msgName))
-            {
-                printlnMessage(msgName, message);
-                questionComplete.set(true);
-
-            }
-            else {
+            } else {
                 nonHandled("Message Name is not handled - "+msgName);
             }
         });
 
-        committedAnswer.ask(context);
-        waitFor(questionComplete, "Waiting for Connect.Me to answer the question");
+        waitFor(startResponse, "Responding to connection request");
+        return relDID;
+
     }
+
+//    private void askQuestion(String forDID) throws IOException, VerityException {
+//        String questionText = "Hi Alice, how are you today?";
+//        String questionDetail = "Checking up on you today.";
+//        String[] validResponses = {"Great!", "Not so good."};
+//
+//        CommittedAnswerV1_0 committedAnswer = CommittedAnswer.v1_0(
+//                forDID,
+//                questionText,
+//                questionDetail,
+//                validResponses,
+//                true);
+//
+//
+//        AtomicBoolean questionComplete = new AtomicBoolean(false); // spinlock bool
+//        handle(committedAnswer, (String msgName, JSONObject message) -> {
+//            if("answer-given".equals(msgName))
+//            {
+//                printlnMessage(msgName, message);
+//                questionComplete.set(true);
+//
+//            }
+//            else {
+//                nonHandled("Message Name is not handled - "+msgName);
+//            }
+//        });
+//
+//        committedAnswer.ask(context);
+//        waitFor(questionComplete, "Waiting for Connect.Me to answer the question");
+//    }
 
     private String writeLedgerSchema() throws IOException, VerityException {
         // input parameters for schema
@@ -364,13 +392,13 @@ public class App extends Helper {
         credentialData.put("name", "Joe Smith");
         credentialData.put("degree", "Bachelors");
         // constructor for the Issue Credential protocol
-        IssueCredentialV0_6 issue = IssueCredential.v0_6(forDID, credentialName, credentialData, defId);
+        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0");
 
         AtomicBoolean offerComplete = new AtomicBoolean(false); // spinlock bool
 
         // handler for 'ask_accept` message when the offer for credential is accepted
         handle(issue, (String msgName, JSONObject message) -> {
-            if("ask-accept".equals(msgName)) {
+            if("accept-request".equals(msgName)) {
                 printlnMessage(msgName, message);
                 offerComplete.set(true);
             }
@@ -399,21 +427,20 @@ public class App extends Helper {
                 .issuerDid(issuerDID)
                 .build();
 
-        Attribute nameAttr = PresentProofV0_6.attribute("name", restriction);
-        Attribute degreeAttr = PresentProofV0_6.attribute("degree", restriction);
+        Attribute nameAttr = PresentProofV1_0.attribute("name", restriction);
+        Attribute degreeAttr = PresentProofV1_0.attribute("degree", restriction);
 
         // constructor for the Present Proof protocol
-        PresentProofV0_6 proof = PresentProof.v0_6(forDID, proofName, nameAttr, degreeAttr);
+        PresentProofV1_0 proof = PresentProof.v1_0(forDID, proofName, nameAttr, degreeAttr);
 
         AtomicBoolean proofComplete = new AtomicBoolean(false); // spinlock bool
 
         // handler for the result of the proof presentation
         handle(proof, (String msgName, JSONObject message) -> {
-            if("proof-result".equals(msgName)) {
+            if("presentation-result".equals(msgName)) {
                 printlnMessage(msgName, message);
                 proofComplete.set(true);
-            }
-            else {
+            } else {
                 nonHandled("Message Name is not handled - "+msgName);
             }
         });
@@ -422,5 +449,7 @@ public class App extends Helper {
         proof.request(context);
         // wait for connect.me user to present the requested proof
         waitFor(proofComplete, "Waiting for proof presentation from Connect.me");
+
+        //FIXME -> RTM: Where does proof validation happen?
     }
 }
