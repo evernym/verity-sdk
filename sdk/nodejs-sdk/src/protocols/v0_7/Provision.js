@@ -1,15 +1,36 @@
 'use strict'
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
+const indy = require('indy-sdk')
 
 module.exports = class Provision extends Protocol {
-  constructor (threadId = null) {
+  constructor (threadId = null, token = null) {
     const msgFamily = 'agent-provisioning'
     const msgFamilyVersion = '0.7'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
     this.msgNames.CREATE_EDGE_AGENT = 'create-edge-agent'
+
+    this.token = token
+  }
+
+  async validateToken (token) {
+    const tokenObj = JSON.parse(token)
+    const concatStr = (
+      tokenObj.nonce +
+      tokenObj.timestamp +
+      tokenObj.sponseeId +
+      tokenObj.sponsorId
+    )
+    const data = Buffer.from(concatStr, 'utf-8')
+    const sig = Buffer.from(tokenObj.sig, 'base64')
+
+    const valid = await indy.cryptoVerify(tokenObj.sponsorVerKey, data, sig)
+
+    if (valid === false) {
+      throw new Error('Invalid provision token -- signature does not validate')
+    }
   }
 
   async sendToVerity (context, packedMsg) {
@@ -21,6 +42,9 @@ module.exports = class Provision extends Protocol {
   provisionMsg (context) {
     const msg = this._getBaseMessage(this.msgNames.CREATE_EDGE_AGENT)
     msg.requesterVk = context.sdkVerKey
+    if (this.token != null) {
+      msg.provisionToken = this.token
+    }
     return msg
   }
 
@@ -37,6 +61,10 @@ module.exports = class Provision extends Protocol {
   }
 
   async provision (context) {
+    if (this.token != null) {
+      await this.validateToken(this.token)
+    }
+
     const packedMsg = await this.provisionMsgPacked(context)
     const response = await this.sendToVerity(context, packedMsg)
     context.domainDID = response.selfDID
