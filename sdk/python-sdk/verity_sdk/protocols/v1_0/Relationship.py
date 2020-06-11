@@ -6,6 +6,8 @@ class Relationship(Protocol):
     MSG_FAMILY = 'relationship'
     MSG_FAMILY_VERSION = '1.0'
 
+    CREATED = 'created'
+    INVITATION = 'invitation'
     CREATE = 'create'
     CONNECTION_INVITATION = 'connection-invitation'
 

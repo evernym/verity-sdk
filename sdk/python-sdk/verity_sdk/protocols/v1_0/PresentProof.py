@@ -10,6 +10,7 @@ class PresentProof(Protocol):
     PROOF_REQUEST = 'request'
     STATUS = 'status'
     REJECT = 'reject'
+    PRESENTATION_RESULT = 'presentation-result'
 
     def __init__(self,
                  for_relationship: str,

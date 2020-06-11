@@ -220,7 +220,6 @@ public class App extends Helper {
             if("created".equals(msgName))
             {
                 printlnMessage(msgName, message);
-                printlnMessage("RYAN MARSH TEST", message);
                 threadId.set(message.getJSONObject("~thread").getString("thid"));
                 relDID.set(message.getString("did"));
 
@@ -453,7 +452,5 @@ public class App extends Helper {
         proof.request(context);
         // wait for connect.me user to present the requested proof
         waitFor(proofComplete, "Waiting for proof presentation from Connect.me");
-
-        //FIXME -> RTM: Where does proof validation happen?
     }
 }
