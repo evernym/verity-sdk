@@ -3,14 +3,11 @@
 
     <appender name='STDOUT' class='ch.qos.logback.core.ConsoleAppender'>
         <withJansi>true</withJansi>
-<!--        <encoder>-->
-<!--            &lt;!&ndash;Layout for Debug WITH coloring&ndash;&gt;-->
-<!--            <pattern>[%highlight(%-5le)] [%magenta(%d{HH:mm:ss.SSS})] [%yellow(%10.15t)] [%cyan(%lo{25}:%M:%L)] &#45;&#45; %msg %n</pattern>-->
-<!--            &lt;!&ndash;Layout for Debug without coloring&ndash;&gt;-->
-<!--            &lt;!&ndash;<pattern>[%-5le] [%d{HH:mm:ss.SSS}] [%10.15t] [%lo{15}:%M:%L] &#45;&#45; %msg %n</pattern>&ndash;&gt;-->
-<!--        </encoder>-->
-        <encoder class='ch.qos.logback.core.encoder.LayoutWrappingEncoder'>
-            <layout class='com.evernym.agency.common.LogLayout' />
+        <encoder>
+            <!--Layout for Debug WITH coloring-->
+            <pattern>[%highlight(%-5le)] [%magenta(%d{HH:mm:ss.SSS})] [%yellow(%10.15t)] [%cyan(%lo{25}:%M:%L)] -- %msg %n</pattern>
+            <!--Layout for Debug without coloring-->
+            <!--<pattern>[%-5le] [%d{HH:mm:ss.SSS}] [%10.15t] [%lo{15}:%M:%L] &#45;&#45; %msg %n</pattern>-->
         </encoder>
     </appender>
 
