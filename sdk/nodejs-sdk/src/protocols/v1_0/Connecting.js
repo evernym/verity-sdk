@@ -13,6 +13,8 @@ module.exports = class ConnectingV10 extends Protocol {
 
     this.msgNames.SEND_ACCEPT_INVITE = 'accept'
     this.msgNames.GET_STATUS = 'status'
+    this.msgNames.REQUEST_RECEIVED = 'request-received'
+    this.msgNames.RESPONSE_SENT = 'response-sent'
   }
 
   async accept (context) {

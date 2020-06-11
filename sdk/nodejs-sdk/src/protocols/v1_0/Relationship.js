@@ -11,6 +11,8 @@ module.exports = class Relationship extends Protocol {
 
     this.msgNames.CREATE = 'create'
     this.msgNames.CONNECTION_INVITATION = 'connection-invitation'
+    this.msgNames.CREATED = 'created'
+    this.msgNames.INVITATION = 'invitation'
 
     this.forRelationship = forRelationship
     this.label = label

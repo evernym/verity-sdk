@@ -121,7 +121,7 @@ async def create_relationship(loop) -> str:
     return rel_did  # return owning DID for the connection
 
 
-async def create_connection(loop, for_did: str):
+async def create_connection(loop):
     global context
     global handlers
 
@@ -154,7 +154,7 @@ async def create_connection(loop, for_did: str):
 
     # Step 2
     connected = loop.create_future()
-    spinner = make_spinner('Waiting to start connection')  # Console spinner
+    spinner = make_spinner('Waiting to respond to connection')  # Console spinner
 
     # handler for the accept message sent when connection is accepted
     async def connection_response_handler(msg_name, message):

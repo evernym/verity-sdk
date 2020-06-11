@@ -20,6 +20,7 @@ module.exports = class PresentProofV1x0 extends Protocol {
     this.created = threadId == null
 
     this.msgNames.PROOF_REQUEST = 'request'
+    this.msgNames.PRESENTATION_RESULT = 'presentation-result'
     this.msgNames.STATUS = 'status'
     this.msgNames.REJECT = 'reject'
   }
