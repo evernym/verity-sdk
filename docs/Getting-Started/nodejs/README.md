@@ -2,7 +2,7 @@
 
 ### Previous Step
 
-[Stand Up an Evaluation Verity Application](../../../README.md#cloud)
+[Stand Up an Evaluation Verity Application](../../../README.md)
 
 ---
 
@@ -92,8 +92,10 @@ Go to the directory where you extracted the tarball.
 Continue to [Interactions](../Interactions.md).
 
 ---
+> **NOTE:** The Verity-SDK holds and manages one key-pair used to communicate with the Verity-Application. The public verification key of the key-pair is part of the Context object. It can be viewed using the `sdkVerKey` method on the Context object or the `sdkVerKey` field when the Context object is converted to JSON.
+
 > **NOTE:** A Verity-SDK Context can also be used with the Verity REST API. Use the `restApiToken` method on the Context object to get the required API key. 
->
+
 >See the Open API docs for the Verity REST API at https://app.swaggerhub.com/apis/evernym/verity-rest-api/0.6 
 
 
