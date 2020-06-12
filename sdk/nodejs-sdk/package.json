@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "bs58": "^4.0.1",
-    "indy-sdk": "^1.14.1-dev-1427",
+    "indy-sdk": "^1.15.0",
     "request-promise-native": "^1.0.8"
   }
 }

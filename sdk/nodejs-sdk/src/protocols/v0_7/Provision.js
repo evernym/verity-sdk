@@ -12,21 +12,20 @@ module.exports = class Provision extends Protocol {
 
     this.msgNames.CREATE_EDGE_AGENT = 'create-edge-agent'
 
-    this.token = token
+    this.token = JSON.parse(token)
   }
 
   async validateToken (token) {
-    const tokenObj = JSON.parse(token)
     const concatStr = (
-      tokenObj.nonce +
-      tokenObj.timestamp +
-      tokenObj.sponseeId +
-      tokenObj.sponsorId
+      token.nonce +
+      token.timestamp +
+      token.sponseeId +
+      token.sponsorId
     )
     const data = Buffer.from(concatStr, 'utf-8')
-    const sig = Buffer.from(tokenObj.sig, 'base64')
+    const sig = Buffer.from(token.sig, 'base64')
 
-    const valid = await indy.cryptoVerify(tokenObj.sponsorVerKey, data, sig)
+    const valid = await indy.cryptoVerify(token.sponsorVerKey, data, sig)
 
     if (valid === false) {
       throw new Error('Invalid provision token -- signature does not validate')

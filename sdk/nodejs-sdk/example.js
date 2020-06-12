@@ -450,11 +450,11 @@ async function provisionAgent () {
   // create initial Context
   var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
   console.log('wallet created')
-  const provision = new sdk.protocols.v0_7.Provision(token)
+  const provision = new sdk.protocols.v0_7.Provision(null, token)
   console.log('provision object')
 
   // ask that an agent by provision (setup) and associated with created key pair
-  return await provision.provision(ctx)
+  return provision.provision(ctx)
 }
 
 async function updateWebhookEndpoint () {

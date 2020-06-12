@@ -38,11 +38,11 @@ describe('Provision', () => {
     const p = new Provision()
 
     const testToken = '{"sponseeId": "myId", "sponsorId": "evernym-test-sponsorabc123", "nonce": "123", "timestamp": "2020-06-05T21:33:36.085Z", "sig": "ZkejifRr3txh7NrKokC5l2D2YcABUlGlAoFHZD9RapHHBfVtNnHgYux1RCAiEh4Q31VJE3C92T1ZnqDm1WlEAA==", "sponsorVerKey": "GJ1SzoWzavQYfNL9XkaJdrQejfztN4XqdsiV4ct3LXKL"}'
-    await p.validateToken(testToken)
+    await p.validateToken(JSON.parse(testToken))
 
     const testToken2 = '{"sponseeId": "myId", "sponsorId": "evernym-test-sponsorabc123", "nonce": "123", "timestamp": "2020-06-05T21:33:36.085Z", "sig": "AkejifRr3txh7NrKokC5l2D2YcABUlGlAoFHZD9RapHHBfVtNnHgYux1RCAiEh4Q31VJE3C92T1ZnqDm1WlEAA==", "sponsorVerKey": "GJ1SzoWzavQYfNL9XkaJdrQejfztN4XqdsiV4ct3LXKL"}'
     try {
-      await p.validateToken(testToken2)
+      await p.validateToken(JSON.parse(testToken2))
       expect(false)
     } catch (e) {}
   }).timeout(5000)
