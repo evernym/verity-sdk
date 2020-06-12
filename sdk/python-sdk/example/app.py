@@ -32,6 +32,7 @@ server: Server
 port: int = 4000
 handlers: Handlers = Handlers()
 handlers.set_default_handler(default_handler)
+handlers.add_handler('trust_ping', '1.0', noop)
 
 routes: RouteTableDef = web.RouteTableDef()
 
@@ -385,12 +386,15 @@ async def setup(loop):
     else:
         context = await provision_agent()
 
-    print_object(context.to_json(indent=2), '>>>', 'Context Used:')
-
     with open('verity-context.json', 'w') as f:
         f.write(context.to_json())
 
     await update_webhook_endpoint()
+
+    print_object(context.to_json(indent=2), '>>>', 'Context Used:')
+
+    with open('verity-context.json', 'w') as f:
+        f.write(context.to_json())
 
     await update_configs()
 
@@ -439,6 +443,7 @@ async def update_webhook_endpoint():
 
 
 async def update_configs():
+    handlers.add_handler('update-configs', '0.6', noop)
     configs = UpdateConfigs(INSTITUTION_NAME, LOGO_URL)
     await configs.update(context)
 

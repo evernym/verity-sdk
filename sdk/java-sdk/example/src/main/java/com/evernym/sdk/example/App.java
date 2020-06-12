@@ -201,11 +201,14 @@ public class App extends Helper {
             context = provisionAgent();
         }
 
-        printlnObject(context.toJson(), ">>>", "Context Used:");
 
         Files.write(contextFile.toPath(), context.toJson().toString(2).getBytes());
 
         updateWebhookEndpoint();
+
+        printlnObject(context.toJson(), ">>>", "Context Used:");
+        
+        Files.write(contextFile.toPath(), context.toJson().toString(2).getBytes());
 
         updateConfigs();
 

@@ -412,10 +412,13 @@ async function setup () {
     context = await provisionAgent()
   }
 
-  printObject(context.getConfig(), '>>>', 'Context Used:')
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
 
   await updateWebhookEndpoint()
+
+  printObject(context.getConfig(), '>>>', 'Context Used:')
+
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
 
   await updateConfigs()
 
