@@ -28,7 +28,6 @@ module.exports = class IssueCredentialV10 extends Protocol {
     this.msgNames.CREDENTIAL_STATUS = 'status'
     this.msgNames.SENT = 'sent'
     this.msgNames.ACCEPT_REQUEST = 'accept-request'
-
   }
 
   async offerCredential (context) {

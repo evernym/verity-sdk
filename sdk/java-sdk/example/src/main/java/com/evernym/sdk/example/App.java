@@ -74,7 +74,7 @@ public class App extends Helper {
     Context provisionAgent() throws IOException, VerityException {
         ProvisionV0_7 provisioner;
         if (consoleYesNo("Provide Provision Token", true)) {
-            String token = consoleInput("ProvisionToken").trim();
+            String token = consoleInput("Token").trim();
             println("using provision token: " + token);
             provisioner = Provision.v0_7(token);
         } else {
@@ -217,6 +217,10 @@ public class App extends Helper {
     }
 
     private String createRelationship() throws IOException, VerityException {
+        // Relationship protocol has two steps
+        // 1. create relationship key
+        // 2. create invitation
+
         RelationshipV1_0 relProvisioning = Relationship.v1_0("inviter");
 
         // handler for the response to the request to start the Connecting protocol.
@@ -273,8 +277,6 @@ public class App extends Helper {
         AtomicBoolean requestReceived = new AtomicBoolean(false);
         AtomicBoolean startResponse = new AtomicBoolean(false);
 
-        //FIXME: Inviter sends response automatically when the invitee sends the request.
-        // I do not believe this handler is setup in time to capture the `resonse-sent`
         handle(listener, (String msgName, JSONObject message) -> {
             if("request-received".equals(msgName)) {
                 requestReceived.set(true);

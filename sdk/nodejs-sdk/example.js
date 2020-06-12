@@ -45,9 +45,9 @@ async function example () {
 //       RELATIONSHIP
 //* ***********************
 async function createRelationship () {
-   // Relationship protocol has two steps
-    // 1. create relationship key
-    // 2. create invitation
+  // Relationship protocol has two steps
+  // 1. create relationship key
+  // 2. create invitation
 
   // Step 1
 
@@ -55,15 +55,15 @@ async function createRelationship () {
   const relProvisioning = new sdk.protocols.v1_0.Relationship(null, null, 'inviter')
   var spinner = new Spinner('Waiting to create relationship ... %s').setSpinnerDelay(450) // Console spinner
 
-  // handler for the response to the request to start the Connecting protocol.
+  // handler for the response to the request to start the Relationship protocol.
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(relProvisioning.msgFamily, relProvisioning.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case relProvisioning.msgNames.CREATED:
           spinner.stop()
           printMessage(msgName, message)
-          var threadId = message['~thread']['thid']
-          var relDID = message['did']
+          var threadId = message['~thread'].thid
+          var relDID = message.did
 
           resolve([relDID, threadId])
           break
@@ -75,7 +75,7 @@ async function createRelationship () {
   })
 
   spinner.start()
-  // starts the connecting protocol
+  // starts the relationship protocol
   await relProvisioning.create(context)
   const relationshipKeys = await firstStep // wait for response from verity application
   const relDID = relationshipKeys[0]
@@ -84,14 +84,14 @@ async function createRelationship () {
   // Step 2
 
   spinner = new Spinner('Waiting to create invitation ... %s').setSpinnerDelay(450) // Console spinner
-  // handler for the accept message sent when connection is accepted
+  // handler for the accept message sent when relationship is accepted
   var secondStep = new Promise((resolve) => {
     handlers.addHandler(relProvisioning.msgFamily, relProvisioning.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case relationship.msgNames.INVITATION:
           spinner.stop()
           printMessage(msgName, message)
-          const inviteURL = message.inviteURL
+          var inviteURL = message.inviteURL
           console.log(inviteURL)
 
           await QRCode.toFile('qrcode.png', inviteURL)
@@ -279,7 +279,6 @@ async function writeLedgerCredDef (schemaId) {
 //* ***********************
 async function issueCredential (relDID, defId) {
   // input parameters for issue credential
-  const credentialName = 'Degree'
   const credentialData = {
     name: 'Joe Smith',
     degree: 'Bachelors'
@@ -415,7 +414,7 @@ async function setup () {
 
   printObject(context.getConfig(), '>>>', 'Context Used:')
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
-  
+
   await updateWebhookEndpoint()
 
   await updateConfigs()
@@ -438,7 +437,7 @@ async function provisionAgent () {
   if (await readlineYesNo('Provide Provision Token', true)) {
     token = await readlineInput('Token')
     token.trim()
-  } 
+  }
 
   var verityUrl = await readlineInput('Verity Application Endpoint')
   verityUrl = verityUrl.trim()
@@ -451,7 +450,7 @@ async function provisionAgent () {
   // create initial Context
   var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
   console.log('wallet created')
-  const provision = new sdk.protocols.v0_7.Provision(token=token)
+  const provision = new sdk.protocols.v0_7.Provision(token)
   console.log('provision object')
 
   // ask that an agent by provision (setup) and associated with created key pair
