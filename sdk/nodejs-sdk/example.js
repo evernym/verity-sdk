@@ -413,6 +413,9 @@ async function setup () {
     context = await provisionAgent()
   }
 
+  printObject(context.getConfig(), '>>>', 'Context Used:')
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
+  
   await updateWebhookEndpoint()
 
   await updateConfigs()
@@ -424,9 +427,6 @@ async function setup () {
   if (issuerDID == null) {
     await setupIssuer()
   }
-
-  printObject(context.getConfig(), '>>>', 'Context Used:')
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
 }
 
 async function loadContext (contextFile) {
@@ -434,6 +434,12 @@ async function loadContext (contextFile) {
 }
 
 async function provisionAgent () {
+  var token = null
+  if (await readlineYesNo('Provide Provision Token', true)) {
+    token = await readlineInput('Token')
+    token.trim()
+  } 
+
   var verityUrl = await readlineInput('Verity Application Endpoint')
   verityUrl = verityUrl.trim()
   if (verityUrl === '') {
@@ -445,7 +451,7 @@ async function provisionAgent () {
   // create initial Context
   var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
   console.log('wallet created')
-  const provision = new sdk.protocols.v0_7.Provision()
+  const provision = new sdk.protocols.v0_7.Provision(token=token)
   console.log('provision object')
 
   // ask that an agent by provision (setup) and associated with created key pair

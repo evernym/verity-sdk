@@ -7,6 +7,7 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
+import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
 import com.evernym.verity.sdk.protocols.relationship.Relationship;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
@@ -70,8 +71,16 @@ public class App extends Helper {
     }
 
 
+    Context provisionAgent() throws IOException, VerityException {
+        ProvisionV0_7 provisioner;
+        if (consoleYesNo("Provide Provision Token", true)) {
+            String token = consoleInput("ProvisionToken").trim();
+            println("using provision token: " + token);
+            provisioner = Provision.v0_7(token);
+        } else {
+            provisioner = Provision.v0_7();
+        }
 
-    Context provisionAgent() throws WalletException, IOException, UndefinedContextException {
         String verityUrl = consoleInput("Verity Application Endpoint").trim();
 
         if ("".equals(verityUrl)) {
@@ -84,7 +93,7 @@ public class App extends Helper {
         Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
 
         // ask that an agent by provision (setup) and associated with created key pair
-        return Provision.v0_7().provision(ctx);
+        return provisioner.provision(ctx);
     }
 
     Context loadContext(File contextFile) throws IOException, WalletOpenException {
@@ -192,6 +201,10 @@ public class App extends Helper {
             context = provisionAgent();
         }
 
+        printlnObject(context.toJson(), ">>>", "Context Used:");
+
+        Files.write(contextFile.toPath(), context.toJson().toString(2).getBytes());
+
         updateWebhookEndpoint();
 
         updateConfigs();
@@ -201,10 +214,6 @@ public class App extends Helper {
         if (issuerDID == null) {
             setupIssuer();
         }
-
-        printlnObject(context.toJson(), ">>>", "Context Used:");
-
-        Files.write(contextFile.toPath(), context.toJson().toString(2).getBytes());
     }
 
     private String createRelationship() throws IOException, VerityException {

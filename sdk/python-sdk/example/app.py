@@ -41,7 +41,7 @@ async def example(loop):
     await setup(loop)
 
     rel_did = await create_relationship(loop)
-    await create_connection(loop, rel_did)
+    await create_connection(loop)
 
     # await ask_question(loop, for_did)
 
@@ -385,6 +385,11 @@ async def setup(loop):
     else:
         context = await provision_agent()
 
+    print_object(context.to_json(indent=2), '>>>', 'Context Used:')
+
+    with open('verity-context.json', 'w') as f:
+        f.write(context.to_json())
+
     await update_webhook_endpoint()
 
     await update_configs()
@@ -394,16 +399,14 @@ async def setup(loop):
     if not issuer_did:
         await setup_issuer(loop)
 
-    print_object(context.to_json(indent=2), '>>>', 'Context Used:')
-
-    with open('verity-context.json', 'w') as f:
-        f.write(context.to_json())
-
 
 async def provision_agent() -> str:
     global context
     wallet_name = 'examplewallet1'  # for libindy wallet
     wallet_key = 'examplewallet1'
+    token = None
+    if console_yes_no("Provide Provision Token", True):
+        token = console_input("Token").strip()
 
     verity_url = console_input(f'Verity Application Endpoint').strip()
 
@@ -411,8 +414,7 @@ async def provision_agent() -> str:
     context = await Context.create(wallet_name, wallet_key, verity_url)
 
     # ask that an agent by provision (setup) and associated with created key pair
-    context = await Provision().provision(context)
-    return context
+    return await Provision(token).provision(context)
 
 
 async def update_webhook_endpoint():
