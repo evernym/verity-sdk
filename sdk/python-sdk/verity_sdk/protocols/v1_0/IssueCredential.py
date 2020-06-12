@@ -15,6 +15,8 @@ class IssueCredential(Protocol):
     ISSUE = 'issue'
     REJECT = 'reject'
     STATUS = 'status'
+    SENT = 'sent'
+    ACCEPT_REQUEST = 'accept-request'
 
     def __init__(self,
                  for_relationship: str,

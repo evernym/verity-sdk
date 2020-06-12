@@ -28,16 +28,91 @@ let issuerVerkey
 async function example () {
   await setup()
 
-  const forDID = await createConnection()
+  const relDID = await createRelationship()
+  await createConnection(relDID)
 
-  //  await askQuestion(forDID)
+  //  await askQuestion(relDID)
 
   const schemaId = await writeLedgerSchema()
   const defId = await writeLedgerCredDef(schemaId)
 
-  await issueCredential(forDID, defId)
+  await issueCredential(relDID, defId)
 
-  await requestProof(forDID)
+  await requestProof(relDID)
+}
+
+//* ***********************
+//       RELATIONSHIP
+//* ***********************
+async function createRelationship () {
+  // Relationship protocol has two steps
+  // 1. create relationship key
+  // 2. create invitation
+
+  // Step 1
+
+  // Constructor for the Connecting API
+  const relProvisioning = new sdk.protocols.v1_0.Relationship(null, null, 'inviter')
+  var spinner = new Spinner('Waiting to create relationship ... %s').setSpinnerDelay(450) // Console spinner
+
+  // handler for the response to the request to start the Relationship protocol.
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(relProvisioning.msgFamily, relProvisioning.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case relProvisioning.msgNames.CREATED:
+          spinner.stop()
+          printMessage(msgName, message)
+          var threadId = message['~thread'].thid
+          var relDID = message.did
+
+          resolve([relDID, threadId])
+          break
+        default:
+          printMessage(msgName, message)
+          nonHandle('Message Name is not handled - ' + msgName)
+      }
+    })
+  })
+
+  spinner.start()
+  // starts the relationship protocol
+  await relProvisioning.create(context)
+  const relationshipKeys = await firstStep // wait for response from verity application
+  const relDID = relationshipKeys[0]
+  const threadId = relationshipKeys[1]
+
+  // Step 2
+
+  spinner = new Spinner('Waiting to create invitation ... %s').setSpinnerDelay(450) // Console spinner
+  // handler for the accept message sent when relationship is accepted
+  var secondStep = new Promise((resolve) => {
+    handlers.addHandler(relProvisioning.msgFamily, relProvisioning.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case relationship.msgNames.INVITATION:
+          spinner.stop()
+          printMessage(msgName, message)
+          var inviteURL = message.inviteURL
+          console.log(inviteURL)
+
+          await QRCode.toFile('qrcode.png', inviteURL)
+
+          console.log()
+          console.log('QR code at: qrcode.png')
+          resolve(null)
+          break
+        default:
+          printMessage(msgName, message)
+          nonHandle('Message Name is not handled - ' + msgName)
+      }
+    })
+  })
+
+  spinner.start()
+  const relationship = new sdk.protocols.v1_0.Relationship(relDID, threadId)
+
+  await relationship.connectionInvitation(context)
+  await secondStep // wait for acceptance from connect.me user
+  return relDID // return owning DID for the connection
 }
 
 //* ***********************
@@ -51,26 +126,17 @@ async function createConnection () {
   // Step 1
 
   // Constructor for the Connecting API
-  const connecting = new sdk.protocols.Connecting(null, uuidv4(), null, true)
+  const connecting = new sdk.protocols.v1_0.Connecting(null, uuidv4(), null, true)
   var spinner = new Spinner('Waiting to start connection ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for the response to the request to start the Connecting protocol.
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case connecting.msgNames.INVITE_DETAIL:
+        case connecting.msgNames.REQUEST_RECEIVED:
           spinner.stop()
           printMessage(msgName, message)
-          var invite = message.inviteDetail
-          var relDID = invite.senderDetail.DID
-          var truncatedInvite = sdk.utils.truncateInviteDetailKeys(invite)
-
-          await QRCode.toFile('qrcode.png', truncatedInvite)
-
-          console.log()
-          console.log('QR code at: qrcode.png')
-
-          resolve(relDID)
+          resolve(null)
           break
         default:
           printMessage(msgName, message)
@@ -81,17 +147,16 @@ async function createConnection () {
 
   spinner.start()
   // starts the connecting protocol
-  await connecting.connect(context)
-  const forDID = await firstStep // wait for response from verity application
+  await firstStep // wait for response from verity application
 
   // Step 2
 
-  spinner = new Spinner('Waiting for Connect.Me to accept connection ... %s').setSpinnerDelay(450) // Console spinner
+  spinner = new Spinner('Waiting to respond to connection ... %s').setSpinnerDelay(450) // Console spinner
   // handler for the accept message sent when connection is accepted
   var secondStep = new Promise((resolve) => {
     handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case connecting.msgNames.CONN_REQ_ACCEPTED:
+        case connecting.msgNames.RESPONSE_SENT:
           spinner.stop()
           printMessage(msgName, message)
           resolve(null)
@@ -105,7 +170,6 @@ async function createConnection () {
 
   spinner.start()
   await secondStep // wait for acceptance from connect.me user
-  return forDID // return owning DID for the connection
 }
 
 //* ***********************
@@ -213,23 +277,22 @@ async function writeLedgerCredDef (schemaId) {
 //* ***********************
 //         ISSUE
 //* ***********************
-async function issueCredential (forDID, defId) {
+async function issueCredential (relDID, defId) {
   // input parameters for issue credential
-  const credentialName = 'Degree'
   const credentialData = {
     name: 'Joe Smith',
     degree: 'Bachelors'
   }
 
   // constructor for the Issue Credential protocol
-  const issue = new sdk.protocols.IssueCredential(forDID, null, credentialName, credentialData, defId)
+  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, 'comment', 0)
   var spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for 'ask_accept` message when the offer for credential is accepted
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case issue.msgNames.ASK_ACCEPT:
+        case issue.msgNames.SENT:
           spinner.stop()
           printMessage(msgName, message)
 
@@ -247,15 +310,54 @@ async function issueCredential (forDID, defId) {
   await issue.offerCredential(context)
   await firstStep // wait for connect.me user to accept offer
 
+  var secondStep = new Promise((resolve) => {
+    handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case issue.msgNames.ACCEPT_REQUEST:
+          spinner.stop()
+          printMessage(msgName, message)
+
+          resolve(null)
+          break
+        default:
+          printMessage(msgName, message)
+          nonHandle('Message Name is not handled - ' + msgName)
+      }
+    })
+  })
+
+  spinner.start()
+  await secondStep
+
   // request that credential be issued
+  // handler for 'ask_accept` message when the offer for credential is accepted
+  var thirdStep = new Promise((resolve) => {
+    handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case issue.msgNames.SENT:
+          spinner.stop()
+          printMessage(msgName, message)
+
+          resolve(null)
+          break
+        default:
+          printMessage(msgName, message)
+          nonHandle('Message Name is not handled - ' + msgName)
+      }
+    })
+  })
+
+  spinner.start()
+  // request that credential is offered
   await issue.issueCredential(context)
+  await thirdStep // wait for connect.me user to accept offer
   return sleep(3000) // Wait a few seconds for the credential to arrive before sending the proof
 }
 
 //* ***********************
 //         PROOF
 //* ***********************
-async function requestProof (forDID) {
+async function requestProof (relDID) {
   // input parameters for request proof
   const proofName = 'Proof of Degree' + uuidv4().substring(0, 8)
   const proofAttrs = [
@@ -270,14 +372,14 @@ async function requestProof (forDID) {
   ]
 
   // constructor for the Present Proof protocol
-  const proof = new sdk.protocols.PresentProof(forDID, null, proofName, proofAttrs)
+  const proof = new sdk.protocols.v1_0.PresentProof(relDID, null, proofName, proofAttrs)
   var spinner = new Spinner('Waiting for proof presentation from Connect.me ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for the result of the proof presentation
   var firstStep = new Promise((resolve) => {
     handlers.addHandler(proof.msgFamily, proof.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case proof.msgNames.PROOF_RESULT:
+        case proof.msgNames.PRESENTATION_RESULT:
           spinner.stop()
           printMessage(msgName, message)
 
@@ -310,7 +412,13 @@ async function setup () {
     context = await provisionAgent()
   }
 
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
+
   await updateWebhookEndpoint()
+
+  printObject(context.getConfig(), '>>>', 'Context Used:')
+
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
 
   await updateConfigs()
 
@@ -321,9 +429,6 @@ async function setup () {
   if (issuerDID == null) {
     await setupIssuer()
   }
-
-  printObject(context.getConfig(), '>>>', 'Context Used:')
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
 }
 
 async function loadContext (contextFile) {
@@ -331,6 +436,12 @@ async function loadContext (contextFile) {
 }
 
 async function provisionAgent () {
+  var token = null
+  if (await readlineYesNo('Provide Provision Token', true)) {
+    token = await readlineInput('Token')
+    token.trim()
+  }
+
   var verityUrl = await readlineInput('Verity Application Endpoint')
   verityUrl = verityUrl.trim()
   if (verityUrl === '') {
@@ -341,9 +452,12 @@ async function provisionAgent () {
 
   // create initial Context
   var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
-  const provision = new sdk.protocols.Provision()
+  console.log('wallet created')
+  const provision = new sdk.protocols.v0_7.Provision(null, token)
+  console.log('provision object')
+
   // ask that an agent by provision (setup) and associated with created key pair
-  return provision.provisionSdk(ctx)
+  return provision.provision(ctx)
 }
 
 async function updateWebhookEndpoint () {

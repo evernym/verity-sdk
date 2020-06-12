@@ -1,4 +1,8 @@
+import base64
 import copy
+import json
+
+from indy.crypto import crypto_verify
 
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.transports import send_packed_message
@@ -12,12 +16,34 @@ class Provision(Protocol):
     # Messages
     CREATE_EDGE_AGENT = 'create-edge-agent'
 
-    def __init__(self):
+    token = None
+
+    def __init__(self, token=None):
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
             msg_qualifier=EVERNYM_MSG_QUALIFIER,
         )
+        self.token = token
+
+    @staticmethod
+    async def validate_token(token: str):
+        tokenObj = json.loads(token)
+        data = (
+                tokenObj['nonce'] +
+                tokenObj['timestamp'] +
+                tokenObj['sponseeId'] +
+                tokenObj['sponsorId']
+        ).encode('utf-8')
+
+        valid = await crypto_verify(
+            tokenObj['sponsorVerKey'],
+            data,
+            base64.b64decode(tokenObj['sig'])
+        )
+
+        if not valid:
+            raise Exception('Invalid provision token -- signature does not validate')
 
     async def send_to_verity(self, context: Context, packed_msg: bytes) -> dict:
         resp_bytes = send_packed_message(context, packed_msg)
@@ -38,9 +64,15 @@ class Provision(Protocol):
         msg = self._get_base_message(self.CREATE_EDGE_AGENT)
         msg['requesterVk'] = context.sdk_verkey
 
+        if self.token is not None:
+            msg['provisionToken'] = json.loads(self.token)
+
         return msg
 
     async def provision(self, context: Context) -> Context:
+        if self.token is not None:
+            await self.validate_token(self.token)
+
         msg = await self.provision_msg_packed(context)
 
         resp = await self.send_to_verity(context, msg)

@@ -9,16 +9,16 @@ from aiohttp.web_routedef import RouteTableDef
 from asyncio.base_events import Server
 from example.helper import *
 from verity_sdk.handlers import Handlers
-from verity_sdk.protocols.v0_6.Connecting import Connecting
-from verity_sdk.protocols.v0_6.IssueCredential import IssueCredential
+from verity_sdk.protocols.v1_0.Relationship import Relationship
+from verity_sdk.protocols.v1_0.Connecting import Connecting
+from verity_sdk.protocols.v1_0.IssueCredential import IssueCredential
 from verity_sdk.protocols.v0_6.IssuerSetup import IssuerSetup
-from verity_sdk.protocols.v0_6.PresentProof import PresentProof
-from verity_sdk.protocols.v0_6.Provision import Provision
+from verity_sdk.protocols.v1_0.PresentProof import PresentProof
+from verity_sdk.protocols.v0_7.Provision import Provision
 from verity_sdk.protocols.v0_6.UpdateConfigs import UpdateConfigs
 from verity_sdk.protocols.v0_6.UpdateEndpoint import UpdateEndpoint
 from verity_sdk.protocols.v0_6.WriteCredentialDefinition import WriteCredentialDefinition
 from verity_sdk.protocols.v0_6.WriteSchema import WriteSchema
-from verity_sdk.utils import truncate_invite_details
 from verity_sdk.utils.Context import Context
 
 INSTITUTION_NAME = 'Faber College'
@@ -32,6 +32,7 @@ server: Server
 port: int = 4000
 handlers: Handlers = Handlers()
 handlers.set_default_handler(default_handler)
+handlers.add_handler('trust_ping', '1.0', noop)
 
 routes: RouteTableDef = web.RouteTableDef()
 
@@ -40,86 +41,136 @@ async def example(loop):
     logging.info('Starting setup')
     await setup(loop)
 
-    for_did = await create_connection(loop)
+    rel_did = await create_relationship(loop)
+    await create_connection(loop)
 
     # await ask_question(loop, for_did)
 
     schema_id = await write_ledger_schema(loop)
     cred_def_id = await write_ledger_cred_def(loop, schema_id)
 
-    await issue_credential(loop, for_did, cred_def_id)
+    await issue_credential(loop, rel_did, cred_def_id)
 
-    await request_proof(loop, for_did)
+    await request_proof(loop, rel_did)
+
+
+async def create_relationship(loop) -> str:
+    global context
+    global handlers
+
+    # Relationship protocol has two steps
+    # 1. create relationship key
+    # 2. create invitation
+
+    # Constructor for the Relationship API
+    relationship: Relationship = Relationship(label='inviter')
+
+    rel_did = loop.create_future()
+    thread_id = loop.create_future()
+
+    spinner = make_spinner('Waiting to create relationship')  # Console spinner
+
+    # handler for the response to the request to start the Connecting protocol.
+    async def created_handler(msg_name, message):
+        spinner.stop_and_persist('Done')
+        print_message(msg_name, message)
+        if msg_name == Relationship.CREATED:
+            thread_id.set_result(message['~thread']['thid'])
+            rel_did.set_result(message['did'])
+        else:
+            non_handled(f'Message name is not handled - {msg_name}', message)
+
+    # adds handler to the set of handlers
+    handlers.add_handler(Relationship.MSG_FAMILY, Relationship.MSG_FAMILY_VERSION, created_handler)
+
+    spinner.start()
+
+    # starts the relationship protocol
+    await relationship.create(context)
+    thread_id = await thread_id
+    rel_did = await rel_did
+
+    # Step 2
+    invitation = loop.create_future()
+
+    spinner = make_spinner('Waiting to create invitation')  # Console spinner
+
+    # handler for the accept message sent when invitation is created
+    async def invitation_handler(msg_name, message):
+        spinner.stop_and_persist('Done')
+        print_message(msg_name, message)
+        if msg_name == Relationship.INVITATION:
+            invite_url = message["inviteURL"]
+            print(invite_url)
+            # write QRCode to disk
+            qr = pyqrcode.create(invite_url)
+            qr.png('qrcode.png')
+
+            print()
+            print('QR code at: qrcode.png')
+            invitation.set_result(None)
+        else:
+            non_handled(f'Message name is not handled - {msg_name}', message)
+
+    spinner.start()
+    # note this overrides the handler for this message family! This is for demonstration purposes only.
+    handlers.add_handler(Relationship.MSG_FAMILY, Relationship.MSG_FAMILY_VERSION, invitation_handler)
+
+    relationship: Relationship = Relationship(rel_did, thread_id)
+    await relationship.connection_invitation(context)
+    await invitation
+    return rel_did  # return owning DID for the connection
 
 
 async def create_connection(loop):
     global context
     global handlers
 
-    # Connecting protocol has to steps
-    # 1. Start the protocol and receive the invite
-    # 2. Wait for the other participant to accept the invite
+    # Connecting protocol has two steps
+    # 1. Wait for connection request
+    # 2. Send connection response (connected)
 
     # Step 1
 
-    # Constructor for the Connecting API
-    connecting: Connecting = Connecting(include_public_did=True)
-
-    first_step = loop.create_future()
+    request_received = loop.create_future()
 
     spinner = make_spinner('Waiting to start connection')  # Console spinner
 
     # handler for the response to the request to start the Connecting protocol.
-    async def invite_detail_handler(msg_name, message):
+    async def inviter_handler(msg_name, message):
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
-        if msg_name == Connecting.INVITE_DETAIL:
-            invite_detail = message['inviteDetail']
-            did = invite_detail['senderDetail']['DID']
-            truncated_invite_detail = truncate_invite_details(invite_detail)
-            # print(truncated_invite_detail)
-
-            # write QRCode to disk
-            qr = pyqrcode.create(json.dumps(truncated_invite_detail))
-            qr.png('qrcode.png')
-
-            print()
-            print('QR code at: qrcode.png')
-
-            first_step.set_result(did)
+        if msg_name == Connecting.REQUEST_RECEIVED:
+            request_received.set_result(None)
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
 
     # adds handler to the set of handlers
-    handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, invite_detail_handler)
+    handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, inviter_handler)
 
     spinner.start()
 
-    # starts the connecting protocol
-    await connecting.connect(context)
-    for_did = await first_step  # wait for response from verity application
+    # waits for request
+    await request_received  # wait for response from verity application
 
     # Step 2
-
-    second_step = loop.create_future()
-
-    spinner = make_spinner('Waiting to start connection')  # Console spinner
+    connected = loop.create_future()
+    spinner = make_spinner('Waiting to respond to connection')  # Console spinner
 
     # handler for the accept message sent when connection is accepted
-    async def connection_accepted_handler(msg_name, message):
+    async def connection_response_handler(msg_name, message):
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
-        if msg_name == Connecting.CONN_REQ_ACCEPTED:
-            second_step.set_result(None)
+        if msg_name == Connecting.RESPONSE_SENT:
+            connected.set_result(None)
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
 
     spinner.start()
     # note this overrides the handler for this message family! This is for demonstration purposes only.
-    handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, connection_accepted_handler)
+    handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, connection_response_handler)
 
-    await second_step  # wait for acceptance from connect.me user
-    return for_did  # return owning DID for the connection
+    await connected  # wait for acceptance from connect.me user
 
 
 async def write_ledger_schema(loop) -> str:
@@ -216,7 +267,7 @@ async def write_ledger_cred_def(loop, schema_id: str) -> str:
 #     await question.ask(context)
 
 
-async def issue_credential(loop, for_did, cred_def_id):
+async def issue_credential(loop, rel_did, cred_def_id):
     # input parameters for issue credential
     credential_name = 'Degree'
     credential_data = {
@@ -225,30 +276,61 @@ async def issue_credential(loop, for_did, cred_def_id):
     }
 
     # constructor for the Issue Credential protocol
-    issue = IssueCredential(for_did, None, credential_name, cred_def_id, credential_data)
+    issue = IssueCredential(rel_did, None, cred_def_id, credential_data, 'comment', 0)
 
-    first_step = loop.create_future()
+    offer_sent = loop.create_future()
+    accept_request = loop.create_future()
+    cred_sent = loop.create_future()
     spinner = make_spinner('Wait for Connect.me to accept the Credential Offer')  # Console spinner
 
     # handler for 'ask_accept` message when the offer for credential is accepted
-    async def cred_offer_accepted_handler(msg_name, message):
+    async def send_offer_handler(msg_name, message):
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
-        if msg_name == IssueCredential.ASK_ACCEPT:
-            first_step.set_result(None)
+        if msg_name == IssueCredential.SENT:
+            offer_sent.set_result(None)
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
 
     # adds handler to the set of handlers
-    handlers.add_handler(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, cred_offer_accepted_handler)
+    handlers.add_handler(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, send_offer_handler)
 
     spinner.start()
     # request that credential is offered
     await issue.offer_credential(context)
-    await first_step  # wait for connect.me user to accept offer
+    await offer_sent  # wait for connect.me user to accept offer
+
+    async def accept_request_handler(msg_name, message):
+        spinner.stop_and_persist('Done')
+        print_message(msg_name, message)
+        if msg_name == IssueCredential.ACCEPT_REQUEST:
+            accept_request.set_result(None)
+        else:
+            non_handled(f'Message name is not handled - {msg_name}', message)
+
+    spinner = make_spinner('waiting to accept request')  # Console spinner
+    spinner.start()
+    handlers.add_handler(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, accept_request_handler)
+    await accept_request
 
     # request that credential be issued
+    async def send_cred_handler(msg_name, message):
+        spinner.stop_and_persist('Done')
+        print_message(msg_name, message)
+        if msg_name == IssueCredential.SENT:
+            cred_sent.set_result(None)
+        else:
+            non_handled(f'Message name is not handled - {msg_name}', message)
+
+    # adds handler to the set of handlers
+    handlers.add_handler(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, send_cred_handler)
+
+    # request that credential is offered
+    spinner = make_spinner('waiting to send credential')  # Console spinner
+    spinner.start()
+    handlers.add_handler(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, send_cred_handler)
     await issue.issue_credential(context)
+    await cred_sent
     await asyncio.sleep(3)  # Wait a few seconds for the credential to arrive before sending the proof
 
 
@@ -278,7 +360,7 @@ async def request_proof(loop, for_did):
     async def proof_handler(msg_name, message):
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
-        if msg_name == PresentProof.PROOF_RESULT:
+        if msg_name == PresentProof.PRESENTATION_RESULT:
             first_step.set_result(None)  # proof data contained inside `message`
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
@@ -304,7 +386,15 @@ async def setup(loop):
     else:
         context = await provision_agent()
 
+    with open('verity-context.json', 'w') as f:
+        f.write(context.to_json())
+
     await update_webhook_endpoint()
+
+    print_object(context.to_json(indent=2), '>>>', 'Context Used:')
+
+    with open('verity-context.json', 'w') as f:
+        f.write(context.to_json())
 
     await update_configs()
 
@@ -313,16 +403,14 @@ async def setup(loop):
     if not issuer_did:
         await setup_issuer(loop)
 
-    print_object(context.to_json(indent=2), '>>>', 'Context Used:')
-
-    with open('verity-context.json', 'w') as f:
-        f.write(context.to_json())
-
 
 async def provision_agent() -> str:
     global context
     wallet_name = 'examplewallet1'  # for libindy wallet
     wallet_key = 'examplewallet1'
+    token = None
+    if console_yes_no("Provide Provision Token", True):
+        token = console_input("Token").strip()
 
     verity_url = console_input(f'Verity Application Endpoint').strip()
 
@@ -330,8 +418,7 @@ async def provision_agent() -> str:
     context = await Context.create(wallet_name, wallet_key, verity_url)
 
     # ask that an agent by provision (setup) and associated with created key pair
-    context = await Provision().provision_sdk(context)
-    return context
+    return await Provision(token).provision(context)
 
 
 async def update_webhook_endpoint():
@@ -356,6 +443,7 @@ async def update_webhook_endpoint():
 
 
 async def update_configs():
+    handlers.add_handler('update-configs', '0.6', noop)
     configs = UpdateConfigs(INSTITUTION_NAME, LOGO_URL)
     await configs.update(context)
 

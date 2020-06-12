@@ -108,8 +108,7 @@ export LOGO_URL="http://robohash.org/${ROBO_HASH}"
 
 
 # Start Verity Application
-/usr/bin/java -javaagent:/usr/lib/verity-application/aspectjweaver.jar \
--cp /etc/verity/verity-application:/usr/lib/verity-application/verity-application-assembly.jar \
+/usr/bin/java -cp /etc/verity/verity-application:/usr/lib/verity-application/verity-application-assembly.jar \
 com.evernym.verity.Main &> log.txt &
 
 # Bootstrap Verity Application with seed

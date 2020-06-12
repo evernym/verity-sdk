@@ -85,3 +85,7 @@ def get_random_version():
 def get_random_int():
     random.seed()
     return random.randrange(0, 1000)
+
+
+async def noop(msg_name, message):
+    pass

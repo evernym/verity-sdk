@@ -6,7 +6,7 @@
 
   <groupId>com.evernym.verity</groupId>
   <artifactId>verity-sdk</artifactId>
-  <version>0.1.13-SNAPSHOT</version>
+  <version>0.1.14-SNAPSHOT</version>
 
   <name>Verity SDK</name>
 

@@ -6,6 +6,8 @@ class Connecting(Protocol):
     MSG_FAMILY = 'connections'
     MSG_FAMILY_VERSION = '1.0'
 
+    REQUEST_RECEIVED = 'request-received'
+    RESPONSE_SENT = 'response-sent'
     ACCEPT_INVITE = 'accept'
     STATUS = 'status'
 
