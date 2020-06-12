@@ -1,5 +1,48 @@
 ##Migration Guide 
 
+### `0.2.0-beta` to `0.3.0-beta`
+#### Removed protocols
+To better support the interoperable `Aries` protocols several `0.6` versions of the protocols have been dropped. These `0.6` versions were designed and implemented before the `Aries` community fully organized and standardized these protocols.
+ 
+ These include:
+ * `Provision` `0.6`
+ * `Connecting` `0.6`
+ * `IssueCredential` `0.6`
+ * `PresentProof` `0.6`
+ 
+Please move to use the following versions instead:
+
+ * `Provision` `0.6` -> `Provision` `0.7` 
+ * `Connecting` `0.6` -> `Connecting` `1.0`
+ * `IssueCredential` `0.6` ->  `IssueCredential` `1.0`
+ * `PresentProof` `0.6` -> `PresentProof` `1.0`
+
+These protocols work largely the same as the dropped version. Please see the example app for more information about their use.
+
+
+#### Relationship Protocol
+The `relationship` protocol was included in the `verity-sdk` `0.2.0-beta` version but was not mentioned in this doc. Since `Connecting` `0.6` is being dropped, the `relationship` protocol deserves special mention.
+
+The `connecting` `0.6` did two tasks at once. It provisioned relationship assets inside the `verity-application` and handled the exchange of `DIDs` between the parties of the relationship. But these tasks have been divided between two protocols in the `connecting` `1.0` and the `relationship` `1.0` protocol. One must first create a `relationship` and then exchange `DID Doc` information (including the invite). See the example app for more information about this process.
+
+
+#### Token Provisioning
+To protect the SAAS Verity service, the creation of Agents is protected by an authorization token. This token is required when using the `provision` `0.7` protocols pointed at the Evernym demo and public `Verity Application`. The token is a JSON string that is provided by Evernym and must be passed to the constructor of the `provision` `0.7` protocol.
+
+It looks like: 
+
+```
+{
+      "sponseeId":"myId",
+      "sponsorId":"evernym-test-sponsorabc123",
+      "nonce":"123",
+      "timestamp":"2020-06-05T21:33:36.085Z",
+      "sig":"ZkejifRr3txh7NrKokC5l2D2YcABUlGlAoFHZD9RapHHBfVtNnHgYux1RCAiEh4Q31VJE3C92T1ZnqDm1WlEAA==",
+      "sponsorVerKey":"GJ1SzoWzavQYfNL9XkaJdrQejfztN4XqdsiV4ct3LXKL"
+}
+```
+> **NOTE:** The token is mostly self-verifiable and will be verified before sending it to the `Verity Application`.
+
 ### `0.1.0-beta` to `0.2.0-beta`
 The `0.2.0-beta` added better support for multiple versions of a protocol. As such, the Verity-SDK API required the ability to distinguish between different versions. This required changes to the API. These changes are limited to the import statements and interfaces used.
   
