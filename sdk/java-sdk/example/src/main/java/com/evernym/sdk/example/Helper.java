@@ -112,7 +112,7 @@ public abstract class Helper {
         println("");
     }
 
-    static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    static BufferedInputStream in = new BufferedInputStream(System.in);//new BufferedReader(new InputStreamReader(System.in));
 
     static boolean consoleYesNo(String request, boolean defaultYes) throws IOException {
         String yesNo = defaultYes ? "[y]/n" : "y/n";
@@ -133,18 +133,29 @@ public abstract class Helper {
 
     }
 
+    static String readline(InputStream in) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        return reader.readLine();
+    }
+
+    static void flushIn(InputStream in) throws IOException {
+        if(in.available() > 0)
+            in.read(new byte[in.available()]);
+    }
+
     static String consoleInput(String request) throws IOException {
         ByteArrayOutputStream recordedOut = new ByteArrayOutputStream();
         PrintStream out = System.out;
         System.setOut(new PrintStream(recordedOut));
 
         try {
+            flushIn(in);
 
             out.println();
             out.print(request+": ");
             out.flush();
 
-            String rtn = in.readLine();
+            String rtn = readline(in);
             return rtn;
         }
         finally {
@@ -159,10 +170,12 @@ public abstract class Helper {
         System.setOut(new PrintStream(recordedOut));
 
         try {
+            try {flushIn(in);} catch (IOException ignored) {}
+
             out.println();
             out.print(waitMsg+" ... ");
             out.flush();
-            try {in.readLine();} catch (IOException ignored) {}
+            try {readline(in);} catch (IOException ignored) {}
 
             out.print("Done\n");
             out.flush();
