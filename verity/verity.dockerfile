@@ -1,8 +1,7 @@
 FROM ubuntu:16.04
 WORKDIR /root
 
-#ENV LIBVCX_VERSION 0.3.52800629-ee57591
-ENV LIBINDY_VERSION 1.10.1
+ENV LIBINDY_VERSION 1.15.0-xenial
 ENV VERITY_APPLICATION_VERSION 0.4.91738644.3fe8dde
 
 RUN apt-get update && apt-get install -y \
@@ -42,7 +41,6 @@ RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key ad
 RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main"
 
 # install verity-application, ignoring failed post-install script
-#     libvcx=${LIBVCX_VERSION} \
 RUN apt-get update && apt-get install -y \
     libindy=${LIBINDY_VERSION} \
     libnullpay=${LIBINDY_VERSION} \
