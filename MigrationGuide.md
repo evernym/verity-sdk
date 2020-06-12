@@ -25,8 +25,6 @@ The `relationship` protocol was included in the `verity-sdk` `0.2.0-beta` versio
 
 The `connecting` `0.6` did two tasks at once. It provisioned relationship assets inside the `verity-application` and handled the exchange of `DIDs` between the parties of the relationship. But these tasks have been divided between two protocols in the `connecting` `1.0` and the `relationship` `1.0` protocol. One must first create a `relationship` and then exchange `DID Doc` information (including the invite). See the example app for more information about this process.
 
-#### UpdateEndpoint  
-**TODO** Vlad this change did not impact the Verity-SDK. It did impact the rest API. Do you want it described here?
 
 #### Token Provisioning
 To protect the SAAS Verity service, the creation of Agents is protected by an authorization token. This token is required when using the `provision` `0.7` protocols pointed at the Evernym demo and public `Verity Application`. The token is a JSON string that is provided by Evernym and must be passed to the constructor of the `provision` `0.7` protocol.
