@@ -16,9 +16,11 @@ After you launch the example application in the previous step, the example appli
    
    1. Provisioning an Agent:
    
-      This provisioning creates an Agent that serves one **Identity Owner** During that process keys are generated and exchanged. 
+      This provisioning creates an Agent that serves one **Identity Owner** During that process keys are generated and exchanged.
+      
+      During the provisioning interaction, the example application will ask if the user wants to provide a provisioning token. These tokens are required to provision an agent on Evernym's public multi-tenant (SAAS) Verity Application Instances. Evernym will provide these tokens. They are a self-verifying JSON string. If a token is needed, the example will prompt the user for this token JSON string.
 
-   > **NOTE:** When you run the provisioning script during your own tests, make sure you do not run the script more than one time; otherwise, you will get an error and will need to contact Evernym for next steps.
+       > **NOTE:** Provisioning is a one time action. Once provisioning is successfully completed, the Context object should be saved and used for future interactions and provisioning should not be run again. The example application will write this context file and read it if it exists. If this context data is lost, please contact Evernym for the next steps.
 
    2. Registering a webhook:
    
