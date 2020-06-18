@@ -1,5 +1,5 @@
 'use strict'
-const uuid = require('uuid')
+const { v4: uuidv4 } = require('uuid')
 const URL = require('url').URL
 const indy = require('./indy')
 const request = require('request-promise-native')
@@ -13,7 +13,7 @@ exports.constants = {
 exports.WrongSetupError = WrongSetupError
 
 exports.miniId = function () {
-  return uuid().split('-')[0]
+  return uuidv4().split('-')[0]
 }
 
 exports.packMessageForVerity = async function (context, message) {

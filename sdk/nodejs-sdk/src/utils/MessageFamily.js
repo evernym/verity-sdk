@@ -1,5 +1,5 @@
 'use strict'
-const uuid = require('uuid')
+const { v4: uuidv4 } = require('uuid')
 const utils = require('./index')
 
 module.exports = class MessageFamily {
@@ -10,7 +10,7 @@ module.exports = class MessageFamily {
   }
 
   _getNewId () {
-    return uuid()
+    return uuidv4()
   }
 
   _getBaseMessage (msgName) {
