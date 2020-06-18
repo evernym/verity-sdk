@@ -16,7 +16,7 @@ module.exports = class IssuerSetup extends Protocol {
   }
 
   async createMsg (context) {
-    const msg = this._getBaseMessage(this.msgNames.CREATE)
+    msg = this._getBaseMessage(this.msgNames.CREATE)
     msg = this._addThread(msg)
     return msg
   }
@@ -30,7 +30,7 @@ module.exports = class IssuerSetup extends Protocol {
   }
 
   async currentPublicIdentifierMsg (context) {
-    const msg = this._getBaseMessage(this.msgNames.CURRENT_PUBLIC_IDENTIFIER)
+    msg = this._getBaseMessage(this.msgNames.CURRENT_PUBLIC_IDENTIFIER)
     msg = this._addThread(msg)
     return msg
   }
