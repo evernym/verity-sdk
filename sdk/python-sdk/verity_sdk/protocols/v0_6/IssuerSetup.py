@@ -22,6 +22,7 @@ class IssuerSetup(Protocol):
 
     def create_msg(self, _):
         msg = self._get_base_message(self.CREATE)
+        self._add_thread(msg)
         return msg
 
     async def create_msg_packed(self, context):
@@ -32,6 +33,7 @@ class IssuerSetup(Protocol):
 
     def current_public_identifier_msg(self, _):
         msg = self._get_base_message(self.CURRENT_PUBLIC_IDENTIFIER)
+        self._add_thread(msg)
         return msg
 
     async def current_public_identifier_msg_packed(self, context):

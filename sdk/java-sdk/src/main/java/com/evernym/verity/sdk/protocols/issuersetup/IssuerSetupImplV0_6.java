@@ -23,6 +23,7 @@ class IssuerSetupImplV0_6 extends Protocol implements IssuerSetupV0_6 {
         JSONObject message = new JSONObject();
         message.put("@type", getMessageType(CREATE));
         message.put("@id", getNewId());
+        addThread(message);
         return message;
     }
 
@@ -41,6 +42,7 @@ class IssuerSetupImplV0_6 extends Protocol implements IssuerSetupV0_6 {
         JSONObject message = new JSONObject();
         message.put("@type", getMessageType(CURRENT_PUBLIC_IDENTIFIER));
         message.put("@id", getNewId());
+        addThread(message);
         return message;
     }
 
