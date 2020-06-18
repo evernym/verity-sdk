@@ -1,5 +1,5 @@
 'use strict'
-const uuid = require('uuid')
+const { v4: uuidv4 } = require('uuid')
 const utils = require('../utils')
 const MessageFamily = require('../utils/MessageFamily')
 
@@ -9,7 +9,7 @@ module.exports = class Protocol extends MessageFamily {
     if (threadId) {
       this.threadId = threadId
     } else {
-      this.threadId = uuid()
+      this.threadId = uuidv4()
     }
 
     this.msgNames = {
