@@ -17,11 +17,12 @@ module.exports = class WriteCredentialDefinition extends Protocol {
   }
 
   async writeMsg (context) {
-    const msg = this._getBaseMessage(this.msgNames.WRITE_CRED_DEF)
+    var msg = this._getBaseMessage(this.msgNames.WRITE_CRED_DEF)
     msg.name = this.name
     msg.schemaId = this.schemaId
     msg.tag = this.tag
     msg.revocationDetails = this.revocation
+    msg = this._addThread(msg)
     return msg
   }
 
