@@ -31,6 +31,26 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     Map<String, String> values;
     String comment;
     String price;
+    Boolean autoIssue;
+
+    IssueCredentialImplV1_0(String forRelationship,
+                            String credDefId,
+                            Map<String, String> values,
+                            String comment,
+                            String price,
+                            Boolean autoIssue) {
+        super();
+        ValidationUtil.checkRequiredField(forRelationship, "forRelationship");
+        ValidationUtil.checkRequiredField(credDefId, "credDefId");
+
+        this.forRelationship = forRelationship;
+        this.credDefId = credDefId;
+        this.values = values;
+        this.comment = comment;
+        this.price = price;
+        this.autoIssue = autoIssue;
+        this.created = true;
+    }
 
     IssueCredentialImplV1_0(String forRelationship,
                             String credDefId,
@@ -46,6 +66,7 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
         this.values = values;
         this.comment = comment;
         this.price = price;
+        this.autoIssue = true;
         this.created = true;
     }
 
@@ -106,6 +127,7 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
         msg.put("credential_values", values);
         msg.put("comment", comment);
         msg.put("price", price);
+        msg.put("auto_issue", autoIssue);
 
         return msg;
 

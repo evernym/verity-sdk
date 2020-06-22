@@ -20,6 +20,7 @@ public class IssueCredentialTest extends TestBase {
     private final String credDefId = "cred-def-id";
     private final String comment = "some comment";
     private final String price = "0";
+    private final Boolean autoIssue = true;
     private final String threadId = "some thread id";
 
     public IssueCredentialTest() {
@@ -43,12 +44,12 @@ public class IssueCredentialTest extends TestBase {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithRequiredFieldAsNull() {
-        IssueCredential.v1_0(null, null,null, null, null);
+        IssueCredential.v1_0(null, null,null, null, null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithAllOptionalAsNull() {
-        IssueCredential.v1_0(forRelationship, null,null, null, null);
+        IssueCredential.v1_0(forRelationship, null,null, null, null, null);
     }
 
 
@@ -56,7 +57,7 @@ public class IssueCredentialTest extends TestBase {
     public void testSendPropose() throws Exception {
 
         withContext ( context -> {
-            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship,credDefId, values, comment, null);
+            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship,credDefId, values, comment, null, null);
             byte [] msg = testProtocol.proposeCredentialMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, msg);
             testProposalMessage(unpackedMessage);
@@ -66,7 +67,7 @@ public class IssueCredentialTest extends TestBase {
     @Test
     public void testSendOffer() throws Exception {
         withContext ( context -> {
-            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, price);
+            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, price, autoIssue);
             byte [] msg = testProtocol.offerCredentialMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, msg);
             testOfferMessage(unpackedMessage);
@@ -86,7 +87,7 @@ public class IssueCredentialTest extends TestBase {
     @Test
     public void testRequest() throws Exception {
         withContext ( context -> {
-            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, null);
+            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, null, null);
             byte [] msg = testProtocol.requestCredentialMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, msg);
             testRequestMessage(unpackedMessage);
@@ -96,7 +97,7 @@ public class IssueCredentialTest extends TestBase {
     @Test
     public void testReject() throws Exception {
         withContext ( context -> {
-            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, null);
+            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, null, null);
             byte [] msg = testProtocol.rejectMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, msg);
             testRejectMessage(unpackedMessage);
