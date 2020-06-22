@@ -398,20 +398,15 @@ public class App extends Helper {
         credentialData.put("name", "Joe Smith");
         credentialData.put("degree", "Bachelors");
         // constructor for the Issue Credential protocol
-        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0");
+        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0", true);
 
         AtomicBoolean offerSent = new AtomicBoolean(false); // spinlock bool
-        AtomicBoolean credRequested = new AtomicBoolean(false); // spinlock bool
         AtomicBoolean credSent = new AtomicBoolean(false); // spinlock bool
 
-        // handler for 'ask_accept` message when the offer for credential is accepted
+        // handler for signal messages
         handle(issue, (String msgName, JSONObject message) -> {
             if("sent".equals(msgName) && !offerSent.get()) {
                 offerSent.set(true);
-            }
-            else if("accept-request".equals(msgName)) {
-                printlnMessage(msgName, message);
-                credRequested.set(true);
             }
             else if("sent".equals(msgName)) {
                 credSent.set(true);
@@ -425,12 +420,7 @@ public class App extends Helper {
         issue.offerCredential(context);
         waitFor(offerSent, "Wait for offer to be sent");
 
-        // wait for connect.me user to accept offer
-        waitFor(credRequested, "Wait for Connect.me to request the credential");
-
-        // request that credential be issued
-        issue.issueCredential(context);
-        waitFor(credSent, "Wait for Credential to be sent");
+        waitFor(credSent, "Wait for Connect.me to request the credential and credential to be sent");
 
         Thread.sleep(3000); // Give time for Credential to get to mobile device
     }
