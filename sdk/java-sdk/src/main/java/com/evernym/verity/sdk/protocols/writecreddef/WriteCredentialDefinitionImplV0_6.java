@@ -58,6 +58,7 @@ class WriteCredentialDefinitionImplV0_6 extends Protocol implements WriteCredent
         message.put("@id", WriteCredentialDefinitionImplV0_6.getNewId());
         message.put("name", this.name);
         message.put("schemaId", this.schemaId);
+        addThread(message);
         if(this.tag != null) message.put("tag", this.tag);
         if(this.revocationConfig != null) message.put("revocationDetails", this.revocationConfig.toJson());
         return message;

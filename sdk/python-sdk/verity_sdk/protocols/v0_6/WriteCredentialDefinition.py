@@ -27,6 +27,7 @@ class WriteCredentialDefinition(Protocol):
         msg['schemaId'] = self.schema_id
         msg['tag'] = self.tag
         msg['revocationDetails'] = self.revocation_details
+        self._add_thread(msg)
         return msg
 
     async def write_msg_packed(self, context):
