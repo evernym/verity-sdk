@@ -86,6 +86,7 @@ public class IssueCredentialTest extends TestBase {
 
     @Test
     public void testRequest() throws Exception {
+        // not working correctly. It should have a new constructor for holder side.
         withContext ( context -> {
             IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, null, null);
             byte [] msg = testProtocol.requestCredentialMsgPacked(context);
@@ -97,7 +98,7 @@ public class IssueCredentialTest extends TestBase {
     @Test
     public void testReject() throws Exception {
         withContext ( context -> {
-            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, null, null);
+            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, threadId);
             byte [] msg = testProtocol.rejectMsgPacked(context);
             JSONObject unpackedMessage = Util.unpackForwardMessage(context, msg);
             testRejectMessage(unpackedMessage);
@@ -124,32 +125,44 @@ public class IssueCredentialTest extends TestBase {
     private void testOfferMessage(JSONObject msg) {
         testCommonProposeAndOfferMsg(msg);
         assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/offer", msg.getString("@type"));
+        assertEquals(msg.getString("price"), price);
+        assertEquals(msg.getBoolean("auto_issue"), autoIssue);
     }
 
     private void testIssueCredMessage(JSONObject msg) {
         testBaseMessage(msg);
         assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/issue", msg.getString("@type"));
+        assertEquals(threadId, msg.getJSONObject("~thread").getString("thid"));
+//        assertEquals(msg.getString("comment"), comment); // this is optional argument, this version is not able to send.
     }
 
     private void testRequestMessage(JSONObject msg) {
         testBaseMessage(msg);
         assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/request", msg.getString("@type"));
+        // this must be the same threadId as received, but this version does not support it
+//        assertEquals(threadId, msg.getJSONObject("~thread").getString("thid"));
+        assertEquals(credDefId, msg.getString("cred_def_id"));
+//        assertEquals(msg.getString("comment"), comment); // this is optional argument, this version is not able to send.
     }
 
     private void testRejectMessage(JSONObject msg) {
         testBaseMessage(msg);
         assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/reject", msg.getString("@type"));
+        assertEquals(threadId, msg.getJSONObject("~thread").getString("thid"));
+//        assertEquals(msg.getString("comment"), comment); // this is optional argument, this version is not able to send.
     }
 
     private void testStatusMessage(JSONObject msg) {
         testBaseMessage(msg);
         assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/status", msg.getString("@type"));
+        assertEquals(threadId, msg.getJSONObject("~thread").getString("thid"));
     }
 
     private void testCommonProposeAndOfferMsg(JSONObject msg) {
         testBaseMessage(msg);
-        assertNotNull(msg.getString("cred_def_id"));
+        assertEquals(credDefId, msg.getString("cred_def_id"));
         assertEquals(new JSONObject(values).toString(), msg.getJSONObject("credential_values").toString());
+        assertEquals(comment, msg.getString("comment"));
     }
 
     private void testBaseMessage(JSONObject msg) {

@@ -52,24 +52,6 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
         this.created = true;
     }
 
-    IssueCredentialImplV1_0(String forRelationship,
-                            String credDefId,
-                            Map<String, String> values,
-                            String comment,
-                            String price) {
-        super();
-        ValidationUtil.checkRequiredField(forRelationship, "forRelationship");
-        ValidationUtil.checkRequiredField(credDefId, "credDefId");
-
-        this.forRelationship = forRelationship;
-        this.credDefId = credDefId;
-        this.values = values;
-        this.comment = comment;
-        this.price = price;
-        this.autoIssue = true;
-        this.created = true;
-    }
-
     IssueCredentialImplV1_0(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
@@ -145,10 +127,6 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
 
     @Override
     public JSONObject requestCredentialMsg(Context context) {
-        if(!created) {
-            throw new IllegalArgumentException("Unable to request credential when NOT starting the interaction");
-        }
-
         JSONObject msg = new JSONObject();
         msg.put("@type", getMessageType(REQUEST));
         msg.put("@id", getNewId());
@@ -197,10 +175,6 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
 
     @Override
     public JSONObject rejectMsg(Context context) {
-        if(!created) {
-            throw new IllegalArgumentException("Unable to reject when NOT starting the interaction");
-        }
-
         JSONObject msg = new JSONObject();
         msg.put("@type", getMessageType(REJECT));
         msg.put("@id", getNewId());

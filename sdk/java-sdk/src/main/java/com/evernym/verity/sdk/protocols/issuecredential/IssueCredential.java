@@ -26,6 +26,22 @@ public class IssueCredential {
 
     public static IssueCredentialV1_0 v1_0(
             String forRelationship,
+            String credDefId,
+            Map<String, String> values,
+            String comment,
+            String price) {
+
+        return new IssueCredentialImplV1_0(
+                forRelationship,
+                credDefId,
+                values,
+                comment,
+                price,
+                false);
+    }
+
+    public static IssueCredentialV1_0 v1_0(
+            String forRelationship,
             String threadId) {
 
         return new IssueCredentialImplV1_0(
