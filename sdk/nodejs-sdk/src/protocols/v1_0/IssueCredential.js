@@ -89,10 +89,6 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   requestCredentialMsg () {
-    if (!this.created) {
-      throw new utils.WrongSetupError('Unable to request credential when NOT starting the interaction')
-    }
-
     var msg = this._getBaseMessage(this.msgNames.REQUEST_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
@@ -127,10 +123,6 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   rejectMsg () {
-    if (!this.created) {
-      throw new utils.WrongSetupError('Unable to reject when NOT starting the interaction')
-    }
-
     var msg = this._getBaseMessage(this.msgNames.REJECT_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.comment = this.comment
