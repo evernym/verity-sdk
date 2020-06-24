@@ -24,7 +24,8 @@ class IssueCredential(Protocol):
                  cred_def_id: str = None,
                  values: Dict[str, str] = None,
                  comment: str = None,
-                 price: int = 0):
+                 price: str = '0',
+                 auto_issue: bool = False):
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
@@ -38,6 +39,7 @@ class IssueCredential(Protocol):
         self.values = values
         self.comment = comment
         self.price = price
+        self.auto_issue = auto_issue
 
     def propose_credential_msg(self):
         if not self.created:
@@ -68,6 +70,7 @@ class IssueCredential(Protocol):
         msg['credential_values'] = self.values
         msg['comment'] = self.comment
         msg['price'] = self.price
+        msg['auto_issue'] = self.auto_issue
         return msg
 
     async def offer_credential_msg_packed(self, context):
@@ -77,9 +80,6 @@ class IssueCredential(Protocol):
         await self.send_message(context, await self.offer_credential_msg_packed(context))
 
     def request_credential_msg(self):
-        if not self.created:
-            raise WrongSetupException('Unable to request credential when NOT starting the interaction')
-
         msg = self._get_base_message(self.REQUEST)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -107,9 +107,6 @@ class IssueCredential(Protocol):
         await self.send_message(context, await self.issue_credential_msg_packed(context))
 
     def reject_msg(self):
-        if not self.created:
-            raise WrongSetupException('Unable to reject when NOT starting the interaction')
-
         msg = self._get_base_message(self.REJECT)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)

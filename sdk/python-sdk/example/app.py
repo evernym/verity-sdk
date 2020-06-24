@@ -276,14 +276,13 @@ async def issue_credential(loop, rel_did, cred_def_id):
     }
 
     # constructor for the Issue Credential protocol
-    issue = IssueCredential(rel_did, None, cred_def_id, credential_data, 'comment', 0)
+    issue = IssueCredential(rel_did, None, cred_def_id, credential_data, 'comment', 0, True)
 
     offer_sent = loop.create_future()
-    accept_request = loop.create_future()
     cred_sent = loop.create_future()
     spinner = make_spinner('Wait for Connect.me to accept the Credential Offer')  # Console spinner
 
-    # handler for 'ask_accept` message when the offer for credential is accepted
+    # handler for 'sent` message when the offer for credential is sent
     async def send_offer_handler(msg_name, message):
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
@@ -298,22 +297,9 @@ async def issue_credential(loop, rel_did, cred_def_id):
     spinner.start()
     # request that credential is offered
     await issue.offer_credential(context)
-    await offer_sent  # wait for connect.me user to accept offer
+    await offer_sent  # wait for sending of offer to connect.me user
 
-    async def accept_request_handler(msg_name, message):
-        spinner.stop_and_persist('Done')
-        print_message(msg_name, message)
-        if msg_name == IssueCredential.ACCEPT_REQUEST:
-            accept_request.set_result(None)
-        else:
-            non_handled(f'Message name is not handled - {msg_name}', message)
-
-    spinner = make_spinner('waiting to accept request')  # Console spinner
-    spinner.start()
-    handlers.add_handler(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, accept_request_handler)
-    await accept_request
-
-    # request that credential be issued
+    # handler for 'sent` message when the credential is sent
     async def send_cred_handler(msg_name, message):
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
@@ -325,11 +311,9 @@ async def issue_credential(loop, rel_did, cred_def_id):
     # adds handler to the set of handlers
     handlers.add_handler(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, send_cred_handler)
 
-    # request that credential is offered
     spinner = make_spinner('waiting to send credential')  # Console spinner
     spinner.start()
     handlers.add_handler(IssueCredential.MSG_FAMILY, IssueCredential.MSG_FAMILY_VERSION, send_cred_handler)
-    await issue.issue_credential(context)
     await cred_sent
     await asyncio.sleep(3)  # Wait a few seconds for the credential to arrive before sending the proof
 

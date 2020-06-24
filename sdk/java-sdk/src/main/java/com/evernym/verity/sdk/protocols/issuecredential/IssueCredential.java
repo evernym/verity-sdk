@@ -12,6 +12,23 @@ public class IssueCredential {
             String credDefId,
             Map<String, String> values,
             String comment,
+            String price,
+            Boolean autoIssue) {
+
+        return new IssueCredentialImplV1_0(
+                forRelationship,
+                credDefId,
+                values,
+                comment,
+                price,
+                autoIssue);
+    }
+
+    public static IssueCredentialV1_0 v1_0(
+            String forRelationship,
+            String credDefId,
+            Map<String, String> values,
+            String comment,
             String price) {
 
         return new IssueCredentialImplV1_0(
@@ -19,7 +36,8 @@ public class IssueCredential {
                 credDefId,
                 values,
                 comment,
-                price);
+                price,
+                false);
     }
 
     public static IssueCredentialV1_0 v1_0(

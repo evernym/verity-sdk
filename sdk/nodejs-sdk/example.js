@@ -285,11 +285,11 @@ async function issueCredential (relDID, defId) {
   }
 
   // constructor for the Issue Credential protocol
-  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, 'comment', 0)
+  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, 'comment', 0, true)
   var spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450) // Console spinner
 
-  // handler for 'ask_accept` message when the offer for credential is accepted
-  var firstStep = new Promise((resolve) => {
+  // handler for 'sent` message when the offer is sent
+  var offerSent = new Promise((resolve) => {
     handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case issue.msgNames.SENT:
@@ -308,30 +308,10 @@ async function issueCredential (relDID, defId) {
   spinner.start()
   // request that credential is offered
   await issue.offerCredential(context)
-  await firstStep // wait for connect.me user to accept offer
+  await offerSent // wait for offer to be sent
 
-  var secondStep = new Promise((resolve) => {
-    handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
-      switch (msgName) {
-        case issue.msgNames.ACCEPT_REQUEST:
-          spinner.stop()
-          printMessage(msgName, message)
-
-          resolve(null)
-          break
-        default:
-          printMessage(msgName, message)
-          nonHandle('Message Name is not handled - ' + msgName)
-      }
-    })
-  })
-
-  spinner.start()
-  await secondStep
-
-  // request that credential be issued
-  // handler for 'ask_accept` message when the offer for credential is accepted
-  var thirdStep = new Promise((resolve) => {
+  // handler for 'sent` message when the offer for credential is accepted and credential sent
+  var credIssued = new Promise((resolve) => {
     handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case issue.msgNames.SENT:
@@ -348,9 +328,7 @@ async function issueCredential (relDID, defId) {
   })
 
   spinner.start()
-  // request that credential is offered
-  await issue.issueCredential(context)
-  await thirdStep // wait for connect.me user to accept offer
+  await credIssued // wait for connect.me user to accept offer and credential to be sent immediately after.
   return sleep(3000) // Wait a few seconds for the credential to arrive before sending the proof
 }
 
