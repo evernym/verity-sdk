@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.outofband;
 
 import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
-import com.evernym.verity.sdk.protocols.outofband.v1_0.RequestAttach;
+import com.evernym.verity.sdk.protocols.relationship.v1_0.RequestAttach;
 
 import java.util.List;
 
@@ -10,18 +10,6 @@ import java.util.List;
  */
 public class OutOfBand {
     private OutOfBand() {
-    }
-
-    /**
-     * used by inviter/invitee to create relationship
-     *
-     * @param label label to be used in invitation
-     * @return
-     */
-    public static OutOfBandV1_0 v1_0(String label, String goalCode, String goal,
-                                     List<String> handshake_protocols, List<RequestAttach> request) {
-
-        return new OutOfBandImplV1_0(label, goalCode, goal, handshake_protocols, request);
     }
 
     /**

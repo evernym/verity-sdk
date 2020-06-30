@@ -24,4 +24,8 @@ public interface RelationshipV1_0 extends MessageFamily {
     void connectionInvitation(Context context) throws IOException, VerityException;
     JSONObject connectionInvitationMsg(Context context) throws IOException, VerityException;
     byte[] connectionInvitationMsgPacked(Context context) throws IOException, VerityException;
+
+    void outOfBandInvitation(Context context) throws IOException, VerityException;
+    JSONObject outOfBandInvitationMsg(Context context) throws IOException, VerityException;
+    byte[] outOfBandInvitationMsgPacked(Context context) throws IOException, VerityException;
 }

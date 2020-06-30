@@ -19,13 +19,7 @@ public interface OutOfBandV1_0 extends MessageFamily {
     default String family() { return FAMILY;}
     default String version() {return VERSION;}
 
-    void create(Context context) throws IOException, VerityException;
-    JSONObject createMsg(Context context) throws IOException, VerityException;
-    byte[] createMsgPacked(Context context) throws IOException, VerityException;
-
-    void outOfBandInvitation(Context context) throws IOException, VerityException;
-    JSONObject outOfBandInvitationMsg(Context context) throws IOException, VerityException;
-    byte[] outOfBandInvitationMsgPacked(Context context) throws IOException, VerityException;
-
-
+    void handshakeReuse(Context context) throws IOException, VerityException;
+    JSONObject handshakeReuseMsg(Context context) throws IOException, VerityException;
+    byte[] handshakeReuseMsgPacked(Context context) throws IOException, VerityException;
 }

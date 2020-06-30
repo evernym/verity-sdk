@@ -1,4 +1,4 @@
-package com.evernym.verity.sdk.protocols.outofband.v1_0;
+package com.evernym.verity.sdk.protocols.relationship.v1_0;
 
 import org.json.JSONObject;
 
