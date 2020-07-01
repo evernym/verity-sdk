@@ -4,6 +4,7 @@ import asyncio
 import logging
 import pyqrcode
 import traceback
+import os
 from aiohttp import web
 from aiohttp.web_routedef import RouteTableDef
 from asyncio.base_events import Server
@@ -106,8 +107,12 @@ async def create_relationship(loop) -> str:
             qr = pyqrcode.create(invite_url)
             qr.png('qrcode.png')
 
-            print()
-            print('QR code at: qrcode.png')
+            if (os.environ.get("HTTP_SERVER_URL")):
+                print('Open the following URL in your browser and scan presented QR code')
+                print(f'{os.environ.get("HTTP_SERVER_URL")}/python-sdk/example/qrcode.html')
+            else:
+                print('QR code generated at: qrcode.png')
+                print('Open this file and scan QR code to establish a connection')
             invitation.set_result(None)
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
