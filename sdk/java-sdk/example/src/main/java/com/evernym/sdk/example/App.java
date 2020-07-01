@@ -251,8 +251,15 @@ public class App extends Helper {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-
-                println("QR code at: qrcode.png");
+                
+                if (!(System.getenv("HTTP_SERVER_URL") == null) ) {
+                    println("Open the following URL in your browser and scan presented QR code");
+                    println(System.getenv("HTTP_SERVER_URL") + "/java-sdk/example/qrcode.html");
+                }
+                else {
+                    println("QR code generated at: qrcode.png");
+                    println("Open this file and scan QR code to establish a connection");
+                }
 
                 invitationComplete.set(true);
             }

@@ -55,6 +55,9 @@ RUN mvn compile
 WORKDIR /sdk/nodejs-sdk
 RUN npm install 2>/dev/null
 
+# Install static HTTP server to serve generated QR code
+RUN npm install -g http-server
+
 WORKDIR /sdk
 EXPOSE 4000
 

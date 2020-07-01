@@ -97,7 +97,13 @@ async function createRelationship () {
           await QRCode.toFile('qrcode.png', inviteURL)
 
           console.log()
-          console.log('QR code at: qrcode.png')
+          if (process.env.HTTP_SERVER_URL) {
+            console.log('Open the following URL in your browser and scan presented QR code')
+            console.log(`${process.env.HTTP_SERVER_URL}/nodejs-sdk/qrcode.html`)
+          } else {
+            console.log('QR code generated at: qrcode.png')
+            console.log('Open this file and scan QR code to establish a connection')
+          }
           resolve(null)
           break
         default:
