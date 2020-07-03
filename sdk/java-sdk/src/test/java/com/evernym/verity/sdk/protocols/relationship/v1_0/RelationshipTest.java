@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 public class RelationshipTest {
 
     final String label = "Alice";
+    final String profileUrl = "profile_url";
     final String forRelationship = "did1";
 
     @Test
@@ -40,6 +41,10 @@ public class RelationshipTest {
         RelationshipV1_0 relationship = Relationship.v1_0(label);
         JSONObject msg = relationship.createMsg(TestHelpers.getContext());
         testCreateMsg(msg);
+
+        RelationshipV1_0 relationship2 = Relationship.v1_0(label, profileUrl, null);
+        JSONObject msg2 = relationship.createMsg(TestHelpers.getContext());
+        testCreateMsg(msg2);
     }
 
     private void testCreateMsg(JSONObject msg) {

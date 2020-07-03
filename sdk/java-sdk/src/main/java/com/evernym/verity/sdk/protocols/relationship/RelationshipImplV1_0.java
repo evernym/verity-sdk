@@ -16,6 +16,7 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
 
     String forRelationship;
     String label;
+    String profileUrl = null;
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -25,6 +26,17 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
             this.label = label;
         else
             this.label = "";
+
+        this.created = true;
+    }
+
+    RelationshipImplV1_0(String label, String profileUrl, String threadId) {
+        super(threadId);
+        if (!isNullOrWhiteSpace(label))
+            this.label = label;
+        else
+            this.label = "";
+        this.profileUrl = profileUrl;
 
         this.created = true;
     }
@@ -44,6 +56,8 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
                 .put("@type", getMessageType(CREATE))
                 .put("@id", getNewId())
                 .put("label", label);
+        if (!isNullOrWhiteSpace(profileUrl))
+            rtn.put("profileUrl", profileUrl);
         addThread(rtn);
         return rtn;
     }

@@ -14,6 +14,17 @@ public class Relationship {
     }
 
     /**
+     * used by inviter/invitee to create relationship
+     * @param label label to be used in invitation
+     * @param profileUrl profile image used in invitation
+     * @param threadId thread identifier
+     * @return
+     */
+    public static RelationshipV1_0 v1_0(String label, String profileUrl, String threadId) {
+        return new RelationshipImplV1_0(label, profileUrl, threadId);
+    }
+
+    /**
      * used by inviter to get a connection invitation message
      * @param forRelationship relationship identifier
      * @param threadId thread identifier
