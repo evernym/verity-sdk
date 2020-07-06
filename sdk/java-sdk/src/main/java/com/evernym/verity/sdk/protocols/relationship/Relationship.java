@@ -2,6 +2,8 @@ package com.evernym.verity.sdk.protocols.relationship;
 
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 
+import java.net.URL;
+
 public class Relationship {
 
     /**
@@ -15,13 +17,12 @@ public class Relationship {
 
     /**
      * used by inviter/invitee to create relationship
-     * @param label label to be used in invitation
-     * @param profileUrl profile image used in invitation
-     * @param threadId thread identifier
+     * @param label label to be used in invitation, usually name of the company
+     * @param logoUrl profile image used in invitation
      * @return
      */
-    public static RelationshipV1_0 v1_0(String label, String profileUrl, String threadId) {
-        return new RelationshipImplV1_0(label, profileUrl, threadId);
+    public static RelationshipV1_0 v1_0(String label, URL logoUrl) {
+        return new RelationshipImplV1_0(label, logoUrl);
     }
 
     /**

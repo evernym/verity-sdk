@@ -11,20 +11,20 @@ def test_init():
         for_relationship='RxRJCMe5XNqc9e9J1YPwhL',
         thread_id='7a80285e-896c-45f6-b386-39ed7c49230c',
         label='test',
-        profile_url='profile_url'
+        logo_url='logo_url'
     )
 
     assert relationship.label == 'test'
     assert relationship.for_relationship == 'RxRJCMe5XNqc9e9J1YPwhL'
     assert relationship.thread_id == '7a80285e-896c-45f6-b386-39ed7c49230c'
-    assert relationship.profile_url == 'profile_url'
+    assert relationship.logo_url == 'logo_url'
 
     relationship = Relationship(
         label=None
     )
 
     assert relationship.label == ''
-    assert relationship.profile_url is None
+    assert relationship.logo_url is None
 
 
 @pytest.mark.asyncio
@@ -34,7 +34,7 @@ async def test_create():
         for_relationship='RxRJCMe5XNqc9e9J1YPwhL',
         thread_id='7a80285e-896c-45f6-b386-39ed7c49230c',
         label='test',
-        profile_url='profile_url'
+        logo_url='logo_url'
     )
 
     msg = relationship.create_msg(context)
@@ -49,7 +49,7 @@ async def test_create():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['label'] == 'test'
-    assert msg['profileUrl'] == 'profile_url'
+    assert msg['logoUrl'] == 'logo_url'
 
 
 @pytest.mark.asyncio

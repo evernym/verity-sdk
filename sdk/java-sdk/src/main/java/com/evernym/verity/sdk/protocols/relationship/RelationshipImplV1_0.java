@@ -7,6 +7,7 @@ import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URL;
 
 import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 
@@ -16,7 +17,7 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
 
     String forRelationship;
     String label;
-    String profileUrl = null;
+    URL logoUrl = null;
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -30,13 +31,12 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
         this.created = true;
     }
 
-    RelationshipImplV1_0(String label, String profileUrl, String threadId) {
-        super(threadId);
+    RelationshipImplV1_0(String label, URL logoUrl) {
         if (!isNullOrWhiteSpace(label))
             this.label = label;
         else
             this.label = "";
-        this.profileUrl = profileUrl;
+        this.logoUrl = logoUrl;
 
         this.created = true;
     }
@@ -56,8 +56,8 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
                 .put("@type", getMessageType(CREATE))
                 .put("@id", getNewId())
                 .put("label", label);
-        if (!isNullOrWhiteSpace(profileUrl))
-            rtn.put("profileUrl", profileUrl);
+        if (logoUrl != null)
+            rtn.put("logoUrl", logoUrl.toString());
         addThread(rtn);
         return rtn;
     }
