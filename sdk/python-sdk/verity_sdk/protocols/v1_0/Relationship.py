@@ -14,7 +14,8 @@ class Relationship(Protocol):
     def __init__(self,
                  for_relationship: str = None,
                  thread_id: str = None,
-                 label: str = None):
+                 label: str = None,
+                 logo_url: str = None):
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
@@ -27,11 +28,14 @@ class Relationship(Protocol):
             self.label = label
         else:
             self.label = ''
+        self.logo_url = logo_url
 
     def create_msg(self, _):
         msg = self._get_base_message(self.CREATE)
         self._add_thread(msg)
         msg['label'] = self.label
+        if self.logo_url:
+            msg['logoUrl'] = self.logo_url
 
         return msg
 

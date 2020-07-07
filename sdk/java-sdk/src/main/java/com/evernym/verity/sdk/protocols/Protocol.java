@@ -13,14 +13,21 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.UUID;
 
+import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
+
 /**
  * The base class for all protocols
  */
 public abstract class Protocol {
     public Protocol(String threadId) {
-        DbcUtil.requireNotNull(threadId);
+        if (!isNullOrWhiteSpace(threadId)) {
+            DbcUtil.requireNotNull(threadId);
 
-        this.threadId = threadId;
+            this.threadId = threadId;
+        }
+        else {
+            this.threadId = UUID.randomUUID().toString();
+        }
     }
 
     public Protocol() {

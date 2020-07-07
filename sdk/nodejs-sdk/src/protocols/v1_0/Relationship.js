@@ -3,7 +3,7 @@ const utils = require('../../utils')
 const Protocol = require('../Protocol')
 
 module.exports = class Relationship extends Protocol {
-  constructor (forRelationship = null, threadId = null, label = null) {
+  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null) {
     const msgFamily = 'relationship'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
@@ -16,12 +16,16 @@ module.exports = class Relationship extends Protocol {
 
     this.forRelationship = forRelationship
     this.label = label
+    this.logoUrl = logoUrl
   }
 
   async createMsg (context) {
     var msg = this._getBaseMessage(this.msgNames.CREATE)
     msg = this._addThread(msg)
     msg.label = this.label
+    if (this.logoUrl) {
+      msg.logoUrl = this.logoUrl
+    }
     return msg
   }
 
