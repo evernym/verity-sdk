@@ -8,11 +8,14 @@ const fs = require('fs')
 const sdk = require('./src/index')
 const Spinner = require('cli-spinner').Spinner
 const QRCode = require('qrcode')
+const request = require('request-promise-native')
 
 const LISTENING_PORT = 4000
 const CONFIG_PATH = 'verity-context.json'
 const INSTITUTION_NAME = 'Faber College'
 const LOGO_URL = 'http://robohash.org/235'
+const ANSII_GREEN = '\u001b[32m'
+const ANSII_RESET = '\x1b[0m'
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -99,7 +102,7 @@ async function createRelationship () {
           console.log()
           if (process.env.HTTP_SERVER_URL) {
             console.log('Open the following URL in your browser and scan presented QR code')
-            console.log(`${process.env.HTTP_SERVER_URL}/nodejs-sdk/qrcode.html`)
+            console.log(`${ANSII_GREEN}${process.env.HTTP_SERVER_URL}/nodejs-sdk/qrcode.html${ANSII_RESET}`)
           } else {
             console.log('QR code generated at: qrcode.png')
             console.log('Open this file and scan QR code to establish a connection')
@@ -422,17 +425,18 @@ async function loadContext (contextFile) {
 async function provisionAgent () {
   var token = null
   if (await readlineYesNo('Provide Provision Token', true)) {
-    token = await readlineInput('Token')
+    token = await readlineInput('Token', process.env.TOKEN)
     token.trim()
+    console.log(`Using provision token: ${ANSII_GREEN}${token}${ANSII_RESET}`)
   }
 
-  var verityUrl = await readlineInput('Verity Application Endpoint')
+  var verityUrl = await readlineInput('Verity Application Endpoint', process.env.VERITY_SERVER)
   verityUrl = verityUrl.trim()
   if (verityUrl === '') {
     verityUrl = 'http://localhost:9000'
   }
 
-  console.log('Using Url: ' + verityUrl)
+  console.log(`Using Verity Application Endpoint Url: ${ANSII_GREEN}${verityUrl}${ANSII_RESET}`)
 
   // create initial Context
   var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
@@ -447,12 +451,12 @@ async function provisionAgent () {
 async function updateWebhookEndpoint () {
   var webhookFromCtx = context.endpointUrl
 
-  var webhook = await readlineInput(`Ngrok endpoint for port(${LISTENING_PORT})[${webhookFromCtx}]`)
+  var webhook = await readlineInput(`Ngrok endpoint for port(${LISTENING_PORT})[${webhookFromCtx}]`, process.env.WEBHOOK_URL)
   if (webhook === '') {
     webhook = webhookFromCtx
   }
 
-  console.log('Using Webhook: ' + webhook)
+  console.log(`Using Webhook: ${ANSII_GREEN}${webhook}${ANSII_RESET}`)
   context.endpointUrl = webhook
 
   // request that verity application use specified webhook endpoint
@@ -478,9 +482,29 @@ async function setupIssuer () {
           printMessage(msgName, message)
           issuerDID = message.identifier.did
           issuerVerkey = message.identifier.verKey
-          console.log('The issuer DID and Verkey must be on the ledger.')
-          console.log(`Please add DID (${issuerDID}) and Verkey (${issuerVerkey}) to ledger.`)
-          await readlineInput('Press ENTER when DID is on ledger')
+          console.log('The issuer DID and Verkey must be registered on the ledger.')
+          var automatedRegistration = await readlineYesNo('Attempt automated registration via https://selfserve.sovrin.org', true)
+          if (automatedRegistration) {
+            var res = await request.post({
+              uri: 'https://selfserve.sovrin.org/nym',
+              json: {
+                network: 'stagingnet',
+                did: issuerDID,
+                verkey: issuerVerkey,
+                paymentaddr: ''
+              }
+            })
+            if (res.statusCode !== 200) {
+              console.log('Something went wrong with contactig Sovrin portal')
+              console.log(`Please add DID (${issuerDID}) and Verkey (${issuerVerkey}) to ledger manually`)
+              await readlineInput('Press ENTER when DID is on ledger')
+            } else {
+              console.log(`Got response from Sovrin portal: ${ANSII_GREEN}${res.body}${ANSII_RESET}`)
+            }
+          } else {
+            console.log(`Please add DID (${issuerDID}) and Verkey (${issuerVerkey}) to ledger manually`)
+            await readlineInput('Press ENTER when DID is on ledger')
+          }
           resolve(null)
           break
         default:
@@ -562,11 +586,17 @@ async function end () {
 
 // Simple utility functions for the Example app.
 
-async function readlineInput (request) {
+async function readlineInput (request, defaultValue) {
   console.log()
 
   return new Promise((resolve) => {
-    rl.question(request + ': ', (response) => { resolve(response) })
+    if (defaultValue) {
+      console.log(`${request}:`)
+      console.log(`${ANSII_GREEN}${defaultValue}${ANSII_RESET} is set via environment variable`)
+      rl.question('Press any key to continue', (response) => { resolve(defaultValue) })
+    } else {
+      rl.question(request + ': ', (response) => { resolve(response) })
+    }
   })
 }
 

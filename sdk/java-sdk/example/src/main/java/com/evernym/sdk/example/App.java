@@ -37,6 +37,12 @@ import com.evernym.verity.sdk.utils.Util;
 import net.glxn.qrgen.QRCode;
 import org.json.JSONObject;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -74,20 +80,20 @@ public class App extends Helper {
     Context provisionAgent() throws IOException, VerityException {
         ProvisionV0_7 provisioner;
         if (consoleYesNo("Provide Provision Token", true)) {
-            String token = consoleInput("Token").trim();
-            println("using provision token: " + token);
+            String token = consoleInput("Token", System.getenv("TOKEN")).trim();
+            println("Using provision token: " + ANSII_GREEN + token + ANSII_RESET);
             provisioner = Provision.v0_7(token);
         } else {
             provisioner = Provision.v0_7();
         }
 
-        String verityUrl = consoleInput("Verity Application Endpoint").trim();
+        String verityUrl = consoleInput("Verity Application Endpoint", System.getenv("VERITY_SERVER")).trim();
 
         if ("".equals(verityUrl)) {
             verityUrl = "http://localhost:9000";
         }
 
-        println("Using Url: "+ verityUrl);
+        println("Using Url: " + ANSII_GREEN + verityUrl + ANSII_RESET);
 
         // create initial Context
         Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
@@ -111,13 +117,13 @@ public class App extends Helper {
             webhookFromCtx = context.endpointUrl();
         } catch (UndefinedContextException ignored) {}
 
-        String webhook = consoleInput(String.format("Ngrok endpoint for port(%d)[%s]", port, webhookFromCtx)).trim();
+        String webhook = consoleInput(String.format("Ngrok endpoint for port(%d)[%s]", port, webhookFromCtx), System.getenv("WEBHOOK_URL")).trim();
 
         if("".equals(webhook)) {
             webhook = webhookFromCtx;
         }
 
-        println("Using Webhook: "+ webhook);
+        println("Using Webhook: " + ANSII_GREEN + webhook + ANSII_RESET);
         context = context.toContextBuilder().endpointUrl(webhook).build();
 
         // request that verity application use specified webhook endpoint
@@ -158,10 +164,49 @@ public class App extends Helper {
 
         // wait for request to complete
         waitFor(setupComplete, "Waiting for setup to complete");
-
         println("The issuer DID and Verkey must be on the ledger.");
-        println(String.format("Please add DID (%s) and Verkey (%s) to ledger.", issuerDID, issuerVerkey));
-        waitFor("Press ENTER when DID is on ledger");
+
+        boolean automatedRegistration = consoleYesNo("Attempt automated registration via https://selfserve.sovrin.org", true);
+        
+        if (automatedRegistration) {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost("https://selfserve.sovrin.org/nym");
+        
+            JSONObject payload_builder = new JSONObject();
+            payload_builder.accumulate("network", "stagingnet");
+            payload_builder.accumulate("did", issuerDID);
+            payload_builder.accumulate("verkey", issuerVerkey);
+            payload_builder.accumulate("paymentaddr", "");
+            String payload = payload_builder.toString();
+
+            StringEntity entity = new StringEntity(payload);
+            httpPost.setEntity(entity);
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+        
+            HttpResponse response = client.execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+
+            if (statusCode != 200) {
+                println("Something went wrong with contactig Sovrin portal");
+                println(String.format("Please add DID (%s) and Verkey (%s) to ledger manually", issuerDID, issuerVerkey));
+                waitFor("Press ENTER when DID is on ledger");
+            } else {
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                StringBuilder builder = new StringBuilder();
+                String line;
+                while ((line = bufReader.readLine()) != null) {
+                    builder.append(line);
+                    builder.append(System.lineSeparator());
+                }
+                println("Got response from Sovrin portal: " + ANSII_GREEN + builder + ANSII_RESET);
+            }        
+            client.close();
+        }
+        else {
+            println(String.format("Please add DID (%s) and Verkey (%s) to ledger manually", issuerDID, issuerVerkey));
+            waitFor("Press ENTER when DID is on ledger");
+        }
     }
 
     void issuerIdentifier() throws IOException, VerityException {
@@ -254,7 +299,7 @@ public class App extends Helper {
                 
                 if (!(System.getenv("HTTP_SERVER_URL") == null) ) {
                     println("Open the following URL in your browser and scan presented QR code");
-                    println(System.getenv("HTTP_SERVER_URL") + "/java-sdk/example/qrcode.html");
+                    println(ANSII_GREEN + System.getenv("HTTP_SERVER_URL") + "/java-sdk/example/qrcode.html" + ANSII_RESET);
                 }
                 else {
                     println("QR code generated at: qrcode.png");
