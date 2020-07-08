@@ -20,7 +20,8 @@ public abstract class Helper {
     Context context;
     private static PrintStream err = System.err;
     private static ByteArrayOutputStream errBuffer = new ByteArrayOutputStream();
-
+    public static final String ANSII_GREEN = "\u001B[32m";
+    public static final String ANSII_RESET = "\u001B[0m";
 
     void execute() {
         try {
@@ -117,7 +118,7 @@ public abstract class Helper {
     static boolean consoleYesNo(String request, boolean defaultYes) throws IOException {
         String yesNo = defaultYes ? "[y]/n" : "y/n";
         String modifiedRequest = request + "? " + yesNo;
-        String response = consoleInput(modifiedRequest).trim().toLowerCase();
+        String response = consoleInput(modifiedRequest, null).trim().toLowerCase();
 
         if(defaultYes && "".equals(response)){
             return true;
@@ -143,20 +144,29 @@ public abstract class Helper {
             in.read(new byte[in.available()]);
     }
 
-    static String consoleInput(String request) throws IOException {
+    static String consoleInput(String request, String defaultValue) throws IOException {
         ByteArrayOutputStream recordedOut = new ByteArrayOutputStream();
         PrintStream out = System.out;
         System.setOut(new PrintStream(recordedOut));
 
         try {
-            flushIn(in);
-
-            out.println();
-            out.print(request+": ");
-            out.flush();
-
-            String rtn = readline(in);
-            return rtn;
+            if (defaultValue != null) {
+                out.println();
+                out.print(request + ": ");
+                out.print(ANSII_GREEN + defaultValue + ANSII_RESET + " is set via environment variable");
+                out.println();
+                out.print("Press any key to continue");
+                out.flush();
+                readline(in);
+                return defaultValue;
+            } else {
+                flushIn(in);
+                out.println();
+                out.print(request + ": ");
+                out.flush();
+                String rtn = readline(in);
+                return rtn;
+            }
         }
         finally {
             out.print(new String(recordedOut.toByteArray()));

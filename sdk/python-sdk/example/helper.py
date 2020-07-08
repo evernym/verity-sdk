@@ -5,6 +5,8 @@ import sys
 import random
 from halo import Halo
 
+ANSII_GREEN = '\u001b[32m'
+ANSII_RESET = '\x1b[0m'
 
 def print_message(msg_name, message):
     print_object(message, "<<<", f"Incoming Message -- {msg_name}")
@@ -52,13 +54,18 @@ def make_spinner(msg):
     return Halo(text=f'{msg} ... ', spinner='line', interval=450, color=None, placement='right')
 
 
-def console_input(request):
+def console_input(request, default_value=None):
     print()
-    val = input(f"{request}: ")
-    if not val:
-        return ""
-    return val
-
+    if default_value:
+        print(f'{request}:')
+        print(f'{ANSII_GREEN}{default_value}{ANSII_RESET} is set via environment variable')
+        input('Press any key to continue')
+        return default_value
+    else:
+        val = input(f"{request}: ").strip()
+        if not val:
+            return ""
+        return val
 
 def console_yes_no(request, default_yes):
     yes_no = "[y]/n" if default_yes else "y/n"

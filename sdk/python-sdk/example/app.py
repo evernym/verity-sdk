@@ -5,6 +5,7 @@ import logging
 import pyqrcode
 import traceback
 import os
+import requests
 from aiohttp import web
 from aiohttp.web_routedef import RouteTableDef
 from asyncio.base_events import Server
@@ -107,9 +108,9 @@ async def create_relationship(loop) -> str:
             qr = pyqrcode.create(invite_url)
             qr.png('qrcode.png')
 
-            if (os.environ.get("HTTP_SERVER_URL")):
+            if os.environ.get("HTTP_SERVER_URL"):
                 print('Open the following URL in your browser and scan presented QR code')
-                print(f'{os.environ.get("HTTP_SERVER_URL")}/python-sdk/example/qrcode.html')
+                print(f'{ANSII_GREEN}{os.environ.get("HTTP_SERVER_URL")}/python-sdk/example/qrcode.html{ANSII_RESET}')
             else:
                 print('QR code generated at: qrcode.png')
                 print('Open this file and scan QR code to establish a connection')
@@ -399,10 +400,11 @@ async def provision_agent() -> str:
     wallet_key = 'examplewallet1'
     token = None
     if console_yes_no("Provide Provision Token", True):
-        token = console_input("Token").strip()
+        token = console_input("Token", os.environ.get("TOKEN"))
+        print(f'Using provision token: {ANSII_GREEN}{token}{ANSII_RESET}')
 
-    verity_url = console_input(f'Verity Application Endpoint').strip()
-
+    verity_url = console_input(f'Verity Application Endpoint', os.environ.get("VERITY_SERVER"))
+    print(f'Using Verity Application Endpoint Url: {ANSII_GREEN}{verity_url}{ANSII_RESET}')
     # create initial Context
     context = await Context.create(wallet_name, wallet_key, verity_url)
 
@@ -418,12 +420,12 @@ async def update_webhook_endpoint():
         # Default to localhost on the default port
         webhook_from_ctx = f'http://localhost:{port}'
 
-    webhook: str = console_input(f'Ngrok endpoint [{webhook_from_ctx}]')
+    webhook: str = console_input(f'Ngrok endpoint [{webhook_from_ctx}]', os.environ.get("WEBHOOK_URL"))
 
     if not webhook:
         webhook = webhook_from_ctx
 
-    print(f'Using Webhook: {webhook}')
+    print(f'Using Webhook: {ANSII_GREEN}{webhook}{ANSII_RESET}')
     print()
     context.endpoint_url = webhook
 
@@ -490,9 +492,27 @@ async def setup_issuer(loop):
         if msg_name == IssuerSetup.PUBLIC_IDENTIFIER_CREATED:
             issuer_did = message['identifier']['did']
             issuer_verkey = message['identifier']['verKey']
-            print('The issuer DID and Verkey must be on the ledger.')
-            print(f'Please add DID ({issuer_did}) and Verkey ({issuer_verkey}) to ledger.')
-            console_input('Press ENTER when DID is on ledger')
+            print('The issuer DID and Verkey must be registered on the ledger.')
+            automated_registration = console_yes_no('Attempt automated registration via https://selfserve.sovrin.org', True)
+            if automated_registration:
+                url = 'https://selfserve.sovrin.org/nym'
+                payload = json.dumps({
+                            'network': 'stagingnet',
+                            'did': issuer_did,
+                            'verkey': issuer_verkey,
+                            'paymentaddr': ''
+                        })
+                headers = {'Accept': 'application/json'}
+                response = requests.request("POST", url, headers=headers, data=payload)
+                if response.status_code != 200:
+                    print('Something went wrong with contactig Sovrin portal')
+                    print(f'Please add DID ({issuer_did}) and Verkey ({issuer_verkey}) to ledger manually')
+                    console_input('Press ENTER when DID is on ledger')
+                else:
+                    print(f'Got response from Sovrin portal: {ANSII_GREEN}{response.text}{ANSII_RESET}')
+            else:
+                print(f'Please add DID ({issuer_did}) and Verkey ({issuer_verkey}) to ledger manually')
+                console_input('Press ENTER when DID is on ledger')
             first_step.set_result(None)
         else:
             non_handled(f'Message name is not handled - {msg_name}')
