@@ -35,17 +35,14 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
         this.created = true;
     }
 
-    RelationshipImplV1_0(String label, String goalCode, String goal,
+    RelationshipImplV1_0(String forRelationship, String threadId,
+                         String goalCode, String goal,
                          List<RequestAttach> request) {
-        if (!isNullOrWhiteSpace(label))
-            this.label = label;
-        else
-            this.label = "";
+        super(threadId);
         this.goalCode = goalCode;
         this.goal = goal;
         this.requestAttach = request;
-
-        this.created = true;
+        this.forRelationship = forRelationship;
     }
 
     RelationshipImplV1_0(String forRelationship, String threadId) {
@@ -104,7 +101,6 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
         JSONObject rtn = new JSONObject()
                 .put("@type", getMessageType(OUT_OF_BAND_INVITATION))
                 .put("@id", getNewId())
-                .put("label", label)
                 .put("goal_code", goalCode)
                 .put("goal", goal);
         if (requestAttach != null)

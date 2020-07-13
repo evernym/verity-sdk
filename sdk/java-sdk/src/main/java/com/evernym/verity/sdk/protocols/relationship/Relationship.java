@@ -18,16 +18,18 @@ public class Relationship {
 
     /**
      * used by inviter/invitee to create relationship
-     * @param label label to be used in OutOfBand invitation
+     * @param forRelationship relationship identifier
+     * @param threadId thread identifier
      * @param goalCode of creation OutOfBand invitation
      *                 (issue-vc/request-proof/create-account/p2p-messaging)
      * @param goal of creation OutOfBand invitation
      * @param request to be used in OutOfBand invitation
      * @return
      */
-    public static RelationshipV1_0 v1_0(String label, String goalCode, String goal,
+    public static RelationshipV1_0 v1_0(String forRelationship, String threadId,
+                                        String goalCode, String goal,
                                         List<RequestAttach> request) {
-        return new RelationshipImplV1_0(label, goalCode, goal, request);
+        return new RelationshipImplV1_0(forRelationship, threadId, goalCode, goal, request);
     }
 
     /**

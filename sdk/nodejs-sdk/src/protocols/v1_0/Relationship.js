@@ -3,7 +3,7 @@ const utils = require('../../utils')
 const Protocol = require('../Protocol')
 
 module.exports = class Relationship extends Protocol {
-  constructor (forRelationship = null, threadId = null, label = null) {
+  constructor (forRelationship = null, threadId = null, label = null, goalCode = null, goal = null, request = null) {
     const msgFamily = 'relationship'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
@@ -11,6 +11,7 @@ module.exports = class Relationship extends Protocol {
 
     this.msgNames.CREATE = 'create'
     this.msgNames.CONNECTION_INVITATION = 'connection-invitation'
+    this.msgNames.OUT_OF_BAND_INVITATION = 'out-of-band-invitation'
     this.msgNames.CREATED = 'created'
     this.msgNames.INVITATION = 'invitation'
 
@@ -46,5 +47,25 @@ module.exports = class Relationship extends Protocol {
 
   async connectionInvitation (context) {
     await this.sendMessage(context, await this.connectionInvitationMsgPacked(context))
+  }
+
+  async outOfBandInvitationMsg (context) {
+    var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
+    msg['goal_code'] = this.goalCode
+    msg['goal'] = this.goal
+    if (this.request) {
+        msg['request~attach'] = this.request
+    }
+    msg['~for_relationship'] = this.forRelationship
+    msg = this._addThread(msg)
+    return msg
+  }
+
+  async outOfBandInvitationMsgPacked (context) {
+    return this.getMessageBytes(context, await this.outOfBandInvitationMsg(context))
+  }
+
+  async outOfBandInvitation (context) {
+    await this.sendMessage(context, await this.outOfBandInvitationMsgPacked(context))
   }
 }

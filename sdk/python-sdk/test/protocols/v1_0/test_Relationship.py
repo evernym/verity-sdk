@@ -68,3 +68,32 @@ async def test_connection_invitation():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == 'RxRJCMe5XNqc9e9J1YPwhL'
+
+
+@pytest.mark.asyncio
+async def test_out_of_band_invitation():
+    context = await Context.create_with_config(await get_test_config())
+    relationship = Relationship(
+        for_relationship='RxRJCMe5XNqc9e9J1YPwhL',
+        thread_id='7a80285e-896c-45f6-b386-39ed7c49230c',
+        label='test',
+        goal_code='test_goal_code',
+        goal='test_goal',
+        request='test_request'
+    )
+
+    msg = relationship.out_of_band_invitation(context)
+
+    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+        EVERNYM_MSG_QUALIFIER,
+        Relationship.MSG_FAMILY,
+        Relationship.MSG_FAMILY_VERSION,
+        Relationship.OUT_OF_BAND_INVITATION
+    )
+    assert msg['@id'] is not None
+    assert msg['~thread'] is not None
+    assert msg['~thread']['thid'] is not None
+    assert msg['~for_relationship'] == 'RxRJCMe5XNqc9e9J1YPwhL'
+    assert msg['goal_code'] == 'test_goal_code'
+    assert msg['goal'] == 'test_goal'
+    assert msg['request~attach'] == 'test_request'

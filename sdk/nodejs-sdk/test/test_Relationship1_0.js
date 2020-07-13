@@ -27,4 +27,20 @@ describe('Relationship', () => {
     const msg = await rel.createMsg(null)
     expect(msg.label).to.equal('test')
   })
+
+  it('should build OutOfBand invitation msg correctly', async () => {
+    const rel = new Relationship(
+      'RxRJCMe5XNqc9e9J1YPwhL',
+      '7a80285e-896c-45f6-b386-39ed7c49230c',
+      'test',
+      'testGoalCode',
+      'testGoal',
+      'testRequestAttach'
+    )
+    const msg = await rel.outOfBandInvitationMsg(null)
+    expect(msg.label).to.equal('test')
+    expect(msg.goalCode).to.equal('testGoalCode')
+    expect(msg.goal).to.equal('testGoal')
+    expect(msg.request).to.equal('testRequestAttach')
+  })
 })

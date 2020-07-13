@@ -10,11 +10,15 @@ class Relationship(Protocol):
     INVITATION = 'invitation'
     CREATE = 'create'
     CONNECTION_INVITATION = 'connection-invitation'
+    OUT_OF_BAND_INVITATION = 'out-of-band-invitation'
 
     def __init__(self,
                  for_relationship: str = None,
                  thread_id: str = None,
-                 label: str = None):
+                 label: str = None,
+                 goal_code: str = None,
+                 goal: str = None,
+                 request=None):
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
@@ -27,6 +31,9 @@ class Relationship(Protocol):
             self.label = label
         else:
             self.label = ''
+        self.goal_code = goal_code
+        self.goal = goal
+        self.request = request
 
     def create_msg(self, _):
         msg = self._get_base_message(self.CREATE)
@@ -52,3 +59,18 @@ class Relationship(Protocol):
 
     async def connection_invitation(self, context):
         await self.send_message(context, await self.connection_invitation_msg_packed(context))
+
+    def out_of_band_invitation_msg(self, _):
+        msg = self._get_base_message(self.OUT_OF_BAND_INVITATION)
+        msg['goal_code'] = self.goal_code
+        msg['goal'] = self.goal
+        msg['request~attach'] = self.request
+        self._add_thread(msg)
+        self._add_relationship(msg, self.for_relationship)
+        return msg
+
+    async def out_of_band_invitation_msg_packed(self, context):
+        return await self.get_message_bytes(context, self.out_of_band_invitation_msg(context))
+
+    async def out_of_band_invitation(self, context):
+        await self.send_message(context, await self.out_of_band_invitation_msg_packed(context))
