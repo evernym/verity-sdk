@@ -17,6 +17,9 @@ module.exports = class Relationship extends Protocol {
 
     this.forRelationship = forRelationship
     this.label = label
+    this.goalCode = goalCode
+    this.goal = goal
+    this.request = request
   }
 
   async createMsg (context) {
@@ -51,10 +54,10 @@ module.exports = class Relationship extends Protocol {
 
   async outOfBandInvitationMsg (context) {
     var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
-    msg['goal_code'] = this.goalCode
-    msg['goal'] = this.goal
+    msg.goalCode = this.goalCode
+    msg.goal = this.goal
     if (this.request) {
-        msg['request~attach'] = this.request
+      msg['request~attach'] = this.request
     }
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)

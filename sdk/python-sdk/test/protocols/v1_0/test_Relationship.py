@@ -82,7 +82,7 @@ async def test_out_of_band_invitation():
         request='test_request'
     )
 
-    msg = relationship.out_of_band_invitation(context)
+    msg = relationship.out_of_band_invitation_msg(context)
 
     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -94,6 +94,6 @@ async def test_out_of_band_invitation():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == 'RxRJCMe5XNqc9e9J1YPwhL'
-    assert msg['goal_code'] == 'test_goal_code'
+    assert msg['goalCode'] == 'test_goal_code'
     assert msg['goal'] == 'test_goal'
     assert msg['request~attach'] == 'test_request'
