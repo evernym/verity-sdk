@@ -24,7 +24,7 @@ class OutOfBand(Protocol):
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
 
-        msg["inviteUrl"] = self.invite_url
+        msg['inviteUrl'] = self.invite_url
         return msg
 
     async def reuse_msg_packed(self, context):

@@ -4,7 +4,7 @@ const chai = require('chai')
 const expect = chai.expect
 chai.use(require('chai-as-promised'))
 // const Context = require('../src/utils/Context')
-const Relationship = require('../src/protocols/v1_0/Relationship')
+const OutOfBand = require('../src/protocols/v1_0/OutOfBand')
 
 const forRelationship = 'RxRJCMe5XNqc9e9J1YPwhL'
 const inviteUrl = 'http://inviteUrl'
