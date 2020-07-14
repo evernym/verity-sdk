@@ -2,8 +2,7 @@ import pytest
 
 from test.test_utils import get_test_config
 from verity_sdk.protocols.v1_0.OutOfBand import OutOfBand
-from verity_sdk.protocols.v1_0.Relationship import Relationship, GoalsList
-from verity_sdk.utils import EVERNYM_MSG_QUALIFIER, COMMUNITY_MSG_QUALIFIER
+from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
 

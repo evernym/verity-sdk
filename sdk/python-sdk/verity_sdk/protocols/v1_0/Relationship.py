@@ -10,10 +10,10 @@ class GoalsList(Enum):
             self.code = code
             self.name = name
 
-    ISSUE_VC = GoalCode("issue-vc", "To issue a credential")
-    REQUEST_PROOF = GoalCode("request-proof", "To request a proof")
-    CREATE_ACCOUNT = GoalCode("create-account", "To create an account with a service")
-    P2P_MESSAGING = GoalCode("p2p-messaging", "To establish a peer-to-peer messaging relationship")
+    ISSUE_VC = GoalCode('issue-vc', 'To issue a credential')
+    REQUEST_PROOF = GoalCode('request-proof', 'To request a proof')
+    CREATE_ACCOUNT = GoalCode('create-account', 'To create an account with a service')
+    P2P_MESSAGING = GoalCode('p2p-messaging', 'To establish a peer-to-peer messaging relationship')
 
 
 class Relationship(Protocol):

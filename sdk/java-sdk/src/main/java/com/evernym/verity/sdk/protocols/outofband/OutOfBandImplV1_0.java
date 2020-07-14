@@ -7,7 +7,6 @@ import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Base64;
 
 import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 

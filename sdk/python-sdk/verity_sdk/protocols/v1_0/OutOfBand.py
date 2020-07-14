@@ -1,5 +1,5 @@
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
 
 
 class OutOfBand(Protocol):
@@ -14,7 +14,7 @@ class OutOfBand(Protocol):
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
-            msg_qualifier=EVERNYM_MSG_QUALIFIER
+            msg_qualifier=COMMUNITY_MSG_QUALIFIER
         )
         self.for_relationship = for_relationship
         self.invite_url = invite_url

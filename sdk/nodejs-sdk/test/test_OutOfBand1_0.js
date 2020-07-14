@@ -28,7 +28,6 @@ describe('OutOfBand', () => {
     expect(msg['@type']).to.equal(
      `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.REUSE}`
     )
-    expect(msg['~thread'].thid).to.equal(threadId)
     expect(msg.inviteUrl).to.equal(inviteUrl)
   })
 })

@@ -2,7 +2,7 @@
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
 
-module.exports = class Relationship extends Protocol {
+module.exports = class OutOfBand extends Protocol {
   constructor (forRelationship = null, inviteUrl = null) {
     const msgFamily = 'out-of-band'
     const msgFamilyVersion = '1.0'
@@ -18,7 +18,7 @@ module.exports = class Relationship extends Protocol {
   async reuseMsg (context) {
     var msg = this._getBaseMessage(this.msgNames.COMMUNITY_MSG_QUALIFIER)
     msg['~for_relationship'] = this.forRelationship
-    msg['inviteUrl'] = this.inviteUrl
+    msg.inviteUrl = this.inviteUrl
     msg = this._addThread(msg)
     return msg
   }
