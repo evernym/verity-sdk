@@ -16,7 +16,7 @@ module.exports = class OutOfBand extends Protocol {
   }
 
   async reuseMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.COMMUNITY_MSG_QUALIFIER)
+    var msg = this._getBaseMessage(this.msgNames.REUSE)
     msg['~for_relationship'] = this.forRelationship
     msg.inviteUrl = this.inviteUrl
     msg = this._addThread(msg)

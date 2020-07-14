@@ -24,7 +24,7 @@ describe('OutOfBand', () => {
       forRelationship,
       inviteUrl
     )
-    const msg = await rel.createMsg(null)
+    const msg = await rel.reuseMsg(null)
     expect(msg['@type']).to.equal(
      `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.REUSE}`
     )
