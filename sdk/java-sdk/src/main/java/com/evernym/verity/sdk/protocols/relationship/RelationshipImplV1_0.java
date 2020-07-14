@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols.relationship;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.relationship.v1_0.GoalCode;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RequestAttach;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.utils.Context;
@@ -27,8 +28,7 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     String forRelationship;
     String label;
     URL logoUrl = null;
-    String goalCode;
-    String goal;
+    GoalCode goal;
     List<RequestAttach> requestAttach;
 
     // flag if this instance started the interaction
@@ -44,21 +44,17 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     }
 
     RelationshipImplV1_0(String label, URL logoUrl) {
-        if (!isNullOrWhiteSpace(label))
-            this.label = label;
-        else
-            this.label = "";
+        this.label = (!isNullOrWhiteSpace(label)) ? label : "";
         this.logoUrl = logoUrl;
 
         this.created = true;
     }
 
     RelationshipImplV1_0(String forRelationship, String threadId,
-                         String goalCode, String goal,
+                         GoalCode goal,
                          List<RequestAttach> request) {
         super(threadId);
-        this.goalCode = goalCode;
-        this.goal = goal;
+        this.goal = (goal == null) ? GoalCode.P2P_MESSAGING : goal;
         this.requestAttach = request;
         this.forRelationship = forRelationship;
     }
@@ -119,10 +115,10 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     @Override
     public JSONObject outOfBandInvitationMsg(Context context) {
         JSONObject rtn = new JSONObject()
-                .put("@type", getMessageType(OUT_OF_BAND_INVITATION))
+                .put("@type", messageType(OUT_OF_BAND_INVITATION))
                 .put("@id", getNewId())
-                .put("goal_code", goalCode)
-                .put("goal", goal);
+                .put("goalCode", goal.code())
+                .put("goal", goal.goalName());
         if (requestAttach != null)
             rtn.put("request~attach", requestAttach);
 
