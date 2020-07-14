@@ -3,7 +3,7 @@ const utils = require('../../utils')
 const Protocol = require('../Protocol')
 
 module.exports = class Relationship extends Protocol {
-  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null, goalCode = null, goal = null, request = null) {
+  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null) {
     const msgFamily = 'relationship'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
@@ -18,9 +18,8 @@ module.exports = class Relationship extends Protocol {
     this.forRelationship = forRelationship
     this.label = label
     this.logoUrl = logoUrl
-    this.goalCode = goalCode
-    this.goal = goal
-    this.request = request
+    this.goalCode = 'p2p-messaging'
+    this.goal = 'To establish a peer-to-peer messaging relationship'
   }
 
   async createMsg (context) {
@@ -60,9 +59,6 @@ module.exports = class Relationship extends Protocol {
     var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
     msg.goalCode = this.goalCode
     msg.goal = this.goal
-    if (this.request) {
-      msg['request~attach'] = this.request
-    }
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     return msg

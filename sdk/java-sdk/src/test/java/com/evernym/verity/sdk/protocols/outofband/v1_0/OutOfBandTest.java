@@ -18,11 +18,12 @@ public class OutOfBandTest {
 
     @Test
     public void testGetMessageType() {
-        OutOfBandV1_0 outofbandProvisioning = OutOfBand.v1_0("threadId", null);
+        OutOfBandV1_0 outofbandProvisioning =
+                OutOfBand.v1_0("testForRelationship", "testInviteUrl");
         String msgName = "msg name";
         assertEquals(
                 Util.getMessageType(
-                        Util.EVERNYM_MSG_QUALIFIER,
+                        Util.COMMUNITY_MSG_QUALIFIER,
                         "out-of-band",
                         "1.0",
                         msgName
@@ -33,14 +34,17 @@ public class OutOfBandTest {
 
     @Test
     public void testHandshakeReuseMsg() throws VerityException, IOException {
-        OutOfBandV1_0 outofband = OutOfBand.v1_0("threadId", null);
+        OutOfBandV1_0 outofband =
+                OutOfBand.v1_0("testForRelationship", "testInviteUrl");
         JSONObject msg = outofband.handshakeReuseMsg(TestHelpers.getContext());
         testHandshakeReuseMsg(msg);
     }
 
     private void testHandshakeReuseMsg(JSONObject msg) {
-        assertEquals("did:sov:123456789abcdefghi1234;spec/out-of-band/1.0/reuse", msg.getString("@type"));
+        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/out-of-band/1.0/reuse", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertNotNull(msg.getJSONObject("~thread"));
+        assertEquals("testForRelationship", msg.getString("~for_relationship"));
+        assertEquals("testInviteUrl", msg.getString("inviteUrl"));
     }
 }

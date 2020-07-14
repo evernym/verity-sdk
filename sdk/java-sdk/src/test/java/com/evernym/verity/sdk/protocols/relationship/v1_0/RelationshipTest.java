@@ -77,8 +77,7 @@ public class RelationshipTest {
 
     @Test
     public void testOutOfBandIInvitationMsg() throws VerityException, IOException {
-        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id",
-                null, null);
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
         JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext());
         testOutOfBandInvitationMsg(msg);
     }

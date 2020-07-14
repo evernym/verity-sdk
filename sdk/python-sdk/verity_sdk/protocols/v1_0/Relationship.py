@@ -1,5 +1,19 @@
+from enum import Enum
+
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
+
+
+class GoalsList(Enum):
+    class GoalCode:
+        def __init__(self, code, name) -> None:
+            self.code = code
+            self.name = name
+
+    ISSUE_VC = GoalCode("issue-vc", "To issue a credential")
+    REQUEST_PROOF = GoalCode("request-proof", "To request a proof")
+    CREATE_ACCOUNT = GoalCode("create-account", "To create an account with a service")
+    P2P_MESSAGING = GoalCode("p2p-messaging", "To establish a peer-to-peer messaging relationship")
 
 
 class Relationship(Protocol):
@@ -16,10 +30,7 @@ class Relationship(Protocol):
                  for_relationship: str = None,
                  thread_id: str = None,
                  label: str = None,
-                 logo_url: str = None,
-                 goal_code: str = None,
-                 goal: str = None,
-                 request=None):
+                 logo_url: str = None):
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
@@ -32,9 +43,7 @@ class Relationship(Protocol):
             self.label = label
         else:
             self.label = ''
-        self.goal_code = goal_code
-        self.goal = goal
-        self.request = request
+        self.goal = GoalsList.P2P_MESSAGING
         self.logo_url = logo_url
 
     def create_msg(self, _):
@@ -66,9 +75,8 @@ class Relationship(Protocol):
 
     def out_of_band_invitation_msg(self, _):
         msg = self._get_base_message(self.OUT_OF_BAND_INVITATION)
-        msg['goalCode'] = self.goal_code
-        msg['goal'] = self.goal
-        msg['request~attach'] = self.request
+        msg['goalCode'] = self.goal.code
+        msg['goal'] = self.goal.name
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         return msg

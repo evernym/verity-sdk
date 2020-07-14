@@ -3,14 +3,12 @@ package com.evernym.verity.sdk.protocols.relationship;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.GoalCode;
-import com.evernym.verity.sdk.protocols.relationship.v1_0.RequestAttach;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 
 import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 
@@ -28,8 +26,6 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     String forRelationship;
     String label;
     URL logoUrl = null;
-    GoalCode goal;
-    List<RequestAttach> requestAttach;
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -52,15 +48,6 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
         this.logoUrl = logoUrl;
 
         this.created = true;
-    }
-
-    RelationshipImplV1_0(String forRelationship, String threadId,
-                         GoalCode goal,
-                         List<RequestAttach> request) {
-        super(threadId);
-        this.goal = (goal == null) ? GoalCode.P2P_MESSAGING : goal;
-        this.requestAttach = request;
-        this.forRelationship = forRelationship;
     }
 
     RelationshipImplV1_0(String forRelationship, String threadId) {
@@ -118,14 +105,12 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
 
     @Override
     public JSONObject outOfBandInvitationMsg(Context context) {
-        GoalCode invitationGoal = (goal == null) ? GoalCode.P2P_MESSAGING : goal;
+        GoalCode invitationGoal = GoalCode.P2P_MESSAGING;
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(OUT_OF_BAND_INVITATION))
                 .put("@id", getNewId())
                 .put("goalCode", invitationGoal.code())
                 .put("goal", invitationGoal.goalName());
-        if (requestAttach != null)
-            rtn.put("request~attach", requestAttach);
 
         if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
         addThread(rtn);

@@ -72,16 +72,13 @@ describe('Relationship', () => {
   it('should build OutOfBand invitation msg correctly', async () => {
     const rel = new Relationship(
       'RxRJCMe5XNqc9e9J1YPwhL',
-      '7a80285e-896c-45f6-b386-39ed7c49230c',
-      null,
-      null,
-      'testGoalCode',
-      'testGoal',
-      'testRequestAttach'
+      '7a80285e-896c-45f6-b386-39ed7c49230c'
     )
     const msg = await rel.outOfBandInvitationMsg(null)
-    expect(msg.goalCode).to.equal('testGoalCode')
-    expect(msg.goal).to.equal('testGoal')
-    expect(msg['request~attach']).to.equal('testRequestAttach')
+    expect(msg['@type']).to.equal(
+     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
+    )
+    expect(msg.goalCode).to.equal('p2p-messaging')
+    expect(msg.goal).to.equal('To establish a peer-to-peer messaging relationship')
   })
 })

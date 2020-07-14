@@ -1,12 +1,8 @@
 package com.evernym.verity.sdk.protocols.relationship;
 
-import com.evernym.verity.sdk.protocols.relationship.v1_0.GoalCode;
-import com.evernym.verity.sdk.protocols.relationship.v1_0.RequestAttach;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import java.net.URL;
-
-import java.util.List;
 
 /**
  * Factory for the Relationship protocol objects
@@ -30,23 +26,6 @@ public class Relationship {
      */
     public static RelationshipV1_0 v1_0(String label) {
         return new RelationshipImplV1_0(label);
-    }
-
-    /**
-     * used by inviter/invitee to create relationship
-     * @param forRelationship relationship identifier
-     * @param threadId thread identifier
-     * @param goal [optional] a self-attested code the receiver may want to display
-     *                 to the user or use in automatically deciding what to do with the out-of-band message
-     *                 (issue-vc/request-proof/create-account/p2p-messaging)
-     * @param request [optional] an attachment decorator containing an array of request messages
-     *                in order of preference that the receiver can using in responding to the message.
-     * @return
-     */
-    public static RelationshipV1_0 v1_0(String forRelationship, String threadId,
-                                        GoalCode goal,
-                                        List<RequestAttach> request) {
-        return new RelationshipImplV1_0(forRelationship, threadId, goal, request);
     }
 
     /**

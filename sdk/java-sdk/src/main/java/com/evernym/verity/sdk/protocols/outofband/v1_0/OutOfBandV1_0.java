@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public interface OutOfBandV1_0 extends MessageFamily {
-    String QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    String QUALIFIER = Util.COMMUNITY_MSG_QUALIFIER;
     String FAMILY = "out-of-band";
     String VERSION = "1.0";
 

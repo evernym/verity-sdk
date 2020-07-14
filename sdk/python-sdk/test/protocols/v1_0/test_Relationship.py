@@ -1,7 +1,7 @@
 import pytest
 
 from test.test_utils import get_test_config
-from verity_sdk.protocols.v1_0.Relationship import Relationship
+from verity_sdk.protocols.v1_0.Relationship import Relationship, GoalsList
 from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
@@ -81,10 +81,7 @@ async def test_out_of_band_invitation():
     relationship = Relationship(
         for_relationship='RxRJCMe5XNqc9e9J1YPwhL',
         thread_id='7a80285e-896c-45f6-b386-39ed7c49230c',
-        label='test',
-        goal_code='test_goal_code',
-        goal='test_goal',
-        request='test_request'
+        label='test'
     )
 
     msg = relationship.out_of_band_invitation_msg(context)
@@ -99,6 +96,5 @@ async def test_out_of_band_invitation():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == 'RxRJCMe5XNqc9e9J1YPwhL'
-    assert msg['goalCode'] == 'test_goal_code'
-    assert msg['goal'] == 'test_goal'
-    assert msg['request~attach'] == 'test_request'
+    assert msg['goalCode'] == GoalsList.P2P_MESSAGING.code
+    assert msg['goal'] == GoalsList.P2P_MESSAGING.name

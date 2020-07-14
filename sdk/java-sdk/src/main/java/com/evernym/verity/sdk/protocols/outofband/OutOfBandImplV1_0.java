@@ -15,39 +15,32 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 class OutOfBandImplV1_0 extends Protocol implements OutOfBandV1_0 {
     final static String CONNECTION_INVITATION = "reuse";
 
-    private final String parentThreadId;
+    private final String inviteUrl;
+    private final String forRelationship;
 
-    OutOfBandImplV1_0(String threadId, String inviteUrl) {
-        super(threadId);
-
-        if(isNullOrWhiteSpace(inviteUrl)) {
-            parentThreadId = null;
-            return;
-        }
-        String[] encoded = inviteUrl.split("c_i=", 2);
-        byte[] decoded = Base64.getDecoder().decode(encoded[encoded.length - 1]);
-        JSONObject invite = new JSONObject(new String(decoded));
-
-        parentThreadId = invite.has("@id") ? invite.get("@id").toString() : null;
+    OutOfBandImplV1_0(String forRelationship, String inviteUrl) {
+        this.forRelationship = forRelationship;
+        this.inviteUrl = isNullOrWhiteSpace(inviteUrl) ? null : inviteUrl;
     }
 
     @Override
     public JSONObject handshakeReuseMsg(Context context) {
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(CONNECTION_INVITATION))
-                .put("@id", getNewId());
+                .put("@id", getNewId())
+                .put("inviteUrl", this.inviteUrl);
 
-        JSONObject threadBlock = new JSONObject();
-        threadBlock.put("thid", getThreadId());
-        threadBlock.put("pthid", parentThreadId);
-        rtn.put("~thread", threadBlock);
+        addThread(rtn);
+
+        if(!isNullOrWhiteSpace(this.forRelationship)) rtn.put("~for_relationship", this.forRelationship);
+
         return rtn;
     }
 
     @Override
     public void handshakeReuse(Context context) throws IOException, VerityException, UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");
-//        send(context, handshakeReuseMsg(context));
+//        throw new UnsupportedOperationException("Not supported yet.");
+        send(context, handshakeReuseMsg(context));
     }
 
     @Override
