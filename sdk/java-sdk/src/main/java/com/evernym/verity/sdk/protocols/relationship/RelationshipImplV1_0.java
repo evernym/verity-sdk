@@ -44,7 +44,11 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     }
 
     RelationshipImplV1_0(String label, URL logoUrl) {
-        this.label = (!isNullOrWhiteSpace(label)) ? label : "";
+        if (!isNullOrWhiteSpace(label)) {
+            this.label = label;
+        } else {
+            this.label = "";
+        }
         this.logoUrl = logoUrl;
 
         this.created = true;
@@ -122,6 +126,7 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
         if (requestAttach != null)
             rtn.put("request~attach", requestAttach);
 
+        if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
         addThread(rtn);
         return rtn;
     }
