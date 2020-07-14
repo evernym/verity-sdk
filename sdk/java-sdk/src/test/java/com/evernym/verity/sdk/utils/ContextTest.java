@@ -1,7 +1,6 @@
 package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.TestHelpers;
-import com.evernym.verity.sdk.TestWallet;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import org.hyperledger.indy.sdk.IndyException;
 import org.json.JSONObject;

@@ -10,11 +10,19 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of UpdateEndpointImplV0_6 but is not viable to user of Verity SDK. Created using the
+ * static UpdateEndpoint class
+ */
 class UpdateEndpointImplV0_6 extends Protocol implements UpdateEndpointV0_6 {
 
     UpdateEndpointImplV0_6() {
         super();
     }
+
+    final int COM_METHOD_TYPE = 2;
 
     @Override
     public void update(Context context) throws IOException, VerityException {
@@ -23,11 +31,9 @@ class UpdateEndpointImplV0_6 extends Protocol implements UpdateEndpointV0_6 {
 
     @Override
     public JSONObject updateMsg(Context context) throws UndefinedContextException {
-        int COM_METHOD_TYPE = 2;
-
         JSONObject message = new JSONObject();
 
-        message.put("@type", getMessageType(UPDATE_ENDPOINT));
+        message.put("@type", messageType(UPDATE_ENDPOINT));
         message.put("@id", getNewId());
         JSONObject comMethod = new JSONObject();
         comMethod.put("id", "webhook");

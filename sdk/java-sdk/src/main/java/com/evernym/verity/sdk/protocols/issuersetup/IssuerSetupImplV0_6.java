@@ -8,6 +8,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of IssuerSetupImplV0_6 but is not viable to user of Verity SDK. Created using the
+ * static IssuerSetup class
+ */
 class IssuerSetupImplV0_6 extends Protocol implements IssuerSetupV0_6 {
 
     IssuerSetupImplV0_6() {
@@ -21,7 +27,7 @@ class IssuerSetupImplV0_6 extends Protocol implements IssuerSetupV0_6 {
     @Override
     public JSONObject createMsg(Context context) {
         JSONObject message = new JSONObject();
-        message.put("@type", getMessageType(CREATE));
+        message.put("@type", messageType(CREATE));
         message.put("@id", getNewId());
         addThread(message);
         return message;
@@ -40,7 +46,7 @@ class IssuerSetupImplV0_6 extends Protocol implements IssuerSetupV0_6 {
     @Override
     public JSONObject currentPublicIdentifierMsg(Context context) {
         JSONObject message = new JSONObject();
-        message.put("@type", getMessageType(CURRENT_PUBLIC_IDENTIFIER));
+        message.put("@type", messageType(CURRENT_PUBLIC_IDENTIFIER));
         message.put("@id", getNewId());
         addThread(message);
         return message;

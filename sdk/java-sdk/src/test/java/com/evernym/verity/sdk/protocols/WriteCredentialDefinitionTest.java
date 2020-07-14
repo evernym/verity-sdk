@@ -11,6 +11,7 @@ import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.*;
 
 public class WriteCredentialDefinitionTest {
@@ -26,7 +27,7 @@ public class WriteCredentialDefinitionTest {
         String msgName = "msg name";
         assertEquals(
                 Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, writeCredDef.family(), writeCredDef.version(), msgName),
-                writeCredDef.getMessageType(msgName)
+                writeCredDef.messageType(msgName)
         );
     }
 
@@ -82,7 +83,7 @@ public class WriteCredentialDefinitionTest {
             context = TestHelpers.getContext();
             WriteCredentialDefinitionV0_6 testProtocol = WriteCredentialDefinition.v0_6(name, schemaId, tag, revocationDetails);
             byte[] message = testProtocol.writeMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals("did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/write", unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();

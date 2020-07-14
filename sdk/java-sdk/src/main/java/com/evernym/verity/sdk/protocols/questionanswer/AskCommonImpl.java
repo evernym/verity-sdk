@@ -9,10 +9,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-/**
- * Builds and sends a new encrypted agent message for the Question protocol.
+/*
+ * NON_VISIBLE
  */
-public abstract class AskCommonImpl extends Protocol implements MessageFamily {
+abstract class AskCommonImpl extends Protocol implements MessageFamily {
 
     final String forRelationship;
     String questionText;
@@ -64,7 +64,7 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
 
     public JSONObject askMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(ASK_QUESTION));
+        msg.put("@type", messageType(ASK_QUESTION));
         msg.put("@id", getNewId());
         addThread(msg);
         msg.put("~for_relationship", this.forRelationship);
@@ -86,7 +86,7 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
 
     public JSONObject answerMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(ANSWER_QUESTION));
+        msg.put("@type", messageType(ANSWER_QUESTION));
         msg.put("@id", getNewId());
         addThread(msg);
         msg.put("~for_relationship", this.forRelationship);
@@ -104,7 +104,7 @@ public abstract class AskCommonImpl extends Protocol implements MessageFamily {
 
     public JSONObject statusMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(GET_STATUS));
+        msg.put("@type", messageType(GET_STATUS));
         msg.put("@id", getNewId());
         addThread(msg);
         msg.put("~for_relationship", this.forRelationship);

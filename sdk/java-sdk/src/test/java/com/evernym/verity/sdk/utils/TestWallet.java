@@ -1,7 +1,6 @@
-package com.evernym.verity.sdk;
+package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.exceptions.WalletException;
-import com.evernym.verity.sdk.utils.Did;
 import com.evernym.verity.sdk.wallet.DefaultWalletConfig;
 import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.IndyException;

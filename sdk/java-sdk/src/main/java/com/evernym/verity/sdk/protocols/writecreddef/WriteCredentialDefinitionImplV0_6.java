@@ -9,7 +9,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of WriteCredentialDefinitionImplV0_6 but is not viable to user of Verity SDK. Created using the
+ * static WriteCredentialDefinition class
+ */
 class WriteCredentialDefinitionImplV0_6 extends Protocol implements WriteCredentialDefinitionV0_6 {
 
     final String name;
@@ -54,7 +59,7 @@ class WriteCredentialDefinitionImplV0_6 extends Protocol implements WriteCredent
     @Override
     public JSONObject writeMsg(Context context) {
         JSONObject message = new JSONObject();
-        message.put("@type", getMessageType(WRITE_CRED_DEF));
+        message.put("@type", messageType(WRITE_CRED_DEF));
         message.put("@id", WriteCredentialDefinitionImplV0_6.getNewId());
         message.put("name", this.name);
         message.put("schemaId", this.schemaId);

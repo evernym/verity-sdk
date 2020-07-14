@@ -8,12 +8,19 @@ import org.json.JSONObject;
 public class DefaultMessageHandler {
     private final Handler messageHandler;
 
+    /**
+     * A simple default handler interface for JSON object messages
+     */
     public interface Handler {
+        /**
+         * Handles the given JSON object message
+         * @param message the message to be handled
+         */
         void handle(JSONObject message);
     }
 
     /**
-     * Associate a handler for the default handler
+     * Associates a handler callback function with the default handler action
      * @param messageHandler the handler function itself
      */
     DefaultMessageHandler(Handler messageHandler) {
@@ -21,7 +28,7 @@ public class DefaultMessageHandler {
     }
 
     /**
-     * Calls the handler function on the agent message
+     * Calls the handler callback function for the given message
      * @param message the JSON structure of the agent message
      */
     public void handle(JSONObject message) {

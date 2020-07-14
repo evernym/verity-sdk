@@ -2,10 +2,10 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
-import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.assertEquals;
 
 class SomeProtocol extends Protocol {
@@ -24,7 +24,7 @@ public class ProtocolTest {
     JSONObject message = new JSONObject("{\"hello\": \"world\"}");
     Context context = TestHelpers.getContext();
     byte[] packedMessage = Protocol.packMsg(context, message);
-    JSONObject unpackedMessage = Util.unpackForwardMessage(context, packedMessage);
+    JSONObject unpackedMessage = unpackForwardMessage(context, packedMessage);
     assertEquals(unpackedMessage.getString("hello"), "world");
 
     TestHelpers.cleanup(context);

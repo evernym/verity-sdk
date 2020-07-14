@@ -1,0 +1,27 @@
+Welcome to the Verity Sdk's documentation!
+==========================================
+
+An SDK to access and use Evernym's Verity Application
+
+Protocol Base Class:
+
+.. autoclass:: verity_sdk.protocols.Protocol.Protocol
+    :members:
+
+0.7 Protocols:
+
+.. autoclass:: verity_sdk.protocols.v0_7.Provision.Provision
+    :members:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

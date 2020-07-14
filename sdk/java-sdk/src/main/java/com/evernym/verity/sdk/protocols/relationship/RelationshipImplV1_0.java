@@ -11,6 +11,12 @@ import java.net.URL;
 
 import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of RelationshipImplV1_0 but is not viable to user of Verity SDK. Created using the
+ * static Relationship class
+ */
 class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     final static String CREATE = "create";
     final static String CONNECTION_INVITATION = "connection-invitation";
@@ -53,7 +59,7 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
         }
 
         JSONObject rtn = new JSONObject()
-                .put("@type", getMessageType(CREATE))
+                .put("@type", messageType(CREATE))
                 .put("@id", getNewId())
                 .put("label", label);
         if (logoUrl != null)
@@ -75,7 +81,7 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     @Override
     public JSONObject connectionInvitationMsg(Context context) {
         JSONObject rtn = new JSONObject()
-                .put("@type", getMessageType(CONNECTION_INVITATION))
+                .put("@type", messageType(CONNECTION_INVITATION))
                 .put("@id", getNewId());
 
         if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);

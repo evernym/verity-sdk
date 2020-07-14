@@ -11,6 +11,8 @@ setuptools.setup(
     author="Evernym, Inc.",
     author_email="dev@evernym.com",
     description='The official Python SDK for Evernym\'s Verity',
+    license="Apache-2.0",
+    url="https://github.com/evernym/verity-sdk",
     install_requires=[
         'python3-indy~=1.15.0',
         'requests~=2.22',

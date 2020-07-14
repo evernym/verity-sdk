@@ -35,7 +35,7 @@ public class Handlers {
 
     /**
      * Calls all of the handlers that support handling of this particular message type and message status
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @param context an instance of the Context object initialized to a verity-application agent
      * @param rawMessage the raw bytes received from Verity
      * @throws WalletException when there are issues with encryption and decryption
      */

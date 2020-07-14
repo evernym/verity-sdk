@@ -126,7 +126,7 @@ public class App extends Helper {
         println("Using Webhook: " + ANSII_GREEN + webhook + ANSII_RESET);
         context = context.toContextBuilder().endpointUrl(webhook).build();
 
-        // request that verity application use specified webhook endpoint
+        // request that verity-application use specified webhook endpoint
         UpdateEndpoint.v0_6().update(context);
     }
 
@@ -229,7 +229,7 @@ public class App extends Helper {
         // query the current identifier
         issuerSetup.currentPublicIdentifier(context);
 
-        // wait for response from verity application
+        // wait for response from verity-application
         waitFor(issuerComplete, "Waiting for current issuer DID");
     }
 

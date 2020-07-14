@@ -19,6 +19,11 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
  * The base class for all protocols
  */
 public abstract class Protocol {
+    /**
+     * Constructs a Protocol with a given threadId. A threadId is NOT generated with this constructor.
+     *
+     * @param threadId given ID used for the thread. MUST not be null.
+     */
     public Protocol(String threadId) {
         if (!isNullOrWhiteSpace(threadId)) {
             DbcUtil.requireNotNull(threadId);
@@ -30,16 +35,28 @@ public abstract class Protocol {
         }
     }
 
+    /**
+     * Constructs a Protocol. The threadId is generated (randomly).
+     */
     public Protocol() {
         this(UUID.randomUUID().toString());
     }
 
+    /**
+     * The thread identifier
+     * @return the final threadId
+     */
     public String getThreadId() {
         return threadId;
     }
 
     private final String threadId;
 
+    /**
+     * Attaches the thread block (including the thid) for a protocol to the given message object (JSON)
+     *
+     * @param msg with the thread block attached
+     */
     protected void addThread(JSONObject msg) {
         JSONObject threadBlock = new JSONObject();
         threadBlock.put("thid", threadId);
@@ -48,13 +65,17 @@ public abstract class Protocol {
 
     /**
      * Encrypts and sends a specified message to Verity
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @param context an instance of the Context object initialized to a verity-application agent
      * @param message the message to send to Verity
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws WalletException when there are issues with encryption and decryption
      * @throws UndefinedContextException when the context don't have enough information for this operation
      */
     protected void send(Context context, JSONObject message) throws IOException, VerityException {
+        if(context == null) {
+            throw new UndefinedContextException("Context cannot be NULL");
+        }
+
         byte[] messageToSend = packMsg(context, message);
         Transport transport = new HTTPTransport();
         transport.sendMessage(context.verityUrl(), messageToSend);
@@ -71,12 +92,11 @@ public abstract class Protocol {
         return Util.packMessageForVerity(context, message);
     }
 
+    /**
+     * Generates a new and unique id for a message.
+     * @return new message id
+     */
     public static String getNewId() {
         return UUID.randomUUID().toString();
-    }
-
-    public void sendMessage(Context context, JSONObject message) throws IOException, UndefinedContextException, WalletException {
-        Transport transport = new HTTPTransport();
-        transport.sendMessage(context.verityUrl(), Util.packMessageForVerity(context, message));
     }
 }

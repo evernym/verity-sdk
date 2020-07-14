@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.*;
 
 public class UpdateEndpointTest {
@@ -20,7 +21,7 @@ public class UpdateEndpointTest {
         String msgName = "msg name";
         assertEquals(
                 Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
-                testProtocol.getMessageType(msgName)
+                testProtocol.messageType(msgName)
         );
     }
 
@@ -68,7 +69,7 @@ public class UpdateEndpointTest {
             context = TestHelpers.getContext();
             UpdateEndpointV0_6 testProtocol = UpdateEndpoint.v0_6();
             byte [] message = testProtocol.updateMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
                     "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD",
                     unpackedMessage.getString("@type")
