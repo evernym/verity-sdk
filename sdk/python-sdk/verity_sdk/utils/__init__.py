@@ -1,8 +1,9 @@
 import json
+
 from typing import Dict
 from uuid import uuid4
-from indy import crypto
 
+from indy import crypto
 from verity_sdk.utils import Context
 
 EVERNYM_MSG_QUALIFIER = 'did:sov:123456789abcdefghi1234'
@@ -17,7 +18,7 @@ def prepare_forward_message(did: str, message: bytes) -> str:
     })
 
 
-async def pack_message_for_verity(context: Context, message: dict) -> bytes:
+async def pack_message_for_verity(context, message) -> bytes:
     return await pack_message_for_verity_direct(
         wallet_handle=context.wallet_handle,
         message=message,
@@ -52,7 +53,7 @@ async def pack_message_for_verity_direct(wallet_handle: int,
     )
 
 
-async def unpack_forward_message(context: Context, message: bytes) -> Dict:
+async def unpack_forward_message(context, message) -> Dict:
     unpacked_once_message = await unpack_message(context, message)
     return await unpack_message(
         context,

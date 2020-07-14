@@ -1,9 +1,11 @@
-from verity_sdk.utils import pack_message_for_verity, uuid
 from verity_sdk.transports import send_packed_message
+from verity_sdk.utils import pack_message_for_verity, uuid
 from verity_sdk.utils.MessageFamily import MessageFamily
 
 
 class Protocol(MessageFamily):
+    """Protocol base class"""
+
     # Messages
     STATUS = 'status-report'
     PROBLEM_REPORT = 'problem-report'

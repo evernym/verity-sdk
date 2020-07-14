@@ -3,12 +3,14 @@ package com.evernym.verity.sdk;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
+import com.evernym.verity.sdk.utils.TestWallet;
 import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
 
 import java.util.UUID;
 
+import static com.evernym.verity.sdk.utils.Util.unpackMessage;
 import static org.junit.Assert.assertEquals;
 
 public class TestHelpers {
@@ -56,5 +58,12 @@ public class TestHelpers {
         expected.toMap().forEach((s, o) ->
                 assertEquals(actual.get(s), o)
         );
+    }
+
+
+    public static JSONObject unpackForwardMessage(Context context, byte[] message) throws WalletException {
+        JSONObject unpackedOnceMessage = unpackMessage(context, message);
+        byte[] unpackedOnceMessageMessage = unpackedOnceMessage.getJSONObject("@msg").toString().getBytes();
+        return unpackMessage(context, unpackedOnceMessageMessage);
     }
 }

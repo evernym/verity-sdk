@@ -1,8 +1,7 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
-import com.evernym.verity.sdk.exceptions.UndefinedContextException;
-import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
 import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
@@ -10,6 +9,7 @@ import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.*;
 
 public class WriteSchemaTest {
@@ -25,11 +25,11 @@ public class WriteSchemaTest {
         String msgName = "msg name";
         assertEquals(
                 Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
-                testProtocol.getMessageType(msgName));
+                testProtocol.messageType(msgName));
     }
 
     @Test
-    public void testConstructor() throws WalletException, UndefinedContextException {
+    public void testConstructor() throws VerityException {
         Context context = TestHelpers.getContext();
         WriteSchemaV0_6 writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
         JSONObject msg = writeSchema.writeMsg(context);
@@ -57,7 +57,7 @@ public class WriteSchemaTest {
             context = TestHelpers.getContext();
             WriteSchemaV0_6 testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
             byte[] message = testProtocol.writeMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
                     "did:sov:123456789abcdefghi1234;spec/write-schema/0.6/write",
                     unpackedMessage.getString("@type")

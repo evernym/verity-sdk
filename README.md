@@ -70,10 +70,15 @@ Using the Verity SDK requires the following rules in your firewall:
 ---
 
 ### Next Step
+Getting Started Guide (Guided example application walkthrough)
+* [Guide](/docs/getting-started/getting-started.md)
 
 Install the language-specific elements of the SDK:
-* [Java](/docs/Getting-Started/java/README.md)
-* [NodeJs](/docs/Getting-Started/nodejs/README.md)
-* [Python](/docs/Getting-Started/python/README.md)
+* [Java](/sdk/java-sdk/README.md)
+* [NodeJs](/sdk/nodejs-sdk/README.md)
+* [Python](/sdk/python-sdk/README.md)
+
+
+For more information about Evernym products, visit https://www.evernym.com/products/.
 
 © 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.

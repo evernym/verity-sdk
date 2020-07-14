@@ -9,6 +9,7 @@ import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.*;
 
 public class CommittedAnswerTest {
@@ -34,7 +35,7 @@ public class CommittedAnswerTest {
                 testProtocol.family(),
                 testProtocol.version(),
                 msgName);
-        assertEquals(msgType, testProtocol.getMessageType(msgName));
+        assertEquals(msgType, testProtocol.messageType(msgName));
     }
 
     @Test
@@ -75,7 +76,7 @@ public class CommittedAnswerTest {
                     requireSignature);
 
             byte[] message = testProtocol.askMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
                     "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/ask-question",
                     unpackedMessage.getString("@type")

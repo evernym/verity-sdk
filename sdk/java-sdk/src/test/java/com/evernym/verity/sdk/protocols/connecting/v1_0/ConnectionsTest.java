@@ -6,6 +6,7 @@ import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -25,7 +26,7 @@ public class ConnectionsTest extends TestBase {
                     "1.0",
                     msgName
             ),
-            Util.getMessageType(connecting, msgName)
+            connecting.messageType(msgName)
         );
     }
 
@@ -34,7 +35,7 @@ public class ConnectionsTest extends TestBase {
         withContext ( context -> {
             ConnectionsV1_0 testProtocol = Connecting.v1_0(label, base64Url);
             byte [] msg = testProtocol.acceptMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, msg);
+            JSONObject unpackedMessage = unpackForwardMessage(context, msg);
             testAcceptInviteMessage(unpackedMessage);
         });
     }
@@ -44,7 +45,7 @@ public class ConnectionsTest extends TestBase {
         withContext ( context -> {
             ConnectionsV1_0 testProtocol = Connecting.v1_0(label, base64Url);
             byte [] msg = testProtocol.statusMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, msg);
+            JSONObject unpackedMessage = unpackForwardMessage(context, msg);
             testStatusInviteMessage(unpackedMessage);
         });
     }

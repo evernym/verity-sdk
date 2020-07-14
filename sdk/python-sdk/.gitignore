@@ -5,3 +5,5 @@ inviteDetails.json
 verityConfig.json
 qrcode.png
 verity-context.json
+/doc/_build/
+/doc/_source/

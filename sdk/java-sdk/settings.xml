@@ -6,7 +6,7 @@
       <!-- Email Address of the Repository User (Account Owner Credentials WILL NOT WORK). -->
       <username>dev-services+verity-java-sdk@evernym.com</username>
       <!-- Password of the Repository User. -->
-      <password>repository-user-password</password>
+      <password>${env.IO_CLOUDREPO_ACCOUNT_PASSWORD}</password>
     </server>
   </servers>
 </settings>

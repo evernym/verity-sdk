@@ -1,7 +1,6 @@
 package com.evernym.verity.sdk.protocols.provision.v0_7;
 
-import com.evernym.verity.sdk.exceptions.UndefinedContextException;
-import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
@@ -9,25 +8,68 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/**
+ * An interface for controlling a 0.7 Provision protocol.
+ */
 public interface ProvisionV0_7 extends MessageFamily {
-    default String qualifier() {return Util.EVERNYM_MSG_QUALIFIER;}
-    default String family() {return "agent-provisioning";}
-    default String version() {return "0.7";}
-
-    // Messages
-    String CREATE_EDGE_AGENT = "create-edge-agent";
-
+    /**
+     * The qualifier for the message family. Uses Evernym's qualifier.
+     */
+    String QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
+    /**
+     * The name for the message family.
+     */
+    String FAMILY = "agent-provisioning";
+    /**
+     * The version for the message family.
+     */
+    String VERSION = "0.7";
 
 
     /**
+     * @see MessageFamily#qualifier()
+     */
+    default String qualifier() {return QUALIFIER;}
+    /**
+     * @see MessageFamily#family()
+     */
+    default String family() { return FAMILY;}
+    /**
+     * @see MessageFamily#version()
+     */
+    default String version() {return VERSION;}
+
+    /**
+     Name for 'create-edge-agent' control message
+     */
+    String CREATE_EDGE_AGENT = "create-edge-agent";
+
+    /**
      * Sends the connection create message to Verity
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
+     * @param context an instance of the Context object initialized to a verity-application agent
      * @throws IOException when the HTTP library fails to post to the agency endpoint
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
+     * @throws VerityException when wallet operations fails or given invalid context
      * @return new Context with provisioned details
      */
-    Context provision(Context context) throws IOException, UndefinedContextException, WalletException;
-    JSONObject provisionMsg(Context context) throws UndefinedContextException;
-    byte[] provisionMsgPacked(Context context) throws UndefinedContextException, WalletException;
+    Context provision(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #provision
+     */
+    JSONObject provisionMsg(Context context) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #provision
+     */
+    byte[] provisionMsgPacked(Context context) throws VerityException;
 }

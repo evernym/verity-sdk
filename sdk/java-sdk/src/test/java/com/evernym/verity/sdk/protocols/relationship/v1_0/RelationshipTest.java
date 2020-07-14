@@ -36,7 +36,7 @@ public class RelationshipTest {
                     "1.0",
                     msgName
             ),
-            Util.getMessageType(relationshipProvisioning, msgName)
+            relationshipProvisioning.messageType(msgName)
         );
     }
 

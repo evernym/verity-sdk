@@ -9,11 +9,17 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 @SuppressWarnings("CPD-START")
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of ConnectionsV1_0 but is not viable to user of Verity SDK. Created using the
+ * static Connecting class
+ */
 class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
 
-    String forRelationship;
-    String label;
-    String base64InviteURL;
+    final String forRelationship;
+    final String label;
+    final String base64InviteURL;
 
     final String ACCEPT_INVITE = "accept";
     final String STATUS = "status";
@@ -21,6 +27,8 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     ConnectionsImplV1_0(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
+        this.label = null;
+        this.base64InviteURL = null;
     }
 
     ConnectionsImplV1_0(String forRelationship, String label, String base64InviteURL) {
@@ -37,7 +45,7 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     @Override
     public JSONObject statusMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(STATUS));
+        msg.put("@type", messageType(STATUS));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);
@@ -53,7 +61,7 @@ class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
     @Override
     public JSONObject acceptMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(ACCEPT_INVITE));
+        msg.put("@type", messageType(ACCEPT_INVITE));
         msg.put("@id", getNewId());
         msg.put("~for_relationship", forRelationship);
         addThread(msg);

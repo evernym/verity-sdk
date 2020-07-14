@@ -1,5 +1,6 @@
 package com.evernym.verity.sdk.protocols.provision;
 
+import com.evernym.verity.sdk.exceptions.ProvisionTokenException;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
@@ -16,6 +17,12 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.concurrent.ExecutionException;
 
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of ProvisionImplV0_7 but is not viable to user of Verity SDK. Created using the
+ * static Provision class
+ */
 class ProvisionImplV0_7 extends Protocol implements ProvisionV0_7 {
 
     private String token;
@@ -45,12 +52,12 @@ class ProvisionImplV0_7 extends Protocol implements ProvisionV0_7 {
             
             //noinspection PointlessBooleanExpression
             if (valid == false) {
-                throw new VerityException("Invalid provision token -- signature does not validate");
+                throw new ProvisionTokenException("Invalid provision token -- signature does not validate");
             }
         } catch (IndyException e) {
-            throw new VerityException("Invalid provision token -- signature does not validate", e);
+            throw new ProvisionTokenException("Invalid provision token -- signature does not validate", e);
         } catch (InterruptedException | ExecutionException e) {
-            throw new VerityException("Unable to validate signature -- signature does not validate", e);
+            throw new ProvisionTokenException("Unable to validate signature -- signature does not validate", e);
         }
     }
 
@@ -62,6 +69,10 @@ class ProvisionImplV0_7 extends Protocol implements ProvisionV0_7 {
     }
 
     public Context provision(Context context) throws IOException, UndefinedContextException, WalletException {
+        if(context == null) {
+            throw new UndefinedContextException("Context cannot be NULL");
+        }
+
         JSONObject resp = sendToVerity(context, provisionMsgPacked(context));
 
         String domainDID = resp.getString("selfDID");
@@ -75,9 +86,13 @@ class ProvisionImplV0_7 extends Protocol implements ProvisionV0_7 {
 
     @Override
     public JSONObject provisionMsg(Context context) throws UndefinedContextException {
+        if(context == null) {
+            throw new UndefinedContextException("Context cannot be NULL");
+        }
+
         JSONObject rtn = new JSONObject()
                 .put("@id", Protocol.getNewId())
-                .put("@type", getMessageType(CREATE_EDGE_AGENT))
+                .put("@type", messageType(CREATE_EDGE_AGENT))
                 .put("requesterVk", context.sdkVerKey());
         
         if (token != null) {
@@ -90,6 +105,10 @@ class ProvisionImplV0_7 extends Protocol implements ProvisionV0_7 {
 
     @Override
     public byte[] provisionMsgPacked(Context context) throws UndefinedContextException, WalletException {
+        if(context == null) {
+            throw new UndefinedContextException("Context cannot be NULL");
+        }
+
         return Util.packMessageForVerity(
             context.walletHandle(),
             provisionMsg(context),

@@ -1,6 +1,5 @@
 package com.evernym.verity.sdk.utils;
 
-import com.evernym.verity.sdk.TestWallet;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import org.junit.Test;

@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.*;
 
 public class UpdateConfigsTest {
@@ -29,7 +30,7 @@ public class UpdateConfigsTest {
                 testProtocol.family(),
                 testProtocol.version(),
                 msgName
-        ), testProtocol.getMessageType(msgName));
+        ), testProtocol.messageType(msgName));
     }
 
     @Test
@@ -83,7 +84,7 @@ public class UpdateConfigsTest {
             context = TestHelpers.getContext();
             UpdateConfigsV0_6 testProtocol = UpdateConfigs.v0_6(name, logoUrl);
             byte [] message = testProtocol.updateMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testUpdateMsgMessages(unpackedMessage);
         } catch(Exception e) {
             e.printStackTrace();
@@ -100,7 +101,7 @@ public class UpdateConfigsTest {
             context = TestHelpers.getContext();
             UpdateConfigsV0_6 testProtocol = UpdateConfigs.v0_6();
             byte [] message = testProtocol.statusMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testStatusMsg(unpackedMessage);
         } catch(Exception e) {
             e.printStackTrace();

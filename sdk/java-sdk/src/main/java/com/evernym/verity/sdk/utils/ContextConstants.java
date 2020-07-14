@@ -1,6 +1,6 @@
 package com.evernym.verity.sdk.utils;
 
-public final class ContextConstants {
+ final class ContextConstants {
 
     private ContextConstants() {
         // restrict instantiation

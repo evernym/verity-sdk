@@ -13,8 +13,11 @@ import java.io.IOException;
 import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
 import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 
-/**
- * Builds and sends a message to Verity asking it to send a Proof Request to a connection
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of PresentProofImplV1_0 but is not viable to user of Verity SDK. Created using the
+ * static PresentProof class
  */
 @SuppressWarnings("CPD-START")
 class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
@@ -46,13 +49,7 @@ class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
         this(forRelationship, name, null, proofPredicates);
     }
 
-    /**
-     * Initializes the proof request object
-     * @param forRelationship DID of relationship where proof request will be sent to
-     * @param name The name of the proof request
-     * @param proofAttrs The requested attributes of the proof request
-     * @param proofPredicates The requested predicates of the proof request
-     */
+
     PresentProofImplV1_0(String forRelationship, String name, Attribute[] proofAttrs, Predicate[] proofPredicates) {
         super();
         this.forRelationship = forRelationship;
@@ -73,7 +70,7 @@ class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
         }
 
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(PROOF_REQUEST));
+        msg.put("@type", messageType(PROOF_REQUEST));
         msg.put("@id", getNewId());
         addThread(msg);
         msg.put("~for_relationship", this.forRelationship);
@@ -112,7 +109,7 @@ class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
     @Override
     public JSONObject rejectMsg(Context context, String reason) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(REJECT));
+        msg.put("@type", messageType(REJECT));
         msg.put("@id", getNewId());
         addThread(msg);
         msg.put("~for_relationship", this.forRelationship);
@@ -133,7 +130,7 @@ class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
     @Override
     public JSONObject statusMsg(Context context) {
         JSONObject msg = new JSONObject();
-        msg.put("@type", getMessageType(STATUS));
+        msg.put("@type", messageType(STATUS));
         msg.put("@id", getNewId());
         addThread(msg);
         msg.put("~for_relationship", this.forRelationship);

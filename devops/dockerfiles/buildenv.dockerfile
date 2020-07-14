@@ -1,5 +1,7 @@
 FROM ubuntu:18.04
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     apt-utils \
@@ -9,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     tar \
     curl \
     python-dev \
+    python3-sphinx \
     maven \
     openssh-client \
     git \
