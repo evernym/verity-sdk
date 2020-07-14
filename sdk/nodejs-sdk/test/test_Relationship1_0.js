@@ -74,6 +74,7 @@ describe('Relationship', () => {
       'RxRJCMe5XNqc9e9J1YPwhL',
       '7a80285e-896c-45f6-b386-39ed7c49230c',
       null,
+      null,
       'testGoalCode',
       'testGoal',
       'testRequestAttach'

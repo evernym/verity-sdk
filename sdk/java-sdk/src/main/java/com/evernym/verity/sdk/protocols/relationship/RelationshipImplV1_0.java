@@ -118,11 +118,12 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
 
     @Override
     public JSONObject outOfBandInvitationMsg(Context context) {
+        GoalCode invitationGoal = (goal == null) ? GoalCode.P2P_MESSAGING : goal;
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(OUT_OF_BAND_INVITATION))
                 .put("@id", getNewId())
-                .put("goalCode", goal.code())
-                .put("goal", goal.goalName());
+                .put("goalCode", invitationGoal.code())
+                .put("goal", invitationGoal.goalName());
         if (requestAttach != null)
             rtn.put("request~attach", requestAttach);
 

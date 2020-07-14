@@ -1,9 +1,6 @@
 package com.evernym.verity.sdk.protocols.outofband;
 
 import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
-import com.evernym.verity.sdk.protocols.relationship.v1_0.RequestAttach;
-
-import java.util.List;
 
 /**
  * Builds and sends a new encrypted agent message for the Connections protocol.

@@ -3,13 +3,11 @@ package com.evernym.verity.sdk.protocols.outofband;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
-import com.evernym.verity.sdk.protocols.relationship.v1_0.RequestAttach;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Base64;
-import java.util.List;
 
 import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 

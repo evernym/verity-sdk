@@ -1,8 +1,6 @@
 package com.evernym.verity.sdk.protocols.outofband.v1_0;
 
-import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
