@@ -15,8 +15,36 @@ import java.io.IOException;
 public class HTTPTransport extends Transport {
     private final CloseableHttpClient httpClient;
 
+    /**
+     * Constructs the HTTPTransport object by using the apache http client
+     */
     public HTTPTransport() {
         this.httpClient = HttpClientBuilder.create().build();
+    }
+
+    /**
+     * Send an encrypted agent message to a specified endpoint
+     * @param verityUrl the url where the message will be POSTed to
+     * @param message the encrypted agent message
+     * @throws IOException when the HTTP library fails to post to the url
+     */
+    public void sendMessage(String verityUrl, byte[] message) throws IOException {
+        HttpPost request = buildRequest(msgEndpointUrl(verityUrl), message);
+
+        transportMessage(request);
+    }
+    /**
+     * Send an encrypted agent message to a specified endpoint
+     * @param verityUrl the url where the message will be POSTed to
+     * @param message the encrypted agent message
+     * @throws IOException when the HTTP library fails to post to the url
+     */
+    public byte[] sendSyncMessage(String verityUrl, byte[] message) throws IOException {
+        HttpPost request = buildRequest(msgEndpointUrl(verityUrl), message);
+
+        HttpResponse resp = transportMessage(request);
+
+        return EntityUtils.toByteArray(resp.getEntity());
     }
 
     private CloseableHttpClient client() {
@@ -43,30 +71,5 @@ public class HTTPTransport extends Transport {
 
     private String msgEndpointUrl(String verityUrl) {
         return String.format("%s/agency/msg", verityUrl);
-    }
-
-    /**
-     * Send an encrypted agent message to a specified endpoint
-     * @param verityUrl the url where the message will be POSTed to
-     * @param message the encrypted agent message
-     * @throws IOException when the HTTP library fails to post to the url
-     */
-    public void sendMessage(String verityUrl, byte[] message) throws IOException {
-        HttpPost request = buildRequest(msgEndpointUrl(verityUrl), message);
-
-        transportMessage(request);
-    }
-    /**
-     * Send an encrypted agent message to a specified endpoint
-     * @param verityUrl the url where the message will be POSTed to
-     * @param message the encrypted agent message
-     * @throws IOException when the HTTP library fails to post to the url
-     */
-    public byte[] sendSyncMessage(String verityUrl, byte[] message) throws IOException {
-        HttpPost request = buildRequest(msgEndpointUrl(verityUrl), message);
-
-        HttpResponse resp = transportMessage(request);
-
-        return EntityUtils.toByteArray(resp.getEntity());
     }
 }

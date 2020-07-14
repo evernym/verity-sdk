@@ -16,6 +16,7 @@ class Relationship(Protocol):
                  for_relationship: str = None,
                  thread_id: str = None,
                  label: str = None,
+                 logo_url: str = None,
                  goal_code: str = None,
                  goal: str = None,
                  request=None):
@@ -34,11 +35,14 @@ class Relationship(Protocol):
         self.goal_code = goal_code
         self.goal = goal
         self.request = request
+        self.logo_url = logo_url
 
     def create_msg(self, _):
         msg = self._get_base_message(self.CREATE)
         self._add_thread(msg)
         msg['label'] = self.label
+        if self.logo_url:
+            msg['logoUrl'] = self.logo_url
 
         return msg
 

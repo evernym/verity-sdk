@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.util.UUID;
 
+import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.*;
 
 public class PresentProofTest {
@@ -37,7 +38,7 @@ public class PresentProofTest {
                 testProtocol.family(),
                 testProtocol.version(),
                 msgName
-        ), testProtocol.getMessageType(msgName));
+        ), testProtocol.messageType(msgName));
     }
 
     @Test
@@ -85,7 +86,7 @@ public class PresentProofTest {
             context = TestHelpers.getContext();
             PresentProofV1_0 presentProof = PresentProof.v1_0(forRelationship, proofRequestName, attr1);
             byte [] message = presentProof.requestMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
                     "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request",
                     unpackedMessage.getString("@type")
@@ -105,7 +106,7 @@ public class PresentProofTest {
             context = TestHelpers.getContext();
             PresentProofV1_0 testProtocol = PresentProof.v1_0(forRelationship, UUID.randomUUID().toString());
             byte [] message = testProtocol.statusMsgPacked(context);
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
                     "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/status",
                     unpackedMessage.getString("@type")
@@ -125,7 +126,7 @@ public class PresentProofTest {
             context = TestHelpers.getContext();
             PresentProofV1_0 testProtocol = PresentProof.v1_0(forRelationship, UUID.randomUUID().toString());
             byte [] message = testProtocol.rejectMsgPacked(context, "because");
-            JSONObject unpackedMessage = Util.unpackForwardMessage(context, message);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
                     "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/reject",
                     unpackedMessage.getString("@type")

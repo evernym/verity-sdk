@@ -9,11 +9,21 @@
   <version>0.1.14-SNAPSHOT</version>
 
   <name>Verity SDK</name>
+  <description>The official Java SDK for Evernym's Verity</description>
+  <url>https://github.com/evernym/verity-sdk</url>
 
   <organization>
     <name>Evernym, Inc.</name>
     <url>https://www.evernym.com/products/</url>
   </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,8 +79,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0</version>
         <configuration>
+          <!-- different goals use these configuration different, we need both -->
+          <destDir>${project.basedir}/doc/_build</destDir>
+          <reportOutputDirectory>${project.basedir}/doc/_build</reportOutputDirectory>
         </configuration>
       </plugin>
       <plugin>
@@ -168,7 +181,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -177,6 +190,10 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <destDir>${project.basedir}/doc/_build</destDir>
+          <reportOutputDirectory>${project.basedir}/doc/_build</reportOutputDirectory>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -1,31 +1,37 @@
 {
   "name": "verity-sdk",
+  "author": "Evernym <dev@evernym.com>",
   "version": "0.1.16",
   "description": "The official Node.js SDK for Evernym's Verity",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:evernym/verity-sdk.git"
+  },
+  "license" : "Apache-2.0",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha",
     "lint": "standard",
     "lint-fix": "standard --fix",
     "package": "version=\"$(cat package.json | jq -r .version)\"; npm pack && mv verity-sdk-$version.tgz verity-sdk_$version.tgz",
-    "deploy": "version=\"$(cat package.json | jq -r .version)\"; curl -u \"${KRK_USERNAME}:${KRK_PASSWORD}\" -X POST -F \"file=@verity-sdk_$version.tgz\" https://kraken.corp.evernym.com/repo/npm/upload"
+    "deploy": "version=\"$(cat package.json | jq -r .version)\"; curl -u \"${KRK_USERNAME}:${KRK_PASSWORD}\" -X POST -F \"file=@verity-sdk_$version.tgz\" https://kraken.corp.evernym.com/repo/npm/upload",
+    "doc-build": "./node_modules/.bin/jsdoc src -r -c doc/conf.json -d doc/_build"
   },
   "keywords": [
     "ssi",
     "verity",
     "evernym"
   ],
-  "author": "Spencer Holman <dev@evernym.com>",
-  "license": "",
   "devDependencies": {
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "cli-spinner": "^0.2.10",
     "express": "^4.17.1",
-    "mocha": "^7.0.0",
-    "standard": "^14.3.1",
+    "jsdoc": "^3.6.4",
+    "mocha": "^7.2.0",
     "qrcode": "^1.4.4",
-    "cli-spinner": "^0.2.10"
+    "standard": "^14.3.1"
   },
   "dependencies": {
     "bs58": "^4.0.1",

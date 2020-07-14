@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutionException;
 import static com.evernym.verity.sdk.utils.ContextConstants.*;
 
 /**
- * An object used to hold the wallet handle and other configuration information. 
- * An instance if this object is passed around to many different API calls.
+ * This Context object holds the data for accessing an agent on a verity-application. A complete and correct data in
+ * the context allows for access and authentication to that agent.
  */
 public final class Context implements AsJsonObject{
     final private String version;
@@ -99,22 +99,22 @@ public final class Context implements AsJsonObject{
             return Wallet.openWallet(walletConfig.config(), walletConfig.credential()).get();
         }
         catch (IndyException | ExecutionException | InterruptedException e){
-            throw new WalletOpenException(e);
+            throw new WalletOpenException("Wallet failed to open", e);
         }
     }
 
     /**
-     * Closes the wallet handle stored inside the Context object.
+     * Closes the the open wallet handle stored inside the Context object.
      *
-     * @throws WalletCloseException when failing to close the wallet
+     * @throws WalletException when failing to close the wallet
      */
-    public void closeWallet() throws WalletCloseException {
+    public void closeWallet() throws WalletException {
         walletClosedFlag = true;
         try {
             walletHandle.closeWallet().get();
         }
         catch (IndyException | ExecutionException | InterruptedException e){
-            throw new WalletCloseException(e);
+            throw new WalletException("Wallet failed to close", e);
         }
     }
 
@@ -127,46 +127,107 @@ public final class Context implements AsJsonObject{
         return val;
     }
 
+    /**
+     * The WalletConfig expressed by this object
+     * @return the WalletConfig held
+     * @throws UndefinedContextException when this field is not defined
+     */
     public WalletConfig walletConfig() throws UndefinedContextException {
         return throwIfNull(walletConfig, WALLET_CONFIG);
     }
 
+    /**
+     * The url for the verity-application that this object is connected to
+     * @return the url for the verity-application
+     * @throws UndefinedContextException when this field is not defined
+     */
     public String verityUrl() throws UndefinedContextException {
         return throwIfNull(verityUrl, VERITY_URL);
     }
 
+    /**
+     * The public identifier for the verity-application. This identifier is unique for each verity-application instance
+     * but is common for all agents on that instance.
+     * @return the public identifier (DID) for a verity-application instance
+     * @throws UndefinedContextException when this field is not defined
+     */
     public String verityPublicDID() throws UndefinedContextException {
         return throwIfNull(verityPublicDID, VERITY_PUBLIC_DID);
     }
 
+    /**
+     * The public verkey for the verity-application. This verkey is unique for each verity-application instance
+     * but is common for all agents on that instance.
+     * @return the public verkey for a verity-application instance
+     * @throws UndefinedContextException when this field is not defined
+     */
     public String verityPublicVerKey() throws UndefinedContextException {
         return throwIfNull(verityPublicVerKey, VERITY_PUBLIC_VER_KEY);
     }
 
+    /**
+     * The identifier for a identity domain. This identifier identifies a self-sovereign Identity. It will be common
+     * across all agents and controllers of that Identity.
+     * @return the Domain identifier (DID)
+     * @throws UndefinedContextException when this field is not defined
+     */
     public String domainDID() throws UndefinedContextException {
         return throwIfNull(domainDID, DOMAIN_DID);
     }
 
+    /**
+     * The verkey for the agent on the verity-application
+     * @return the verkey for the verity-application agent
+     * @throws UndefinedContextException  when this field is not defined
+     */
     public String verityAgentVerKey() throws UndefinedContextException {
         return throwIfNull(verityAgentVerKey, VERITY_AGENT_VER_KEY);
     }
 
+    /**
+     * An id for the locally held sdk verkey
+     * @return the id for the sdk verkey
+     * @throws UndefinedContextException when this field is not defined
+     */
     public String sdkVerKeyId() throws UndefinedContextException {
         return throwIfNull(sdkVerKeyId, SDK_VER_KEY_ID);
     }
 
+    /**
+     * The verkey for the locally held key-pair. A corresponding private key is held in the wallet for this verkey
+     * @return the verkey for the sdk
+     * @throws UndefinedContextException when this field is not defined
+     */
     public String sdkVerKey() throws UndefinedContextException {
         return throwIfNull(sdkVerKey, SDK_VER_KEY);
     }
 
+    /**
+     * The endpoint for receiving messages from the agent on the verity-application. This endpoint must be registered
+     * using the UpdateEndpoint protocol to effectively change it.
+     * @return the endpoint contained in this context
+     * @throws UndefinedContextException when this field is not defined
+     */
     public String endpointUrl() throws UndefinedContextException {
         return throwIfNull(endpointUrl, ENDPOINT_URL);
     }
 
+    /**
+     * The context version
+     * @return the version
+     * @throws UndefinedContextException when this field is not defined
+     */
     public String version() throws UndefinedContextException {
         return throwIfNull(version, VERSION);
     }
 
+    /**
+     * Converts the local keys held in the context to REST api token. This token can be used with the REST API for the
+     * verity-application
+     * @return a REST API token
+     * @throws VerityException when wallet operations fails
+     * @throws IndyException when the signature fails
+     */
     public String restApiToken() throws VerityException, IndyException {
         try {
             String verkey = sdkVerKey();
@@ -179,11 +240,16 @@ public final class Context implements AsJsonObject{
         } catch (InterruptedException | ExecutionException e) {
             if(e.getCause() instanceof IndyException) throw (IndyException) e.getCause();
             else {
-                throw new VerityException("Signing verkey did not complete", e);
+                throw new WalletException("Signing REST API key could not complete", e);
             }
         }
     }
 
+    /**
+     * The open wallet handle used by this object.
+     * @return a wallet handle
+     * @throws WalletClosedException when the wallet is closed and there is not handle available
+     */
     public Wallet walletHandle() throws WalletClosedException {
         if (walletClosedFlag) {
             throw new WalletClosedException();
@@ -191,10 +257,19 @@ public final class Context implements AsJsonObject{
         return walletHandle;
     }
 
+    /**
+     * Whether the wallet is closed or not
+     * @return true if the wallet is closed, otherwise false
+     */
     public boolean walletIsClosed() {
         return walletClosedFlag;
     }
 
+    /**
+     * Builds a ContextBuilder based on this context. Since Context is immutable, this allows for changes by
+     * building a new Context using a ContextBuilder
+     * @return a ContextBuilder based on this context
+     */
     public ContextBuilder toContextBuilder() {
         ContextBuilder rtn = ContextBuilder.blank();
         if(walletConfig != null) rtn.walletConfig(walletConfig);
@@ -214,6 +289,10 @@ public final class Context implements AsJsonObject{
         return rtn;
     }
 
+    /**
+     * Converts this object into a JSON object
+     * @return an JSON object based on this context
+     */
     @Override
     public JSONObject toJson() {
         JSONObject rtn = new JSONObject();

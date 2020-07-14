@@ -4,6 +4,9 @@ const Protocol = require('../Protocol')
 const indy = require('indy-sdk')
 
 module.exports = class Provision extends Protocol {
+/**
+ * Provision 0.7 protocol interface class
+ */
   constructor (threadId = null, token = null) {
     const msgFamily = 'agent-provisioning'
     const msgFamilyVersion = '0.7'
@@ -32,6 +35,9 @@ module.exports = class Provision extends Protocol {
     }
   }
 
+  /**
+  * Provision 0.7 protocol interface class
+  */
   async sendToVerity (context, packedMsg) {
     const rawResponse = await utils.sendPackedMessage(context, packedMsg)
     const jweBytes = Buffer.from(rawResponse, 'utf8')

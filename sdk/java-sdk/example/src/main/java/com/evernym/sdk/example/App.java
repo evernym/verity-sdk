@@ -37,6 +37,12 @@ import com.evernym.verity.sdk.utils.Util;
 import net.glxn.qrgen.QRCode;
 import org.json.JSONObject;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -74,20 +80,20 @@ public class App extends Helper {
     Context provisionAgent() throws IOException, VerityException {
         ProvisionV0_7 provisioner;
         if (consoleYesNo("Provide Provision Token", true)) {
-            String token = consoleInput("Token").trim();
-            println("using provision token: " + token);
+            String token = consoleInput("Token", System.getenv("TOKEN")).trim();
+            println("Using provision token: " + ANSII_GREEN + token + ANSII_RESET);
             provisioner = Provision.v0_7(token);
         } else {
             provisioner = Provision.v0_7();
         }
 
-        String verityUrl = consoleInput("Verity Application Endpoint").trim();
+        String verityUrl = consoleInput("Verity Application Endpoint", System.getenv("VERITY_SERVER")).trim();
 
         if ("".equals(verityUrl)) {
             verityUrl = "http://localhost:9000";
         }
 
-        println("Using Url: "+ verityUrl);
+        println("Using Url: " + ANSII_GREEN + verityUrl + ANSII_RESET);
 
         // create initial Context
         Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
@@ -111,16 +117,16 @@ public class App extends Helper {
             webhookFromCtx = context.endpointUrl();
         } catch (UndefinedContextException ignored) {}
 
-        String webhook = consoleInput(String.format("Ngrok endpoint for port(%d)[%s]", port, webhookFromCtx)).trim();
+        String webhook = consoleInput(String.format("Ngrok endpoint for port(%d)[%s]", port, webhookFromCtx), System.getenv("WEBHOOK_URL")).trim();
 
         if("".equals(webhook)) {
             webhook = webhookFromCtx;
         }
 
-        println("Using Webhook: "+ webhook);
+        println("Using Webhook: " + ANSII_GREEN + webhook + ANSII_RESET);
         context = context.toContextBuilder().endpointUrl(webhook).build();
 
-        // request that verity application use specified webhook endpoint
+        // request that verity-application use specified webhook endpoint
         UpdateEndpoint.v0_6().update(context);
     }
 
@@ -158,10 +164,49 @@ public class App extends Helper {
 
         // wait for request to complete
         waitFor(setupComplete, "Waiting for setup to complete");
-
         println("The issuer DID and Verkey must be on the ledger.");
-        println(String.format("Please add DID (%s) and Verkey (%s) to ledger.", issuerDID, issuerVerkey));
-        waitFor("Press ENTER when DID is on ledger");
+
+        boolean automatedRegistration = consoleYesNo("Attempt automated registration via https://selfserve.sovrin.org", true);
+        
+        if (automatedRegistration) {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost("https://selfserve.sovrin.org/nym");
+        
+            JSONObject payload_builder = new JSONObject();
+            payload_builder.accumulate("network", "stagingnet");
+            payload_builder.accumulate("did", issuerDID);
+            payload_builder.accumulate("verkey", issuerVerkey);
+            payload_builder.accumulate("paymentaddr", "");
+            String payload = payload_builder.toString();
+
+            StringEntity entity = new StringEntity(payload);
+            httpPost.setEntity(entity);
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+        
+            HttpResponse response = client.execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+
+            if (statusCode != 200) {
+                println("Something went wrong with contactig Sovrin portal");
+                println(String.format("Please add DID (%s) and Verkey (%s) to ledger manually", issuerDID, issuerVerkey));
+                waitFor("Press ENTER when DID is on ledger");
+            } else {
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                StringBuilder builder = new StringBuilder();
+                String line;
+                while ((line = bufReader.readLine()) != null) {
+                    builder.append(line);
+                    builder.append(System.lineSeparator());
+                }
+                println("Got response from Sovrin portal: " + ANSII_GREEN + builder + ANSII_RESET);
+            }        
+            client.close();
+        }
+        else {
+            println(String.format("Please add DID (%s) and Verkey (%s) to ledger manually", issuerDID, issuerVerkey));
+            waitFor("Press ENTER when DID is on ledger");
+        }
     }
 
     void issuerIdentifier() throws IOException, VerityException {
@@ -184,7 +229,7 @@ public class App extends Helper {
         // query the current identifier
         issuerSetup.currentPublicIdentifier(context);
 
-        // wait for response from verity application
+        // wait for response from verity-application
         waitFor(issuerComplete, "Waiting for current issuer DID");
     }
 
@@ -251,8 +296,15 @@ public class App extends Helper {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-
-                println("QR code at: qrcode.png");
+                
+                if (!(System.getenv("HTTP_SERVER_URL") == null) ) {
+                    println("Open the following URL in your browser and scan presented QR code");
+                    println(ANSII_GREEN + System.getenv("HTTP_SERVER_URL") + "/java-sdk/example/qrcode.html" + ANSII_RESET);
+                }
+                else {
+                    println("QR code generated at: qrcode.png");
+                    println("Open this file and scan QR code to establish a connection");
+                }
 
                 invitationComplete.set(true);
             }
@@ -398,20 +450,15 @@ public class App extends Helper {
         credentialData.put("name", "Joe Smith");
         credentialData.put("degree", "Bachelors");
         // constructor for the Issue Credential protocol
-        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0");
+        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0", true);
 
         AtomicBoolean offerSent = new AtomicBoolean(false); // spinlock bool
-        AtomicBoolean credRequested = new AtomicBoolean(false); // spinlock bool
         AtomicBoolean credSent = new AtomicBoolean(false); // spinlock bool
 
-        // handler for 'ask_accept` message when the offer for credential is accepted
+        // handler for signal messages
         handle(issue, (String msgName, JSONObject message) -> {
             if("sent".equals(msgName) && !offerSent.get()) {
                 offerSent.set(true);
-            }
-            else if("accept-request".equals(msgName)) {
-                printlnMessage(msgName, message);
-                credRequested.set(true);
             }
             else if("sent".equals(msgName)) {
                 credSent.set(true);
@@ -425,12 +472,7 @@ public class App extends Helper {
         issue.offerCredential(context);
         waitFor(offerSent, "Wait for offer to be sent");
 
-        // wait for connect.me user to accept offer
-        waitFor(credRequested, "Wait for Connect.me to request the credential");
-
-        // request that credential be issued
-        issue.issueCredential(context);
-        waitFor(credSent, "Wait for Credential to be sent");
+        waitFor(credSent, "Wait for Connect.me to request the credential and credential to be sent");
 
         Thread.sleep(3000); // Give time for Credential to get to mobile device
     }

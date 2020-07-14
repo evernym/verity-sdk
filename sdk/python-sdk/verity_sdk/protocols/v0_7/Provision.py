@@ -10,6 +10,8 @@ from verity_sdk.utils import Context, pack_message_for_verity_direct, unpack_mes
 
 
 class Provision(Protocol):
+    """Provision 0.7 protocol interface class"""
+
     MSG_FAMILY = 'agent-provisioning'
     MSG_FAMILY_VERSION = '0.7'
 
@@ -45,12 +47,12 @@ class Provision(Protocol):
         if not valid:
             raise Exception('Invalid provision token -- signature does not validate')
 
-    async def send_to_verity(self, context: Context, packed_msg: bytes) -> dict:
+    async def send_to_verity(self, context, packed_msg) -> dict:
         resp_bytes = send_packed_message(context, packed_msg)
 
         return await unpack_message(context, resp_bytes)
 
-    async def provision_msg_packed(self, context: Context):
+    async def provision_msg_packed(self, context):
         return await pack_message_for_verity_direct(
             context.wallet_handle,
             self.provision_msg(context),
@@ -60,7 +62,7 @@ class Provision(Protocol):
             context.verity_public_verkey
         )
 
-    def provision_msg(self, context: Context):
+    def provision_msg(self, context):
         msg = self._get_base_message(self.CREATE_EDGE_AGENT)
         msg['requesterVk'] = context.sdk_verkey
 

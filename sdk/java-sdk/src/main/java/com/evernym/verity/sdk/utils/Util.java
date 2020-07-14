@@ -12,32 +12,54 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Static helper functions used for packaging and unpackaging messages
+ * Static Utilities helper functions used for verity-sdk
  */
 public class Util {
+    /**
+     * QUALIFIER for evernym specific protocols
+     */
     public static final String EVERNYM_MSG_QUALIFIER = "did:sov:123456789abcdefghi1234";
+
+    /**
+     * QUALIFIER for community specified protocol
+     */
     public static final String COMMUNITY_MSG_QUALIFIER = "did:sov:BzCbsNYhMrjHiqZDTUASHg";
 
+    /**
+     * Packages message (instructor and encryption) for the verity-application. Uses local private keys and remote
+     * public keys for encryption. The encryption and instructor is defined by the Aries community.
+     *
+     * @param walletHandle the handle to a created and open Indy wallet
+     * @param message the JSON message to be communicated to the verity-application
+     * @param domainDID the domain DID of the intended recipient agent on the verity-application
+     * @param remoteVerkey the verkey for the agent on the verity-application
+     * @param localVerkey the authorized verkey in the local wallet for the verity-sdk application
+     * @param publicVerkey the public verkey for the verity-application
+     * @return the byte array of the packaged and encrypted message
+     * @throws WalletException when wallet operations fails
+     *
+     * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/9b0aaa39df7e8bd434126c4b33c097aae78d65bf/features/0019-encryption-envelope" target="_blank" rel="noopener noreferrer">Aries 0019: Encryption Envelope</a>
+     */
     public static byte[] packMessageForVerity(Wallet walletHandle,
                                               JSONObject message,
-                                              String pairwiseRemoteDID,
-                                              String pairwiseRemoteVerkey,
-                                              String pairwiseLocalVerkey,
+                                              String domainDID,
+                                              String remoteVerkey,
+                                              String localVerkey,
                                               String publicVerkey
     ) throws WalletException {
         try {
-            String pairwiseReceiver = new JSONArray(new String[]{pairwiseRemoteVerkey}).toString();
+            String pairwiseReceiver = new JSONArray(new String[]{remoteVerkey}).toString();
             String verityReceiver = new JSONArray(new String[]{publicVerkey}).toString();
 
             byte[] agentMessage = Crypto.packMessage(
                     walletHandle,
                     pairwiseReceiver,
-                    pairwiseLocalVerkey,
+                    localVerkey,
                     message.toString().getBytes()
             ).get();
 
             String innerFwd = prepareForwardMessage(
-                    pairwiseRemoteDID,
+                    domainDID,
                     agentMessage
             );
 
@@ -53,14 +75,22 @@ public class Util {
     }
 
     /**
-     * Encrypts a message for the Evernym verity. This function should not be called directly because it is called by the individual protocol classes.
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @param message the message being sent
-     * @return Encrypted message ready to be sent to the verity
-     * @throws WalletException when there are issues with encryption and decryption
-     * @throws UndefinedContextException when the context don't have enough information for this operation
+     * Packages message (instructor and encryption) for the verity-application. Uses local private keys and remote
+     * public keys for encryption. The encryption and instructor is defined by the Aries community.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param message the JSON message to be communicated to the verity-application
+     * @return the byte array of the packaged and encrypted message
+     * @throws WalletException when wallet operations fails (including encryption)
+     * @throws UndefinedContextException when the context is missing required fields (domainDID, verityAgentVerKey, sdkVerKey, verityPublicVerKey)
+     *
+     * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/9b0aaa39df7e8bd434126c4b33c097aae78d65bf/features/0019-encryption-envelope" target="_blank" rel="noopener noreferrer">Aries 0019: Encryption Envelope</a>
      */
     public static byte[] packMessageForVerity(Context context, JSONObject message) throws UndefinedContextException, WalletException {
+        if(context == null) {
+            throw new UndefinedContextException("Context cannot be NULL");
+        }
+
         Wallet handle = context.walletHandle();
         return packMessageForVerity(
                 handle,
@@ -73,9 +103,10 @@ public class Util {
     }
 
     /**
-     * Builds a forward message
-     * @param DID the DID the message is being forwarded to
-     * @param message the raw bytes of the message being forwarded
+     * Prepares (pre-encryption) a forward message to a given DID that contains the given byte array message
+     * @param DID the DID the forward message is intended for
+     * @param message the packaged and encrypted message that is being forwarded
+     * @return the prepared JSON forward structure
      */
     private static String prepareForwardMessage(String DID, byte[] message) {
         JSONObject fwdMessage = new JSONObject();
@@ -86,11 +117,12 @@ public class Util {
     }
 
     /**
-     * Unpacks a message received from the Evernym verity
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @param message the message received from the Evernym verity
-     * @return an unencrypted String message
-     * @throws WalletException when there are issues with encryption and decryption
+     * Extracts the message in the byte array that has been packaged and encrypted for a key that is locally held.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param message the message received from the verity-application agent
+     * @return an unencrypted messages as a JSON object
+     * @throws WalletException when wallet operations fails (including decryption)
      */
     public static JSONObject unpackMessage(Context context, byte[] message) throws WalletException {
         try {
@@ -102,73 +134,37 @@ public class Util {
         }
     }
 
-    /**
-     * Unpack message forwarded message
-     * @param context an instance of Context configured with the results of the provision_sdk.py script
-     * @param message the message received from the Evernym verity
-     * @return an unencrypted String message
-     * @throws WalletException when there are issues with encryption and decryption
-     */
-    public static JSONObject unpackForwardMessage(Context context, byte[] message) throws WalletException {
-        JSONObject unpackedOnceMessage = unpackMessage(context, message);
-        byte[] unpackedOnceMessageMessage = unpackedOnceMessage.getJSONObject("@msg").toString().getBytes();
-        return unpackMessage(context, unpackedOnceMessageMessage);
-    }
 
-    // FIXME move to MessageFamily interface
+    /**
+     * Combines elements the given of a message family static values with the given message name to produce a fully
+     * qualified message type
+     * @param f the given message family
+     * @param msgName the given message name
+     * @return a fully qualified message type
+     */
     public static String getMessageType(MessageFamily f, String msgName) {
         return getMessageType(f.qualifier(), f.family(), f.version(), msgName);
     }
 
+    /**
+     * Combines the given elements to produce a fully qualified message type
+     * @param msgQualifier the given qualifier
+     * @param msgFamily the given family name
+     * @param msgFamilyVersion the given version
+     * @param msgName the given message name
+     * @return a fully qualified message type
+     */
     public static String getMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion, String msgName) {
         return msgQualifier + ";spec/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
     }
 
+    @Deprecated
     public static String getProblemReportMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion) {
         return Util.getMessageType(msgQualifier, msgFamily, msgFamilyVersion, "problem-report");
     }
 
+    @Deprecated
     public static String getStatusMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion) {
         return Util.getMessageType(msgQualifier, msgFamily, msgFamilyVersion, "status");
-    }
-
-    public static JSONObject truncateInviteDetails(String inviteDetails) {
-        return truncateInviteDetails(new JSONObject(inviteDetails));
-    }
-
-    public static JSONObject truncateInviteDetails(JSONObject inviteDetails) {
-        JSONObject truncatedInviteDetails = new JSONObject();
-        truncatedInviteDetails.put("id", inviteDetails.getString("connReqId"));
-        truncatedInviteDetails.put("sc", inviteDetails.getString("statusCode"));
-        truncatedInviteDetails.put("sm", inviteDetails.getString("statusMsg"));
-        truncatedInviteDetails.put("t", inviteDetails.getString("targetName"));
-        truncatedInviteDetails.put("version", inviteDetails.getString("version"));
-        if(inviteDetails.has("threadId")) {
-            truncatedInviteDetails.put("threadId", inviteDetails.getString("threadId"));
-        }
-            JSONObject s = new JSONObject();
-            JSONObject senderDetail = inviteDetails.getJSONObject("senderDetail");
-            if(senderDetail.has("publicDID")) {
-                s.put("publicDID", senderDetail.getString("publicDID"));
-            }
-            s.put("n", senderDetail.getString("name"));
-            s.put("d", senderDetail.getString("DID"));
-            s.put("l", senderDetail.getString("logoUrl"));
-            s.put("v", senderDetail.getString("verKey"));
-                JSONObject dp = new JSONObject();
-                JSONObject dlgProof = senderDetail.getJSONObject("agentKeyDlgProof");
-                dp.put("d", dlgProof.getString("agentDID"));
-                dp.put("k", dlgProof.getString("agentDelegatedKey"));
-                dp.put("s", dlgProof.getString("signature"));
-            s.put("dp", dp);
-        truncatedInviteDetails.put("s", s);
-            JSONObject sa = new JSONObject();
-            JSONObject senderAgencyDetail = inviteDetails.getJSONObject("senderAgencyDetail");
-            sa.put("d", senderAgencyDetail.getString("DID"));
-            sa.put("e", senderAgencyDetail.getString("endpoint"));
-            sa.put("v", senderAgencyDetail.getString("verKey"));
-        truncatedInviteDetails.put("sa", sa);
-
-        return truncatedInviteDetails;
     }
 }

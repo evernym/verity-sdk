@@ -7,7 +7,8 @@ module.exports = class IssueCredentialV10 extends Protocol {
     credDefId = '',
     values = {},
     comment = '',
-    price = 0) {
+    price = 0,
+    autoIssue = false) {
     const msgFamily = 'issue-credential'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.COMMUNITY_MSG_QUALIFIER
@@ -18,6 +19,7 @@ module.exports = class IssueCredentialV10 extends Protocol {
     this.values = values
     this.comment = comment
     this.price = price
+    this.autoIssue = autoIssue
     this.created = threadId === null
 
     this.msgNames.OFFER_CREDENTIAL = 'offer'
@@ -49,6 +51,7 @@ module.exports = class IssueCredentialV10 extends Protocol {
     msg.comment = this.comment
     msg.price = this.price
     msg.credential_values = this.values
+    msg.auto_issue = this.autoIssue
     msg = this._addThread(msg)
 
     return msg
@@ -86,10 +89,6 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   requestCredentialMsg () {
-    if (!this.created) {
-      throw new utils.WrongSetupError('Unable to request credential when NOT starting the interaction')
-    }
-
     var msg = this._getBaseMessage(this.msgNames.REQUEST_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
@@ -124,10 +123,6 @@ module.exports = class IssueCredentialV10 extends Protocol {
   }
 
   rejectMsg () {
-    if (!this.created) {
-      throw new utils.WrongSetupError('Unable to reject when NOT starting the interaction')
-    }
-
     var msg = this._getBaseMessage(this.msgNames.REJECT_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.comment = this.comment

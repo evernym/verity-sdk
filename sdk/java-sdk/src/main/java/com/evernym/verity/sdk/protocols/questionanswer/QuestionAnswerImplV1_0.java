@@ -2,8 +2,11 @@ package com.evernym.verity.sdk.protocols.questionanswer;
 
 import com.evernym.verity.sdk.protocols.questionanswer.v1_0.QuestionAnswerV1_0;
 
-/**
- * Builds and sends a new encrypted agent message for the Question protocol.
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of QuestionAnswerImplV1_0 but is not viable to user of Verity SDK. Created using the
+ * static QuestionAnswer class
  */
 class QuestionAnswerImplV1_0 extends AskCommonImpl implements QuestionAnswerV1_0 {
 

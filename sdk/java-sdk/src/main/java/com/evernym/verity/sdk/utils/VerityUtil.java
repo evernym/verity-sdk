@@ -10,6 +10,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/*
+ * NON_VISIBLE
+ *
+ * Utilities for basic interactions with the verity-application
+ */
 class VerityUtil {
     private VerityUtil(){}
 

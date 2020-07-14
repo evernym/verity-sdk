@@ -12,9 +12,19 @@ public class MessageHandler {
     private final MessageFamily messageFamily;
     private final Handler messageHandler;
 
+    /**
+     * A simple handler interface for JSON object messages
+     */
     public interface Handler {
+        /**
+         * Handles the given JSON object message
+         *
+         * @param msgName the name for the message to be handled
+         * @param message the message to be handled
+         */
         void handle(String msgName, JSONObject message);
     }
+
 
     /**
      * Associate a handler with a particular message type
