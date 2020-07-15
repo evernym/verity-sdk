@@ -95,4 +95,8 @@ public interface RelationshipV1_0 extends MessageFamily {
      * @see #connectionInvitation
      */
     byte[] connectionInvitationMsgPacked(Context context) throws IOException, VerityException;
+
+    void outOfBandInvitation(Context context) throws IOException, VerityException;
+    JSONObject outOfBandInvitationMsg(Context context) throws IOException, VerityException;
+    byte[] outOfBandInvitationMsgPacked(Context context) throws IOException, VerityException;
 }

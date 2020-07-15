@@ -68,4 +68,17 @@ describe('Relationship', () => {
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
   })
+
+  it('should build OutOfBand invitation msg correctly', async () => {
+    const rel = new Relationship(
+      'RxRJCMe5XNqc9e9J1YPwhL',
+      '7a80285e-896c-45f6-b386-39ed7c49230c'
+    )
+    const msg = await rel.outOfBandInvitationMsg(null)
+    expect(msg['@type']).to.equal(
+     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
+    )
+    expect(msg.goalCode).to.equal('p2p-messaging')
+    expect(msg.goal).to.equal('To establish a peer-to-peer messaging relationship')
+  })
 })

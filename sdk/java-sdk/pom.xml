@@ -6,11 +6,13 @@
 
   <groupId>com.evernym.verity</groupId>
   <artifactId>verity-sdk</artifactId>
-  <version>0.1.14-SNAPSHOT</version>
+  <version>0.1.15-SNAPSHOT</version>
 
   <name>Verity SDK</name>
   <description>The official Java SDK for Evernym's Verity</description>
   <url>https://github.com/evernym/verity-sdk</url>
+
+  <packaging>jar</packaging>
 
   <organization>
     <name>Evernym, Inc.</name>
@@ -24,6 +26,12 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/evernym/verity-sdk.git</connection>
+    <developerConnection>scm:git:ssh://github.com:evernym/verity-sdk.git</developerConnection>
+    <url>https://github.com/evernym/verity-sdk</url>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

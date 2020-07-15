@@ -5,6 +5,7 @@ import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.DbcUtil;
+import org.apache.commons.lang3.NotImplementedException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -63,13 +64,14 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
     }
 
 
-//    @Override
-//    public void proposeCredential(Context context) throws IOException, VerityException {
+    @Override
+    public void proposeCredential(Context context) throws IOException, VerityException {
 //        send(context, proposeCredentialMsg(context));
-//    }
-//
-//    @Override
-//    public JSONObject proposeCredentialMsg(Context context) {
+        throw new NotImplementedException("This API has not been implemented");
+    }
+
+    @Override
+    public JSONObject proposeCredentialMsg(Context context) {
 //        if(!created) {
 //            throw new IllegalArgumentException("Unable to propose credentials when NOT starting the interaction");
 //        }
@@ -85,13 +87,15 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
 //        msg.put("comment", comment);
 //
 //        return msg;
-//    }
-//
-//
-//    @Override
-//    public byte[] proposeCredentialMsgPacked(Context context) throws VerityException {
+        throw new NotImplementedException("This API has not been implemented");
+    }
+
+
+    @Override
+    public byte[] proposeCredentialMsgPacked(Context context) throws VerityException {
 //        return packMsg(context, proposeCredentialMsg(context));
-//    }
+        throw new NotImplementedException("This API has not been implemented");
+    }
 
     @Override
     public void offerCredential(Context context) throws IOException, VerityException {
@@ -125,13 +129,14 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
         return packMsg(context, offerCredentialMsg(context));
     }
 
-//    @Override
-//    public void requestCredential(Context context) throws IOException, VerityException {
+    @Override
+    public void requestCredential(Context context) throws IOException, VerityException {
 //        send(context, requestCredentialMsg(context));
-//    }
-//
-//    @Override
-//    public JSONObject requestCredentialMsg(Context context) {
+        throw new NotImplementedException("This API has not been implemented");
+    }
+
+    @Override
+    public JSONObject requestCredentialMsg(Context context) {
 //        if(!created) {
 //            throw new IllegalArgumentException("Unable to request credential when NOT starting the interaction");
 //        }
@@ -146,12 +151,14 @@ class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
 //        msg.put("comment", comment);
 //
 //        return msg;
-//    }
-//
-//    @Override
-//    public byte[] requestCredentialMsgPacked(Context context) throws VerityException {
+        throw new NotImplementedException("This API has not been implemented");
+    }
+
+    @Override
+    public byte[] requestCredentialMsgPacked(Context context) throws VerityException {
 //        return packMsg(context, requestCredentialMsg(context));
-//    }
+        throw new NotImplementedException("This API has not been implemented");
+    }
 
     @Override
     public void issueCredential(Context context) throws IOException, VerityException{
