@@ -1,7 +1,7 @@
 {
   "name": "verity-sdk",
   "author": "Evernym <dev@evernym.com>",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "The official Node.js SDK for Evernym's Verity",
   "repository": {
     "type": "git",
