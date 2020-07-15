@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -72,5 +73,19 @@ public class RelationshipTest {
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/connection-invitation", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertNotNull(forRelationship, msg.getString("~for_relationship"));
+    }
+
+    @Test
+    public void testOutOfBandIInvitationMsg() throws VerityException, IOException {
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
+        JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext());
+        testOutOfBandInvitationMsg(msg);
+    }
+
+    private void testOutOfBandInvitationMsg(JSONObject msg) {
+        assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/out-of-band-invitation", msg.getString("@type"));
+        assertNotNull(msg.getString("@id"));
+        assert(msg.getString("goalCode").equals(GoalCode.P2P_MESSAGING.code()));
+        assert(msg.getString("goal").equals(GoalCode.P2P_MESSAGING.goalName()));
     }
 }

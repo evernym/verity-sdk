@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols.relationship;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.relationship.v1_0.GoalCode;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
@@ -20,6 +21,7 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     final static String CREATE = "create";
     final static String CONNECTION_INVITATION = "connection-invitation";
+    final static String OUT_OF_BAND_INVITATION = "out-of-band-invitation";
 
     String forRelationship;
     String label;
@@ -38,10 +40,11 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     }
 
     RelationshipImplV1_0(String label, URL logoUrl) {
-        if (!isNullOrWhiteSpace(label))
+        if (!isNullOrWhiteSpace(label)) {
             this.label = label;
-        else
+        } else {
             this.label = "";
+        }
         this.logoUrl = logoUrl;
 
         this.created = true;
@@ -98,5 +101,29 @@ class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
     @Override
     public byte[] connectionInvitationMsgPacked(Context context) throws VerityException {
         return packMsg(context, connectionInvitationMsg(context));
+    }
+
+    @Override
+    public JSONObject outOfBandInvitationMsg(Context context) {
+        GoalCode invitationGoal = GoalCode.P2P_MESSAGING;
+        JSONObject rtn = new JSONObject()
+                .put("@type", messageType(OUT_OF_BAND_INVITATION))
+                .put("@id", getNewId())
+                .put("goalCode", invitationGoal.code())
+                .put("goal", invitationGoal.goalName());
+
+        if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
+        addThread(rtn);
+        return rtn;
+    }
+
+    @Override
+    public void outOfBandInvitation(Context context) throws IOException, VerityException {
+        send(context, outOfBandInvitationMsg(context));
+    }
+
+    @Override
+    public byte[] outOfBandInvitationMsgPacked(Context context) throws VerityException {
+        return packMsg(context, outOfBandInvitationMsg(context));
     }
 }

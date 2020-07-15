@@ -11,12 +11,15 @@ module.exports = class Relationship extends Protocol {
 
     this.msgNames.CREATE = 'create'
     this.msgNames.CONNECTION_INVITATION = 'connection-invitation'
+    this.msgNames.OUT_OF_BAND_INVITATION = 'out-of-band-invitation'
     this.msgNames.CREATED = 'created'
     this.msgNames.INVITATION = 'invitation'
 
     this.forRelationship = forRelationship
     this.label = label
     this.logoUrl = logoUrl
+    this.goalCode = 'p2p-messaging'
+    this.goal = 'To establish a peer-to-peer messaging relationship'
   }
 
   async createMsg (context) {
@@ -50,5 +53,22 @@ module.exports = class Relationship extends Protocol {
 
   async connectionInvitation (context) {
     await this.sendMessage(context, await this.connectionInvitationMsgPacked(context))
+  }
+
+  async outOfBandInvitationMsg (context) {
+    var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
+    msg.goalCode = this.goalCode
+    msg.goal = this.goal
+    msg['~for_relationship'] = this.forRelationship
+    msg = this._addThread(msg)
+    return msg
+  }
+
+  async outOfBandInvitationMsgPacked (context) {
+    return this.getMessageBytes(context, await this.outOfBandInvitationMsg(context))
+  }
+
+  async outOfBandInvitation (context) {
+    await this.sendMessage(context, await this.outOfBandInvitationMsgPacked(context))
   }
 }
