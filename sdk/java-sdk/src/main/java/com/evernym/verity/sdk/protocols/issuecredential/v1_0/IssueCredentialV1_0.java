@@ -40,33 +40,33 @@ public interface IssueCredentialV1_0 extends MessageFamily {
      */
     default String version() {return VERSION;}
 
-//    /**
-//     * Directs verity-application to send credential proposal.
-//     * @param context an instance of the Context object initialized to a verity-application agent
-//     * @throws IOException when the HTTP library fails to post to the agency endpoint
-//     * @throws VerityException when wallet operations fails or given invalid context
-//     */
-//    void proposeCredential(Context context) throws IOException, VerityException;
-//
-//    /**
-//     * Creates the control message without packaging and sending it.
-//     * @param context an instance of the Context object initialized to a verity-application agent
-//     * @return the constructed message (JSON object)
-//     * @throws VerityException when given invalid context
-//     *
-//     * @see #proposeCredential
-//     */
-//    JSONObject proposeCredentialMsg(Context context) throws VerityException;
-//
-//    /**
-//     * Creates and packages message without sending it.
-//     * @param context an instance of the Context object initialized to a verity-application agent
-//     * @return the byte array ready for transport
-//     * @throws VerityException when wallet operations fails or given invalid context
-//     *
-//     * @see #proposeCredential
-//     */
-//    byte[] proposeCredentialMsgPacked(Context context) throws VerityException;
+    /**
+     * Directs verity-application to send credential proposal.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void proposeCredential(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #proposeCredential
+     */
+    JSONObject proposeCredentialMsg(Context context) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #proposeCredential
+     */
+    byte[] proposeCredentialMsgPacked(Context context) throws VerityException;
 
     /**
      * Directs verity-application to send credential offer.
@@ -97,34 +97,34 @@ public interface IssueCredentialV1_0 extends MessageFamily {
      */
     byte[] offerCredentialMsgPacked(Context context) throws VerityException;
 
-//    /**
-//     * Directs verity-application to send credential request.
-//     *
-//     * @param context
-//     * @throws IOException
-//     * @throws VerityException
-//     */
-//    void requestCredential(Context context) throws IOException, VerityException;
-//
-//    /**
-//     * Creates the control message without packaging and sending it.
-//     * @param context an instance of the Context object initialized to a verity-application agent
-//     * @return the constructed message (JSON object)
-//     * @throws VerityException when given invalid context
-//     *
-//     * @see #requestCredential
-//     */
-//    JSONObject requestCredentialMsg(Context context) throws VerityException;
-//
-//    /**
-//     * Creates and packages message without sending it.
-//     * @param context an instance of the Context object initialized to a verity-application agent
-//     * @return the byte array ready for transport
-//     * @throws VerityException when wallet operations fails or given invalid context
-//     *
-//     * @see #requestCredential
-//     */
-//    byte[] requestCredentialMsgPacked(Context context) throws VerityException;
+    /**
+     * Directs verity-application to send credential request.
+     *
+     * @param context
+     * @throws IOException
+     * @throws VerityException
+     */
+    void requestCredential(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #requestCredential
+     */
+    JSONObject requestCredentialMsg(Context context) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #requestCredential
+     */
+    byte[] requestCredentialMsgPacked(Context context) throws VerityException;
 
     /**
      * Directs verity-application to issue credential and send it

@@ -75,8 +75,8 @@ class Relationship(Protocol):
 
     def out_of_band_invitation_msg(self, _):
         msg = self._get_base_message(self.OUT_OF_BAND_INVITATION)
-        msg['goalCode'] = self.goal.code
-        msg['goal'] = self.goal.name
+        msg['goalCode'] = self.goal.value.code
+        msg['goal'] = self.goal.value.name
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         return msg

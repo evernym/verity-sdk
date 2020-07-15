@@ -96,5 +96,5 @@ async def test_out_of_band_invitation():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == 'RxRJCMe5XNqc9e9J1YPwhL'
-    assert msg['goalCode'] == GoalsList.P2P_MESSAGING.code
-    assert msg['goal'] == GoalsList.P2P_MESSAGING.name
+    assert msg['goalCode'] == GoalsList.P2P_MESSAGING.value.code
+    assert msg['goal'] == GoalsList.P2P_MESSAGING.value.name

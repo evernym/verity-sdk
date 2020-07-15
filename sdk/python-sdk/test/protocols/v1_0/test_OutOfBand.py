@@ -35,4 +35,4 @@ async def test_reuse():
     assert msg['@id'] is not None
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
-    assert msg['invite_url'] == 'test_invite_url'
+    assert msg['inviteUrl'] == 'test_invite_url'
