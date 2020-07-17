@@ -36,7 +36,7 @@ The included `Dockerfile` will setup a complete environment for running the exam
 1. Build docker image. Run the following command in this directory (`../verity-sdk/docs/getting-started`):
 
    ```sh
-   docker build -f getting-started.dockerfile -t verity-sdk ../.. 
+   docker build -f Dockerfile -t verity-sdk ../.. 
    ```
 1. Run built docker image. Run the following command:
    ```sh
