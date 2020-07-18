@@ -18,6 +18,9 @@ build-artifacts:
 
 upload:
 	make build-artifacts
+	cat verity_sdk/print_version.py
+	cat verity_sdk/version.py
+	shell python3 verity_sdk/print_version.py
 	echo "${VERSION}"
 	echo "${FILE}"
 	echo "${FILENAME}"
