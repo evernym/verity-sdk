@@ -18,6 +18,9 @@ build-artifacts:
 
 upload:
 	make build-artifacts
+	echo "${VERSION}"
+	echo "${FILE}"
+	echo "${FILENAME}"
 	curl -if -u "$${KRK_USERNAME}:$${KRK_PASSWORD}" -X POST -F "file=@${FILE};filename=${FILENAME}" "${REPO}/repo/python/upload"
 
 upload-to-pypi:

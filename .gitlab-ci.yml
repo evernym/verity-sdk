@@ -100,6 +100,8 @@ java-release:
       - tags@dev/verity/verity-sdk
 
 .python-common:
+  variables:
+    DEV_VERSION: '$DEV_BASE_VERSION.$CI_COMMIT_SHORT_SHA'
   before_script:
     - cd sdk/python-sdk/
     - echo "VERSION = '$DEV_VERSION'" > verity_sdk/version.py
