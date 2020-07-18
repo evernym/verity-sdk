@@ -9,9 +9,14 @@ stages:
 
 variables:
   DEV_BASE_VERSION: "0.4.0"
-  DEV_VERSION: '$DEV_BASE_VERSION-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA'
+  DEV_VERSION: '$DEV_BASE_VERSION-$CI_COMMIT_SHORT_SHA'
 
 .java-common:
+  cache:
+    paths:
+      - .m2/repository
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
   before_script:
     - cd sdk/java-sdk/
     - mvn versions:set -DnewVersion=$DEV_VERSION

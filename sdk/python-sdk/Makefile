@@ -1,5 +1,5 @@
 REPO=https://kraken.corp.evernym.com
-VERSION=$(shell python3 verity_sdk/version.py)
+VERSION=$(shell python3 verity_sdk/print_version.py)
 FILE="dist/verity-sdk-${VERSION}.tar.gz"
 FILENAME="verity-sdk_${VERSION}.tar.gz"
 
