@@ -1,13 +1,13 @@
 {
   "name": "verity-sdk",
-  "author": "Evernym <dev@evernym.com>",
-  "version": "0.1.18",
+  "author": "Evernym, Inc. <dev@evernym.com>",
+  "version": "0.0.0-SNAPSHOT",
   "description": "The official Node.js SDK for Evernym's Verity",
   "repository": {
     "type": "git",
     "url": "git@github.com:evernym/verity-sdk.git"
   },
-  "license" : "Apache-2.0",
+  "license": "Apache-2.0",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha",

@@ -6,7 +6,7 @@
 
   <groupId>com.evernym.verity</groupId>
   <artifactId>verity-sdk</artifactId>
-  <version>0.1.15-SNAPSHOT</version>
+  <version>0.0.0-SNAPSHOT</version>
 
   <name>Verity SDK</name>
   <description>The official Java SDK for Evernym's Verity</description>
@@ -18,6 +18,14 @@
     <name>Evernym, Inc.</name>
     <url>https://www.evernym.com/products/</url>
   </organization>
+
+  <developers>
+    <developer>
+      <id>dfisher</id>
+      <name>Devin Fisher</name>
+      <email>devin.fisher@evernym.com</email>
+    </developer>
+  </developers>
 
   <licenses>
     <license>
@@ -38,6 +46,57 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <gpg.skip>false</gpg.skip>
+        <gpg.passphrase>${env.OSSHR_GPG_PASSPHRASE}</gpg.passphrase>
+        <gpg.keyname>${env.OSSRH_GPG_SIGNING_KEY_NAME}</gpg.keyname>
+        <repository.id>ossrh</repository.id>
+        <repository.url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</repository.url>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.8</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>false</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <gpgArguments> <!-- Not totally sure why this is needed but it stops gpg from launching prompt for passphrase -->
+                <arg>--pinentry-mode</arg>
+                <arg>loopback</arg>
+              </gpgArguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <repositories>
     <repository>
@@ -102,90 +161,33 @@
   </reporting>
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-          <configuration>
-            <parallel>all</parallel>
-            <useUnlimitedThreads>true</useUnlimitedThreads>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.7.9</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>prepare-agent</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>generate-code-coverage-report</id>
-              <phase>test</phase>
-              <goals>
-                <goal>report</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-pmd-plugin</artifactId>
-          <configuration>
-            <failOnViolation>true</failOnViolation> <!-- this is actually true by default, but can be disabled -->
-            <printFailingErrors>true</printFailingErrors>
-            <excludeFromFailureFile>exclude-pmd.properties</excludeFromFailureFile>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>check</goal>
-                <goal>cpd-check</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.1</version>
+        <configuration>
+          <parallel>all</parallel>
+          <useUnlimitedThreads>true</useUnlimitedThreads>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <failOnViolation>true</failOnViolation> <!-- this is actually true by default, but can be disabled -->
+          <printFailingErrors>true</printFailingErrors>
+          <excludeFromFailureFile>exclude-pmd.properties</excludeFromFailureFile>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+              <goal>cpd-check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -203,14 +205,26 @@
           <reportOutputDirectory>${project.basedir}/doc/_build</reportOutputDirectory>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
   <distributionManagement>
     <repository>
-      <id>io.cloudrepo</id> <!-- Must Match the Unique Identifier in settings.xml -->
-      <name>Evernym Maven Dev</name>
-      <url>https://evernym.mycloudrepo.io/repositories/evernym-dev</url>
+      <id>${repository.id}</id>
+      <url>${repository.url}</url>
     </repository>
   </distributionManagement>
 </project>

@@ -1,53 +1,4 @@
-
-.kaniko-build:
-  only:
-    refs:
-      - branches
-      - master
-      - push
-  tags:
-    - docker-machine
-    - micro
-  stage: docker-images
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  script:
-    - install -Dv /dev/null /kaniko/.docker/config.json
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - |
-        echo "-----BEGIN CERTIFICATE-----
-        MIIFJTCCAw2gAwIBAgIUMI0Z8YSLeRq8pZks40O3Dq2m8TIwDQYJKoZIhvcNAQEL
-        BQAwGjEYMBYGA1UEAxMPRXZlcm55bSBSb290IENBMB4XDTE3MTAxMTIwMTAxMFoX
-        DTQ3MTAwNDIwMTAzOVowGjEYMBYGA1UEAxMPRXZlcm55bSBSb290IENBMIICIjAN
-        BgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1kjmtmMfLJfsqUNaco44N3brW8Vu
-        b02lAeEwbxc65mwfAG8kAjW7kYhI/fDXFOYXUvoa3Dg7bFeEatdIjHOahZssGM27
-        HsQZ4PfRhPE6HtXFszmDwXWuEekVxoyueTqL7ExnNZ+BRTXvPfm5nw1E7L3o3xHF
-        GSOtWFCyHfKd1LwMKzAVSjxlawEZnfk3WK3NxrC4UYMlQaDme7m3rCMfO+KBQk69
-        bFXsgn6/EihVeQ8T1+T8gogofzh5b4Z7kS6e6GMqotbGFg4agejkRVsIglSpaQLk
-        2Ztn/MP1dwgyvO4uvplB4sxZSC2FhhovlwPETmbKsnpj020+m0+YU4FPKwjroMiH
-        tP//YqiNKsLxtjhffW7XFToyy0qQttW5RMWnyx4MXs9Hwcy29gY1izeGMSzz3zV5
-        HG8JSJikuYbYiGJRVS0egovkVjja6lrVk0Q4Hm5pbw4l7LYCd6bkDLMsRaS1QnWs
-        9iz6XEf5SpIu1FuqHmlhj1ABehUyGIg5oC6egML3q78yk0mCW523qMFa9Kjnk871
-        mmXSCn3p/3DCrwWYfpcibxtVaKyJj6ISYIcl+Zu65Uzmhf+nj56x3gkNgEOva7JS
-        Xge+FxPxsaXBGyeSH09nNIoNmh/UucuzpNY2UyCpJuqXHtR5jaACSdsqNxG8tcDg
-        K9v98D/DFiShghECAwEAAaNjMGEwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQF
-        MAMBAf8wHQYDVR0OBBYEFOrH4oUpB94gNDNqdGG92kdVZ3qkMB8GA1UdIwQYMBaA
-        FOrH4oUpB94gNDNqdGG92kdVZ3qkMA0GCSqGSIb3DQEBCwUAA4ICAQCwjN3ggZ98
-        BXT39fKkCX3FHb0++aFcIyMKWrcZIpYrl3GoZsNKZK4QNQ+uJOP8xmqgyrCoMfch
-        VIGPQ0RDN/IzqCLhc/U3pDmk2hXa3xTxD3gpCQZ6Bz04KlcLfZd5jzbI741bVDyF
-        a1n46bEyuqV4SsNJWI/FGokJCNcZH66njBQBaQAccZ7xB9vWU9yjIYtGQDDvSm6J
-        SC2knrQri0vv4QLUSc1LS6AlWWSQxcCpcdO+OzIFGsf5bVmYN6J4R3COY5NyQ+yn
-        pOSN2NOh5h3ZrYAxm3i4Il0orVLveVcTVDGeAgZUII4YLJi/01RHGqit3aCuApSh
-        bzFTZ5FldFss+JX9iAhqpFDbHLgae0F3QmYEnGilt/PzO4j23QJo3FZKeruQLH7P
-        L9aOgN6S2+Akbbm9YTc59yzU5TZMxANwTdaYFWFqk/8nKgZiBR1l8jnWTlWnm86A
-        qVssH3DLKwiYrWSOHRzGuN5BmPXxxtKQJlwAXt0wJE3puUkaJSRo7CJQ3QNMoKDe
-        OjzXc9WvkFIXr3Eui8UTiHB/WT7N4o8hmVN404akGfWE0YNwRVfWpjGdew6g0tZi
-        lFnjUUk49av67um43JHcinT5NFPuleZzkjaL/D8ueOrjXQDy05rwVdgmw9pXog4B
-        Tw6APXtEnjfD2H8HOpOX/7ef4gWK0O1Q7A==
-        -----END CERTIFICATE-----" >> /kaniko/ssl/certs/ca-certificates.crt
-    - eval $DOCKER_PREP_COMMAND
-    - /kaniko/executor --context $DOCKER_CONTEXT --dockerfile $DOCKERFILE_PATH --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME $(if [ $CI_COMMIT_REF_NAME == master ]; then echo --destination $CI_REGISTRY_IMAGE/$DOCKER_IMAGE_NAME:latest; fi)
+image: gitlab.corp.evernym.com:4567/dev/containers/build-sdk:a31083e8
 
 stages:
   - docker-images
@@ -56,56 +7,35 @@ stages:
   - doc
   - publish
 
-.tags:
-  tags:
-    - docker-machine
-    - micro
-
-.tags-large:
-  tags:
-    - docker-machine
-    - large
-
-.buildenv-docker-build:
-  extends: .kaniko-build
-  variables:
-    DOCKERFILE_PATH: '$CI_PROJECT_DIR/devops/dockerfiles/buildenv.dockerfile'
-    DOCKER_IMAGE_NAME: 'buildenv'
-    DOCKER_CONTEXT: '$CI_PROJECT_DIR/devops'
-    DOCKER_PREP_COMMAND: 'echo none'
-
-buildenv-docker-build:
-  extends: .buildenv-docker-build
-  only:
-    changes:
-      - devops/dockerfiles/buildenv.dockerfile
-
-buildenv-docker-build-manual:
-  extends: .buildenv-docker-build
-  when: manual
+variables:
+  DEV_BASE_VERSION: "0.4.0"
+  DEV_VERSION: '$DEV_BASE_VERSION-$CI_PIPELINE_IID-$CI_COMMIT_SHORT_SHA'
 
 .java-common:
   before_script:
-    - sed -i 's/-SNAPSHOT<\/version>/<\/version>/g' sdk/java-sdk/pom.xml
+    - cd sdk/java-sdk/
+    - mvn versions:set -DnewVersion=$DEV_VERSION
 
 java-test:
   stage: test
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
+  tags:
+    - docker-machine
+    - large
   extends:
     - .java-common
-    - .tags-large
   script:
-    - cd sdk/java-sdk/ && mvn pmd:check && mvn pmd:cpd-check && cd - # Java SDK linting
-    - cd sdk/java-sdk/ && mvn test && cd - # Java SDK unit tests
+    - mvn pmd:check # Java SDK linting
+    - mvn pmd:cpd-check # Java SDK linting
+    - mvn test # Java SDK unit tests
 
 java-package:
   stage: package
+  tags:
+    - docker-machine
+    - micro
   extends:
     - .java-common
-    - .tags
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   script:
-    - cd sdk/java-sdk/
     - mvn package -DskipTests
   artifacts:
     paths:
@@ -114,22 +44,22 @@ java-package:
 
 java-doc:
   stage: doc
+  tags:
+    - docker-machine
+    - micro
   extends:
     - .java-common
-    - .tags
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
   script:
-    - cd sdk/java-sdk/
     - mvn javadoc:javadoc
 
 java-publish:
   stage: publish
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
+  tags:
+    - docker-machine
+    - micro
   extends:
     - .java-common
-    - .tags
   script:
-    - cd sdk/java-sdk/
     - mvn --errors deploy --settings ./settings.xml -DskipTests
   dependencies:
     - java-package
@@ -140,20 +70,54 @@ java-publish:
     changes:
       - sdk/java-sdk/**/*
 
+java-release:
+  stage: publish
+  tags:
+    - s3docs
+    - docker-machine
+    - micro
+  extends:
+    - .java-common
+  before_script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
+    - gpg --batch --passphrase $OSSHR_GPG_PASSPHRASE --import $OSSRH_GPG_SIGNING_KEY
+  script:
+    - mvn versions:set -DnewVersion=$RELEASE_VERSION                          # set version to tagged version
+    - mvn clean deploy --settings ./settings.xml -DskipTests -P release             # deploy to sonatype OSSRH repo
+    - mvn javadoc:javadoc                                                     # build javadoc
+    - aws s3 sync doc/_build s3://developer.evernym.com/java/$RELEASE_VERSION # upload javadoc to s3
+  dependencies:
+    - java-package
+  when: manual
+  allow_failure: true
+  only:
+    refs:
+      - tags@dev/verity/verity-sdk
+
+.python-common:
+  before_script:
+    - cd sdk/python-sdk/
+    - echo "VERSION = '$DEV_VERSION'" > verity_sdk/version.py
+
 python-test:
   stage: test
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .python-common
   script:
-    - cd sdk/python-sdk/ && make lint && cd - # Python SDK linting
-    - cd sdk/python-sdk/ && pytest && cd - # Python SDK unit tests
+    - make lint # Python SDK linting
+    - pytest    # Python SDK unit tests
 
 python-package:
   stage: package
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .python-common
   script:
-    - cd sdk/python-sdk/
     - make build-artifacts
   artifacts:
     paths:
@@ -162,18 +126,22 @@ python-package:
 
 python-doc:
   stage: doc
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .python-common
   script:
-    - cd sdk/python-sdk/
     - make doc-build
 
 python-publish:
   stage: publish
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .python-common
   script:
-    - cd sdk/python-sdk/
     - make upload
   dependencies:
     - python-package
@@ -183,31 +151,65 @@ python-publish:
     changes:
       - sdk/python-sdk/**/*
 
+python-release:
+  stage: publish
+  tags:
+    - s3docs
+    - docker-machine
+    - micro
+  extends:
+    - .python-common
+  before_script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
+  script:
+    - echo "VERSION = '$RELEASE_VERSION'" > verity_sdk/version.py # set version to tagged version
+    - make upload-to-pypi # upload to pypi
+#    - make doc-build # build doc
+#    - aws s3 sync doc/_build s3://developer.evernym.com/python/$RELEASE_VERSION # upload javadoc to s3
+  dependencies:
+    - python-package
+  when: manual
+  allow_failure: true
+  only:
+    refs:
+      - tags@dev/verity/verity-sdk
+
+.nodejs-common:
+  before_script:
+    - cd sdk/nodejs-sdk/
+    - npm version --no-git-tag-version $DEV_VERSION
+
 nodejs-test:
   stage: test
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .nodejs-common
   script:
-    - cd sdk/nodejs-sdk/
     - npm install
     - npm run lint # Node.js linting
     - npm test # Node.js testing
 
 nodejs-doc:
   stage: doc
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .nodejs-common
   script:
-    - cd sdk/nodejs-sdk/
     - npm install
     - npm run doc-build
 
 nodejs-publish:
   stage: publish
-  image: $CI_REGISTRY_IMAGE/buildenv:$CI_COMMIT_REF_NAME
-  extends: .tags
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .nodejs-common
   script:
-    - cd sdk/nodejs-sdk/
     - npm run package
     - npm run publish
   only:
@@ -215,3 +217,25 @@ nodejs-publish:
       - master@dev/verity/verity-sdk
     changes:
       - sdk/nodejs-sdk/**/*
+
+nodejs-release:
+  stage: publish
+  tags:
+    - docker-machine
+    - micro
+    - s3docs
+  extends:
+    - .nodejs-common
+  before_script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
+  script:
+    - npm version --no-git-tag-version $RELEASE_VERSION                         # set version to tagged version
+    - npm install                                                               # pre for publish
+    - npm publish                                                               # publish to npm
+#    - npm run doc-build                                                         # build doc
+#    - aws s3 sync doc/_build s3://developer.evernym.com/nodejs/$RELEASE_VERSION # upload javadoc to s3
+  when: manual
+  allow_failure: true
+  only:
+    refs:
+      - tags@dev/verity/verity-sdk
