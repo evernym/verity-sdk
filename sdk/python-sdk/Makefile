@@ -1,5 +1,5 @@
 REPO=https://kraken.corp.evernym.com
-VERSION=$(shell python3 verity_sdk/print_version.py)
+VERSION=$(shell python3 setup.py -q --version 2> /dev/null)
 FILE="dist/verity-sdk-${VERSION}.tar.gz"
 FILENAME="verity-sdk_${VERSION}.tar.gz"
 
@@ -18,12 +18,6 @@ build-artifacts:
 
 upload:
 	make build-artifacts
-	cat verity_sdk/print_version.py
-	cat verity_sdk/version.py
-	shell python3 verity_sdk/print_version.py
-	echo "${VERSION}"
-	echo "${FILE}"
-	echo "${FILENAME}"
 	curl -if -u "$${KRK_USERNAME}:$${KRK_PASSWORD}" -X POST -F "file=@${FILE};filename=${FILENAME}" "${REPO}/repo/python/upload"
 
 upload-to-pypi:
