@@ -42,6 +42,8 @@
     <div id="app" class="w3-container w3-padding" style="text-align: center;">
         <image id="logo" v-bind:src="institutionLogoURL" style="max-height:100px"/>
         <h2 id="org" style="text-align: center;">{{institutionName}}</h2>
+
+        <!-- Hidden Modal that will present QR code for a new connection-->
         <div id="invite-detail-modal" class="w3-modal">
             <div class="w3-modal-content">
                 <div class="w3-container">
@@ -50,6 +52,7 @@
                 </div>
               </div>
         </div>
+        <!-- Button to delete all data from browser storage and reset VueJS to initial settings -->
         <button class="w3-btn w3-border w3-white" style="position: absolute;top:3%;left:90%;" v-on:click="resetBrowserStorage()">Reset All</button>
         <br>
         <div id="configuration" class="w3-container w3-padding">
@@ -105,7 +108,7 @@
         <div id="write-schemas" class="w3-container w3-padding">
             <button id="schemas" v-on:click="openTab('write-schemas')" class="w3-btn w3-block w3-green">Schemas</button>
             <div id="write-schemas-content" class="w3-hide hidden-content w3-row">
-                <p>NOTE: Make sure you that Issuer DID and VerKey is written to the ledger or you won't be able to write a schema.</p>
+                <p>NOTE: Make sure that Issuer DID and VerKey is written to the ledger or you won't be able to write a schema.</p>
                 <div class="w3-half w3-padding">
                     <h4>Current Schemas</h4>
                     <table class='w3-table w3-bordered'>
@@ -513,6 +516,7 @@
       }
     },
     methods: {
+      // changes color of tabs to selected accent color
       changeColor: function (event) {
         var buttons = document.getElementsByClassName('w3-btn w3-block')
         for (var i = 0; i < buttons.length; i++) {
@@ -521,6 +525,7 @@
         }
         sessionStorage.accentColor = this.accentColor
       },
+      // sets color of tabs to the accent color stored in browser on Vue.js page refresh
       refreshColor: function (color) {
         var buttons = document.getElementsByClassName('w3-btn w3-block')
         for (var i = 0; i < buttons.length; i++) {
@@ -528,10 +533,12 @@
           buttons[i].className = 'w3-btn + w3-block ' + substitute
         }
       },
+      // prints time when webhook URL message was received in the format hh24:mm:ss
       getTime: function () {
         const time = new Date()
         return time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
       },
+      // Sends request to B/E to register Issuer DID/Verkey on Sovrin Staging Net via Sovrin SelfServe portal
       registerDID: async function (did, verkey) {
         var response = await axios.post('/registerDID', {
           network: 'stagingnet',
@@ -547,6 +554,8 @@
         this.issuerVerKey = verkey
         this.spinners.setupIssuer = false
       },
+      // opens selected tab
+      // does not allow to open Tabs for Schema/CredDef creation or credential issuance if Issuer keys are not created
       openTab: function (tabName) {
         if (['creds', 'cred-defs', 'write-schemas'].includes(tabName) && (this.issuerDID === '')) {
           alert('You need to run Setup Issuer first')
@@ -560,15 +569,15 @@
           sessionStorage.verityDemoCurrentTab = tabName
         }
       },
-      setupSocket: function () { // CONFIGURE MESSAGE HANDLERS HERE!
+      // IN THIS SECTION WE CONFIGURE MESSAGE HANDLERS FOR MESSAGES RECEIVED VIA WEBHOOK URL
+      setupSocket: function () {
         this.socket = io()
         this.socket.on('message', async (message) => {
           this.messages.unshift({
             content: message,
             time: this.getTime()
           })
-
-          // message = JSON.parse(message)
+          // Handle received message differently based on message type
           switch (message['@type']) {
             case 'did:sov:123456789abcdefghi1234;spec/write-schema/0.6/status-report':
               this.schemas.push({
@@ -674,9 +683,11 @@
           }
         })
       },
+      // get uuid from B/E (used for generation of threadId or sessionId)
       uuid: async function () {
         return (await axios.get('/uuid')).data
       },
+      // register sessionID with B/E
       updateSocketSession: async function () {
         // Set sessionID if not set
         if (!this.sessionId) {
@@ -691,6 +702,7 @@
           console.log('socket not yet created')
         }
       },
+      // Restore stored values from browser storage (if any)
       restoreDataFromBrowserStorage: async function () {
         if (sessionStorage.verityDemoData) {
           const dataInBrowser = JSON.parse(sessionStorage.verityDemoData)
@@ -703,6 +715,7 @@
           this.refreshColor(this.accentColor)
         }
       },
+      // store values defined in itemsToStoreInBrowser array to browser storage
       updateDataInBrowserStorage: function () {
         const verityDemoData = {}
         for (const key of this.itemsToStoreInBrowser) {
@@ -710,6 +723,7 @@
         }
         sessionStorage.verityDemoData = JSON.stringify(verityDemoData)
       },
+      // Clear browser storage ("Reset all")
       resetBrowserStorage: async function () {
         delete sessionStorage.verityDemoData
 
@@ -717,6 +731,7 @@
         await this.updateSocketSession()
         location.reload()
       },
+      // Initiates setup issuer logic which will create issuer DID/Verkey
       setupIssuer: async function () {
         try {
           this.spinners.setupIssuer = true
@@ -725,6 +740,7 @@
           this.spinners.setupIssuer = false
         }
       },
+      // Send data to B/E based on which B/E will initiate REST API call to VAS
       sendMessage: async function (msgFamily, msgFamilyVersion, msgName, message, threadId, qualifier) {
         if (!threadId) {
           threadId = await this.uuid()
@@ -738,6 +754,7 @@
           message: message
         })
       },
+      // updates congifuration (logoUrl, name) on VAS
       updateConfig: async function () {
         this.spinners.configuration = true
         try {
@@ -760,9 +777,12 @@
         }
         this.spinners.configuration = false
       },
+      // This will update webhook URL endpoint on VAS
       updateEndpoint: async function () {
         try {
+          // Get endpoint for F/E session from B/E
           this.webhookURL = (await axios.post('/webhookUrl', { sessionId: this.sessionId })).data
+          // Prepare message to update endpoint on VAS
           const message = {
             comMethod: {
               id: 'webhook',
@@ -773,12 +793,14 @@
               }
             }
           }
+          // sent message to B/E to update webhookURL endpoint. B/E will then initiate REST API call to VAS
           await this.sendMessage('configs', '0.6', 'UPDATE_COM_METHOD', message)
         } catch (err) {
           console.error(err)
           console.error('Failed to update endpoint.')
         }
       },
+      // get VerityURL and domain DID from B/E so that they could be shown in Configuration tab
       getConfig: async function () {
         try {
           const response = await axios.get('/getConfig')
@@ -795,7 +817,7 @@
           const message = {
             name: this.schema.name,
             version: this.schema.version,
-            attrNames: this.schema.attrs.replace(/ /g, '').split(',') // TODO: Doesn't support attr names with spaces
+            attrNames: this.schema.attrs.split(',')
           }
           await this.sendMessage('write-schema', '0.6', 'write', message)
         } catch (err) {
@@ -962,22 +984,19 @@
         }
       }
     },
+    // Logic to run when Vue.js application is started
     mounted: async function () {
       await this.restoreDataFromBrowserStorage()
       this.setupSocket()
-
-      // Open current tab
       if (sessionStorage.verityDemoCurrentTab) {
         this.openTab(sessionStorage.verityDemoCurrentTab)
       }
-    //   } else {
-    //     this.openTab('configuration')
-    //   }
       await this.updateSocketSession()
       await this.updateEndpoint()
       await this.getConfig()
       this.updateDataInBrowserStorage()
     },
+    // Logic to run when Vue.js application is updated
     updated: function () {
       this.updateDataInBrowserStorage()
     }
