@@ -32,7 +32,7 @@
     <dependency>
       <groupId>com.evernym.verity</groupId>
       <artifactId>verity-sdk</artifactId>
-      <version>0.1.15-SNAPSHOT</version>
+      <version>0.0.0-SNAPSHOT</version> <!-- this is a local SNAPSHOT, this should be point to public release once we have released it -->
     </dependency>
     <dependency>
       <groupId>net.glxn</groupId>

@@ -74,6 +74,7 @@ java-publish:
       - "master@dev/verity/verity-sdk"
     changes:
       - sdk/java-sdk/**/*
+      - .gitlab-ci.yml
 
 java-release:
   stage: publish
@@ -157,6 +158,7 @@ python-publish:
       - "master@dev/verity/verity-sdk"
     changes:
       - sdk/python-sdk/**/*
+      - .gitlab-ci.yml
 
 python-release:
   stage: publish
@@ -224,6 +226,7 @@ nodejs-publish:
       - master@dev/verity/verity-sdk
     changes:
       - sdk/nodejs-sdk/**/*
+      - .gitlab-ci.yml
 
 nodejs-release:
   stage: publish
