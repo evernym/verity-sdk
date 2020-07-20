@@ -37,7 +37,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 
 # Copy SDKs into the container
 COPY /sdk/ /sdk
-COPY /docs/Getting-Started/docker_scripts/ /docker_scripts/
+COPY /docs/getting-started/docker_scripts/ /docker_scripts/
 
 # Install Python3 packages
 WORKDIR /sdk/python-sdk
