@@ -2,10 +2,22 @@
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
 
+/**
+ * An interface for controlling a 1.0 Relationship protocol.
+ */
 module.exports = class Relationship extends Protocol {
   constructor (forRelationship = null, threadId = null, label = null, logoUrl = null) {
+    /**
+     * The name for the message family.
+     */
     const msgFamily = 'relationship'
+    /**
+     * The version for the message family.
+     */
     const msgFamilyVersion = '1.0'
+    /**
+     * The qualifier for the message family. Uses Evernym's qualifier.
+     */
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
@@ -22,6 +34,13 @@ module.exports = class Relationship extends Protocol {
     this.goal = 'To establish a peer-to-peer messaging relationship'
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #create
+     */
   async createMsg (context) {
     var msg = this._getBaseMessage(this.msgNames.CREATE)
     msg = this._addThread(msg)
@@ -32,14 +51,33 @@ module.exports = class Relationship extends Protocol {
     return msg
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #create
+     */
   async createMsgPacked (context) {
     return this.getMessageBytes(context, await this.createMsg(context))
   }
 
+  /**
+     * Directs verity-application to create a new relationship
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async create (context) {
     await this.sendMessage(context, await this.createMsgPacked(context))
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #connectionInvitation
+     */
   async connectionInvitationMsg (context) {
     var msg = this._getBaseMessage(this.msgNames.CONNECTION_INVITATION)
     msg['~for_relationship'] = this.forRelationship
@@ -47,10 +85,22 @@ module.exports = class Relationship extends Protocol {
     return msg
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #connectionInvitation
+     */
   async connectionInvitationMsgPacked (context) {
     return this.getMessageBytes(context, await this.connectionInvitationMsg(context))
   }
 
+  /**
+     * Ask for aries invitation from the verity-application agent for the relationship created by this protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async connectionInvitation (context) {
     await this.sendMessage(context, await this.connectionInvitationMsgPacked(context))
   }

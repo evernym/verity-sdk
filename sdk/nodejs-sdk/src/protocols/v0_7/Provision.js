@@ -3,16 +3,31 @@ const utils = require('../../utils')
 const Protocol = require('../Protocol')
 const indy = require('indy-sdk')
 
+/**
+ * An interface for controlling a 0.7 Provision protocol.
+ */
 module.exports = class Provision extends Protocol {
 /**
  * Provision 0.7 protocol interface class
  */
   constructor (threadId = null, token = null) {
+    /**
+     * The name for the message family.
+     */
     const msgFamily = 'agent-provisioning'
+    /**
+     * The version for the message family.
+     */
     const msgFamilyVersion = '0.7'
+    /**
+     * The qualifier for the message family. Uses Evernym's qualifier.
+     */
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
+    /**
+     Name for 'create-edge-agent' control message
+     */
     this.msgNames.CREATE_EDGE_AGENT = 'create-edge-agent'
 
     this.token = JSON.parse(token)
@@ -44,6 +59,13 @@ module.exports = class Provision extends Protocol {
     return utils.unpackMessage(context, jweBytes)
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #provision
+     */
   provisionMsg (context) {
     const msg = this._getBaseMessage(this.msgNames.CREATE_EDGE_AGENT)
     msg.requesterVk = context.sdkVerKey
@@ -53,6 +75,13 @@ module.exports = class Provision extends Protocol {
     return msg
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #provision
+     */
   async provisionMsgPacked (context) {
     const msg = this.provisionMsg(context)
     return utils.packMessage(
@@ -65,6 +94,11 @@ module.exports = class Provision extends Protocol {
     )
   }
 
+  /**
+     * Sends the connection create message to Verity
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return new Context with provisioned details
+     */
   async provision (context) {
     if (this.token != null) {
       await this.validateToken(this.token)
