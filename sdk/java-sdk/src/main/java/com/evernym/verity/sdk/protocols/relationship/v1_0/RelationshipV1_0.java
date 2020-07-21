@@ -96,7 +96,32 @@ public interface RelationshipV1_0 extends MessageFamily {
      */
     byte[] connectionInvitationMsgPacked(Context context) throws IOException, VerityException;
 
+    /**
+     * Ask for aries out of band invitation from the verity-application agent for the relationship created by this protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
     void outOfBandInvitation(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #connectionInvitation
+     */
     JSONObject outOfBandInvitationMsg(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #connectionInvitation
+     */
     byte[] outOfBandInvitationMsgPacked(Context context) throws IOException, VerityException;
 }

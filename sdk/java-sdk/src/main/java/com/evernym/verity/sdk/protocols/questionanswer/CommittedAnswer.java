@@ -21,6 +21,7 @@ public class CommittedAnswer {
      * @param questionText The main text of the question (included in the message the Connect.Me user signs with their private key)
      * @param questionDetail Any additional information about the question
      * @param validResponses The given possible responses.
+     * @param signatureRequired if a signature must be included with the answer
      * @return 1.0 CommittedAnswer object
      */
     public static CommittedAnswerV1_0 v1_0(String forRelationship,
@@ -36,7 +37,7 @@ public class CommittedAnswer {
      * the asked question
      *
      * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
-     * @param threadId The thread id of the already started protocol
+     * @param threadId the thread id of the already started protocol
      * @param answer The given answer from the list of valid responses given in the question
      * @return 1.0 CommittedAnswer object
      */
@@ -52,7 +53,7 @@ public class CommittedAnswer {
      * threadId. This object can only check status of the protocol.
      *
      * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
-     * @param threadId The thread id of the already started protocol
+     * @param threadId the thread id of the already started protocol
      * @return 1.0 CommittedAnswer object
      */
     public static CommittedAnswerV1_0 v1_0(String forRelationship,

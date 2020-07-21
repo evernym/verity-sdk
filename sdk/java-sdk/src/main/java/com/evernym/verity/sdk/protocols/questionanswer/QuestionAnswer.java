@@ -35,7 +35,7 @@
 //     * the asked question
 //     *
 //     * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
-//     * @param threadId The thread id of the already started protocol
+//     * @param threadId the thread id of the already started protocol
 //     * @param answer The given answer from the list of valid responses given in the question
 //     * @return 1.0 QuestionAnswer object
 //     */
@@ -50,7 +50,7 @@
 //     * threadId. This object can only check status of the protocol.
 //     *
 //     * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
-//     * @param threadId The thread id of the already started protocol
+//     * @param threadId the thread id of the already started protocol
 //     * @return 1.0 QuestionAnswer object
 //     */
 //    public static QuestionAnswerV1_0 v1_0(String forRelationship,
