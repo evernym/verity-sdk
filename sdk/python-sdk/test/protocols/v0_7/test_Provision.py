@@ -38,7 +38,7 @@ async def test_process_message():
             'agentVerKey': '38fBEUX2sUQF7ZsY6epz1cbCvfBfDbQghUZUzFP6JChE'
         }
 
-    p.send_to_verity = mock_send
+    p._send_to_verity = mock_send
 
     context2 = await p.provision(context)
     assert context2.domain_did == '4ut8tgCBdUMCYZrJh5JS4o'

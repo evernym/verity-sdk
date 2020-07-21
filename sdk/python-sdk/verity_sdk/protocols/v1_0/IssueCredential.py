@@ -6,17 +6,34 @@ from verity_sdk.utils.Exeptions import WrongSetupException
 
 
 class IssueCredential(Protocol):
+    """
+    The IssueCredential protocol allows one self-sovereign party to issue a verifiable credential to another
+    self-sovereign party. On the verity-application, these protocols use `anoncreds` as defined in the
+    Hyperledger-indy project. In the verity-sdk, the interface presented by these objects allow key-value attributes
+    to be issued to parties that have a DID-comm channel.
+    """
     MSG_FAMILY = 'issue-credential'
+    """the family name for the message family"""
     MSG_FAMILY_VERSION = '1.0'
+    """the version for the message family"""
 
     PROPOSE = 'propose'
+    """Name for 'propose' control message"""
     OFFER = 'offer'
+    """Name for 'offer' control message"""
     REQUEST = 'request'
+    """Name for 'request' control message"""
     ISSUE = 'issue'
+    """Name for 'issue' control message"""
     REJECT = 'reject'
+    """Name for 'reject' control message"""
     STATUS = 'status'
+    """Name for 'status' control message"""
+
     SENT = 'sent'
+    """Name for 'sent' signal message"""
     ACCEPT_REQUEST = 'accept-request'
+    """Name for 'accept-request' signal message"""
 
     def __init__(self,
                  for_relationship: str,
@@ -26,6 +43,17 @@ class IssueCredential(Protocol):
                  comment: str = None,
                  price: str = '0',
                  auto_issue: bool = False):
+        """
+        Args:
+            for_relationship (str): the relationship identifier (DID) for the pairwise relationship that will be used
+            thread_id (str): The thread id of the already started protocol
+            cred_def_id (str): the Credential Definition that will be used to issue the credential
+            values (Dict[str, str]): a map of key-value pairs that make up the attributes in the credential
+            comment (str): a human readable comment that is presented before issuing the credential
+            price (str): (possible future feature) can and should be left un-set
+            auto_issue (bool): flag for automatically issuing credential after receiving response for receiver
+                (skip getting signal for credential request and waiting for issue control message)
+        """
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
@@ -38,10 +66,28 @@ class IssueCredential(Protocol):
         self.cred_def_id = cred_def_id
         self.values = values
         self.comment = comment
-        self.price = price
+        self.price = '0'  # price should be 0 regardless of what is set (until we support price)
         self.auto_issue = auto_issue
 
+    async def propose_credential(self, context):
+        """
+        Directs verity-application to send credential proposal.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.propose_credential_msg_packed(context))
+
     def propose_credential_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         if not self.created:
             raise WrongSetupException('Unable to propose credentials when NOT starting the interaction')
 
@@ -54,12 +100,36 @@ class IssueCredential(Protocol):
         return msg
 
     async def propose_credential_msg_packed(self, context):
+        """
+        Creates and packages message without sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
         return await self.get_message_bytes(context, self.propose_credential_msg())
 
-    async def propose_credential(self, context):
-        await self.send_message(context, await self.propose_credential_msg_packed(context))
+    async def offer_credential(self, context):
+        """
+        Directs verity-application to send credential offer.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.offer_credential_msg_packed(context))
 
     def offer_credential_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         if not self.created:
             raise WrongSetupException('Unable to offer credentials when NOT starting the interaction')
 
@@ -74,12 +144,36 @@ class IssueCredential(Protocol):
         return msg
 
     async def offer_credential_msg_packed(self, context):
+        """
+        Creates and packages message without sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
         return await self.get_message_bytes(context, self.offer_credential_msg())
 
-    async def offer_credential(self, context):
-        await self.send_message(context, await self.offer_credential_msg_packed(context))
+    async def request_credential(self, context):
+        """
+        Directs verity-application to send credential request.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.request_credential_msg_packed(context))
 
     def request_credential_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         msg = self._get_base_message(self.REQUEST)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -88,12 +182,36 @@ class IssueCredential(Protocol):
         return msg
 
     async def request_credential_msg_packed(self, context):
+        """
+        Creates and packages message without sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
         return await self.get_message_bytes(context, self.request_credential_msg())
 
-    async def request_credential(self, context):
-        await self.send_message(context, await self.request_credential_msg_packed(context))
+    async def issue_credential(self, context):
+        """
+        Directs verity-application to issue credential and send it
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.issue_credential_msg_packed(context))
 
     def issue_credential_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         msg = self._get_base_message(self.ISSUE)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -101,12 +219,36 @@ class IssueCredential(Protocol):
         return msg
 
     async def issue_credential_msg_packed(self, context):
+        """
+        Creates and packages message without sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
         return await self.get_message_bytes(context, self.issue_credential_msg())
 
-    async def issue_credential(self, context):
-        await self.send_message(context, await self.issue_credential_msg_packed(context))
+    async def reject(self, context):
+        """
+        Directs verity-application to reject the credential protocol
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.reject_msg_packed(context))
 
     def reject_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         msg = self._get_base_message(self.REJECT)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -114,19 +256,49 @@ class IssueCredential(Protocol):
         return msg
 
     async def reject_msg_packed(self, context):
+        """
+        Creates and packages message without sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
         return await self.get_message_bytes(context, self.reject_msg())
 
-    async def reject(self, context):
-        await self.send_message(context, await self.reject_msg_packed(context))
+    async def status(self, context):
+        """
+        Ask for status from the verity-application agent
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.status_msg_packed(context))
 
     def status_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         msg = self._get_base_message(self.STATUS)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         return msg
 
     async def status_msg_packed(self, context):
-        return await self.get_message_bytes(context, self.status_msg())
+        """
+        Creates and packages message without sending it.
 
-    async def status(self, context):
-        await self.send_message(context, await self.status_msg_packed(context))
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
+        return await self.get_message_bytes(context, self.status_msg())

@@ -1,2 +1,4 @@
 class WrongSetupException(Exception):
-    pass
+    """
+    Thrown when the protocol is not properly setup for the given action
+    """
