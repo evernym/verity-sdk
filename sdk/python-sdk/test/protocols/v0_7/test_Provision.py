@@ -38,6 +38,7 @@ async def test_process_message():
             'agentVerKey': '38fBEUX2sUQF7ZsY6epz1cbCvfBfDbQghUZUzFP6JChE'
         }
 
+    # pylint: disable=protected-access
     p._send_to_verity = mock_send
 
     context2 = await p.provision(context)
