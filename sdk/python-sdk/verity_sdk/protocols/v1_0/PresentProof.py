@@ -4,13 +4,24 @@ from verity_sdk.utils.Exeptions import WrongSetupException
 
 
 class PresentProof(Protocol):
+    """
+    The PresentProof protocol allows one self-sovereign party ask another self-sovereign party for a private
+    and verifiable presentation from credentials they hold. This request can be restricted to certain selectable
+    restrictions.
+    """
     MSG_FAMILY = 'present-proof'
+    """the family name for the message family"""
     MSG_FAMILY_VERSION = '1.0'
+    """the version for the message family"""
 
     PROOF_REQUEST = 'request'
+    """Name for 'request' control message"""
     STATUS = 'status'
+    """Name for 'status' control message"""
     REJECT = 'reject'
+    """Name for 'reject' control message"""
     PRESENTATION_RESULT = 'presentation-result'
+    """Name for 'presentation-result' signal message"""
 
     def __init__(self,
                  for_relationship: str,
@@ -19,6 +30,14 @@ class PresentProof(Protocol):
                  proof_attrs=None,
                  proof_predicates=None
                  ):
+        """
+        Args:
+            for_relationship (str): the relationship identifier (DID) for the pairwise relationship that will be used
+            thread_id (str): the thread id of the already started protocol
+            name (str): a human readable name for the given request
+            proof_attrs (List[Dict]): an array of attribute based restrictions
+            proof_predicates (List[Dict]): an array of predicate based restrictions
+        """
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
@@ -31,7 +50,25 @@ class PresentProof(Protocol):
         self.proof_predicates = proof_predicates
         self.created = thread_id is None
 
+    async def request(self, context):
+        """
+        Directs verity-application to request a presentation of proof.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.request_msg_packed(context))
+
     def request_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         if not self.created:
             raise WrongSetupException('Unable to request presentation when NOT starting the interaction')
         msg = self._get_base_message(self.PROOF_REQUEST)
@@ -44,24 +81,72 @@ class PresentProof(Protocol):
         return msg
 
     async def request_msg_packed(self, context):
+        """
+        Creates and packages message without sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
         return await self.get_message_bytes(context, self.request_msg())
 
-    async def request(self, context):
-        await self.send_message(context, await self.request_msg_packed(context))
+    async def status(self, context):
+        """
+        Ask for status from the verity-application agent
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.status_msg_packed(context))
 
     def status_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         msg = self._get_base_message(self.STATUS)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         return msg
 
     async def status_msg_packed(self, context):
+        """
+        Creates and packages message without sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
         return await self.get_message_bytes(context, self.status_msg())
 
-    async def status(self, context):
-        await self.send_message(context, await self.status_msg_packed(context))
+    async def reject(self, context, reason):
+        """
+        Directs verity-application to reject this presentation proof protocol
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.reject_msg_packed(context, reason))
 
     def reject_msg(self, reason):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         msg = self._get_base_message(self.REJECT)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
@@ -70,7 +155,13 @@ class PresentProof(Protocol):
         return msg
 
     async def reject_msg_packed(self, context, reason):
-        return await self.get_message_bytes(context, self.reject_msg(reason))
+        """
+        Creates and packages message without sending it.
 
-    async def reject(self, context, reason):
-        await self.send_message(context, await self.reject_msg_packed(context, reason))
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
+        return await self.get_message_bytes(context, self.reject_msg(reason))

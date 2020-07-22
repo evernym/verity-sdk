@@ -135,7 +135,7 @@ async function createConnection () {
   // Step 1
 
   // Constructor for the Connecting API
-  const connecting = new sdk.protocols.v1_0.Connecting(null, uuidv4(), null, true)
+  const connecting = new sdk.protocols.v1_0.Connecting(null, null, uuidv4(), null, true)
   var spinner = new Spinner('Waiting to start connection ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for the response to the request to start the Connecting protocol.

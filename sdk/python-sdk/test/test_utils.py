@@ -2,7 +2,7 @@ import json
 from uuid import uuid4 as uuid
 import pytest
 from indy import wallet
-from verity_sdk.utils import prepare_forward_message, pack_message_for_verity, \
+from verity_sdk.utils import _prepare_forward_message, pack_message_for_verity, \
     unpack_forward_message, get_message_type, get_problem_report_message_type, \
     EVERNYM_MSG_QUALIFIER, get_status_message_type
 from verity_sdk.utils.Context import Context
@@ -93,7 +93,7 @@ async def test_v01_to_v02():
 def test_prepare_forward_message():
     test_did = '123'
     message = b'{"hello": "world"}'
-    msg = prepare_forward_message(test_did, message)
+    msg = _prepare_forward_message(test_did, message)
     msg = json.loads(msg)
 
     assert msg['@type'] == 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD'

@@ -67,7 +67,7 @@ public class PresentProof {
      * threadId. This object can only check status of the protocol.
      *
      * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
-     * @param threadId The thread id of the already started protocol
+     * @param threadId the thread id of the already started protocol
      * @return 1.0 PresentProof object
      */
     public static PresentProofV1_0 v1_0(String forRelationship,

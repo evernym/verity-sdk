@@ -10,7 +10,7 @@ import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
  * a public identity that can be used to issue credentials. This identity and it's keys are created and held on the
  * verity-application. The public elements (DID and verkey) are communicated back via a signal message. The setup
  * process encapsulated by this protocol must be completed before other issuing activities (write-schema, write-cred-def
- * and issue-credential)can be done.
+ * and issue-credential) can be done.
  */
 public class IssuerSetup {
     private IssuerSetup() {}

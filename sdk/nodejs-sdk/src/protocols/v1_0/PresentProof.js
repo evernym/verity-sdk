@@ -1,7 +1,30 @@
 const Protocol = require('../Protocol')
 const utils = require('../../utils')
-
-module.exports = class PresentProofV1x0 extends Protocol {
+/**
+ * An interface for controlling a 1.0 PresentProof protocol.
+ * @extends Protocol
+ * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/4fae574c03f9f1013db30bf2c0c676b1122f7149/features/0037-present-proof" target="_blank" rel="noopener noreferrer">Aries 0037: Present Proof Protocol 1.0</a>
+ */
+class PresentProofV1x0 extends Protocol {
+  /**
+  * Constructor for the 1.0 PresentProof object. This constructor creates an object that is ready to start
+  * process of requesting a presentation of proof
+  *
+  * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
+  * @param threadId the thread id of the already started protocol
+  * @param name A human readable name for the given request
+  * @param attributes An array of attribute based restrictions
+  * @param predicates An array of predicates based restrictions
+  * @return 1.0 PresentProof object
+  *
+  * @property {String} msgFamily - 'present-proof'
+  * @property {String} msgFamilyVersion - '1.0'
+  * @property {String} msgQualifier - 'Community Qualifier'
+  * @property {String} this.msgNames.PROOF_REQUEST - 'request'
+  * @property {String} this.msgNames.PRESENTATION_RESULT - 'presentation-result'
+  * @property {String} this.msgNames.STATUS - 'status'
+  * @property {String} this.msgNames.REJECT - 'reject'
+  */
   constructor (forRelationship,
     threadId = null,
     name = '',
@@ -25,14 +48,33 @@ module.exports = class PresentProofV1x0 extends Protocol {
     this.msgNames.REJECT = 'reject'
   }
 
+  /**
+     * Directs verity-application to request a presentation of proof.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async request (context) {
     await this.sendMessage(context, await this.requestMsgPacked(context))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #request
+     */
   async requestMsgPacked (context) {
     return this.getMessageBytes(context, this.requestMsg())
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #request
+     */
   requestMsg () {
     if (!this.created) {
       throw new utils.WrongSetupError('Unable to request presentation when NOT starting the interaction')
@@ -50,14 +92,33 @@ module.exports = class PresentProofV1x0 extends Protocol {
     return msg
   }
 
+  /**
+     * Ask for status from the verity-application agent
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async status (context) {
     await this.sendMessage(context, await this.statusMsgPacked(context))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #status
+     */
   async statusMsgPacked (context) {
     return this.getMessageBytes(context, this.statusMsg())
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #status
+     */
   statusMsg () {
     var msg = this._getBaseMessage(this.msgNames.STATUS)
     msg['~for_relationship'] = this.forRelationship
@@ -65,14 +126,34 @@ module.exports = class PresentProofV1x0 extends Protocol {
     return msg
   }
 
+  /**
+     * Directs verity-application to reject this presentation proof protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param reason an human readable reason for the rejection
+     */
   async reject (context, reason) {
     await this.sendMessage(context, await this.rejectMsgPacked(context, reason))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #reject
+     */
   async rejectMsgPacked (context, reason) {
     return this.getMessageBytes(context, this.rejectMsgPacked(reason))
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #reject
+     */
   rejectMsg (reason) {
     var msg = this._getBaseMessage(this.msgNames.REJECT)
     msg['~for_relationship'] = this.forRelationship
@@ -83,3 +164,4 @@ module.exports = class PresentProofV1x0 extends Protocol {
     return msg
   }
 }
+module.exports = PresentProofV1x0
