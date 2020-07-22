@@ -6,26 +6,26 @@ const COM_METHOD_TYPE = 2
 
 /**
  * An interface for controlling a 0.6 UpdateEndpoint protocol.
+ * @extends Protocol
  */
-module.exports = class UpdateEndpoint extends Protocol {
+class UpdateEndpoint extends Protocol {
+  /**
+   * Constructor for the 0.6 UpdateEndpoint object. This constructor creates an object that is ready to update
+   * the endpoint.
+   * @param threadId the thread id of the already started protocol
+   * @return 0.6 UpdateEndpoint object
+   *
+   * @property {String} msgFamily - 'configs'
+   * @property {String} msgFamilyVersion - '0.6'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.UPDATE_ENDPOINT - 'UPDATE_COM_METHOD'
+   */
   constructor (threadId = null) {
-    /**
-     * The name for the message family.
-     */
     const msgFamily = 'configs'
-    /**
-     * The version for the message family.
-     */
     const msgFamilyVersion = '0.6'
-    /**
-     * The qualifier for the message family. Uses Evernym's qualifier.
-     */
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
-    /**
-     Name for 'update-endpoint' control message
-     */
     this.msgNames.UPDATE_ENDPOINT = 'UPDATE_COM_METHOD'
   }
 
@@ -74,3 +74,4 @@ module.exports = class UpdateEndpoint extends Protocol {
     await this.sendMessage(context, await this.updateMsgPacked(context))
   }
 }
+module.exports = UpdateEndpoint

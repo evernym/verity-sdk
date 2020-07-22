@@ -4,20 +4,27 @@ const Protocol = require('../Protocol')
 
 /**
  * An interface for controlling a 0.6 WriteSchema protocol.
+ * @extends Protocol
  */
-module.exports = class WriteSchema extends Protocol {
+class WriteSchema extends Protocol {
+  /**
+   * Constructor for the 0.6 WriteSchema object. This constructor creates an object that is ready to write a schema
+   * the ledger.
+   *
+   * @param name The given name for the schema
+   * @param version The given version of the schema
+   * @param attrs A varargs list of attribute name in the schema
+   * @param threadId the thread id of the already started protocol
+   * @return 0.6 WriteSchema object
+   *
+   * @property {String} msgFamily - 'write'
+   * @property {String} msgFamilyVersion - '0.6'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.WRITE_SCHEMA - 'write'
+   */
   constructor (name, version, attrs, threadId = null) {
-    /**
-     * The name for the message family.
-     */
     const msgFamily = 'write-schema'
-    /**
-     * The version for the message family.
-     */
     const msgFamilyVersion = '0.6'
-    /**
-     * The qualifier for the message family. Uses Evernym's qualifier.
-     */
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
     this.name = name
@@ -67,3 +74,4 @@ module.exports = class WriteSchema extends Protocol {
     await this.sendMessage(context, await this.writeMsgPacked(context))
   }
 }
+module.exports = WriteSchema

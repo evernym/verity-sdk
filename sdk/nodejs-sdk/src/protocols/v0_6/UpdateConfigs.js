@@ -4,20 +4,26 @@ const Protocol = require('../Protocol')
 
 /**
  * An interface for controlling a 0.6 UpdateConfigs protocol.
+ * @extends Protocol
  */
-module.exports = class UpdateConfigs extends Protocol {
+class UpdateConfigs extends Protocol {
+  /**
+   * Constructor for the 0.6 UpdateEndpoint object. This constructor creates an object that is ready to update
+   * the endpoint.
+   *
+   * @param name Organization's name that is presented to third-parties
+   * @param logoUrl A url to a logo that is presented to third-parties
+   * @return 0.6 UpdateConfigs object
+   *
+   * @property {String} msgFamily - 'update-configs'
+   * @property {String} msgFamilyVersion - '0.6'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.UPDATE_CONFIGS - 'update'
+   * @property {String} this.msgNames.GET_STATUS - 'get-status'
+   */
   constructor (name = null, logoUrl = null) {
-    /**
-     * The name for the message family.
-     */
     const msgFamily = 'update-configs'
-    /**
-     * The version for the message family.
-     */
     const msgFamilyVersion = '0.6'
-    /**
-     * The qualifier for the message family. Uses Evernym's qualifier.
-     */
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier)
 
@@ -97,3 +103,4 @@ module.exports = class UpdateConfigs extends Protocol {
     await this.sendMessage(context, await this.statusMsgPacked(context))
   }
 }
+module.exports = UpdateConfigs

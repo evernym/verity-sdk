@@ -1,12 +1,35 @@
 const Protocol = require('../Protocol')
 const utils = require('../../utils')
-
 /**
  * An interface for controlling a 1.0 IssueCredential protocol.
- *
+ * @extends Protocol
  * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/bb42a6c35e0d5543718fb36dd099551ab192f7b0/features/0036-issue-credential" target="_blank" rel="noopener noreferrer">Aries 0036: Issue Credential Protocol 1.0</a>
  */
-module.exports = class IssueCredentialV10 extends Protocol {
+class IssueCredentialV10 extends Protocol {
+  /**
+   * Creates an IssueCredentialV10 Protocol
+   * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
+   * @param threadId the thread id of the already started protocol
+   * @param credDefId the Credential Definition that will be used to issue the credential
+   * @param values a map of key-value pairs that make up the attributes in the credential
+   * @param comment a human readable comment that is presented before issuing the credential
+   * @param price token price (NOT CURRENTLY USED)
+   * @param autoIssue flag for automatically issuing credential after receiving response for receiver (skip getting
+   *                  signal for credential request and waiting for issue control message)
+   * @return 1.0 IssueCredential object
+   *
+   * @property {String} msgFamily - 'issue-credential'
+   * @property {String} msgFamilyVersion - '1.0'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.OFFER_CREDENTIAL - 'offer'
+   * @property {String} this.msgNames.PROPOSE_CREDENTIAL - 'proposal'
+   * @property {String} this.msgNames.ISSUE_CREDENTIAL - 'issue'
+   * @property {String} this.msgNames.REQUEST_CREDENTIAL - 'request'
+   * @property {String} this.msgNames.REJECT_CREDENTIAL - 'reject'
+   * @property {String} this.msgNames.CREDENTIAL_STATUS - 'status'
+   * @property {String} this.msgNames.SENT - 'sent'
+   * @property {String} this.msgNames.ACCEPT_REQUEST - 'accept-request'
+   */
   constructor (forRelationship,
     threadId = null,
     credDefId = '',
@@ -14,18 +37,8 @@ module.exports = class IssueCredentialV10 extends Protocol {
     comment = '',
     price = 0,
     autoIssue = false) {
-    
-    /**
-     * The name for message family.
-     */
     const msgFamily = 'issue-credential'
-    /**
-     * The version for message family.
-     */
     const msgFamilyVersion = '1.0'
-    /**
-     * The qualifier for message family. Uses the community qualifier.
-     */
     const msgQualifier = utils.constants.COMMUNITY_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
@@ -274,3 +287,4 @@ module.exports = class IssueCredentialV10 extends Protocol {
     return msg
   }
 }
+module.exports = IssueCredentialV10

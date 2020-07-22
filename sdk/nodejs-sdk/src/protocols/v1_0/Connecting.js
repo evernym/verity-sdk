@@ -2,22 +2,33 @@ const Protocol = require('../Protocol')
 const utils = require('../../utils')
 /**
  * An interface for controlling a 1.0 Connections protocol.
- *
+ * @extends Protocol
  * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/9b0aaa39df7e8bd434126c4b33c097aae78d65bf/features/0160-connection-protocol" target="_blank" rel="noopener noreferrer">Aries 0160: Connection Protocol</a>
  */
-module.exports = class ConnectingV10 extends Protocol {
+class ConnectingV10 extends Protocol {
+  /**
+   * Constructor for the 1.0 Connections object
+   * @param label A human readable string that will label the caller identity (often an organization).
+   *              E.g. 'Acme Corp`
+   * @param base64InviteURL the invitation URL as specified by the Aries 0160: Connection Protocol (eg. https://<domain>/<path>?c_i=<invitation-string>)
+   * @param threadId The thread id of the already started protocol
+   * @return 1.0 Connections object*
+   *
+   * @property {String} msgFamily - 'connections'
+   * @property {String} msgFamilyVersion - '1.0'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.OFFER_CREDENTIAL - 'offer'
+   * @property {String} this.msgNames.PROPOSE_CREDENTIAL - 'proposal'
+   * @property {String} this.msgNames.ISSUE_CREDENTIAL - 'issue'
+   * @property {String} this.msgNames.REQUEST_CREDENTIAL - 'request'
+   * @property {String} this.msgNames.REJECT_CREDENTIAL - 'reject'
+   * @property {String} this.msgNames.CREDENTIAL_STATUS - 'status'
+   * @property {String} this.msgNames.SENT - 'sent'
+   * @property {String} this.msgNames.ACCEPT_REQUEST - 'accept-request'
+   */
   constructor (label, base64InviteURL, threadId = null) {
-    /**
-     * The qualifier for the message family. Uses the community qualifier.
-     */
     const msgFamily = 'connections'
-    /**
-     * The version for the message family.
-     */
     const msgFamilyVersion = '1.0'
-     /**
-     * The qualifier for the message family. Uses the community qualifier.
-     */
     const msgQualifier = utils.constants.COMMUNITY_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
@@ -98,3 +109,4 @@ module.exports = class ConnectingV10 extends Protocol {
     return msg
   }
 }
+module.exports = ConnectingV10

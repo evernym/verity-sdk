@@ -1,23 +1,37 @@
 'use strict'
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
-
 /**
- * An interface for controlling a 1.0 CommittedAnswer protocol.
+ * 1.0 CommittedAnswer protocol
+ * The CommittedAnswer protocol allows one self-sovereign party ask another self-sovereign a question and get a answer.
+ * The answer can be signed (not required) and must be one of a specified list of responses
+ * @extends Protocol
  */
-module.exports = class CommittedAnswer extends Protocol {
+class CommittedAnswer extends Protocol {
+  /**
+   * Constructor for the 1.0 CommittedAnswer object. This constructor creates an object that is ready to ask
+   * the given question
+   *
+   * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
+   * @param threadId the thread id of the already started protocol
+   * @param question The main text of the question (included in the message the Connect.Me user signs with their private key)
+   * @param answerStr the given answer from the list of valid responses given in the question
+   * @param descr Any additional information about the question
+   * @param validResponses The given possible responses.
+   * @param signatureRequired if a signature must be included with the answer
+   * @return 1.0 CommittedAnswer object
+   *
+   * @property {String} msgFamily - 'committedanswer'
+   * @property {String} msgFamilyVersion - '1.0'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.ASK_QUESTION - 'ask-question'
+   * @property {String} this.msgNames.ANSWER_QUESTION - 'answer-question'
+   * @property {String} this.msgNames.GET_STATUS - 'get-status'
+   * @property {String} this.msgNames.ANSWER_GIVEN - 'answer-given'
+   */
   constructor (forRelationship, threadId = null, question = null, answerStr = null, descr = null, validResponses = null, signatureRequired = null) {
-    /**
-     * The name for the message family.
-     */
     const msgFamily = 'committedanswer'
-    /**
-     * The version for the message family.
-     */
     const msgFamilyVersion = '1.0'
-    /**
-     * The qualifier for the message family. Uses Evernym's qualifier.
-     */
     const msgQualifier = utils.constants.COMMUNITY_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
     this.forRelationship = forRelationship
@@ -150,3 +164,4 @@ module.exports = class CommittedAnswer extends Protocol {
     await this.sendMessage(context, await this.statusMsgPacked(context))
   }
 }
+module.exports = CommittedAnswer

@@ -4,20 +4,28 @@ const Protocol = require('../Protocol')
 
 /**
  * An interface for controlling a 0.6 WriteCredentialDefinition protocol.
+ * @extends Protocol
  */
-module.exports = class WriteCredentialDefinition extends Protocol {
+class WriteCredentialDefinition extends Protocol {
+  /**
+   * Constructor for the 0.6 WriteCredentialDefinition object. This constructor creates an object that is
+   * ready to write a credential definitions the ledger
+   *
+   * @param name The name of the new credential definition
+   * @param schemaId The id of the schema this credential definition will be based on
+   * @param tag An optional tag for the credential definition
+   * @param revocation the revocation object defining revocation support.
+   * @param threadId the thread id of the already started protocol
+   * @return 0.6 WriteCredentialDefinition object
+   *
+   * @property {String} msgFamily - 'write-cred-def'
+   * @property {String} msgFamilyVersion - '0.6'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.WRITE - 'write'
+   */
   constructor (name, schemaId, tag = null, revocation = null, threadId = null) {
-    /**
-     * The name for the message family.
-     */
     const msgFamily = 'write-cred-def'
-    /**
-     * The version for the message family.
-     */
     const msgFamilyVersion = '0.6'
-    /**
-     * The qualifier for the message family. Uses Evernym's qualifier.
-     */
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
     this.name = name
@@ -25,9 +33,6 @@ module.exports = class WriteCredentialDefinition extends Protocol {
     this.tag = tag
     this.revocation = revocation
 
-    /**
-     Name for 'write' control message
-     */
     this.msgNames.WRITE_CRED_DEF = 'write'
   }
 
@@ -68,3 +73,4 @@ module.exports = class WriteCredentialDefinition extends Protocol {
     await this.sendMessage(context, await this.writeMsgPacked(context))
   }
 }
+module.exports = WriteCredentialDefinition

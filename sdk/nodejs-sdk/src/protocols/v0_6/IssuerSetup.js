@@ -3,20 +3,26 @@ const utils = require('../../utils')
 const Protocol = require('../Protocol')
 /**
  * An interface for controlling a 0.6 IssuerSetup protocol.
+ * @extends Protocol
  */
-module.exports = class IssuerSetup extends Protocol {
+class IssuerSetup extends Protocol {
+  /**
+   * Constructor for the 0.6 IssuerSetup object. This constructor creates an object that is ready to start the setup
+   * process of an issuer.
+   * @param threadId the thread id of the already started protocol
+   * @return 0.6 IssuerSetup object
+   *
+   * @property {String} msgFamily - 'issuer-setup'
+   * @property {String} msgFamilyVersion - '0.6'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.CREATE - 'create'
+   * @property {String} this.msgNames.PUBLIC_IDENTIFIER - 'public-identifier'
+   * @property {String} this.msgNames.CURRENT_PUBLIC_IDENTIFIER - 'current-public-identifier'
+   * @property {String} this.msgNames.PUBLIC_IDENTIFIER_CREATED - 'public-identifier-created'
+   */
   constructor (threadId = null) {
-    /**
-     * The name for the message family.
-     */
     const msgFamily = 'issuer-setup'
-    /**
-     * The version for the message family.
-     */
     const msgFamilyVersion = '0.6'
-     /**
-     * The qualifier for the message family. Uses the community qualifier.
-     */
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
@@ -92,3 +98,4 @@ module.exports = class IssuerSetup extends Protocol {
     await this.sendMessage(context, await this.currentPublicIdentifierMsgPacked(context))
   }
 }
+module.exports = IssuerSetup
