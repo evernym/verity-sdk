@@ -8,6 +8,7 @@ const utils = require('../../utils')
 class ConnectingV10 extends Protocol {
   /**
    * Constructor for the 1.0 Connections object
+   * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
    * @param label A human readable string that will label the caller identity (often an organization).
    *              E.g. 'Acme Corp`
    * @param base64InviteURL the invitation URL as specified by the Aries 0160: Connection Protocol (eg. https://<domain>/<path>?c_i=<invitation-string>)
@@ -26,12 +27,13 @@ class ConnectingV10 extends Protocol {
    * @property {String} this.msgNames.SENT - 'sent'
    * @property {String} this.msgNames.ACCEPT_REQUEST - 'accept-request'
    */
-  constructor (label, base64InviteURL, threadId = null) {
+  constructor (forRelationship, label, base64InviteURL, threadId = null) {
     const msgFamily = 'connections'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.COMMUNITY_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
 
+    this.forRelationship = forRelationship
     this.label = label
     this.base64InviteURL = base64InviteURL
 
