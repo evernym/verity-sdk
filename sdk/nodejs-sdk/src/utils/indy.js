@@ -3,6 +3,7 @@ const sdk = require('indy-sdk')
 const bs58 = require('bs58')
 let initialized = false
 
+/** Sets default logger */
 function init () {
   if (!initialized) {
     sdk.setDefaultLogger('warn')
@@ -13,6 +14,11 @@ function init () {
 exports.init = init
 exports.sdk = sdk
 
+/**
+ * Creates wallet if not already and opens it
+ * @param config wallet configuration
+ * @param credentials wallet credentials
+ */
 exports.createOrOpenWallet = async function (config, credentials) {
   init()
   try {
@@ -25,17 +31,33 @@ exports.createOrOpenWallet = async function (config, credentials) {
   return sdk.openWallet(config, credentials)
 }
 
+/**
+ * Closes a wallet
+ * @param walletHandle handle to access the wallet
+ */
 exports.closeWallet = async function (walletHandle) {
   init()
   await sdk.closeWallet(walletHandle)
 }
 
+/**
+ * Deletes a wallet
+ * @param walletHandle handle to access the wallet
+ * @param walletConfig wallet configuration
+ * @param walletCredentials wallet credentials
+ */
 exports.deleteWallet = async function (walletHandle, walletConfig, walletCredentials) {
   init()
   await sdk.closeWallet(walletHandle)
   await sdk.deleteWallet(walletConfig, walletCredentials)
 }
 
+/**
+ * creates a new DID
+ * @param context an instance of the Context object initialized to a verity-application agent
+ * @param seed
+ * @return did, verkey pair
+ */
 exports.newDid = async function (context, seed = null) {
   init()
   var param = {}
@@ -45,6 +67,10 @@ exports.newDid = async function (context, seed = null) {
   return sdk.createAndStoreMyDid(context.walletHandle, param)
 }
 
+/**
+ * @param context an instance of the Context object initialized to a verity-application agent
+ * @return restApiToken
+ */
 exports.restApiToken = async function (context) {
   init()
   const t = bs58.encode(

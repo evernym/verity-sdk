@@ -8,7 +8,7 @@ const Protocol = require('../Protocol')
  * static PresentProof class
  * @extends Protocol
  */
-module.exports = class OutOfBand extends Protocol {
+class OutOfBand extends Protocol {
   /**
      * Creates an OutOfBand Protocol
      * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
@@ -69,3 +69,4 @@ module.exports = class OutOfBand extends Protocol {
     await this.sendMessage(context, await this.reuseMsgPacked(context))
   }
 }
+module.exports = OutOfBand

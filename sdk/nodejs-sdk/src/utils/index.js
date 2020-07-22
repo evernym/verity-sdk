@@ -16,6 +16,16 @@ exports.miniId = function () {
   return uuidv4().split('-')[0]
 }
 
+/**
+ * Packages message (instructor and encryption) for the verity-application. Uses local private keys and remote
+ * public keys for encryption. The encryption and instructor is defined by the Aries community.
+ *
+ * @param context an instance of the Context object initialized to a verity-application agent
+ * @param message the JSON message to be communicated to the verity-application
+ * @return the byte array of the packaged and encrypted message
+ *
+ * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/9b0aaa39df7e8bd434126c4b33c097aae78d65bf/features/0019-encryption-envelope" target="_blank" rel="noopener noreferrer">Aries 0019: Encryption Envelope</a>
+ */
 exports.packMessageForVerity = async function (context, message) {
   return exports.packMessage(
     context.walletHandle,
@@ -27,6 +37,20 @@ exports.packMessageForVerity = async function (context, message) {
   )
 }
 
+/**
+ * Packages message (instructor and encryption) for the verity-application. Uses local private keys and remote
+ * public keys for encryption. The encryption and instructor is defined by the Aries community.
+ *
+ * @param walletHandle the handle to a created and open Indy wallet
+ * @param message the JSON message to be communicated to the verity-application
+ * @param pairwiseRemoteDID the domain DID of the intended recipient agent on the verity-application
+ * @param pairwiseRemoteVerkey the verkey for the agent on the verity-application
+ * @param pairwiseLocalVerkey the authorized verkey in the local wallet for the verity-sdk application
+ * @param publicVerkey the public verkey for the verity-application
+ * @return the byte array of the packaged and encrypted message
+ *
+ * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/9b0aaa39df7e8bd434126c4b33c097aae78d65bf/features/0019-encryption-envelope" target="_blank" rel="noopener noreferrer">Aries 0019: Encryption Envelope</a>
+ */
 exports.packMessage = async function (walletHandle, message, pairwiseRemoteDID, pairwiseRemoteVerkey, pairwiseLocalVerkey, publicVerkey) {
   indy.init()
   const msgBytes = Buffer.from(JSON.stringify(message), 'utf-8')
@@ -36,6 +60,12 @@ exports.packMessage = async function (walletHandle, message, pairwiseRemoteDID, 
   return indy.sdk.packMessage(walletHandle, innerFwdBytes, [publicVerkey], null)
 }
 
+/**
+ * Prepares (pre-encryption) a forward message to a given DID that contains the given byte array message
+ * @param toDID the DID the forward message is intended for
+ * @param packedMessage the packaged and encrypted message that is being forwarded
+ * @return the prepared JSON forward structure
+ */
 exports.prepareForwardMessage = async function (toDID, packedMessage) {
   const forwardMessage = {
     '@type': 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD',
@@ -45,6 +75,13 @@ exports.prepareForwardMessage = async function (toDID, packedMessage) {
   return forwardMessage
 }
 
+/**
+ * Extracts the Forward message in the byte array that has been packaged and encrypted for a key that is locally held.
+ *
+ * @param context an instance of the Context object initialized to a verity-application agent
+ * @param messageBytes the message received from the verity-application agent
+ * @return an unencrypted messages as a JSON object
+ */
 exports.unpackForwardMessage = async function (context, messageBytes) {
   indy.init()
   const forwardMessage = await exports.unpackMessage(context, messageBytes)
@@ -53,16 +90,32 @@ exports.unpackForwardMessage = async function (context, messageBytes) {
   return message
 }
 
+/**
+ * Extracts the message in the byte array that has been packaged and encrypted for a key that is locally held.
+ *
+ * @param context an instance of the Context object initialized to a verity-application agent
+ * @param messageBytes the message received from the verity-application agent
+ * @return an unencrypted messages as a JSON object
+ */
 exports.unpackMessage = async function (context, messageBytes) {
   return JSON.parse(JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, messageBytes)).message)
 }
 
+/**
+ * Sends a packed message
+ * @param context an instance of the Context object initialized to a verity-application agent
+ * @param packedMessage the message received from the verity-application agent
+ */
 exports.sendPackedMessage = async function (context, packedMessage) {
   const url = new URL(context.verityUrl)
   url.pathname = '/agency/msg'
   return exports.httpPost(url, packedMessage, 'application/octet-stream')
 }
 
+/**
+ * Gets a message
+ * @param uri
+ */
 exports.httpGet = async function (uri) {
   const options = {
     uri: uri,
@@ -71,6 +124,12 @@ exports.httpGet = async function (uri) {
   return request.get(options)
 }
 
+/**
+ * Posts a message
+ * @param uri
+ * @param message
+ * @param contentType
+ */
 exports.httpPost = async function (uri, message, contentType) {
   const options = {
     uri: uri,
@@ -82,37 +141,9 @@ exports.httpPost = async function (uri, message, contentType) {
   return request.post(options)
 }
 
+/**
+ * Generate a random number
+ */
 exports.randInt = function (max) {
   return Math.floor(Math.random() * Math.floor(max))
-}
-
-exports.truncateInviteDetailKeys = function (inviteDetails) {
-  const truncatedInviteDetails = {
-    sc: inviteDetails.statusCode,
-    id: inviteDetails.connReqId,
-    sm: inviteDetails.statusMsg,
-    t: inviteDetails.targetName,
-    version: inviteDetails.version,
-    s: {
-      n: inviteDetails.senderDetail.name,
-      d: inviteDetails.senderDetail.DID,
-      l: inviteDetails.senderDetail.logoUrl,
-      v: inviteDetails.senderDetail.verKey,
-      dp: {
-        d: inviteDetails.senderDetail.agentKeyDlgProof.agentDID,
-        k: inviteDetails.senderDetail.agentKeyDlgProof.agentDelegatedKey,
-        s: inviteDetails.senderDetail.agentKeyDlgProof.signature
-      }
-    },
-    sa: {
-      d: inviteDetails.senderAgencyDetail.DID,
-      e: inviteDetails.senderAgencyDetail.endpoint,
-      v: inviteDetails.senderAgencyDetail.verKey
-    }
-  }
-
-  if ('publicDID' in inviteDetails.senderDetail) {
-    truncatedInviteDetails.s.publicDID = inviteDetails.senderDetail.publicDID
-  }
-  return JSON.stringify(truncatedInviteDetails)
 }
