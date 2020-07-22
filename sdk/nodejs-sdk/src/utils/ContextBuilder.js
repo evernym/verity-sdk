@@ -12,7 +12,7 @@ class ContextBuilder {
 
   /**
    * set verityUrl
-   * @param The url for the verity-application that this object is connected to
+   * @param verityUrl The url for the verity-application that this object is connected to
    */
   verityUrl (verityUrl) {
     this._verityUrl = verityUrl
@@ -21,7 +21,7 @@ class ContextBuilder {
   /**
    * Set the public identifier for the verity-application. This identifier is unique for each verity-application instance
    * but is common for all agents on that instance.
-   * @param the public identifier (DID) for a verity-application instance
+   * @param did the public identifier (DID) for a verity-application instance
    */
   verityPublicDID (did) {
     this._verityPublicDID = did
@@ -30,7 +30,7 @@ class ContextBuilder {
   /**
    * Set the public verkey for the verity-application. This verkey is unique for each verity-application instance
    * but is common for all agents on that instance.
-   * @param the public verkey for a verity-application instance
+   * @param verkey the public verkey for a verity-application instance
    */
   verityPublicVerKey (verkey) {
     this._verityPublicVerKey = verkey
@@ -39,7 +39,7 @@ class ContextBuilder {
   /**
    * Set the identifier for a identity domain. This identifier identifies a self-sovereign Identity. It will be common
    * across all agents and controllers of that Identity.
-   * @param the Domain identifier (DID)
+   * @param did the Domain identifier (DID)
    */
   domainDID (did) {
     this._domainDID = did
@@ -47,14 +47,14 @@ class ContextBuilder {
 
   /**
    * Set the verkey for the agent on the verity-application
-   * @param the verkey for the verity-application agent
+   * @param verkey the verkey for the verity-application agent
    */
   verityAgentVerKey (verkey) {
     this._verityAgentVerKey = verkey
   }
 
   /**
-   * @param the id for the sdk verkey
+   * @param did the id for the sdk verkey
    */
   sdkVerKeyId (did) {
     this._sdkVerKeyId = did
@@ -62,7 +62,7 @@ class ContextBuilder {
 
   /**
    * Set the verkey for the locally held key-pair. A corresponding private key is held in the wallet for this verkey
-   * @param the verkey for the sdk
+   * @param verkey the verkey for the sdk
    */
   sdkVerKey (verkey) {
     this._sdkVerKey = verkey
@@ -71,7 +71,7 @@ class ContextBuilder {
   /**
    * Set the endpoint for receiving messages from the agent on the verity-application. This endpoint must be registered
    * using the UpdateEndpoint protocol to effectively change it.
-   * @param the endpoint contained in this context
+   * @param url the endpoint contained in this context
    */
   endpointUrl (url) {
     this._endpointUrl = url
@@ -79,7 +79,7 @@ class ContextBuilder {
 
   /**
    * Set the wallet name
-   * @param walletName
+   * @param name walletName
    */
   walletName (name) {
     this._walletName = name
