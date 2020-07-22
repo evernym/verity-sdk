@@ -36,11 +36,7 @@ class Handler {
  * Stores an array of message handlers that are used when receiving an inbound message
  */
 class Handlers {
-  /**
-   * Handlers
-   * @property this.handlers
-   * @property defaultHandler
-   */
+  /** Handlers */
   constructor () {
     this.handlers = {}
     this.defaultHandler = null // function that takes a raw message

@@ -11,6 +11,24 @@ const V_0_2 = '0.2'
  * the context allows for access and authentication to that agent.
  */
 class Context {
+  /*
+   * Context Members
+   * @property verityPublicDID verity's public did
+   * @property verityPublicVerKey verity's public verkey
+   * @property verityAgentVerKey
+   * @property sdkPairwiseDID - sdk's did in a connection
+   * @property sdkPairwiseVerkey - sdk's verkey in a connection
+   * @property walletName wallet name
+   * @property walletPath path for the wallet
+   * @property walletKey wallet key
+   * @property verityUrl The url for the verity-application that this object is connected to
+   * @property endpointUrl the endpoint for receiving messages from the agent on the verity-application
+   * @property domainDid The identifier for a identity domain. This identifier identifies a self-sovereign Identity. It will be common
+   *    across all agents and controllers of that Identity.
+   * @property verityAgentVerKey the verkey for the agent on the verity-application
+   * @property endpointUrl the endpoint for receiving messages from the agent on the verity-application
+   * @property seed seed used to create did
+   */
   constructor () {
     this.version = V_0_2
     if (arguments.length !== 0) {
@@ -41,10 +59,6 @@ class Context {
     }
   }
 
-  /**
-   * @static parses v1 of the config
-   * @return returns the context after parsing the config
-   */
   static parseV01 (config) {
     Context.validateV01Config(config)
 
@@ -65,10 +79,6 @@ class Context {
     return context
   }
 
-  /**
-   * @static parses v2 of the config
-   * @return returns the context after parsing the config
-   */
   static parseV02 (config) {
     Context.validateV02Config(config)
 
@@ -91,13 +101,14 @@ class Context {
 
   /**
    * @static creates a Context object
-   * @param walletName
-   * @param walletKey
-   * @param verityUrl
-   * @param domainDid
-   * @param verityAgentVerKey
-   * @param endpointUrl
-   * @param seed
+   * @param walletName wallet name
+   * @param walletKey wallet key
+   * @param verityUrl The url for the verity-application that this object is connected to
+   * @param domainDid The identifier for a identity domain. This identifier identifies a self-sovereign Identity. It will be common
+   * across all agents and controllers of that Identity.
+   * @param verityAgentVerKey the verkey for the agent on the verity-application
+   * @param endpointUrl the endpoint for receiving messages from the agent on the verity-application
+   * @param seed seed used to create did
    */
   static async create (
     walletName,
