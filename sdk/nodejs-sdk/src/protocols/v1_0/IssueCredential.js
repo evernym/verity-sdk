@@ -1,7 +1,35 @@
 const Protocol = require('../Protocol')
 const utils = require('../../utils')
-
-module.exports = class IssueCredentialV10 extends Protocol {
+/**
+ * An interface for controlling a 1.0 IssueCredential protocol.
+ * @extends Protocol
+ * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/bb42a6c35e0d5543718fb36dd099551ab192f7b0/features/0036-issue-credential" target="_blank" rel="noopener noreferrer">Aries 0036: Issue Credential Protocol 1.0</a>
+ */
+class IssueCredentialV10 extends Protocol {
+  /**
+   * Creates an IssueCredentialV10 Protocol
+   * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
+   * @param threadId the thread id of the already started protocol
+   * @param credDefId the Credential Definition that will be used to issue the credential
+   * @param values a map of key-value pairs that make up the attributes in the credential
+   * @param comment a human readable comment that is presented before issuing the credential
+   * @param price token price (NOT CURRENTLY USED)
+   * @param autoIssue flag for automatically issuing credential after receiving response for receiver (skip getting
+   *                  signal for credential request and waiting for issue control message)
+   * @return 1.0 IssueCredential object
+   *
+   * @property {String} msgFamily - 'issue-credential'
+   * @property {String} msgFamilyVersion - '1.0'
+   * @property {String} msgQualifier - 'Community Qualifier'
+   * @property {String} this.msgNames.OFFER_CREDENTIAL - 'offer'
+   * @property {String} this.msgNames.PROPOSE_CREDENTIAL - 'proposal'
+   * @property {String} this.msgNames.ISSUE_CREDENTIAL - 'issue'
+   * @property {String} this.msgNames.REQUEST_CREDENTIAL - 'request'
+   * @property {String} this.msgNames.REJECT_CREDENTIAL - 'reject'
+   * @property {String} this.msgNames.CREDENTIAL_STATUS - 'status'
+   * @property {String} this.msgNames.SENT - 'sent'
+   * @property {String} this.msgNames.ACCEPT_REQUEST - 'accept-request'
+   */
   constructor (forRelationship,
     threadId = null,
     credDefId = '',
@@ -32,14 +60,33 @@ module.exports = class IssueCredentialV10 extends Protocol {
     this.msgNames.ACCEPT_REQUEST = 'accept-request'
   }
 
+  /**
+     * Directs verity-application to send credential offer.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async offerCredential (context) {
     await this.sendMessage(context, await this.offerCredentialMsgPacked(context))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #offerCredential
+     */
   async offerCredentialMsgPacked (context) {
     return this.getMessageBytes(context, this.offerCredentialMsg())
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #offerCredential
+     */
   offerCredentialMsg () {
     if (!this.created) {
       throw new utils.WrongSetupError('Unable to offer credentials when NOT starting the interaction')
@@ -57,14 +104,32 @@ module.exports = class IssueCredentialV10 extends Protocol {
     return msg
   }
 
+  /**
+     * Directs verity-application to send credential proposal.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async proposeCredential (context) {
     await this.sendMessage(context, await this.proposeCredentialMsgPacked(context))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #proposeCredential
+     */
   async proposeCredentialMsgPacked (context) {
     return this.getMessageBytes(context, this.proposeCredentialMsg())
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #proposeCredential
+     */
   proposeCredentialMsg () {
     if (!this.created) {
       throw new utils.WrongSetupError('Unable to propose credentials when NOT starting the interaction')
@@ -80,14 +145,33 @@ module.exports = class IssueCredentialV10 extends Protocol {
     return msg
   }
 
+  /**
+     * Directs verity-application to send credential request.
+     *
+     * @param context
+     */
   async requestCredential (context) {
     await this.sendMessage(context, await this.requestCredentialMsgPacked(context))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #requestCredential
+     */
   async requestCredentialMsgPacked (context) {
     return this.getMessageBytes(context, this.requestCredentialMsg())
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #requestCredential
+     */
   requestCredentialMsg () {
     var msg = this._getBaseMessage(this.msgNames.REQUEST_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
@@ -98,14 +182,33 @@ module.exports = class IssueCredentialV10 extends Protocol {
     return msg
   }
 
+  /**
+     * Directs verity-application to issue credential and send it
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async issueCredential (context) {
     await this.sendMessage(context, await this.issueCredentialMsgPacked(context))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #issueCredential
+     */
   async issueCredentialMsgPacked (context) {
     return this.getMessageBytes(context, this.issueCredentialMsg())
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #issueCredential
+     */
   issueCredentialMsg () {
     var msg = this._getBaseMessage(this.msgNames.ISSUE_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
@@ -114,14 +217,33 @@ module.exports = class IssueCredentialV10 extends Protocol {
     return msg
   }
 
+  /**
+     * Directs verity-application to reject the credential protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async reject (context) {
     await this.sendMessage(context, await this.rejectMsgPacked(context))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #reject
+     */
   async rejectMsgPacked (context) {
     return this.getMessageBytes(context, this.rejectMsg())
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #reject
+     */
   rejectMsg () {
     var msg = this._getBaseMessage(this.msgNames.REJECT_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
@@ -131,14 +253,33 @@ module.exports = class IssueCredentialV10 extends Protocol {
     return msg
   }
 
+  /**
+     * Ask for status from the verity-application agent
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
   async status (context) {
     await this.sendMessage(context, await this.statusMsgPacked(context))
   }
 
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #status
+     */
   async statusMsgPacked (context) {
     return this.getMessageBytes(context, this.statusMsg())
   }
 
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #status
+     */
   statusMsg () {
     var msg = this._getBaseMessage(this.msgNames.CREDENTIAL_STATUS)
     msg['~for_relationship'] = this.forRelationship
@@ -146,3 +287,4 @@ module.exports = class IssueCredentialV10 extends Protocol {
     return msg
   }
 }
+module.exports = IssueCredentialV10

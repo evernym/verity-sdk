@@ -6,7 +6,11 @@ const utils = require('./index')
 const V_0_1 = '0.1'
 const V_0_2 = '0.2'
 
-module.exports = class Context {
+/**
+ * This Context object holds the data for accessing an agent on a verity-application. A complete and correct data in
+ * the context allows for access and authentication to that agent.
+ */
+class Context {
   constructor () {
     this.version = V_0_2
     if (arguments.length !== 0) {
@@ -14,6 +18,10 @@ module.exports = class Context {
     }
   }
 
+  /**
+   * @static creates a Context from a config
+   * @param config
+   */
   static async createWithConfig (config = {}) {
     if (typeof config === 'string' || Buffer.isBuffer(config)) {
       config = JSON.parse(config)
@@ -33,6 +41,10 @@ module.exports = class Context {
     }
   }
 
+  /**
+   * @static parses v1 of the config
+   * @return returns the context after parsing the config
+   */
   static parseV01 (config) {
     Context.validateV01Config(config)
 
@@ -53,6 +65,10 @@ module.exports = class Context {
     return context
   }
 
+  /**
+   * @static parses v2 of the config
+   * @return returns the context after parsing the config
+   */
   static parseV02 (config) {
     Context.validateV02Config(config)
 
@@ -73,6 +89,16 @@ module.exports = class Context {
     return context
   }
 
+  /**
+   * @static creates a Context object
+   * @param walletName
+   * @param walletKey
+   * @param verityUrl
+   * @param domainDid
+   * @param verityAgentVerKey
+   * @param endpointUrl
+   * @param seed
+   */
   static async create (
     walletName,
     walletKey,
@@ -108,6 +134,11 @@ module.exports = class Context {
     return context
   }
 
+  /**
+   * Sets the wallet config
+   * @param {String} walletName
+   * @param {String} walletPath
+   */
   buildWalletConfig (walletName, walletPath) {
     this.walletName = walletName
     const walletConfig = { id: walletName }
@@ -117,11 +148,18 @@ module.exports = class Context {
     this.walletConfig = JSON.stringify(walletConfig)
   }
 
+  /**
+   * Sets the wallet credentials
+   * @param {String} walletKey
+   */
   buildWalletCredentails (walletKey) {
     this.walletKey = walletKey
     this.walletCredentials = JSON.stringify({ key: walletKey })
   }
 
+  /**
+   * updates verity DID and VerKey by getting it from the verityUrl previously set
+   */
   async updateVerityInfo () {
     try {
       const url = new URL(this.verityUrl)
@@ -135,10 +173,16 @@ module.exports = class Context {
     }
   }
 
+  /**
+   * Opens the wallet and sets the walletHandle
+   */
   async openWallet () {
     this.walletHandle = await indy.createOrOpenWallet(this.walletConfig, this.walletCredentials)
   }
 
+  /**
+   * @static validates version 1 of the configuration
+   */
   static validateV01Config (config) {
     const requiredAttributes = [
       'verityUrl',
@@ -156,6 +200,9 @@ module.exports = class Context {
     }
   }
 
+  /**
+   * @static validates version 2 of the configuration
+   */
   static validateV02Config (config) {
     const requiredAttributes = [
       'verityUrl',
@@ -173,6 +220,9 @@ module.exports = class Context {
     }
   }
 
+  /**
+   * @return config
+   */
   getConfig () {
     const config = JSON.parse(JSON.stringify(this))
     delete config.walletConfig
@@ -181,15 +231,27 @@ module.exports = class Context {
     return config
   }
 
+  /**
+   * Converts the local keys held in the context to REST api token. This token can be used with the REST API for the
+   * verity-application
+   * @return a REST API token
+   */
   async restApiToken () {
     return indy.restApiToken(this)
   }
 
+  /**
+   * Closes the the open wallet handle stored inside the Context object.
+   */
   async closeWallet () {
     return indy.closeWallet(this.walletHandle)
   }
 
+  /**
+   * Deletes the open wallet handle stored inside the Context object.
+   */
   async deleteWallet () {
     return indy.deleteWallet(this.walletHandle, this.walletConfig, this.walletCredentials)
   }
 }
+module.exports = Context
