@@ -25,7 +25,8 @@
       }
 
       .evernym-green {
-        background-color: #86b93b;
+        color: #fff !important;
+        background-color: #86b93b !important;
       }
 
       .loader {
@@ -66,10 +67,13 @@
   </head>
   <body>
     <div id="app">
-      <header class="w3-cell-row evernym-green">
+      <header class="w3-cell-row" v-bind:class="[accentColor]">
         <nav class="w3-container w3-bar">
           <a href="#" class="w3-bar-item"
-            ><img src="./images/logo-evernym.png" alt="evernym logo"
+            ><img
+              v-bind:src="institutionLogoURL"
+              alt="evernym logo"
+              style="width: 100%; max-width: 31px;"
           /></a>
           <a href="#" class="w3-bar-item">{{institutionName}}</a>
           <a
@@ -107,7 +111,8 @@
         <div id="configuration" class="w3-container w3-padding">
           <button
             v-on:click="openTab('configuration')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Configuration
           </button>
@@ -175,7 +180,8 @@
         <div id="setup-issuer" class="w3-container w3-padding">
           <button
             v-on:click="openTab('setup-issuer')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Setup Issuer
           </button>
@@ -237,7 +243,8 @@
           <button
             id="schemas"
             v-on:click="openTab('write-schemas')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Schemas
           </button>
@@ -290,7 +297,8 @@
           <button
             id="credentialDefinitions"
             v-on:click="openTab('cred-defs')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Credential Definitions
           </button>
@@ -345,7 +353,8 @@
         <div id="connections" class="w3-container w3-padding">
           <button
             v-on:click="openTab('connections')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Connections
           </button>
@@ -392,7 +401,8 @@
           <button
             id="issueCredential"
             v-on:click="openTab('creds')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Issue Credentials
           </button>
@@ -443,7 +453,8 @@
         <div id="proofs" class="w3-container w3-padding">
           <button
             v-on:click="openTab('proofs')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Request Proofs
           </button>
@@ -508,7 +519,8 @@
         <div id="structured-messages" class="w3-container w3-padding">
           <button
             v-on:click="openTab('structured-messages')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Comitted Answer
           </button>
@@ -569,7 +581,8 @@
         <div id="customRequest" class="w3-container w3-padding">
           <button
             v-on:click="openTab('customRequest')"
-            class="w3-btn w3-block evernym-green w3-text-white"
+            class="w3-btn w3-block"
+            v-bind:class="[accentColor]"
           >
             Custom Verity Request
           </button>
@@ -790,21 +803,7 @@
         methods: {
           // changes color of tabs to selected accent color
           changeColor: function (event) {
-            var buttons = document.getElementsByClassName("w3-btn w3-block");
-            for (var i = 0; i < buttons.length; i++) {
-              var substitute = event.target.value;
-              buttons[i].className = "w3-btn w3-block " + substitute;
-            }
             sessionStorage.accentColor = this.accentColor;
-          },
-          // sets color of tabs to the accent color stored in browser on Vue.js page refresh
-          refreshColor: function (color) {
-            var buttons = document.getElementsByClassName("w3-btn w3-block");
-            for (var i = 0; i < buttons.length; i++) {
-              var substitute = color;
-              buttons[i].className = "w3-btn w3-block " + substitute;
-              console.log(getComputedStyle(buttons[i]).backgroundColor);
-            }
           },
           // prints time when webhook URL message was received in the format hh24:mm:ss
           getTime: function () {
@@ -1031,7 +1030,6 @@
                   this._data[key] = browserValue;
                 }
               }
-              this.refreshColor(this.accentColor);
             }
           },
           // store values defined in itemsToStoreInBrowser array to browser storage
