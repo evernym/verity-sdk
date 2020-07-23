@@ -1,1006 +1,1398 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=800, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=800, initial-scale=1.0" />
     <title>Verity Example Web App</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        input:disabled {
-            color: black;
-            cursor: default;
-            background-color: white;
+      html,
+      body,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Roboto", sans-serif;
+      }
+
+      .evernym-green {
+        background-color: #86b93b;
+      }
+
+      .loader {
+        border: 5px solid #f3f3f3;
+        -webkit-animation: spin 1s linear infinite;
+        animation: spin 1s linear infinite;
+        border-top: 5px solid #555;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+      }
+
+      input:disabled {
+        color: black;
+        cursor: default;
+        background-color: white;
+      }
+
+      /* Safari */
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
         }
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
-    <style>
-        .loader {
-            border: 5px solid #f3f3f3;
-            -webkit-animation: spin 1s linear infinite;
-            animation: spin 1s linear infinite;
-            border-top: 5px solid #555;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-        }
+  </head>
+  <body>
+    <div id="app">
+      <header class="w3-cell-row evernym-green">
+        <nav class="w3-container w3-bar">
+          <a href="#" class="w3-bar-item"
+            ><img src="./images/logo-evernym.png" alt="evernym logo"
+          /></a>
+          <a href="#" class="w3-bar-item">{{institutionName}}</a>
+          <a
+            href="#"
+            class="w3-bar-item w3-right"
+            v-on:click="resetBrowserStorage()"
+          >
+            Reset all fields
+          </a>
+        </nav>
+      </header>
+      <!-- <image
+        id="logo"
+        v-bind:src="institutionLogoURL"
+        style="max-height: 100px;"
+      />
+      <h2 id="org" style="text-align: center;">{{institutionName}}</h2> -->
 
-        /* Safari */
-        @-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-        100% { -webkit-transform: rotate(360deg); }
-        }
-
-        @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-    <div id="app" class="w3-container w3-padding" style="text-align: center;">
-        <image id="logo" v-bind:src="institutionLogoURL" style="max-height:100px"/>
-        <h2 id="org" style="text-align: center;">{{institutionName}}</h2>
-
-        <!-- Hidden Modal that will present QR code for a new connection-->
+      <!-- Hidden Modal that will present QR code for a new connection-->
+      <main>
         <div id="invite-detail-modal" class="w3-modal">
-            <div class="w3-modal-content">
-                <div class="w3-container">
-                    <span onclick="document.getElementById('invite-detail-modal').style.display='none'; app.spinners.connections = false" class="w3-button w3-display-topright">&times;</span>
-                    <img :src="inviteDetailQRCode" />
-                </div>
-              </div>
+          <div class="w3-modal-content">
+            <div class="w3-container">
+              <span
+                onclick="document.getElementById('invite-detail-modal').style.display='none'; app.spinners.connections = false"
+                class="w3-button w3-display-topright"
+                >&times;</span
+              >
+              <img :src="inviteDetailQRCode" />
+            </div>
+          </div>
         </div>
         <!-- Button to delete all data from browser storage and reset VueJS to initial settings -->
-        <button class="w3-btn w3-border w3-white" style="position: absolute;top:3%;left:90%;" v-on:click="resetBrowserStorage()">Reset All</button>
-        <br>
+        <br />
         <div id="configuration" class="w3-container w3-padding">
-            <button v-on:click="openTab('configuration')" class="w3-btn w3-block w3-green">Configuration</button>
-            <div id="configuration-content" class="w3-hide hidden-content w3-padding w3-row">
-                <div class="w3-half w3-padding">
-                    <select class="w3-input" v-model="accentColor" v-on:change="changeColor($event)">
-                        <option disabled value=''> -- select an option -- </option>
-                        <option v-for="option in colors" v-bind:value="option.value">
-                            {{ option.text }}
-                        </option>
-                    </select>
-                    <label style="font-weight: bold;">Accent Color</label>
-                    <br><br><br>
-                    <input class="w3-input" style="text-align: center;" type='text' v-model='institutionName'>
-                    <label style="font-weight: bold;">Institution Name</label>
-                    <input class="w3-input" style="text-align: center;" type='text' v-model='institutionLogoURL'>
-                    <label style="font-weight: bold;">Institution Logo Url</label>
-                    <div style="height: 110px;display:flex; justify-content: center; align-items: center;">
-                        <div v-if="spinners.configuration" class="w3-btn w3-border w3-white w3-padding">
-                            <div class="loader"></div>
-                        </div>
-                        <button v-else class="w3-btn w3-border w3-white w3-padding" v-on:click="updateConfig()" >Update configuration on Verity</button>
-                    </div>
+          <button
+            v-on:click="openTab('configuration')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Configuration
+          </button>
+          <div
+            id="configuration-content"
+            class="w3-hide hidden-content w3-padding w3-row"
+          >
+            <div class="w3-half w3-padding">
+              <select
+                class="w3-input"
+                v-model="accentColor"
+                v-on:change="changeColor($event)"
+              >
+                <option disabled value=""> -- select an option -- </option>
+                <option v-for="option in colors" v-bind:value="option.value">
+                  {{ option.text }}
+                </option>
+              </select>
+              <label style="font-weight: bold;">Accent Color</label>
+              <br /><br /><br />
+              <input
+                class="w3-input"
+                style="text-align: center;"
+                type="text"
+                v-model="institutionName"
+              />
+              <label style="font-weight: bold;">Institution Name</label>
+              <input
+                class="w3-input"
+                style="text-align: center;"
+                type="text"
+                v-model="institutionLogoURL"
+              />
+              <label style="font-weight: bold;">Institution Logo Url</label>
+              <div
+                style="
+                  height: 110px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <div
+                  v-if="spinners.configuration"
+                  class="w3-btn w3-border w3-white w3-padding"
+                >
+                  <div class="loader"></div>
                 </div>
-                <div class="w3-half w3-padding w3-left-align">
-                    <p><b>Verity URL: </b>{{verityURL}}</p>
-                    <p><b>Domain DID: </b>{{domainDID}}</p>
-                    <p><b>Webhook URL: </b>{{webhookURL}}</p>
-                </div>
+                <button
+                  v-else
+                  class="w3-btn w3-border w3-white w3-padding"
+                  v-on:click="updateConfig()"
+                >
+                  Update configuration on Verity
+                </button>
+              </div>
             </div>
+            <div class="w3-half w3-padding w3-left-align">
+              <p><b>Verity URL: </b>{{verityURL}}</p>
+              <p><b>Domain DID: </b>{{domainDID}}</p>
+              <p><b>Webhook URL: </b>{{webhookURL}}</p>
+            </div>
+          </div>
         </div>
         <div id="setup-issuer" class="w3-container w3-padding">
-            <button v-on:click="openTab('setup-issuer')" class="w3-btn w3-block w3-green">Setup Issuer</button>
-            <div id="setup-issuer-content" class="w3-hide hidden-content w3-padding w3-row">
-                <div class="w3-half w3-padding">
-                    <input class="w3-input" style="text-align: center;" type='text' v-model='issuerDID' disabled>
-                    <label style="font-weight: bold;">Issuer DID</label>
-                    <input class="w3-input" style="text-align: center;" type='text' v-model='issuerVerKey' disabled>
-                    <label style="font-weight: bold;">Issuer VerKey</label>
-                </div>
-                <div class="w3-half w3-column w3-padding" >
-                    <div style="height: 110px;display:flex; justify-content: center; align-items: center;">
-                        <div v-if="spinners.setupIssuer" class="w3-btn w3-border w3-white w3-padding">
-                            <div class="loader"></div>
-                        </div>
-                        <button v-else class="w3-btn w3-border w3-white w3-padding" v-on:click="setupIssuer()" >Setup Issuer</button>
-                    </div>
-                    <p>This will create issuer keys on VAS and will then register created DID/Verkey as Endorser on Staging Net using Sovrin SelfServe portal. Monitor webhook messages to check if DID/Verkey were successfully written to the ledger</p>
-                </div>
+          <button
+            v-on:click="openTab('setup-issuer')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Setup Issuer
+          </button>
+          <div
+            id="setup-issuer-content"
+            class="w3-hide hidden-content w3-padding w3-row"
+          >
+            <div class="w3-half w3-padding">
+              <input
+                class="w3-input"
+                style="text-align: center;"
+                type="text"
+                v-model="issuerDID"
+                disabled
+              />
+              <label style="font-weight: bold;">Issuer DID</label>
+              <input
+                class="w3-input"
+                style="text-align: center;"
+                type="text"
+                v-model="issuerVerKey"
+                disabled
+              />
+              <label style="font-weight: bold;">Issuer VerKey</label>
             </div>
+            <div class="w3-half w3-column w3-padding">
+              <div
+                style="
+                  height: 110px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <div
+                  v-if="spinners.setupIssuer"
+                  class="w3-btn w3-border w3-white w3-padding"
+                >
+                  <div class="loader"></div>
+                </div>
+                <button
+                  v-else
+                  class="w3-btn w3-border w3-white w3-padding"
+                  v-on:click="setupIssuer()"
+                >
+                  Setup Issuer
+                </button>
+              </div>
+              <p>
+                This will create issuer keys on VAS and will then register
+                created DID/Verkey as Endorser on Staging Net using Sovrin
+                SelfServe portal. Monitor webhook messages to check if
+                DID/Verkey were successfully written to the ledger
+              </p>
+            </div>
+          </div>
         </div>
         <div id="write-schemas" class="w3-container w3-padding">
-            <button id="schemas" v-on:click="openTab('write-schemas')" class="w3-btn w3-block w3-green">Schemas</button>
-            <div id="write-schemas-content" class="w3-hide hidden-content w3-row">
-                <p>NOTE: Make sure that Issuer DID and VerKey is written to the ledger or you won't be able to write a schema.</p>
-                <div class="w3-half w3-padding">
-                    <h4>Current Schemas</h4>
-                    <table class='w3-table w3-bordered'>
-                        <tr>
-                            <th>Name</th>
-                            <th>ID</th>
-                        </tr>
-                        <tr v-for='schema in schemas'>
-                            <td>{{schema.name}}</td>
-                            <td>{{schema.id}}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="w3-half w3-padding">
-                    <h4>Write a New Schema</h4>
-                    <form class="w3-form" v-on:submit.prevent="writeSchema()">
-                        <input class="w3-input" v-model="schema.name">
-                        <label>Schema Name</label>
-
-                        <input class="w3-input" v-model="schema.version">
-                        <label>Schema Version</label>
-
-                        <input class="w3-input" v-model="schema.attrs">
-                        <label>Schema Attrs (comma deliminated)</label>
-
-                        <br>
-                        <br>
-                        <div v-if="spinners.schemas" class="w3-btn w3-border w3-white w3-padding">
-                            <div class="loader"></div>
-                        </div>
-                        <button v-else class="w3-btn w3-border w3-white">Write Schema</button>
-                    </form>
-                </div>
+          <button
+            id="schemas"
+            v-on:click="openTab('write-schemas')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Schemas
+          </button>
+          <div id="write-schemas-content" class="w3-hide hidden-content w3-row">
+            <p>
+              NOTE: Make sure that Issuer DID and VerKey is written to the
+              ledger or you won't be able to write a schema.
+            </p>
+            <div class="w3-half w3-padding">
+              <h4>Current Schemas</h4>
+              <table class="w3-table w3-bordered">
+                <tr>
+                  <th>Name</th>
+                  <th>ID</th>
+                </tr>
+                <tr v-for="schema in schemas">
+                  <td>{{schema.name}}</td>
+                  <td>{{schema.id}}</td>
+                </tr>
+              </table>
             </div>
+            <div class="w3-half w3-padding">
+              <h4>Write a New Schema</h4>
+              <form class="w3-form" v-on:submit.prevent="writeSchema()">
+                <input class="w3-input" v-model="schema.name" />
+                <label>Schema Name</label>
+
+                <input class="w3-input" v-model="schema.version" />
+                <label>Schema Version</label>
+
+                <input class="w3-input" v-model="schema.attrs" />
+                <label>Schema Attrs (comma deliminated)</label>
+
+                <br />
+                <br />
+                <div
+                  v-if="spinners.schemas"
+                  class="w3-btn w3-border w3-white w3-padding"
+                >
+                  <div class="loader"></div>
+                </div>
+                <button v-else class="w3-btn w3-border w3-white">
+                  Write Schema
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
         <div id="cred-defs" class="w3-container w3-padding">
-            <button id="credentialDefinitions" v-on:click="openTab('cred-defs')" class="w3-btn w3-block w3-green">Credential Definitions</button>
-            <div id="cred-defs-content" class="w3-hide hidden-content">
-                <p>NOTE: Make sure you wrote the Issuer DID and VerKey to the ledger or you won't be able to write a credential definition.</p>
-                <div class="w3-half w3-padding">
-                    <h4>Current Credential Definitions</h4>
-                    <table class='w3-table w3-bordered'>
-                        <tr>
-                            <th>Name</th>
-                            <th>ID</th>
-                        </tr>
-                        <tr v-for='credDef in credDefs'>
-                            <td>{{credDef.name}}</td>
-                            <td>{{credDef.id}}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="w3-half w3-padding">
-                    <h4>Write a New Credential Definition</h4>
-                    <form class="w3-form" v-on:submit.prevent="writeCredDef()">
-                        <input class="w3-input" v-model="credDef.name">
-                        <label>Credential Definition Name</label>
-
-                        <input class="w3-input" v-model="credDef.schemaId">
-                        <label>Schema ID</label>
-
-                        <input class="w3-input" v-model="credDef.tag">
-                        <label>Tag (optional)</label>
-
-                        <input class="w3-input" v-model="credDef.revocationDetails">
-                        <label>Revocation Details (optional)</label>
-
-                        <br>
-                        <br>
-                        <div v-if="spinners.credDefs" class="w3-btn w3-border w3-white w3-padding">
-                            <div class="loader"></div>
-                        </div>
-                        <button v-else class="w3-btn w3-border w3-white">Write Credential Definition</button>
-                    </form>
-                </div>
+          <button
+            id="credentialDefinitions"
+            v-on:click="openTab('cred-defs')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Credential Definitions
+          </button>
+          <div id="cred-defs-content" class="w3-hide hidden-content">
+            <p>
+              NOTE: Make sure you wrote the Issuer DID and VerKey to the ledger
+              or you won't be able to write a credential definition.
+            </p>
+            <div class="w3-half w3-padding">
+              <h4>Current Credential Definitions</h4>
+              <table class="w3-table w3-bordered">
+                <tr>
+                  <th>Name</th>
+                  <th>ID</th>
+                </tr>
+                <tr v-for="credDef in credDefs">
+                  <td>{{credDef.name}}</td>
+                  <td>{{credDef.id}}</td>
+                </tr>
+              </table>
             </div>
+            <div class="w3-half w3-padding">
+              <h4>Write a New Credential Definition</h4>
+              <form class="w3-form" v-on:submit.prevent="writeCredDef()">
+                <input class="w3-input" v-model="credDef.name" />
+                <label>Credential Definition Name</label>
+
+                <input class="w3-input" v-model="credDef.schemaId" />
+                <label>Schema ID</label>
+
+                <input class="w3-input" v-model="credDef.tag" />
+                <label>Tag (optional)</label>
+
+                <input class="w3-input" v-model="credDef.revocationDetails" />
+                <label>Revocation Details (optional)</label>
+
+                <br />
+                <br />
+                <div
+                  v-if="spinners.credDefs"
+                  class="w3-btn w3-border w3-white w3-padding"
+                >
+                  <div class="loader"></div>
+                </div>
+                <button v-else class="w3-btn w3-border w3-white">
+                  Write Credential Definition
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
         <div id="connections" class="w3-container w3-padding">
-            <button v-on:click="openTab('connections')" class="w3-btn w3-block w3-green">Connections</button>
-            <div id="connections-content" class="w3-hide hidden-content w3-row w3-padding">
-                <div class="w3-half w3-padding">
-                    <h4>Existing Connections</h4>
-                    <table class='w3-table w3-bordered'>
-                        <tr>
-                            <th>Name</th>
-                            <th>Relationship DID</th>
-                        </tr>
-                        <tr v-for='connection in connections'>
-                            <td>{{connection.name}}</td>
-                            <td>{{connection.did}}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="w3-half w3-padding">
-                    <h4>Add Connections</h4>
-                    <input class="w3-input" v-model="connection.name">
-                    <label>Connection Name</label>
-                    <br>
-                    <br>
-                    <div v-if="spinners.connections" class="w3-btn w3-border w3-white w3-padding">
-                        <div class="loader"></div>
-                    </div>
-                    <button v-else class="w3-btn w3-white w3-border" v-on:click="newConnection()">Add New Connection</button>
-                </div>
+          <button
+            v-on:click="openTab('connections')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Connections
+          </button>
+          <div
+            id="connections-content"
+            class="w3-hide hidden-content w3-row w3-padding"
+          >
+            <div class="w3-half w3-padding">
+              <h4>Existing Connections</h4>
+              <table class="w3-table w3-bordered">
+                <tr>
+                  <th>Name</th>
+                  <th>Relationship DID</th>
+                </tr>
+                <tr v-for="connection in connections">
+                  <td>{{connection.name}}</td>
+                  <td>{{connection.did}}</td>
+                </tr>
+              </table>
             </div>
+            <div class="w3-half w3-padding">
+              <h4>Add Connections</h4>
+              <input class="w3-input" v-model="connection.name" />
+              <label>Connection Name</label>
+              <br />
+              <br />
+              <div
+                v-if="spinners.connections"
+                class="w3-btn w3-border w3-white w3-padding"
+              >
+                <div class="loader"></div>
+              </div>
+              <button
+                v-else
+                class="w3-btn w3-white w3-border"
+                v-on:click="newConnection()"
+              >
+                Add New Connection
+              </button>
+            </div>
+          </div>
         </div>
         <div id="creds" class="w3-container w3-padding">
-            <button id="issueCredential" v-on:click="openTab('creds')" class="w3-btn w3-block w3-green">Issue Credentials</button>
-            <div id="creds-content" class="w3-hide hidden-content">
-                <input class="w3-input" v-model="credential.name">
-                <label>Credential Name</label>
+          <button
+            id="issueCredential"
+            v-on:click="openTab('creds')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Issue Credentials
+          </button>
+          <div id="creds-content" class="w3-hide hidden-content">
+            <input class="w3-input" v-model="credential.name" />
+            <label>Credential Name</label>
 
-                <select class="w3-input" v-model="credential.relationshipDID">
-                    <option disabled value=''> -- select an option -- </option>
-                    <option v-for="option in connections" v-bind:value="option.did">
-                        {{ option.did }}
-                    </option>
-                </select>
-                <label>Relationship DID</label>
+            <select class="w3-input" v-model="credential.relationshipDID">
+              <option disabled value=""> -- select an option -- </option>
+              <option v-for="option in connections" v-bind:value="option.did">
+                {{ option.did }}
+              </option>
+            </select>
+            <label>Relationship DID</label>
 
-                <select class="w3-input" v-model="credential.credDefId">
-                    <option disabled value=''> -- select an option -- </option>
-                    <option v-for="option in credDefs" v-bind:value="option.id">
-                        {{ option.id }}
-                    </option>
-                </select>
-                <label>Credential Definition ID</label>
+            <select class="w3-input" v-model="credential.credDefId">
+              <option disabled value=""> -- select an option -- </option>
+              <option v-for="option in credDefs" v-bind:value="option.id">
+                {{ option.id }}
+              </option>
+            </select>
+            <label>Credential Definition ID</label>
 
-                <input class="w3-input" v-model="credential.values" placeholder='{"attr1":"value1", "attr2":"value2"}'>
-                <label>Credential Values (as JSON)</label>
-                
-                <br>
-                <br>
-                <div v-if="spinners.creds" class="w3-btn w3-border w3-white w3-padding">
-                    <div class="loader"></div>
-                </div>
-                <button v-else class="w3-btn w3-white w3-border" v-on:click="offerCredential()">Issue Credential</button>
+            <input
+              class="w3-input"
+              v-model="credential.values"
+              placeholder='{"attr1":"value1", "attr2":"value2"}'
+            />
+            <label>Credential Values (as JSON)</label>
+
+            <br />
+            <br />
+            <div
+              v-if="spinners.creds"
+              class="w3-btn w3-border w3-white w3-padding"
+            >
+              <div class="loader"></div>
             </div>
+            <button
+              v-else
+              class="w3-btn w3-white w3-border"
+              v-on:click="offerCredential()"
+            >
+              Issue Credential
+            </button>
+          </div>
         </div>
         <div id="proofs" class="w3-container w3-padding">
-            <button v-on:click="openTab('proofs')" class="w3-btn w3-block w3-green">Request Proofs</button>
-            <div id="proofs-content" class="w3-hide hidden-content">
-                <div class="w3-half w3-padding">
-                    <h4>Received Proofs</h4>
-                    <table class='w3-table w3-bordered'>
-                        <tr>
-                            <th>Relationship DID</th>
-                            <th>Data</th>
-                        </tr>
-                        <tr v-for='proof in proofs'>
-                            <td>{{proof.did}}</td>
-                            <td>{{proof.data}}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="w3-half w3-padding">
-                    <h4>Send Proof Request</h4>
-
-                    <input class="w3-input" v-model="proof.name">
-                    <label>Proof Request Name</label>
-                    
-                    <select class="w3-input" v-model="proof.relationshipDID">
-                        <option disabled value=''> -- select an option -- </option>
-                        <option v-for="option in connections" v-bind:value="option.did">
-                            {{ option.did }}
-                        </option>
-                    </select>
-                    <label>Relationship DID</label>
-    
-                    <input class="w3-input" v-model="proof.attrs" placeholder='[{"name":"first_attr"},{"name":"second_attr"}]'>
-                    <label>JSON Array of Proof Attrs</label>
-
-                    <input class="w3-input" v-model="proof.predicates">
-                    <label>JSON Array of Proof Predicates (Optional)</label>
-
-                    <input class="w3-input" v-model="proof.revocationInterval">
-                    <label>Revocation Interval (Optional)</label>
-                    <br>
-                    <br>
-                    <div v-if="spinners.proofs" class="w3-btn w3-border w3-white w3-padding">
-                        <div class="loader"></div>
-                    </div>
-                    <button v-else class="w3-btn w3-white w3-border" v-on:click="sendProofRequest()">Send Proof Request</button>
-                </div>
+          <button
+            v-on:click="openTab('proofs')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Request Proofs
+          </button>
+          <div id="proofs-content" class="w3-hide hidden-content">
+            <div class="w3-half w3-padding">
+              <h4>Received Proofs</h4>
+              <table class="w3-table w3-bordered">
+                <tr>
+                  <th>Relationship DID</th>
+                  <th>Data</th>
+                </tr>
+                <tr v-for="proof in proofs">
+                  <td>{{proof.did}}</td>
+                  <td>{{proof.data}}</td>
+                </tr>
+              </table>
             </div>
+            <div class="w3-half w3-padding">
+              <h4>Send Proof Request</h4>
+
+              <input class="w3-input" v-model="proof.name" />
+              <label>Proof Request Name</label>
+
+              <select class="w3-input" v-model="proof.relationshipDID">
+                <option disabled value=""> -- select an option -- </option>
+                <option v-for="option in connections" v-bind:value="option.did">
+                  {{ option.did }}
+                </option>
+              </select>
+              <label>Relationship DID</label>
+
+              <input
+                class="w3-input"
+                v-model="proof.attrs"
+                placeholder='[{"name":"first_attr"},{"name":"second_attr"}]'
+              />
+              <label>JSON Array of Proof Attrs</label>
+
+              <input class="w3-input" v-model="proof.predicates" />
+              <label>JSON Array of Proof Predicates (Optional)</label>
+
+              <input class="w3-input" v-model="proof.revocationInterval" />
+              <label>Revocation Interval (Optional)</label>
+              <br />
+              <br />
+              <div
+                v-if="spinners.proofs"
+                class="w3-btn w3-border w3-white w3-padding"
+              >
+                <div class="loader"></div>
+              </div>
+              <button
+                v-else
+                class="w3-btn w3-white w3-border"
+                v-on:click="sendProofRequest()"
+              >
+                Send Proof Request
+              </button>
+            </div>
+          </div>
         </div>
         <div id="structured-messages" class="w3-container w3-padding">
-            <button v-on:click="openTab('structured-messages')" class="w3-btn w3-block w3-green">Comitted Answer</button>
-            <div id="structured-messages-content" class="w3-hide hidden-content">
-                <div class="w3-half w3-padding">
-                    <h4>Received Answers</h4>
-                    <table class='w3-table w3-bordered'>
-                        <tr>
-                            <th>Relationship DID</th>
-                            <th>Data</th>
-                        </tr>
-                        <tr v-for='answer in questionResponses'>
-                            <td>{{answer.did}}</td>
-                            <td>{{answer.data}}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="w3-half w3-padding">
-                    <h4>Send Structured Message</h4>
-
-                    <input class="w3-input" v-model="structuredMessage.text">
-                    <label>Question Text</label>
-                    
-                    <input class="w3-input" v-model="structuredMessage.detail">
-                    <label>Question Detail</label>
-
-                    <input class="w3-input" v-model="structuredMessage.responses">
-                    <label>Valid Responses (comma deliminated)</label>
-
-                    <select class="w3-input" v-model="structuredMessage.relationshipDID">
-                        <option disabled value=''> -- select an option -- </option>
-                        <option v-for="option in connections" v-bind:value="option.did">
-                            {{ option.did }}
-                        </option>
-                    </select>
-                    <label>Relationship DID</label>
-                    <br>
-                    <br>
-                    <div v-if="spinners.structMsgs" class="w3-btn w3-border w3-white w3-padding">
-                        <div class="loader"></div>
-                    </div>
-                    <button v-else class="w3-btn w3-white w3-border" v-on:click="sendStructuredMessage()">Send Structured Message</button>
-                </div>
+          <button
+            v-on:click="openTab('structured-messages')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Comitted Answer
+          </button>
+          <div id="structured-messages-content" class="w3-hide hidden-content">
+            <div class="w3-half w3-padding">
+              <h4>Received Answers</h4>
+              <table class="w3-table w3-bordered">
+                <tr>
+                  <th>Relationship DID</th>
+                  <th>Data</th>
+                </tr>
+                <tr v-for="answer in questionResponses">
+                  <td>{{answer.did}}</td>
+                  <td>{{answer.data}}</td>
+                </tr>
+              </table>
             </div>
+            <div class="w3-half w3-padding">
+              <h4>Send Structured Message</h4>
+
+              <input class="w3-input" v-model="structuredMessage.text" />
+              <label>Question Text</label>
+
+              <input class="w3-input" v-model="structuredMessage.detail" />
+              <label>Question Detail</label>
+
+              <input class="w3-input" v-model="structuredMessage.responses" />
+              <label>Valid Responses (comma deliminated)</label>
+
+              <select
+                class="w3-input"
+                v-model="structuredMessage.relationshipDID"
+              >
+                <option disabled value=""> -- select an option -- </option>
+                <option v-for="option in connections" v-bind:value="option.did">
+                  {{ option.did }}
+                </option>
+              </select>
+              <label>Relationship DID</label>
+              <br />
+              <br />
+              <div
+                v-if="spinners.structMsgs"
+                class="w3-btn w3-border w3-white w3-padding"
+              >
+                <div class="loader"></div>
+              </div>
+              <button
+                v-else
+                class="w3-btn w3-white w3-border"
+                v-on:click="sendStructuredMessage()"
+              >
+                Send Structured Message
+              </button>
+            </div>
+          </div>
         </div>
         <div id="customRequest" class="w3-container w3-padding">
-            <button v-on:click="openTab('customRequest')" class="w3-btn w3-block w3-green">Custom Verity Request</button>
-            <div id="customRequest-content" class="w3-hide hidden-content">
-                <input class="w3-input" v-model="customRequest.msgFamilyQualifier" placeholder="BzCbsNYhMrjHiqZDTUASHg">
-                <label>Message Family Qualifier</label>
-                <input class="w3-input" v-model="customRequest.msgFamily" placeholder="issue-credential">
-                <label>Message Family</label>
-                <input class="w3-input" v-model="customRequest.msgFamilyVersion" placeholder="1.0">
-                <label>Message Family Version</label>
-                <input class="w3-input" v-model="customRequest.msgName" placeholder="offer">
-                <label>Message Name</label>
-                <textarea class="w3-input" v-model="customRequest.message" placeholder='{"~for_relationship": "RVCowETXe7E9t7myVs6eHY","cred_def_id": "7MXRWDen2pkBnaMnznEuS4:3:CL:120754:latest","credential_values": {"first":"ABC", "second":"DEF"},"price": 0}'></textarea>
-                <label>Message Body JSON (without @type field)</label>
-                <br>
-                <br>
-                <div v-if="spinners.custom" class="w3-btn w3-border w3-white w3-padding">
-                    <div class="loader"></div>
-                </div>
-                <button v-else class="w3-btn w3-white w3-border" v-on:click="sendCustomRequest()">Send Custom Request</button>
+          <button
+            v-on:click="openTab('customRequest')"
+            class="w3-btn w3-block evernym-green w3-text-white"
+          >
+            Custom Verity Request
+          </button>
+          <div id="customRequest-content" class="w3-hide hidden-content">
+            <input
+              class="w3-input"
+              v-model="customRequest.msgFamilyQualifier"
+              placeholder="BzCbsNYhMrjHiqZDTUASHg"
+            />
+            <label>Message Family Qualifier</label>
+            <input
+              class="w3-input"
+              v-model="customRequest.msgFamily"
+              placeholder="issue-credential"
+            />
+            <label>Message Family</label>
+            <input
+              class="w3-input"
+              v-model="customRequest.msgFamilyVersion"
+              placeholder="1.0"
+            />
+            <label>Message Family Version</label>
+            <input
+              class="w3-input"
+              v-model="customRequest.msgName"
+              placeholder="offer"
+            />
+            <label>Message Name</label>
+            <textarea
+              class="w3-input"
+              v-model="customRequest.message"
+              placeholder='{"~for_relationship": "RVCowETXe7E9t7myVs6eHY","cred_def_id": "7MXRWDen2pkBnaMnznEuS4:3:CL:120754:latest","credential_values": {"first":"ABC", "second":"DEF"},"price": 0}'
+            ></textarea>
+            <label>Message Body JSON (without @type field)</label>
+            <br />
+            <br />
+            <div
+              v-if="spinners.custom"
+              class="w3-btn w3-border w3-white w3-padding"
+            >
+              <div class="loader"></div>
             </div>
+            <button
+              v-else
+              class="w3-btn w3-white w3-border"
+              v-on:click="sendCustomRequest()"
+            >
+              Send Custom Request
+            </button>
+          </div>
         </div>
-        <hr>
-        <div style="display: inline-block;width:80%;">
-            <h4>Webhook Messages for Session {{sessionMiniId}}</h4>
-            <div class="w3-border" style="overflow-y:auto;">
-                <table style="width:100%;">
-                    <tr>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    <tr v-for="message in messages">
-                        <td style="text-align:left;max-width:300px;word-wrap:break-word;">{{message.content}}</td>
-                        <td style="text-align:right;min-width:80px;">{{message.time}}</td>
-                    </tr>
-                    </div>
-                </table>
-            </div>
+        <hr />
+        <div style="display: inline-block; width: 80%;">
+          <h4>Webhook Messages for Session {{sessionMiniId}}</h4>
+          <div class="w3-border" style="overflow-y: auto;">
+            <table style="width: 100%;">
+              <tr>
+                <th></th>
+                <th></th>
+              </tr>
+              <tr v-for="message in messages">
+                <td
+                  style="
+                    text-align: left;
+                    max-width: 300px;
+                    word-wrap: break-word;
+                  "
+                >
+                  {{message.content}}
+                </td>
+                <td style="text-align: right; min-width: 80px;">
+                  {{message.time}}
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
-
+      </main>
     </div>
-<script>
-  const app = new Vue({
-    el: '#app',
-    data: {
-      sessionId: '',
-      socket: null,
-      verityURL: '',
-      domainDID: '',
-      webhookURL: '',
-      issuerDID: '',
-      issuerVerKey: '',
-      institutionName: 'Verity Demo App',
-      institutionLogoURL: 'https://pbs.twimg.com/profile_images/1022255393395929088/0eYH-Os_.jpg',
-      accentColor: 'w3-green',
-      inviteDetailQRCode: '',
-      schemas: [],
-      credDefs: [],
-      connections: [],
-      proofs: [],
-      questionResponses: [],
-      messages: [],
-      schema: {
-        name: '',
-        version: '',
-        attrs: ''
-      },
-      credDef: {
-        name: '',
-        schemaId: '',
-        tag: '',
-        revocationDetails: ''
-      },
-      connection: {
-        name: '',
-        did: ''
-      },
-      credential: {
-        name: '',
-        relationshipDID: '',
-        credDefId: '',
-        values: '',
-        threadId: ''
-      },
-      proof: {
-        relationshipDID: '',
-        name: '',
-        attrs: '',
-        predicates: '',
-        revocationInterval: ''
-      },
-      structuredMessage: {
-        text: '',
-        detail: '',
-        responses: '',
-        relationshipDID: ''
-      },
-      customRequest: {
-        msgFamilyQualifier: '',
-        message: '',
-        msgFamily: '',
-        msgFamilyVersion: '',
-        msgName: ''
-      },
-      itemsToStoreInBrowser: [
-        'accentColor',
-        'institutionName',
-        'institutionLogoURL',
-        'sessionId',
-        'verityURL',
-        'domainDID',
-        'webhookURL',
-        'issuerDID',
-        'issuerVerKey',
-        'schemas',
-        'credDefs',
-        'connections',
-        'proofs',
-        'questionResponses',
-        'messages',
-        'schema',
-        'credDef',
-        'connection',
-        'credential',
-        'proof',
-        'structuredMessage',
-        'customRequest'
-      ],
-      spinners: {
-        setupIssuer: false,
-        configuration: false,
-        schemas: false,
-        credDefs: false,
-        connections: false,
-        creds: false,
-        proofs: false,
-        structMsgs: false,
-        custom: false
-      },
-      colors: [
-        { text: 'amber', value: 'w3-amber' },
-        { text: 'aqua', value: 'w3-aqua' },
-        { text: 'blue', value: 'w3-blue' },
-        { text: 'light-blue', value: 'w3-light-blue' },
-        { text: 'brown', value: 'w3-brown' },
-        { text: 'cyan', value: 'w3-cyan' },
-        { text: 'blue-grey', value: 'w3-blue-grey' },
-        { text: 'green', value: 'w3-green' },
-        { text: 'light-green', value: 'w3-light-green' },
-        { text: 'indigo', value: 'w3-indigo' },
-        { text: 'khaki', value: 'w3-khaki' },
-        { text: 'lime', value: 'w3-lime' },
-        { text: 'orange', value: 'w3-orange' },
-        { text: 'deep-orange', value: 'w3-deep-orange' },
-        { text: 'pink', value: 'w3-pink' },
-        { text: 'purple', value: 'w3-purple' },
-        { text: 'deep-purple', value: 'w3-deep-purple' },
-        { text: 'red', value: 'w3-red' },
-        { text: 'sand', value: 'w3-sand' },
-        { text: 'teal', value: 'w3-teal' },
-        { text: 'yellow', value: 'w3-yellow' },
-        { text: 'white', value: 'w3-white' },
-        { text: 'black', value: 'w3-black' },
-        { text: 'grey', value: 'w3-grey' },
-        { text: 'light-grey', value: 'w3-light-grey' },
-        { text: 'dark-grey', value: 'w3-dark-grey' },
-        { text: 'pale-red', value: 'w3-pale-red' },
-        { text: 'pale-green', value: 'w3-pale-green' },
-        { text: 'pale-yellow', value: 'w3-pale-yellow' },
-        { text: 'pale-blue', value: 'w3-pale-blue' }
-      ]
-    },
-    computed: {
-      sessionMiniId: function () {
-        return this.sessionId ? this.sessionId.substring(0, 7) : ''
-      }
-    },
-    methods: {
-      // changes color of tabs to selected accent color
-      changeColor: function (event) {
-        var buttons = document.getElementsByClassName('w3-btn w3-block')
-        for (var i = 0; i < buttons.length; i++) {
-          var substitute = event.target.value
-          buttons[i].className = 'w3-btn + w3-block ' + substitute
-        }
-        sessionStorage.accentColor = this.accentColor
-      },
-      // sets color of tabs to the accent color stored in browser on Vue.js page refresh
-      refreshColor: function (color) {
-        var buttons = document.getElementsByClassName('w3-btn w3-block')
-        for (var i = 0; i < buttons.length; i++) {
-          var substitute = color
-          buttons[i].className = 'w3-btn + w3-block ' + substitute
-        }
-      },
-      // prints time when webhook URL message was received in the format hh24:mm:ss
-      getTime: function () {
-        const time = new Date()
-        return time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
-      },
-      // Sends request to B/E to register Issuer DID/Verkey on Sovrin Staging Net via Sovrin SelfServe portal
-      registerDID: async function (did, verkey) {
-        var response = await axios.post('/registerDID', {
-          network: 'stagingnet',
-          did: did,
-          verkey: verkey,
-          paymentaddr: ''
-        })
-        this.messages.unshift({
-          content: 'Registration response from Sovrin portal:\n' + JSON.stringify(response.data),
-          time: this.getTime()
-        })
-        this.issuerDID = did
-        this.issuerVerKey = verkey
-        this.spinners.setupIssuer = false
-      },
-      // opens selected tab
-      // does not allow to open Tabs for Schema/CredDef creation or credential issuance if Issuer keys are not created
-      openTab: function (tabName) {
-        if (['creds', 'cred-defs', 'write-schemas'].includes(tabName) && (this.issuerDID === '')) {
-          alert('You need to run Setup Issuer first')
-        } else {
-          for (const content of document.getElementsByClassName('hidden-content')) {
-            content.className = content.className.replace(' w3-show', '')
-            if (content.id === (tabName + '-content')) {
-              content.className += ' w3-show'
+    <script>
+      const app = new Vue({
+        el: "#app",
+        data: {
+          sessionId: "",
+          socket: null,
+          verityURL: "",
+          domainDID: "",
+          webhookURL: "",
+          issuerDID: "",
+          issuerVerKey: "",
+          institutionName: "Verity Demo App",
+          institutionLogoURL:
+            "https://pbs.twimg.com/profile_images/1022255393395929088/0eYH-Os_.jpg",
+          accentColor: "evernym-green",
+          inviteDetailQRCode: "",
+          schemas: [],
+          credDefs: [],
+          connections: [],
+          proofs: [],
+          questionResponses: [],
+          messages: [],
+          schema: {
+            name: "",
+            version: "",
+            attrs: "",
+          },
+          credDef: {
+            name: "",
+            schemaId: "",
+            tag: "",
+            revocationDetails: "",
+          },
+          connection: {
+            name: "",
+            did: "",
+          },
+          credential: {
+            name: "",
+            relationshipDID: "",
+            credDefId: "",
+            values: "",
+            threadId: "",
+          },
+          proof: {
+            relationshipDID: "",
+            name: "",
+            attrs: "",
+            predicates: "",
+            revocationInterval: "",
+          },
+          structuredMessage: {
+            text: "",
+            detail: "",
+            responses: "",
+            relationshipDID: "",
+          },
+          customRequest: {
+            msgFamilyQualifier: "",
+            message: "",
+            msgFamily: "",
+            msgFamilyVersion: "",
+            msgName: "",
+          },
+          itemsToStoreInBrowser: [
+            "accentColor",
+            "institutionName",
+            "institutionLogoURL",
+            "sessionId",
+            "verityURL",
+            "domainDID",
+            "webhookURL",
+            "issuerDID",
+            "issuerVerKey",
+            "schemas",
+            "credDefs",
+            "connections",
+            "proofs",
+            "questionResponses",
+            "messages",
+            "schema",
+            "credDef",
+            "connection",
+            "credential",
+            "proof",
+            "structuredMessage",
+            "customRequest",
+          ],
+          spinners: {
+            setupIssuer: false,
+            configuration: false,
+            schemas: false,
+            credDefs: false,
+            connections: false,
+            creds: false,
+            proofs: false,
+            structMsgs: false,
+            custom: false,
+          },
+          colors: [
+            { text: "evernym-green", value: "evernym-green" },
+            { text: "amber", value: "w3-amber" },
+            { text: "aqua", value: "w3-aqua" },
+            { text: "blue", value: "w3-blue" },
+            { text: "light-blue", value: "w3-light-blue" },
+            { text: "brown", value: "w3-brown" },
+            { text: "cyan", value: "w3-cyan" },
+            { text: "blue-grey", value: "w3-blue-grey" },
+            { text: "green", value: "w3-green" },
+            { text: "light-green", value: "w3-light-green" },
+            { text: "indigo", value: "w3-indigo" },
+            { text: "khaki", value: "w3-khaki" },
+            { text: "lime", value: "w3-lime" },
+            { text: "orange", value: "w3-orange" },
+            { text: "deep-orange", value: "w3-deep-orange" },
+            { text: "pink", value: "w3-pink" },
+            { text: "purple", value: "w3-purple" },
+            { text: "deep-purple", value: "w3-deep-purple" },
+            { text: "red", value: "w3-red" },
+            { text: "sand", value: "w3-sand" },
+            { text: "teal", value: "w3-teal" },
+            { text: "yellow", value: "w3-yellow" },
+            { text: "white", value: "w3-white" },
+            { text: "black", value: "w3-black" },
+            { text: "grey", value: "w3-grey" },
+            { text: "light-grey", value: "w3-light-grey" },
+            { text: "dark-grey", value: "w3-dark-grey" },
+            { text: "pale-red", value: "w3-pale-red" },
+            { text: "pale-green", value: "w3-pale-green" },
+            { text: "pale-yellow", value: "w3-pale-yellow" },
+            { text: "pale-blue", value: "w3-pale-blue" },
+          ],
+        },
+        computed: {
+          sessionMiniId: function () {
+            return this.sessionId ? this.sessionId.substring(0, 7) : "";
+          },
+        },
+        methods: {
+          // changes color of tabs to selected accent color
+          changeColor: function (event) {
+            var buttons = document.getElementsByClassName("w3-btn w3-block");
+            for (var i = 0; i < buttons.length; i++) {
+              var substitute = event.target.value;
+              buttons[i].className = "w3-btn w3-block " + substitute;
             }
-          }
-          sessionStorage.verityDemoCurrentTab = tabName
-        }
-      },
-      // IN THIS SECTION WE CONFIGURE MESSAGE HANDLERS FOR MESSAGES RECEIVED VIA WEBHOOK URL
-      setupSocket: function () {
-        this.socket = io()
-        this.socket.on('message', async (message) => {
-          this.messages.unshift({
-            content: message,
-            time: this.getTime()
-          })
-          // Handle received message differently based on message type
-          switch (message['@type']) {
-            case 'did:sov:123456789abcdefghi1234;spec/write-schema/0.6/status-report':
-              this.schemas.push({
-                name: message.schemaId.split(':')[2],
-                id: message.schemaId
-              })
-              this.schema.name = ''
-              this.schema.version = ''
-              this.schema.attrs = ''
-              this.spinners.schemas = false
-              break
-            case 'did:sov:123456789abcdefghi1234;spec/write-schema/0.6/problem-report':
-              this.schema.name = ''
-              this.schema.version = ''
-              this.schema.attrs = ''
-              this.spinners.schemas = false
-              alert(message.message)
-              break
-            case 'did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/status-report':
-              this.credDefs.push({
-                name: this.credDef.name,
-                id: message.credDefId
-              })
-              this.credDef.name = ''
-              this.credDef.schemaId = ''
-              this.credDef.tag = ''
-              this.credDef.revocationDetails = ''
-              this.spinners.credDefs = false
-              break
-            case 'did:sov:123456789abcdefghi1234;spec/relationship/1.0/created':
-              this.connection.did = message.did
-              msg = {
-                '~for_relationship': message.did
-              }
-              await this.sendMessage('relationship', '1.0', 'connection-invitation', msg, message['~thread'].thid)
-              break
-            case 'did:sov:123456789abcdefghi1234;spec/relationship/1.0/invitation':
-              this.inviteDetailQRCode = (await axios.post('/qr', { url: message.inviteURL })).data
-              document.getElementById('invite-detail-modal').style.display = 'block'
-              break
-            case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/accept-request':
-              try {
-                const msg = {
-                  '~for_relationship': this.credential.relationshipDID
+            sessionStorage.accentColor = this.accentColor;
+          },
+          // sets color of tabs to the accent color stored in browser on Vue.js page refresh
+          refreshColor: function (color) {
+            var buttons = document.getElementsByClassName("w3-btn w3-block");
+            for (var i = 0; i < buttons.length; i++) {
+              var substitute = color;
+              buttons[i].className = "w3-btn w3-block " + substitute;
+              console.log(getComputedStyle(buttons[i]).backgroundColor);
+            }
+          },
+          // prints time when webhook URL message was received in the format hh24:mm:ss
+          getTime: function () {
+            const time = new Date();
+            return time.toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+              hour12: false,
+            });
+          },
+          // Sends request to B/E to register Issuer DID/Verkey on Sovrin Staging Net via Sovrin SelfServe portal
+          registerDID: async function (did, verkey) {
+            var response = await axios.post("/registerDID", {
+              network: "stagingnet",
+              did: did,
+              verkey: verkey,
+              paymentaddr: "",
+            });
+            this.messages.unshift({
+              content:
+                "Registration response from Sovrin portal:\n" +
+                JSON.stringify(response.data),
+              time: this.getTime(),
+            });
+            this.issuerDID = did;
+            this.issuerVerKey = verkey;
+            this.spinners.setupIssuer = false;
+          },
+          // opens selected tab
+          // does not allow to open Tabs for Schema/CredDef creation or credential issuance if Issuer keys are not created
+          openTab: function (tabName) {
+            if (
+              ["creds", "cred-defs", "write-schemas"].includes(tabName) &&
+              this.issuerDID === ""
+            ) {
+              alert("You need to run Setup Issuer first");
+            } else {
+              for (const content of document.getElementsByClassName(
+                "hidden-content"
+              )) {
+                content.className = content.className.replace(" w3-show", "");
+                if (content.id === tabName + "-content") {
+                  content.className += " w3-show";
                 }
-                await this.sendMessage('issue-credential', '1.0', 'issue', msg, message['~thread'].thid, 'BzCbsNYhMrjHiqZDTUASHg')
-                this.credential.name = ''
-                this.credential.relationshipDID = ''
-                this.credential.credDefId = ''
-                this.credential.values = ''
-                this.spinners.creds = false
+              }
+              sessionStorage.verityDemoCurrentTab = tabName;
+            }
+          },
+          // IN THIS SECTION WE CONFIGURE MESSAGE HANDLERS FOR MESSAGES RECEIVED VIA WEBHOOK URL
+          setupSocket: function () {
+            this.socket = io();
+            this.socket.on("message", async (message) => {
+              this.messages.unshift({
+                content: message,
+                time: this.getTime(),
+              });
+              // Handle received message differently based on message type
+              switch (message["@type"]) {
+                case "did:sov:123456789abcdefghi1234;spec/write-schema/0.6/status-report":
+                  this.schemas.push({
+                    name: message.schemaId.split(":")[2],
+                    id: message.schemaId,
+                  });
+                  this.schema.name = "";
+                  this.schema.version = "";
+                  this.schema.attrs = "";
+                  this.spinners.schemas = false;
+                  break;
+                case "did:sov:123456789abcdefghi1234;spec/write-schema/0.6/problem-report":
+                  this.schema.name = "";
+                  this.schema.version = "";
+                  this.schema.attrs = "";
+                  this.spinners.schemas = false;
+                  alert(message.message);
+                  break;
+                case "did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/status-report":
+                  this.credDefs.push({
+                    name: this.credDef.name,
+                    id: message.credDefId,
+                  });
+                  this.credDef.name = "";
+                  this.credDef.schemaId = "";
+                  this.credDef.tag = "";
+                  this.credDef.revocationDetails = "";
+                  this.spinners.credDefs = false;
+                  break;
+                case "did:sov:123456789abcdefghi1234;spec/relationship/1.0/created":
+                  this.connection.did = message.did;
+                  msg = {
+                    "~for_relationship": message.did,
+                  };
+                  await this.sendMessage(
+                    "relationship",
+                    "1.0",
+                    "connection-invitation",
+                    msg,
+                    message["~thread"].thid
+                  );
+                  break;
+                case "did:sov:123456789abcdefghi1234;spec/relationship/1.0/invitation":
+                  this.inviteDetailQRCode = (
+                    await axios.post("/qr", { url: message.inviteURL })
+                  ).data;
+                  document.getElementById("invite-detail-modal").style.display =
+                    "block";
+                  break;
+                case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/accept-request":
+                  try {
+                    const msg = {
+                      "~for_relationship": this.credential.relationshipDID,
+                    };
+                    await this.sendMessage(
+                      "issue-credential",
+                      "1.0",
+                      "issue",
+                      msg,
+                      message["~thread"].thid,
+                      "BzCbsNYhMrjHiqZDTUASHg"
+                    );
+                    this.credential.name = "";
+                    this.credential.relationshipDID = "";
+                    this.credential.credDefId = "";
+                    this.credential.values = "";
+                    this.spinners.creds = false;
+                  } catch (err) {
+                    console.error(err);
+                    alert(
+                      "Failed to issue credential. See console for more details."
+                    );
+                    this.spinners.creds = false;
+                  }
+                  break;
+                case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/response-sent":
+                  document.getElementById("invite-detail-modal").style.display =
+                    "none";
+                  this.connections.push({
+                    name: this.connection.name,
+                    did: this.connection.did,
+                  });
+                  this.connection.name = "";
+                  this.connection.did = "";
+                  this.spinners.connections = false;
+                  break;
+                case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/answer-given":
+                  this.structMsgs.push({
+                    did: this.proof.relationshipDID,
+                    data: message.answer,
+                  });
+                  this.structuredMessage.relationshipDID = "";
+                  this.structuredMessage.text = "";
+                  this.structuredMessage.detail = "";
+                  this.structuredMessage.responses = "";
+                  this.spinners.structMsgs = false;
+                  break;
+                case "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier-created":
+                  await this.registerDID(
+                    message.identifier.did,
+                    message.identifier.verKey
+                  );
+                  break;
+                case "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/problem-report":
+                  if (
+                    message.message ===
+                    "Issuer Identifier is already created or in the process of creation"
+                  ) {
+                    await this.sendMessage(
+                      "issuer-setup",
+                      "0.6",
+                      "current-public-identifier",
+                      {}
+                    );
+                  }
+                  break;
+                case "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier":
+                  await this.registerDID(message.did, message.verKey);
+                  break;
+                case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/presentation-result":
+                  this.proofs.push({
+                    did: this.proof.relationshipDID,
+                    data: message.requested_presentation,
+                  });
+
+                  this.proof.relationshipDID = "";
+                  this.proof.name = "";
+                  this.proof.attrs = "";
+                  this.proof.predicates = "";
+                  this.proof.revocationInterval = "";
+                  this.spinners.proofs = false;
+                  break;
+              }
+            });
+          },
+          // get uuid from B/E (used for generation of threadId or sessionId)
+          uuid: async function () {
+            return (await axios.get("/uuid")).data;
+          },
+          // register sessionID with B/E
+          updateSocketSession: async function () {
+            // Set sessionID if not set
+            if (!this.sessionId) {
+              this.sessionId = await this.uuid();
+            }
+
+            if (this.socket) {
+              this.socket.emit("update", {
+                sessionId: this.sessionId,
+              });
+            } else {
+              console.log("socket not yet created");
+            }
+          },
+          // Restore stored values from browser storage (if any)
+          restoreDataFromBrowserStorage: async function () {
+            if (sessionStorage.verityDemoData) {
+              const dataInBrowser = JSON.parse(sessionStorage.verityDemoData);
+              for (const key of this.itemsToStoreInBrowser) {
+                const browserValue = dataInBrowser[key];
+                if (
+                  browserValue !== undefined &&
+                  browserValue !== "" &&
+                  browserValue != null
+                ) {
+                  this._data[key] = browserValue;
+                }
+              }
+              this.refreshColor(this.accentColor);
+            }
+          },
+          // store values defined in itemsToStoreInBrowser array to browser storage
+          updateDataInBrowserStorage: function () {
+            const verityDemoData = {};
+            for (const key of this.itemsToStoreInBrowser) {
+              verityDemoData[key] = this._data[key];
+            }
+            sessionStorage.verityDemoData = JSON.stringify(verityDemoData);
+          },
+          // Clear browser storage ("Reset all")
+          resetBrowserStorage: async function () {
+            delete sessionStorage.verityDemoData;
+
+            await this.restoreDataFromBrowserStorage();
+            await this.updateSocketSession();
+            location.reload();
+          },
+          // Initiates setup issuer logic which will create issuer DID/Verkey
+          setupIssuer: async function () {
+            try {
+              this.spinners.setupIssuer = true;
+              await this.sendMessage("issuer-setup", "0.6", "create", {});
+            } catch (err) {
+              this.spinners.setupIssuer = false;
+            }
+          },
+          // Send data to B/E based on which B/E will initiate REST API call to VAS
+          sendMessage: async function (
+            msgFamily,
+            msgFamilyVersion,
+            msgName,
+            message,
+            threadId,
+            qualifier
+          ) {
+            if (!threadId) {
+              threadId = await this.uuid();
+            }
+            await axios.post("/send", {
+              msgFamily: msgFamily,
+              msgFamilyVersion: msgFamilyVersion,
+              msgName: msgName,
+              threadId: threadId,
+              qualifier: qualifier,
+              message: message,
+            });
+          },
+          // updates congifuration (logoUrl, name) on VAS
+          updateConfig: async function () {
+            this.spinners.configuration = true;
+            try {
+              const message = {
+                configs: [
+                  {
+                    name: "logoUrl",
+                    value: this.institutionLogoURL,
+                  },
+                  {
+                    name: "name",
+                    value: this.institutionName,
+                  },
+                ],
+              };
+              await this.sendMessage(
+                "update-configs",
+                "0.6",
+                "update",
+                message
+              );
+            } catch (err) {
+              console.error(err);
+              console.error("Failed to update configuration.");
+            }
+            this.spinners.configuration = false;
+          },
+          // This will update webhook URL endpoint on VAS
+          updateEndpoint: async function () {
+            try {
+              // Get endpoint for F/E session from B/E
+              this.webhookURL = (
+                await axios.post("/webhookUrl", { sessionId: this.sessionId })
+              ).data;
+              // Prepare message to update endpoint on VAS
+              const message = {
+                comMethod: {
+                  id: "webhook",
+                  type: 2,
+                  value: this.webhookURL,
+                  packaging: {
+                    pkgType: "plain",
+                  },
+                },
+              };
+              // sent message to B/E to update webhookURL endpoint. B/E will then initiate REST API call to VAS
+              await this.sendMessage(
+                "configs",
+                "0.6",
+                "UPDATE_COM_METHOD",
+                message
+              );
+            } catch (err) {
+              console.error(err);
+              console.error("Failed to update endpoint.");
+            }
+          },
+          // get VerityURL and domain DID from B/E so that they could be shown in Configuration tab
+          getConfig: async function () {
+            try {
+              const response = await axios.get("/getConfig");
+              this.verityURL = response.data.verityUrl;
+              this.domainDID = response.data.domainDid;
+            } catch (err) {
+              console.error(err);
+              console.error("Failed to get config");
+            }
+          },
+          writeSchema: async function () {
+            try {
+              this.spinners.schemas = true;
+              const message = {
+                name: this.schema.name,
+                version: this.schema.version,
+                attrNames: this.schema.attrs.split(","),
+              };
+              await this.sendMessage("write-schema", "0.6", "write", message);
+            } catch (err) {
+              console.error(err);
+              alert(
+                "Failed to write schema. See console for more details.\n\nDid you remember to write the Issuer DID and VerKey to the ledger?"
+              );
+              this.spinners.schemas = false;
+            }
+          },
+          writeCredDef: async function () {
+            try {
+              this.spinners.credDefs = true;
+              let revocationDetails;
+              if (this.credDef.revocationDetails === "") {
+                revocationDetails = {};
+              } else {
+                try {
+                  revocationDetails = JSON.parse(
+                    this.credDef.revocationDetails
+                  );
+                } catch (err) {
+                  console.error(err);
+                  alert(
+                    "Failed to write credential definition. Revocation Details is not valid JSON."
+                  );
+                  this.spinners.credDefs = false;
+                  return;
+                }
+              }
+              const message = {
+                name: this.credDef.name,
+                schemaId: this.credDef.schemaId,
+                tag: this.credDef.tag || null,
+                revocationDetails: revocationDetails,
+              };
+              await this.sendMessage("write-cred-def", "0.6", "write", message);
+            } catch (err) {
+              console.error(err);
+              alert(
+                "Failed to write credential definition. See console for more details.\n\nDid you remember to write the Issuer DID and VerKey to the ledger?"
+              );
+              this.spinners.credDefs = false;
+            }
+          },
+          newConnection: async function () {
+            try {
+              this.spinners.connections = true;
+              const message = {
+                label: this.institutionName,
+              };
+              await this.sendMessage("relationship", "1.0", "create", message);
+            } catch (err) {
+              console.error(err);
+              alert(
+                "Failed to create connection. See console for more details."
+              );
+              this.spinners.connections = false;
+            }
+          },
+          offerCredential: async function () {
+            try {
+              this.spinners.creds = true;
+              let values;
+              try {
+                values = JSON.parse(this.credential.values);
               } catch (err) {
-                console.error(err)
-                alert('Failed to issue credential. See console for more details.')
-                this.spinners.creds = false
+                alert(
+                  "Credential Values are not valid JSON. Credential Values should be a simple map of field names (from the schema) to values, formatted as JSON."
+                );
+                this.spinners.creds = false;
+                return;
               }
-              break
-            case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/response-sent':
-              document.getElementById('invite-detail-modal').style.display = 'none'
-              this.connections.push({
-                name: this.connection.name,
-                did: this.connection.did
-              })
-              this.connection.name = ''
-              this.connection.did = ''
-              this.spinners.connections = false
-              break
-            case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/answer-given':
-              this.structMsgs.push({
-                did: this.proof.relationshipDID,
-                data: message.answer
-              })
-              this.structuredMessage.relationshipDID = ''
-              this.structuredMessage.text = ''
-              this.structuredMessage.detail = ''
-              this.structuredMessage.responses = ''
-              this.spinners.structMsgs = false
-              break
-            case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier-created':
-              await this.registerDID(message.identifier.did, message.identifier.verKey)
-              break
-            case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/problem-report':
-              if (message.message === 'Issuer Identifier is already created or in the process of creation') {
-                await this.sendMessage('issuer-setup', '0.6', 'current-public-identifier', {})
-              }
-              break
-            case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier':
-              await this.registerDID(message.did, message.verKey)
-              break
-            case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/presentation-result':
-              this.proofs.push({
-                did: this.proof.relationshipDID,
-                data: message.requested_presentation
-              })
-
-              this.proof.relationshipDID = ''
-              this.proof.name = ''
-              this.proof.attrs = ''
-              this.proof.predicates = ''
-              this.proof.revocationInterval = ''
-              this.spinners.proofs = false
-              break
-          }
-        })
-      },
-      // get uuid from B/E (used for generation of threadId or sessionId)
-      uuid: async function () {
-        return (await axios.get('/uuid')).data
-      },
-      // register sessionID with B/E
-      updateSocketSession: async function () {
-        // Set sessionID if not set
-        if (!this.sessionId) {
-          this.sessionId = await this.uuid()
-        }
-
-        if (this.socket) {
-          this.socket.emit('update', {
-            sessionId: this.sessionId
-          })
-        } else {
-          console.log('socket not yet created')
-        }
-      },
-      // Restore stored values from browser storage (if any)
-      restoreDataFromBrowserStorage: async function () {
-        if (sessionStorage.verityDemoData) {
-          const dataInBrowser = JSON.parse(sessionStorage.verityDemoData)
-          for (const key of this.itemsToStoreInBrowser) {
-            const browserValue = dataInBrowser[key]
-            if (browserValue !== undefined && browserValue !== '' && browserValue != null) {
-              this._data[key] = browserValue
-            }
-          }
-          this.refreshColor(this.accentColor)
-        }
-      },
-      // store values defined in itemsToStoreInBrowser array to browser storage
-      updateDataInBrowserStorage: function () {
-        const verityDemoData = {}
-        for (const key of this.itemsToStoreInBrowser) {
-          verityDemoData[key] = this._data[key]
-        }
-        sessionStorage.verityDemoData = JSON.stringify(verityDemoData)
-      },
-      // Clear browser storage ("Reset all")
-      resetBrowserStorage: async function () {
-        delete sessionStorage.verityDemoData
-
-        await this.restoreDataFromBrowserStorage()
-        await this.updateSocketSession()
-        location.reload()
-      },
-      // Initiates setup issuer logic which will create issuer DID/Verkey
-      setupIssuer: async function () {
-        try {
-          this.spinners.setupIssuer = true
-          await this.sendMessage('issuer-setup', '0.6', 'create', {})
-        } catch (err) {
-          this.spinners.setupIssuer = false
-        }
-      },
-      // Send data to B/E based on which B/E will initiate REST API call to VAS
-      sendMessage: async function (msgFamily, msgFamilyVersion, msgName, message, threadId, qualifier) {
-        if (!threadId) {
-          threadId = await this.uuid()
-        }
-        await axios.post('/send', {
-          msgFamily: msgFamily,
-          msgFamilyVersion: msgFamilyVersion,
-          msgName: msgName,
-          threadId: threadId,
-          qualifier: qualifier,
-          message: message
-        })
-      },
-      // updates congifuration (logoUrl, name) on VAS
-      updateConfig: async function () {
-        this.spinners.configuration = true
-        try {
-          const message = {
-            configs: [
-              {
-                name: 'logoUrl',
-                value: this.institutionLogoURL
-              },
-              {
-                name: 'name',
-                value: this.institutionName
-              }
-            ]
-          }
-          await this.sendMessage('update-configs', '0.6', 'update', message)
-        } catch (err) {
-          console.error(err)
-          console.error('Failed to update configuration.')
-        }
-        this.spinners.configuration = false
-      },
-      // This will update webhook URL endpoint on VAS
-      updateEndpoint: async function () {
-        try {
-          // Get endpoint for F/E session from B/E
-          this.webhookURL = (await axios.post('/webhookUrl', { sessionId: this.sessionId })).data
-          // Prepare message to update endpoint on VAS
-          const message = {
-            comMethod: {
-              id: 'webhook',
-              type: 2,
-              value: this.webhookURL,
-              packaging: {
-                pkgType: 'plain'
-              }
-            }
-          }
-          // sent message to B/E to update webhookURL endpoint. B/E will then initiate REST API call to VAS
-          await this.sendMessage('configs', '0.6', 'UPDATE_COM_METHOD', message)
-        } catch (err) {
-          console.error(err)
-          console.error('Failed to update endpoint.')
-        }
-      },
-      // get VerityURL and domain DID from B/E so that they could be shown in Configuration tab
-      getConfig: async function () {
-        try {
-          const response = await axios.get('/getConfig')
-          this.verityURL = response.data.verityUrl
-          this.domainDID = response.data.domainDid
-        } catch (err) {
-          console.error(err)
-          console.error('Failed to get config')
-        }
-      },
-      writeSchema: async function () {
-        try {
-          this.spinners.schemas = true
-          const message = {
-            name: this.schema.name,
-            version: this.schema.version,
-            attrNames: this.schema.attrs.split(',')
-          }
-          await this.sendMessage('write-schema', '0.6', 'write', message)
-        } catch (err) {
-          console.error(err)
-          alert('Failed to write schema. See console for more details.\n\nDid you remember to write the Issuer DID and VerKey to the ledger?')
-          this.spinners.schemas = false
-        }
-      },
-      writeCredDef: async function () {
-        try {
-          this.spinners.credDefs = true
-          let revocationDetails
-          if (this.credDef.revocationDetails === '') {
-            revocationDetails = {}
-          } else {
-            try {
-              revocationDetails = JSON.parse(this.credDef.revocationDetails)
+              const message = {
+                "~for_relationship": this.credential.relationshipDID,
+                name: this.credential.name,
+                cred_def_id: this.credential.credDefId,
+                credential_values: values,
+                price: 0,
+              };
+              await this.sendMessage(
+                "issue-credential",
+                "1.0",
+                "offer",
+                message,
+                null,
+                "BzCbsNYhMrjHiqZDTUASHg"
+              );
+              this.spinners.creds = false;
             } catch (err) {
-              console.error(err)
-              alert('Failed to write credential definition. Revocation Details is not valid JSON.')
-              this.spinners.credDefs = false
-              return
+              console.error(err);
+              alert(
+                "Failed to issue credential. See console for more details."
+              );
+              this.spinners.creds = false;
             }
-          }
-          const message = {
-            name: this.credDef.name,
-            schemaId: this.credDef.schemaId,
-            tag: this.credDef.tag || null,
-            revocationDetails: revocationDetails
-          }
-          await this.sendMessage('write-cred-def', '0.6', 'write', message)
-        } catch (err) {
-          console.error(err)
-          alert('Failed to write credential definition. See console for more details.\n\nDid you remember to write the Issuer DID and VerKey to the ledger?')
-          this.spinners.credDefs = false
-        }
-      },
-      newConnection: async function () {
-        try {
-          this.spinners.connections = true
-          const message = {
-            label: this.institutionName
-          }
-          await this.sendMessage('relationship', '1.0', 'create', message)
-        } catch (err) {
-          console.error(err)
-          alert('Failed to create connection. See console for more details.')
-          this.spinners.connections = false
-        }
-      },
-      offerCredential: async function () {
-        try {
-          this.spinners.creds = true
-          let values
-          try {
-            values = JSON.parse(this.credential.values)
-          } catch (err) {
-            alert('Credential Values are not valid JSON. Credential Values should be a simple map of field names (from the schema) to values, formatted as JSON.')
-            this.spinners.creds = false
-            return
-          }
-          const message = {
-            '~for_relationship': this.credential.relationshipDID,
-            name: this.credential.name,
-            cred_def_id: this.credential.credDefId,
-            credential_values: values,
-            price: 0
-          }
-          await this.sendMessage('issue-credential', '1.0', 'offer', message, null, 'BzCbsNYhMrjHiqZDTUASHg')
-          this.spinners.creds = false
-        } catch (err) {
-          console.error(err)
-          alert('Failed to issue credential. See console for more details.')
-          this.spinners.creds = false
-        }
-      },
-      sendProofRequest: async function () {
-        try {
-          this.spinners.proofs = true
-          let proofAttrs
-          let proofPredicates
-          let revocationInterval
-          try {
-            proofAttrs = JSON.parse(this.proof.attrs)
-          } catch (err) {
-            alert('Proof Attributes are not valid JSON. Should be a JSON Array of proof attribute objects')
-            this.spinners.proofs = false
-            return
-          }
-          if (this.proof.predicates) {
+          },
+          sendProofRequest: async function () {
             try {
-              proofPredicates = JSON.parse(this.proof.predicates)
+              this.spinners.proofs = true;
+              let proofAttrs;
+              let proofPredicates;
+              let revocationInterval;
+              try {
+                proofAttrs = JSON.parse(this.proof.attrs);
+              } catch (err) {
+                alert(
+                  "Proof Attributes are not valid JSON. Should be a JSON Array of proof attribute objects"
+                );
+                this.spinners.proofs = false;
+                return;
+              }
+              if (this.proof.predicates) {
+                try {
+                  proofPredicates = JSON.parse(this.proof.predicates);
+                } catch (err) {
+                  alert(
+                    "Proof Predicates are not valid JSON. Should be a JSON Array of proof predicate objects"
+                  );
+                  this.spinners.proofs = false;
+                  return;
+                }
+              } else {
+                proofPredicates = [];
+              }
+              if (this.proof.revocationInterval) {
+                try {
+                  revocationInterval = JSON.parse(
+                    this.proof.revocationInterval
+                  );
+                } catch (err) {
+                  alert(
+                    "Proof Revocation Interval is not valid JSON. Should be a Revocation Interval JSON Object"
+                  );
+                  this.spinners.proofs = false;
+                  return;
+                }
+              } else {
+                revocationInterval = {};
+              }
+              const message = {
+                "~for_relationship": this.proof.relationshipDID,
+                name: this.proof.name,
+                proof_attrs: proofAttrs,
+                proof_predicates: proofPredicates,
+                revocation_interval: revocationInterval,
+              };
+              await this.sendMessage(
+                "present-proof",
+                "1.0",
+                "request",
+                message,
+                null,
+                "BzCbsNYhMrjHiqZDTUASHg"
+              );
+              this.spinners.proofs = false;
             } catch (err) {
-              alert('Proof Predicates are not valid JSON. Should be a JSON Array of proof predicate objects')
-              this.spinners.proofs = false
-              return
+              console.error(err);
+              alert(
+                "Failed to send proof request. See console for more details."
+              );
+              this.spinners.proofs = false;
             }
-          } else {
-            proofPredicates = []
-          }
-          if (this.proof.revocationInterval) {
+          },
+          sendStructuredMessage: async function () {
             try {
-              revocationInterval = JSON.parse(this.proof.revocationInterval)
+              this.spinners.structMsgs = true;
+              const message = {
+                "~for_relationship": this.structuredMessage.relationshipDID,
+                text: this.structuredMessage.text,
+                detail: this.structuredMessage.detail,
+                valid_responses: this.structuredMessage.responses.split(","),
+                signature_required: false,
+              };
+              await this.sendMessage(
+                "committedanswer",
+                "1.0",
+                "ask-question",
+                message,
+                null,
+                "BzCbsNYhMrjHiqZDTUASHg"
+              );
+              this.spinners.structMsgs = false;
             } catch (err) {
-              alert('Proof Revocation Interval is not valid JSON. Should be a Revocation Interval JSON Object')
-              this.spinners.proofs = false
-              return
+              console.error(err);
+              alert("Failed to send structured message");
+              this.spinners.structMsgs = false;
             }
-          } else {
-            revocationInterval = {}
-          }
-          const message = {
-            '~for_relationship': this.proof.relationshipDID,
-            name: this.proof.name,
-            proof_attrs: proofAttrs,
-            proof_predicates: proofPredicates,
-            revocation_interval: revocationInterval
-          }
-          await this.sendMessage('present-proof', '1.0', 'request', message, null, 'BzCbsNYhMrjHiqZDTUASHg')
-          this.spinners.proofs = false
-        } catch (err) {
-          console.error(err)
-          alert('Failed to send proof request. See console for more details.')
-          this.spinners.proofs = false
-        }
-      },
-      sendStructuredMessage: async function () {
-        try {
-          this.spinners.structMsgs = true
-          const message = {
-            '~for_relationship': this.structuredMessage.relationshipDID,
-            text: this.structuredMessage.text,
-            detail: this.structuredMessage.detail,
-            valid_responses: this.structuredMessage.responses.split(','),
-            signature_required: false
-          }
-          await this.sendMessage('committedanswer', '1.0', 'ask-question', message, null, 'BzCbsNYhMrjHiqZDTUASHg')
-          this.spinners.structMsgs = false
-        } catch (err) {
-          console.error(err)
-          alert('Failed to send structured message')
-          this.spinners.structMsgs = false
-        }
-      },
-      sendCustomRequest: async function () {
-        try {
-          this.spinners.custom = true
-          let message
-          try {
-            message = JSON.parse(this.customRequest.message)
-          } catch (e) {
-            console.error(e)
-            alert('Custom Request Message is not valid JSON.')
-            this.spinners.custom = false
-            return
-          }
+          },
+          sendCustomRequest: async function () {
+            try {
+              this.spinners.custom = true;
+              let message;
+              try {
+                message = JSON.parse(this.customRequest.message);
+              } catch (e) {
+                console.error(e);
+                alert("Custom Request Message is not valid JSON.");
+                this.spinners.custom = false;
+                return;
+              }
 
-          await this.sendMessage(this.customRequest.msgFamily, this.customRequest.msgFamilyVersion, this.customRequest.msgName, message, null, this.customRequest.msgFamilyQualifier)
-          this.spinners.custom = false
-        } catch (e) {
-          console.error(e)
-          alert('Failed to send custom request. See console for more details.')
-          this.spinners.custom = false
-        }
-      }
-    },
-    // Logic to run when Vue.js application is started
-    mounted: async function () {
-      await this.restoreDataFromBrowserStorage()
-      this.setupSocket()
-      if (sessionStorage.verityDemoCurrentTab) {
-        this.openTab(sessionStorage.verityDemoCurrentTab)
-      }
-      await this.updateSocketSession()
-      await this.updateEndpoint()
-      await this.getConfig()
-      this.updateDataInBrowserStorage()
-    },
-    // Logic to run when Vue.js application is updated
-    updated: function () {
-      this.updateDataInBrowserStorage()
-    }
-  })
-</script>
-</body>
+              await this.sendMessage(
+                this.customRequest.msgFamily,
+                this.customRequest.msgFamilyVersion,
+                this.customRequest.msgName,
+                message,
+                null,
+                this.customRequest.msgFamilyQualifier
+              );
+              this.spinners.custom = false;
+            } catch (e) {
+              console.error(e);
+              alert(
+                "Failed to send custom request. See console for more details."
+              );
+              this.spinners.custom = false;
+            }
+          },
+        },
+        // Logic to run when Vue.js application is started
+        mounted: async function () {
+          await this.restoreDataFromBrowserStorage();
+          this.setupSocket();
+          if (sessionStorage.verityDemoCurrentTab) {
+            this.openTab(sessionStorage.verityDemoCurrentTab);
+          }
+          await this.updateSocketSession();
+          await this.updateEndpoint();
+          await this.getConfig();
+          this.updateDataInBrowserStorage();
+        },
+        // Logic to run when Vue.js application is updated
+        updated: function () {
+          this.updateDataInBrowserStorage();
+        },
+      });
+    </script>
+  </body>
 </html>
