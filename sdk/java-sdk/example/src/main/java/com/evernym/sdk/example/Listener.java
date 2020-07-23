@@ -72,7 +72,7 @@ public class Listener {
             if (ex instanceof SocketTimeoutException) {
                 System.err.println("Connection timed out");
             } else if (ex instanceof ConnectionClosedException) {
-                System.err.println(ex.getMessage());
+                // System.err.println(ex.getMessage());
             } else if (ex instanceof SocketException) {
                 System.err.println("Socket closed");
             } else {
@@ -98,7 +98,7 @@ public class Listener {
                 throw new MethodNotSupportedException(method + " method not supported");
             }
             String target = request.getRequestLine().getUri();
-            System.err.println("Got request for " + method + " " + target);
+            // System.err.println("Got request for " + method + " " + target);
 
             if (request instanceof HttpEntityEnclosingRequest) {
                 HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
@@ -110,7 +110,7 @@ public class Listener {
             HttpConnection conn = coreContext.getConnection(HttpConnection.class);
             response.setStatusCode(HttpStatus.SC_OK);
             response.setEntity(new StringEntity("Success", Charset.forName("UTF-8")));
-            System.err.println(conn + ": serving data \"Success\"");
+            // System.err.println(conn + ": serving data \"Success\"");
         }
     }
 }

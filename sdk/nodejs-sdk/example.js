@@ -95,7 +95,6 @@ async function createRelationship () {
           spinner.stop()
           printMessage(msgName, message)
           var inviteURL = message.inviteURL
-          console.log(inviteURL)
 
           await QRCode.toFile('qrcode.png', inviteURL)
 
