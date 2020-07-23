@@ -40,14 +40,18 @@ public abstract class Helper {
 
     void start() throws IOException, InterruptedException {
         System.setErr(new PrintStream(errBuffer));
+        handlers = new Handlers();
         startListening(); // The example app stands up an endpoint to listen for messages from Verity
     }
 
     void end() {
         listener.stop();
-        println("");
-        println("******************** STDERR ********************");
-        println(new String(errBuffer.toByteArray()));
+        String stdErrOutput = new String(errBuffer.toByteArray());
+        if (!stdErrOutput.isEmpty()) {
+            println("");
+            println("******************** STDERR ********************");
+            println(new String(errBuffer.toByteArray()));
+        }
     }
 
     // Basic http server listening for messages from Verity
@@ -64,10 +68,6 @@ public abstract class Helper {
     }
 
     void handle(MessageFamily messageFamily, MessageHandler.Handler messageHandler) {
-        if(handlers == null) {
-            handlers = new Handlers();
-        }
-
         handlers.addHandler(messageFamily, (String msgName, JSONObject message) -> {
             try {
                 messageHandler.handle(msgName, message);

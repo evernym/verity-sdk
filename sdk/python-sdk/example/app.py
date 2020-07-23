@@ -103,7 +103,6 @@ async def create_relationship(loop) -> str:
         print_message(msg_name, message)
         if msg_name == Relationship.INVITATION:
             invite_url = message["inviteURL"]
-            print(invite_url)
             # write QRCode to disk
             qr = pyqrcode.create(invite_url)
             qr.png('qrcode.png')
