@@ -26,110 +26,11 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <style>
-      html,
-      body,
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6,
-      button,
-      input,
-      select,
-      textarea,
-      .pure-g [class*="pure-u"] {
-        font-family: "Roboto", sans-serif;
-      }
-
-      .evernym-green {
-        color: #fff !important;
-        background-color: #86b93b !important;
-      }
-
-      .down-arrow-icon {
-        background: url(./images/Vector.png);
-        width: 12px;
-        height: 8px;
-        display: inline-block;
-        margin-right: 8px;
-      }
-
-      .loader {
-        border: 5px solid #f3f3f3;
-        -webkit-animation: spin 1s linear infinite;
-        animation: spin 1s linear infinite;
-        border-top: 5px solid #555;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-      }
-
-      input:disabled {
-        color: black;
-        cursor: default;
-        background-color: white;
-      }
-
-      nav.navbar {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.01em 16px;
-        align-items: center;
-      }
-
-      .navbar .left-navbar {
-        display: flex;
-      }
-
-      div.logo {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .functions-wrapper {
-        padding-right: 40px;
-      }
-
-      .text-bold {
-        font-weight: bold;
-      }
-
-      button.pointer {
-        cursor: pointer;
-      }
-
-      .messages-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-      }
-
-      /* Safari */
-      @-webkit-keyframes spin {
-        0% {
-          -webkit-transform: rotate(0deg);
-        }
-        100% {
-          -webkit-transform: rotate(360deg);
-        }
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="app">
-      <header v-bind:class="[accentColor]">
+      <header v-bind:style="{ backgroundColor: accentColor}">
         <nav class="navbar">
           <section class="left-navbar">
             <div class="logo w3-container">
@@ -140,15 +41,23 @@
               />
             </div>
             <div class="w3-container">
-              <p class="w3-large">{{institutionName}}</p>
+              <p
+                class="w3-large"
+                style="margin: 0.6em 0;"
+                v-bind:style="{ color: textColor}"
+              >
+                {{institutionName}}
+              </p>
             </div>
           </section>
 
           <div>
             <button
+              @mouseover="isResetHovered = true"
+              @mouseleave="isResetHovered = false"
               v-on:click="resetBrowserStorage()"
-              class="w3-border w3-border-white w3-padding w3-round-large w3-small"
-              v-bind:class="[accentColor]"
+              class="w3-border w3-padding w3-round-large w3-small pointer"
+              v-bind:style="resetAllBtnStyle"
             >
               Reset All Fields
             </button>
@@ -173,7 +82,7 @@
         <!-- Button to delete all data from browser storage and reset VueJS to initial settings -->
         <br />
 
-        <div class="w3-content pure-g" style="max-width: 1080px;">
+        <div class="w3-content w3-padding-32 pure-g" style="max-width: 1080px;">
           <section class="pure-u-1 pure-u-md-2-3">
             <div class="functions-wrapper">
               <header>
@@ -183,78 +92,94 @@
                 <button
                   v-on:click="openTab('configuration')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    :class="{rotated: currentTab === 'configuration'}"
+                    aria-hidden="true"
+                  ></span>
                   Configuration
                 </button>
                 <div
                   v-show="currentTab === 'configuration'"
                   id="configuration-content"
-                  class="w3-padding w3-row"
                 >
-                  <div class="w3-half w3-padding">
-                    <label for="institution">Institution Name</label>
+                  <div class="w3-margin-top">
+                    <p class="w3-text-gray w3-small">
+                      Verity URL
+                    </p>
+                    <p class="w3-text-gray w3-small"><b>{{verityURL}}</b></p>
+                  </div>
+
+                  <div class="w3-margin-top">
+                    <p class="w3-text-gray w3-small">
+                      Domain DID
+                    </p>
+                    <p class="w3-text-gray w3-small"><b>{{domainDID}}</b></p>
+                  </div>
+
+                  <div class="w3-margin-top">
+                    <p class="w3-text-gray w3-small">
+                      Webhook URL
+                    </p>
+                    <p class="w3-text-gray w3-small"><b>{{webhookURL}}</b></p>
+                  </div>
+
+                  <div class="w3-margin-top w3-margin-bottom">
+                    <label for="institution" class="w3-text-gray w3-small"
+                      >Institution Name</label
+                    >
                     <input
                       id="institution"
-                      class="w3-input"
-                      style="text-align: center;"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
                       type="text"
                       v-model="institutionName"
                     />
+                  </div>
+                  <div class="w3-margin-top w3-margin-bottom">
+                    <label for="logo-url" class="w3-text-gray w3-small"
+                      >Institution Logo Url</label
+                    >
                     <input
-                      class="w3-input"
-                      style="text-align: center;"
+                      id="logo-url"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
                       type="text"
                       v-model="institutionLogoURL"
                     />
-                    <label style="font-weight: bold;"
-                      >Institution Logo Url</label
+                  </div>
+                  <div class="w3-margin-top w3-margin-bottom">
+                    <label for="accent-color" class="w3-text-gray w3-small"
+                      >App Color</label
                     >
-                    <select
-                      class="w3-input"
-                      v-model="accentColor"
-                      v-on:change="changeColor($event)"
-                    >
-                      <option disabled value="">
-                        -- select an option --
-                      </option>
-                      <option
-                        v-for="option in colors"
-                        v-bind:value="option.value"
-                      >
-                        {{ option.text }}
-                      </option>
-                    </select>
-                    <label style="font-weight: bold;">Accent Color</label>
-                    <br /><br /><br />
-                    <div
-                      style="
-                        height: 110px;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                      "
-                    >
-                      <div
-                        v-if="spinners.configuration"
-                        class="w3-btn w3-border w3-white w3-padding"
-                      >
-                        <div class="loader"></div>
-                      </div>
-                      <button
-                        v-else
-                        class="w3-btn w3-border w3-white w3-padding"
-                        v-on:click="updateConfig()"
-                      >
-                        Update configuration on Verity
-                      </button>
+                    <div>
+                      <input
+                        id="accent-color"
+                        type="color"
+                        class="w3-light-grey w3-border-0 w3-round"
+                        style="width: 90px; height: 36px; padding: 4px;"
+                        v-model="accentColor"
+                        v-on:change="changeColor($event)"
+                      />
                     </div>
                   </div>
-                  <div class="w3-half w3-padding w3-left-align">
-                    <p><b>Verity URL: </b>{{verityURL}}</p>
-                    <p><b>Domain DID: </b>{{domainDID}}</p>
-                    <p><b>Webhook URL: </b>{{webhookURL}}</p>
+                  <div class="w3-padding-16">
+                    <div
+                      v-if="spinners.configuration"
+                      class="w3-btn w3-border w3-white w3-padding"
+                    >
+                      <div class="loader"></div>
+                    </div>
+                    <button
+                      v-else
+                      class="w3-border w3-padding w3-round w3-small pointer"
+                      v-on:click="updateConfig()"
+                      @mouseover="areFunctionsBtnsHovered = true"
+                      @mouseleave="areFunctionsBtnsHovered = false"
+                      v-bind:style="funtionsBtnsStyles"
+                    >
+                      Update configuration on VAS
+                    </button>
                   </div>
                 </div>
               </div>
@@ -262,9 +187,13 @@
                 <button
                   v-on:click="openTab('setup-issuer')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    aria-hidden="true"
+                    :class="{rotated: currentTab === 'setup-issuer'}"
+                  ></span>
                   Setup Issuer
                 </button>
                 <div
@@ -307,8 +236,11 @@
                       </div>
                       <button
                         v-else
-                        class="w3-btn w3-border w3-white w3-padding"
+                        class="w3-border w3-padding w3-round w3-small pointer"
                         v-on:click="setupIssuer()"
+                        @mouseover="areFunctionsBtnsHovered = true"
+                        @mouseleave="areFunctionsBtnsHovered = false"
+                        v-bind:style="funtionsBtnsStyles"
                       >
                         Setup Issuer
                       </button>
@@ -327,9 +259,13 @@
                   id="schemas"
                   v-on:click="openTab('write-schemas')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    aria-hidden="true"
+                    :class="{rotated: currentTab === 'write-schemas'}"
+                  ></span>
                   Schemas
                 </button>
                 <div
@@ -386,9 +322,13 @@
                   id="credentialDefinitions"
                   v-on:click="openTab('cred-defs')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    aria-hidden="true"
+                    :class="{rotated: currentTab === 'cred-defs'}"
+                  ></span>
                   Credential Definitions
                 </button>
                 <div id="cred-defs-content" v-show="currentTab === 'cred-defs'">
@@ -447,9 +387,13 @@
                 <button
                   v-on:click="openTab('connections')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    aria-hidden="true"
+                    :class="{rotated: currentTab === 'connections'}"
+                  ></span>
                   Connections
                 </button>
                 <div
@@ -497,9 +441,13 @@
                   id="issueCredential"
                   v-on:click="openTab('creds')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    aria-hidden="true"
+                    :class="{rotated: currentTab === 'creds'}"
+                  ></span>
                   Issue Credentials
                 </button>
                 <div id="creds-content" v-show="currentTab === 'creds'">
@@ -553,9 +501,13 @@
                 <button
                   v-on:click="openTab('proofs')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    aria-hidden="true"
+                    :class="{rotated: currentTab === 'proofs'}"
+                  ></span>
                   Request Proofs
                 </button>
                 <div id="proofs-content" v-show="currentTab === 'proofs'">
@@ -628,9 +580,13 @@
                 <button
                   v-on:click="openTab('structured-messages')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    aria-hidden="true"
+                    :class="{rotated: currentTab === 'structured-messages'}"
+                  ></span>
                   Comitted Answer
                 </button>
                 <div
@@ -705,9 +661,13 @@
                 <button
                   v-on:click="openTab('customRequest')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
-                  v-bind:class="[accentColor]"
+                  v-bind:style="{ backgroundColor: accentColor, color: textColor}"
                 >
-                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  <span
+                    class="down-arrow-icon"
+                    aria-hidden="true"
+                    :class="{rotated: currentTab === 'customRequest'}"
+                  ></span>
                   Custom Verity Request
                 </button>
                 <div
@@ -809,6 +769,8 @@
       const app = new Vue({
         el: "#app",
         data: {
+          areFunctionsBtnsHovered: false,
+          isResetHovered: false,
           currentTab: "",
           sessionId: "",
           socket: null,
@@ -817,9 +779,9 @@
           webhookURL: "",
           issuerDID: "",
           issuerVerKey: "",
-          institutionName: "Verity Demo App",
+          institutionName: "Verity Example App",
           institutionLogoURL: "https://i.ibb.co/b5XYr6n/logo-evernym.png",
-          accentColor: "evernym-green",
+          accentColor: "#86B93B",
           inviteDetailQRCode: "",
           schemas: [],
           credDefs: [],
@@ -904,43 +866,45 @@
             structMsgs: false,
             custom: false,
           },
-          colors: [
-            { text: "evernym-green", value: "evernym-green" },
-            { text: "amber", value: "w3-amber" },
-            { text: "aqua", value: "w3-aqua" },
-            { text: "blue", value: "w3-blue" },
-            { text: "light-blue", value: "w3-light-blue" },
-            { text: "brown", value: "w3-brown" },
-            { text: "cyan", value: "w3-cyan" },
-            { text: "blue-grey", value: "w3-blue-grey" },
-            { text: "green", value: "w3-green" },
-            { text: "light-green", value: "w3-light-green" },
-            { text: "indigo", value: "w3-indigo" },
-            { text: "khaki", value: "w3-khaki" },
-            { text: "lime", value: "w3-lime" },
-            { text: "orange", value: "w3-orange" },
-            { text: "deep-orange", value: "w3-deep-orange" },
-            { text: "pink", value: "w3-pink" },
-            { text: "purple", value: "w3-purple" },
-            { text: "deep-purple", value: "w3-deep-purple" },
-            { text: "red", value: "w3-red" },
-            { text: "sand", value: "w3-sand" },
-            { text: "teal", value: "w3-teal" },
-            { text: "yellow", value: "w3-yellow" },
-            { text: "white", value: "w3-white" },
-            { text: "black", value: "w3-black" },
-            { text: "grey", value: "w3-grey" },
-            { text: "light-grey", value: "w3-light-grey" },
-            { text: "dark-grey", value: "w3-dark-grey" },
-            { text: "pale-red", value: "w3-pale-red" },
-            { text: "pale-green", value: "w3-pale-green" },
-            { text: "pale-yellow", value: "w3-pale-yellow" },
-            { text: "pale-blue", value: "w3-pale-blue" },
-          ],
         },
         computed: {
           sessionMiniId: function () {
             return this.sessionId ? this.sessionId.substring(0, 7) : "";
+          },
+          textColor: function () {
+            // Using YIQ formula to get the proper text color contrast using 156 as a discriminant rather than 128
+            const discriminant = 156;
+            const hexcolor = this.accentColor.replace("#", "");
+            const r = parseInt(hexcolor.substr(0, 2), 16);
+            const g = parseInt(hexcolor.substr(2, 2), 16);
+            const b = parseInt(hexcolor.substr(4, 2), 16);
+            const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+            return yiq >= discriminant ? "black" : "white";
+          },
+          resetAllBtnStyle: function () {
+            return {
+              backgroundColor: this.isResetHovered
+                ? this.textColor
+                : this.accentColor,
+              color: this.isResetHovered ? this.accentColor : this.textColor,
+              borderColor: this.isResetHovered
+                ? this.accentColor
+                : this.textColor,
+            };
+          },
+          funtionsBtnsStyles: function () {
+            const color = this.areFunctionsBtnsHovered
+              ? this.textColor
+              : this.accentColor;
+            const backgroundColor = this.areFunctionsBtnsHovered
+              ? this.accentColor
+              : this.textColor;
+
+            return {
+              color: color,
+              borderColor: color,
+              backgroundColor: backgroundColor,
+            };
           },
         },
         methods: {

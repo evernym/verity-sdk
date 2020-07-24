@@ -1,0 +1,101 @@
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+input,
+select,
+textarea,
+.pure-g [class*="pure-u"] {
+  font-family: "Roboto", sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
+.down-arrow-icon {
+  background: url(images/Vector.png);
+  width: 12px;
+  height: 8px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  border-top: 5px solid #555;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+
+input:disabled {
+  color: black;
+  cursor: default;
+  background-color: white;
+}
+
+nav.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.01em 16px;
+  align-items: center;
+}
+
+.navbar .left-navbar {
+  display: flex;
+}
+
+div.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.functions-wrapper {
+  padding-right: 40px;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+button.pointer {
+  cursor: pointer;
+}
+
+.messages-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.rotated {
+  transform: rotate(180deg); /* Equal to rotateZ(45deg) */
+}
