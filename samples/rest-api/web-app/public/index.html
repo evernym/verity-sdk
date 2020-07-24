@@ -2,12 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=800, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Verity Example Web App</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/purecss@2.0.3/build/base-min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/purecss@2.0.3/build/grids-min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/purecss@2.0.3/build/grids-responsive-min.css"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
@@ -20,13 +34,26 @@
       h3,
       h4,
       h5,
-      h6 {
+      h6,
+      button,
+      input,
+      select,
+      textarea,
+      .pure-g [class*="pure-u"] {
         font-family: "Roboto", sans-serif;
       }
 
       .evernym-green {
         color: #fff !important;
         background-color: #86b93b !important;
+      }
+
+      .down-arrow-icon {
+        background: url(./images/Vector.png);
+        width: 12px;
+        height: 8px;
+        display: inline-block;
+        margin-right: 8px;
       }
 
       .loader {
@@ -43,6 +70,41 @@
         color: black;
         cursor: default;
         background-color: white;
+      }
+
+      nav.navbar {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.01em 16px;
+        align-items: center;
+      }
+
+      .navbar .left-navbar {
+        display: flex;
+      }
+
+      div.logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .functions-wrapper {
+        padding-right: 40px;
+      }
+
+      .text-bold {
+        font-weight: bold;
+      }
+
+      button.pointer {
+        cursor: pointer;
+      }
+
+      .messages-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
       }
 
       /* Safari */
@@ -67,30 +129,32 @@
   </head>
   <body>
     <div id="app">
-      <header class="w3-cell-row" v-bind:class="[accentColor]">
-        <nav class="w3-container w3-bar">
-          <a href="#" class="w3-bar-item"
-            ><img
-              v-bind:src="institutionLogoURL"
-              alt="evernym logo"
-              style="width: 100%; max-width: 31px;"
-          /></a>
-          <a href="#" class="w3-bar-item">{{institutionName}}</a>
-          <a
-            href="#"
-            class="w3-bar-item w3-right"
-            v-on:click="resetBrowserStorage()"
-          >
-            Reset all fields
-          </a>
+      <header v-bind:class="[accentColor]">
+        <nav class="navbar">
+          <section class="left-navbar">
+            <div class="logo w3-container">
+              <img
+                v-bind:src="institutionLogoURL"
+                alt="evernym logo"
+                style="height: 100%; max-height: 30px;"
+              />
+            </div>
+            <div class="w3-container">
+              <p class="w3-large">{{institutionName}}</p>
+            </div>
+          </section>
+
+          <div>
+            <button
+              v-on:click="resetBrowserStorage()"
+              class="w3-border w3-border-white w3-padding w3-round-large w3-small"
+              v-bind:class="[accentColor]"
+            >
+              Reset All Fields
+            </button>
+          </div>
         </nav>
       </header>
-      <!-- <image
-        id="logo"
-        v-bind:src="institutionLogoURL"
-        style="max-height: 100px;"
-      />
-      <h2 id="org" style="text-align: center;">{{institutionName}}</h2> -->
 
       <!-- Hidden Modal that will present QR code for a new connection-->
       <main>
@@ -108,557 +172,636 @@
         </div>
         <!-- Button to delete all data from browser storage and reset VueJS to initial settings -->
         <br />
-        <div id="configuration" class="w3-container w3-padding">
-          <button
-            v-on:click="openTab('configuration')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Configuration
-          </button>
-          <div
-            id="configuration-content"
-            class="w3-hide hidden-content w3-padding w3-row"
-          >
-            <div class="w3-half w3-padding">
-              <select
-                class="w3-input"
-                v-model="accentColor"
-                v-on:change="changeColor($event)"
-              >
-                <option disabled value=""> -- select an option -- </option>
-                <option v-for="option in colors" v-bind:value="option.value">
-                  {{ option.text }}
-                </option>
-              </select>
-              <label style="font-weight: bold;">Accent Color</label>
-              <br /><br /><br />
-              <input
-                class="w3-input"
-                style="text-align: center;"
-                type="text"
-                v-model="institutionName"
-              />
-              <label style="font-weight: bold;">Institution Name</label>
-              <input
-                class="w3-input"
-                style="text-align: center;"
-                type="text"
-                v-model="institutionLogoURL"
-              />
-              <label style="font-weight: bold;">Institution Logo Url</label>
-              <div
-                style="
-                  height: 110px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                "
-              >
-                <div
-                  v-if="spinners.configuration"
-                  class="w3-btn w3-border w3-white w3-padding"
-                >
-                  <div class="loader"></div>
-                </div>
+
+        <div class="w3-content pure-g" style="max-width: 1080px;">
+          <section class="pure-u-1 pure-u-md-2-3">
+            <div class="functions-wrapper">
+              <header>
+                <h3 class="w3-text-grey text-bold">Functions</h3>
+              </header>
+              <div id="configuration" class="w3-margin-bottom">
                 <button
-                  v-else
-                  class="w3-btn w3-border w3-white w3-padding"
-                  v-on:click="updateConfig()"
+                  v-on:click="openTab('configuration')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
                 >
-                  Update configuration on Verity
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  Configuration
                 </button>
-              </div>
-            </div>
-            <div class="w3-half w3-padding w3-left-align">
-              <p><b>Verity URL: </b>{{verityURL}}</p>
-              <p><b>Domain DID: </b>{{domainDID}}</p>
-              <p><b>Webhook URL: </b>{{webhookURL}}</p>
-            </div>
-          </div>
-        </div>
-        <div id="setup-issuer" class="w3-container w3-padding">
-          <button
-            v-on:click="openTab('setup-issuer')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Setup Issuer
-          </button>
-          <div
-            id="setup-issuer-content"
-            class="w3-hide hidden-content w3-padding w3-row"
-          >
-            <div class="w3-half w3-padding">
-              <input
-                class="w3-input"
-                style="text-align: center;"
-                type="text"
-                v-model="issuerDID"
-                disabled
-              />
-              <label style="font-weight: bold;">Issuer DID</label>
-              <input
-                class="w3-input"
-                style="text-align: center;"
-                type="text"
-                v-model="issuerVerKey"
-                disabled
-              />
-              <label style="font-weight: bold;">Issuer VerKey</label>
-            </div>
-            <div class="w3-half w3-column w3-padding">
-              <div
-                style="
-                  height: 110px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                "
-              >
                 <div
-                  v-if="spinners.setupIssuer"
-                  class="w3-btn w3-border w3-white w3-padding"
+                  v-show="currentTab === 'configuration'"
+                  id="configuration-content"
+                  class="w3-padding w3-row"
                 >
-                  <div class="loader"></div>
+                  <div class="w3-half w3-padding">
+                    <label for="institution">Institution Name</label>
+                    <input
+                      id="institution"
+                      class="w3-input"
+                      style="text-align: center;"
+                      type="text"
+                      v-model="institutionName"
+                    />
+                    <input
+                      class="w3-input"
+                      style="text-align: center;"
+                      type="text"
+                      v-model="institutionLogoURL"
+                    />
+                    <label style="font-weight: bold;"
+                      >Institution Logo Url</label
+                    >
+                    <select
+                      class="w3-input"
+                      v-model="accentColor"
+                      v-on:change="changeColor($event)"
+                    >
+                      <option disabled value="">
+                        -- select an option --
+                      </option>
+                      <option
+                        v-for="option in colors"
+                        v-bind:value="option.value"
+                      >
+                        {{ option.text }}
+                      </option>
+                    </select>
+                    <label style="font-weight: bold;">Accent Color</label>
+                    <br /><br /><br />
+                    <div
+                      style="
+                        height: 110px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                      "
+                    >
+                      <div
+                        v-if="spinners.configuration"
+                        class="w3-btn w3-border w3-white w3-padding"
+                      >
+                        <div class="loader"></div>
+                      </div>
+                      <button
+                        v-else
+                        class="w3-btn w3-border w3-white w3-padding"
+                        v-on:click="updateConfig()"
+                      >
+                        Update configuration on Verity
+                      </button>
+                    </div>
+                  </div>
+                  <div class="w3-half w3-padding w3-left-align">
+                    <p><b>Verity URL: </b>{{verityURL}}</p>
+                    <p><b>Domain DID: </b>{{domainDID}}</p>
+                    <p><b>Webhook URL: </b>{{webhookURL}}</p>
+                  </div>
                 </div>
+              </div>
+              <div id="setup-issuer" class="w3-margin-bottom">
                 <button
-                  v-else
-                  class="w3-btn w3-border w3-white w3-padding"
-                  v-on:click="setupIssuer()"
+                  v-on:click="openTab('setup-issuer')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
                 >
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
                   Setup Issuer
                 </button>
-              </div>
-              <p>
-                This will create issuer keys on VAS and will then register
-                created DID/Verkey as Endorser on Staging Net using Sovrin
-                SelfServe portal. Monitor webhook messages to check if
-                DID/Verkey were successfully written to the ledger
-              </p>
-            </div>
-          </div>
-        </div>
-        <div id="write-schemas" class="w3-container w3-padding">
-          <button
-            id="schemas"
-            v-on:click="openTab('write-schemas')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Schemas
-          </button>
-          <div id="write-schemas-content" class="w3-hide hidden-content w3-row">
-            <p>
-              NOTE: Make sure that Issuer DID and VerKey is written to the
-              ledger or you won't be able to write a schema.
-            </p>
-            <div class="w3-half w3-padding">
-              <h4>Current Schemas</h4>
-              <table class="w3-table w3-bordered">
-                <tr>
-                  <th>Name</th>
-                  <th>ID</th>
-                </tr>
-                <tr v-for="schema in schemas">
-                  <td>{{schema.name}}</td>
-                  <td>{{schema.id}}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="w3-half w3-padding">
-              <h4>Write a New Schema</h4>
-              <form class="w3-form" v-on:submit.prevent="writeSchema()">
-                <input class="w3-input" v-model="schema.name" />
-                <label>Schema Name</label>
-
-                <input class="w3-input" v-model="schema.version" />
-                <label>Schema Version</label>
-
-                <input class="w3-input" v-model="schema.attrs" />
-                <label>Schema Attrs (comma deliminated)</label>
-
-                <br />
-                <br />
                 <div
-                  v-if="spinners.schemas"
-                  class="w3-btn w3-border w3-white w3-padding"
+                  id="setup-issuer-content"
+                  class="w3-padding w3-row"
+                  v-show="currentTab === 'setup-issuer'"
                 >
-                  <div class="loader"></div>
+                  <div class="w3-half w3-padding">
+                    <input
+                      class="w3-input"
+                      style="text-align: center;"
+                      type="text"
+                      v-model="issuerDID"
+                      disabled
+                    />
+                    <label style="font-weight: bold;">Issuer DID</label>
+                    <input
+                      class="w3-input"
+                      style="text-align: center;"
+                      type="text"
+                      v-model="issuerVerKey"
+                      disabled
+                    />
+                    <label style="font-weight: bold;">Issuer VerKey</label>
+                  </div>
+                  <div class="w3-half w3-column w3-padding">
+                    <div
+                      style="
+                        height: 110px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                      "
+                    >
+                      <div
+                        v-if="spinners.setupIssuer"
+                        class="w3-btn w3-border w3-white w3-padding"
+                      >
+                        <div class="loader"></div>
+                      </div>
+                      <button
+                        v-else
+                        class="w3-btn w3-border w3-white w3-padding"
+                        v-on:click="setupIssuer()"
+                      >
+                        Setup Issuer
+                      </button>
+                    </div>
+                    <p>
+                      This will create issuer keys on VAS and will then register
+                      created DID/Verkey as Endorser on Staging Net using Sovrin
+                      SelfServe portal. Monitor webhook messages to check if
+                      DID/Verkey were successfully written to the ledger
+                    </p>
+                  </div>
                 </div>
-                <button v-else class="w3-btn w3-border w3-white">
-                  Write Schema
+              </div>
+              <div id="write-schemas" class="w3-margin-bottom">
+                <button
+                  id="schemas"
+                  v-on:click="openTab('write-schemas')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
+                >
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  Schemas
                 </button>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div id="cred-defs" class="w3-container w3-padding">
-          <button
-            id="credentialDefinitions"
-            v-on:click="openTab('cred-defs')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Credential Definitions
-          </button>
-          <div id="cred-defs-content" class="w3-hide hidden-content">
-            <p>
-              NOTE: Make sure you wrote the Issuer DID and VerKey to the ledger
-              or you won't be able to write a credential definition.
-            </p>
-            <div class="w3-half w3-padding">
-              <h4>Current Credential Definitions</h4>
-              <table class="w3-table w3-bordered">
-                <tr>
-                  <th>Name</th>
-                  <th>ID</th>
-                </tr>
-                <tr v-for="credDef in credDefs">
-                  <td>{{credDef.name}}</td>
-                  <td>{{credDef.id}}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="w3-half w3-padding">
-              <h4>Write a New Credential Definition</h4>
-              <form class="w3-form" v-on:submit.prevent="writeCredDef()">
-                <input class="w3-input" v-model="credDef.name" />
-                <label>Credential Definition Name</label>
-
-                <input class="w3-input" v-model="credDef.schemaId" />
-                <label>Schema ID</label>
-
-                <input class="w3-input" v-model="credDef.tag" />
-                <label>Tag (optional)</label>
-
-                <input class="w3-input" v-model="credDef.revocationDetails" />
-                <label>Revocation Details (optional)</label>
-
-                <br />
-                <br />
                 <div
-                  v-if="spinners.credDefs"
-                  class="w3-btn w3-border w3-white w3-padding"
+                  id="write-schemas-content"
+                  class="w3-row"
+                  v-show="currentTab === 'write-schemas'"
                 >
-                  <div class="loader"></div>
+                  <p>
+                    NOTE: Make sure that Issuer DID and VerKey is written to the
+                    ledger or you won't be able to write a schema.
+                  </p>
+                  <div class="w3-half w3-padding">
+                    <h4>Current Schemas</h4>
+                    <table class="w3-table w3-bordered">
+                      <tr>
+                        <th>Name</th>
+                        <th>ID</th>
+                      </tr>
+                      <tr v-for="schema in schemas">
+                        <td>{{schema.name}}</td>
+                        <td>{{schema.id}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="w3-half w3-padding">
+                    <h4>Write a New Schema</h4>
+                    <form class="w3-form" v-on:submit.prevent="writeSchema()">
+                      <input class="w3-input" v-model="schema.name" />
+                      <label>Schema Name</label>
+
+                      <input class="w3-input" v-model="schema.version" />
+                      <label>Schema Version</label>
+
+                      <input class="w3-input" v-model="schema.attrs" />
+                      <label>Schema Attrs (comma deliminated)</label>
+
+                      <br />
+                      <br />
+                      <div
+                        v-if="spinners.schemas"
+                        class="w3-btn w3-border w3-white w3-padding"
+                      >
+                        <div class="loader"></div>
+                      </div>
+                      <button v-else class="w3-btn w3-border w3-white">
+                        Write Schema
+                      </button>
+                    </form>
+                  </div>
                 </div>
-                <button v-else class="w3-btn w3-border w3-white">
-                  Write Credential Definition
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div id="connections" class="w3-container w3-padding">
-          <button
-            v-on:click="openTab('connections')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Connections
-          </button>
-          <div
-            id="connections-content"
-            class="w3-hide hidden-content w3-row w3-padding"
-          >
-            <div class="w3-half w3-padding">
-              <h4>Existing Connections</h4>
-              <table class="w3-table w3-bordered">
-                <tr>
-                  <th>Name</th>
-                  <th>Relationship DID</th>
-                </tr>
-                <tr v-for="connection in connections">
-                  <td>{{connection.name}}</td>
-                  <td>{{connection.did}}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="w3-half w3-padding">
-              <h4>Add Connections</h4>
-              <input class="w3-input" v-model="connection.name" />
-              <label>Connection Name</label>
-              <br />
-              <br />
-              <div
-                v-if="spinners.connections"
-                class="w3-btn w3-border w3-white w3-padding"
-              >
-                <div class="loader"></div>
               </div>
-              <button
-                v-else
-                class="w3-btn w3-white w3-border"
-                v-on:click="newConnection()"
-              >
-                Add New Connection
-              </button>
-            </div>
-          </div>
-        </div>
-        <div id="creds" class="w3-container w3-padding">
-          <button
-            id="issueCredential"
-            v-on:click="openTab('creds')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Issue Credentials
-          </button>
-          <div id="creds-content" class="w3-hide hidden-content">
-            <input class="w3-input" v-model="credential.name" />
-            <label>Credential Name</label>
-
-            <select class="w3-input" v-model="credential.relationshipDID">
-              <option disabled value=""> -- select an option -- </option>
-              <option v-for="option in connections" v-bind:value="option.did">
-                {{ option.did }}
-              </option>
-            </select>
-            <label>Relationship DID</label>
-
-            <select class="w3-input" v-model="credential.credDefId">
-              <option disabled value=""> -- select an option -- </option>
-              <option v-for="option in credDefs" v-bind:value="option.id">
-                {{ option.id }}
-              </option>
-            </select>
-            <label>Credential Definition ID</label>
-
-            <input
-              class="w3-input"
-              v-model="credential.values"
-              placeholder='{"attr1":"value1", "attr2":"value2"}'
-            />
-            <label>Credential Values (as JSON)</label>
-
-            <br />
-            <br />
-            <div
-              v-if="spinners.creds"
-              class="w3-btn w3-border w3-white w3-padding"
-            >
-              <div class="loader"></div>
-            </div>
-            <button
-              v-else
-              class="w3-btn w3-white w3-border"
-              v-on:click="offerCredential()"
-            >
-              Issue Credential
-            </button>
-          </div>
-        </div>
-        <div id="proofs" class="w3-container w3-padding">
-          <button
-            v-on:click="openTab('proofs')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Request Proofs
-          </button>
-          <div id="proofs-content" class="w3-hide hidden-content">
-            <div class="w3-half w3-padding">
-              <h4>Received Proofs</h4>
-              <table class="w3-table w3-bordered">
-                <tr>
-                  <th>Relationship DID</th>
-                  <th>Data</th>
-                </tr>
-                <tr v-for="proof in proofs">
-                  <td>{{proof.did}}</td>
-                  <td>{{proof.data}}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="w3-half w3-padding">
-              <h4>Send Proof Request</h4>
-
-              <input class="w3-input" v-model="proof.name" />
-              <label>Proof Request Name</label>
-
-              <select class="w3-input" v-model="proof.relationshipDID">
-                <option disabled value=""> -- select an option -- </option>
-                <option v-for="option in connections" v-bind:value="option.did">
-                  {{ option.did }}
-                </option>
-              </select>
-              <label>Relationship DID</label>
-
-              <input
-                class="w3-input"
-                v-model="proof.attrs"
-                placeholder='[{"name":"first_attr"},{"name":"second_attr"}]'
-              />
-              <label>JSON Array of Proof Attrs</label>
-
-              <input class="w3-input" v-model="proof.predicates" />
-              <label>JSON Array of Proof Predicates (Optional)</label>
-
-              <input class="w3-input" v-model="proof.revocationInterval" />
-              <label>Revocation Interval (Optional)</label>
-              <br />
-              <br />
-              <div
-                v-if="spinners.proofs"
-                class="w3-btn w3-border w3-white w3-padding"
-              >
-                <div class="loader"></div>
-              </div>
-              <button
-                v-else
-                class="w3-btn w3-white w3-border"
-                v-on:click="sendProofRequest()"
-              >
-                Send Proof Request
-              </button>
-            </div>
-          </div>
-        </div>
-        <div id="structured-messages" class="w3-container w3-padding">
-          <button
-            v-on:click="openTab('structured-messages')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Comitted Answer
-          </button>
-          <div id="structured-messages-content" class="w3-hide hidden-content">
-            <div class="w3-half w3-padding">
-              <h4>Received Answers</h4>
-              <table class="w3-table w3-bordered">
-                <tr>
-                  <th>Relationship DID</th>
-                  <th>Data</th>
-                </tr>
-                <tr v-for="answer in questionResponses">
-                  <td>{{answer.did}}</td>
-                  <td>{{answer.data}}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="w3-half w3-padding">
-              <h4>Send Structured Message</h4>
-
-              <input class="w3-input" v-model="structuredMessage.text" />
-              <label>Question Text</label>
-
-              <input class="w3-input" v-model="structuredMessage.detail" />
-              <label>Question Detail</label>
-
-              <input class="w3-input" v-model="structuredMessage.responses" />
-              <label>Valid Responses (comma deliminated)</label>
-
-              <select
-                class="w3-input"
-                v-model="structuredMessage.relationshipDID"
-              >
-                <option disabled value=""> -- select an option -- </option>
-                <option v-for="option in connections" v-bind:value="option.did">
-                  {{ option.did }}
-                </option>
-              </select>
-              <label>Relationship DID</label>
-              <br />
-              <br />
-              <div
-                v-if="spinners.structMsgs"
-                class="w3-btn w3-border w3-white w3-padding"
-              >
-                <div class="loader"></div>
-              </div>
-              <button
-                v-else
-                class="w3-btn w3-white w3-border"
-                v-on:click="sendStructuredMessage()"
-              >
-                Send Structured Message
-              </button>
-            </div>
-          </div>
-        </div>
-        <div id="customRequest" class="w3-container w3-padding">
-          <button
-            v-on:click="openTab('customRequest')"
-            class="w3-btn w3-block"
-            v-bind:class="[accentColor]"
-          >
-            Custom Verity Request
-          </button>
-          <div id="customRequest-content" class="w3-hide hidden-content">
-            <input
-              class="w3-input"
-              v-model="customRequest.msgFamilyQualifier"
-              placeholder="BzCbsNYhMrjHiqZDTUASHg"
-            />
-            <label>Message Family Qualifier</label>
-            <input
-              class="w3-input"
-              v-model="customRequest.msgFamily"
-              placeholder="issue-credential"
-            />
-            <label>Message Family</label>
-            <input
-              class="w3-input"
-              v-model="customRequest.msgFamilyVersion"
-              placeholder="1.0"
-            />
-            <label>Message Family Version</label>
-            <input
-              class="w3-input"
-              v-model="customRequest.msgName"
-              placeholder="offer"
-            />
-            <label>Message Name</label>
-            <textarea
-              class="w3-input"
-              v-model="customRequest.message"
-              placeholder='{"~for_relationship": "RVCowETXe7E9t7myVs6eHY","cred_def_id": "7MXRWDen2pkBnaMnznEuS4:3:CL:120754:latest","credential_values": {"first":"ABC", "second":"DEF"},"price": 0}'
-            ></textarea>
-            <label>Message Body JSON (without @type field)</label>
-            <br />
-            <br />
-            <div
-              v-if="spinners.custom"
-              class="w3-btn w3-border w3-white w3-padding"
-            >
-              <div class="loader"></div>
-            </div>
-            <button
-              v-else
-              class="w3-btn w3-white w3-border"
-              v-on:click="sendCustomRequest()"
-            >
-              Send Custom Request
-            </button>
-          </div>
-        </div>
-        <hr />
-        <div style="display: inline-block; width: 80%;">
-          <h4>Webhook Messages for Session {{sessionMiniId}}</h4>
-          <div class="w3-border" style="overflow-y: auto;">
-            <table style="width: 100%;">
-              <tr>
-                <th></th>
-                <th></th>
-              </tr>
-              <tr v-for="message in messages">
-                <td
-                  style="
-                    text-align: left;
-                    max-width: 300px;
-                    word-wrap: break-word;
-                  "
+              <div id="cred-defs" class="w3-margin-bottom">
+                <button
+                  id="credentialDefinitions"
+                  v-on:click="openTab('cred-defs')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
                 >
-                  {{message.content}}
-                </td>
-                <td style="text-align: right; min-width: 80px;">
-                  {{message.time}}
-                </td>
-              </tr>
-            </table>
-          </div>
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  Credential Definitions
+                </button>
+                <div id="cred-defs-content" v-show="currentTab === 'cred-defs'">
+                  <p>
+                    NOTE: Make sure you wrote the Issuer DID and VerKey to the
+                    ledger or you won't be able to write a credential
+                    definition.
+                  </p>
+                  <div class="w3-half w3-padding">
+                    <h4>Current Credential Definitions</h4>
+                    <table class="w3-table w3-bordered">
+                      <tr>
+                        <th>Name</th>
+                        <th>ID</th>
+                      </tr>
+                      <tr v-for="credDef in credDefs">
+                        <td>{{credDef.name}}</td>
+                        <td>{{credDef.id}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="w3-half w3-padding">
+                    <h4>Write a New Credential Definition</h4>
+                    <form class="w3-form" v-on:submit.prevent="writeCredDef()">
+                      <input class="w3-input" v-model="credDef.name" />
+                      <label>Credential Definition Name</label>
+
+                      <input class="w3-input" v-model="credDef.schemaId" />
+                      <label>Schema ID</label>
+
+                      <input class="w3-input" v-model="credDef.tag" />
+                      <label>Tag (optional)</label>
+
+                      <input
+                        class="w3-input"
+                        v-model="credDef.revocationDetails"
+                      />
+                      <label>Revocation Details (optional)</label>
+
+                      <br />
+                      <br />
+                      <div
+                        v-if="spinners.credDefs"
+                        class="w3-btn w3-border w3-white w3-padding"
+                      >
+                        <div class="loader"></div>
+                      </div>
+                      <button v-else class="w3-btn w3-border w3-white">
+                        Write Credential Definition
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div id="connections" class="w3-margin-bottom">
+                <button
+                  v-on:click="openTab('connections')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
+                >
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  Connections
+                </button>
+                <div
+                  id="connections-content"
+                  class="w3-row w3-padding"
+                  v-show="currentTab === 'connections'"
+                >
+                  <div class="w3-half w3-padding">
+                    <h4>Existing Connections</h4>
+                    <table class="w3-table w3-bordered">
+                      <tr>
+                        <th>Name</th>
+                        <th>Relationship DID</th>
+                      </tr>
+                      <tr v-for="connection in connections">
+                        <td>{{connection.name}}</td>
+                        <td>{{connection.did}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="w3-half w3-padding">
+                    <h4>Add Connections</h4>
+                    <input class="w3-input" v-model="connection.name" />
+                    <label>Connection Name</label>
+                    <br />
+                    <br />
+                    <div
+                      v-if="spinners.connections"
+                      class="w3-btn w3-border w3-white w3-padding"
+                    >
+                      <div class="loader"></div>
+                    </div>
+                    <button
+                      v-else
+                      class="w3-btn w3-white w3-border"
+                      v-on:click="newConnection()"
+                    >
+                      Add New Connection
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="creds" class="w3-margin-bottom">
+                <button
+                  id="issueCredential"
+                  v-on:click="openTab('creds')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
+                >
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  Issue Credentials
+                </button>
+                <div id="creds-content" v-show="currentTab === 'creds'">
+                  <input class="w3-input" v-model="credential.name" />
+                  <label>Credential Name</label>
+
+                  <select class="w3-input" v-model="credential.relationshipDID">
+                    <option disabled value=""> -- select an option -- </option>
+                    <option
+                      v-for="option in connections"
+                      v-bind:value="option.did"
+                    >
+                      {{ option.did }}
+                    </option>
+                  </select>
+                  <label>Relationship DID</label>
+
+                  <select class="w3-input" v-model="credential.credDefId">
+                    <option disabled value=""> -- select an option -- </option>
+                    <option v-for="option in credDefs" v-bind:value="option.id">
+                      {{ option.id }}
+                    </option>
+                  </select>
+                  <label>Credential Definition ID</label>
+
+                  <input
+                    class="w3-input"
+                    v-model="credential.values"
+                    placeholder='{"attr1":"value1", "attr2":"value2"}'
+                  />
+                  <label>Credential Values (as JSON)</label>
+
+                  <br />
+                  <br />
+                  <div
+                    v-if="spinners.creds"
+                    class="w3-btn w3-border w3-white w3-padding"
+                  >
+                    <div class="loader"></div>
+                  </div>
+                  <button
+                    v-else
+                    class="w3-btn w3-white w3-border"
+                    v-on:click="offerCredential()"
+                  >
+                    Issue Credential
+                  </button>
+                </div>
+              </div>
+              <div id="proofs" class="w3-margin-bottom">
+                <button
+                  v-on:click="openTab('proofs')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
+                >
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  Request Proofs
+                </button>
+                <div id="proofs-content" v-show="currentTab === 'proofs'">
+                  <div class="w3-half w3-padding">
+                    <h4>Received Proofs</h4>
+                    <table class="w3-table w3-bordered">
+                      <tr>
+                        <th>Relationship DID</th>
+                        <th>Data</th>
+                      </tr>
+                      <tr v-for="proof in proofs">
+                        <td>{{proof.did}}</td>
+                        <td>{{proof.data}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="w3-half w3-padding">
+                    <h4>Send Proof Request</h4>
+
+                    <input class="w3-input" v-model="proof.name" />
+                    <label>Proof Request Name</label>
+
+                    <select class="w3-input" v-model="proof.relationshipDID">
+                      <option disabled value="">
+                        -- select an option --
+                      </option>
+                      <option
+                        v-for="option in connections"
+                        v-bind:value="option.did"
+                      >
+                        {{ option.did }}
+                      </option>
+                    </select>
+                    <label>Relationship DID</label>
+
+                    <input
+                      class="w3-input"
+                      v-model="proof.attrs"
+                      placeholder='[{"name":"first_attr"},{"name":"second_attr"}]'
+                    />
+                    <label>JSON Array of Proof Attrs</label>
+
+                    <input class="w3-input" v-model="proof.predicates" />
+                    <label>JSON Array of Proof Predicates (Optional)</label>
+
+                    <input
+                      class="w3-input"
+                      v-model="proof.revocationInterval"
+                    />
+                    <label>Revocation Interval (Optional)</label>
+                    <br />
+                    <br />
+                    <div
+                      v-if="spinners.proofs"
+                      class="w3-btn w3-border w3-white w3-padding"
+                    >
+                      <div class="loader"></div>
+                    </div>
+                    <button
+                      v-else
+                      class="w3-btn w3-white w3-border"
+                      v-on:click="sendProofRequest()"
+                    >
+                      Send Proof Request
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="structured-messages" class="w3-margin-bottom">
+                <button
+                  v-on:click="openTab('structured-messages')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
+                >
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  Comitted Answer
+                </button>
+                <div
+                  id="structured-messages-content"
+                  v-show="currentTab === 'structured-messages'"
+                >
+                  <div class="w3-half w3-padding">
+                    <h4>Received Answers</h4>
+                    <table class="w3-table w3-bordered">
+                      <tr>
+                        <th>Relationship DID</th>
+                        <th>Data</th>
+                      </tr>
+                      <tr v-for="answer in questionResponses">
+                        <td>{{answer.did}}</td>
+                        <td>{{answer.data}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="w3-half w3-padding">
+                    <h4>Send Structured Message</h4>
+
+                    <input class="w3-input" v-model="structuredMessage.text" />
+                    <label>Question Text</label>
+
+                    <input
+                      class="w3-input"
+                      v-model="structuredMessage.detail"
+                    />
+                    <label>Question Detail</label>
+
+                    <input
+                      class="w3-input"
+                      v-model="structuredMessage.responses"
+                    />
+                    <label>Valid Responses (comma deliminated)</label>
+
+                    <select
+                      class="w3-input"
+                      v-model="structuredMessage.relationshipDID"
+                    >
+                      <option disabled value="">
+                        -- select an option --
+                      </option>
+                      <option
+                        v-for="option in connections"
+                        v-bind:value="option.did"
+                      >
+                        {{ option.did }}
+                      </option>
+                    </select>
+                    <label>Relationship DID</label>
+                    <br />
+                    <br />
+                    <div
+                      v-if="spinners.structMsgs"
+                      class="w3-btn w3-border w3-white w3-padding"
+                    >
+                      <div class="loader"></div>
+                    </div>
+                    <button
+                      v-else
+                      class="w3-btn w3-white w3-border"
+                      v-on:click="sendStructuredMessage()"
+                    >
+                      Send Structured Message
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="customRequest" class="w3-margin-bottom">
+                <button
+                  v-on:click="openTab('customRequest')"
+                  class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
+                  v-bind:class="[accentColor]"
+                >
+                  <span class="down-arrow-icon" aria-hidden="true"></span>
+                  Custom Verity Request
+                </button>
+                <div
+                  id="customRequest-content"
+                  v-show="currentTab === 'customRequest'"
+                >
+                  <input
+                    class="w3-input"
+                    v-model="customRequest.msgFamilyQualifier"
+                    placeholder="BzCbsNYhMrjHiqZDTUASHg"
+                  />
+                  <label>Message Family Qualifier</label>
+                  <input
+                    class="w3-input"
+                    v-model="customRequest.msgFamily"
+                    placeholder="issue-credential"
+                  />
+                  <label>Message Family</label>
+                  <input
+                    class="w3-input"
+                    v-model="customRequest.msgFamilyVersion"
+                    placeholder="1.0"
+                  />
+                  <label>Message Family Version</label>
+                  <input
+                    class="w3-input"
+                    v-model="customRequest.msgName"
+                    placeholder="offer"
+                  />
+                  <label>Message Name</label>
+                  <textarea
+                    class="w3-input"
+                    v-model="customRequest.message"
+                    placeholder='{"~for_relationship": "RVCowETXe7E9t7myVs6eHY","cred_def_id": "7MXRWDen2pkBnaMnznEuS4:3:CL:120754:latest","credential_values": {"first":"ABC", "second":"DEF"},"price": 0}'
+                  ></textarea>
+                  <label>Message Body JSON (without @type field)</label>
+                  <br />
+                  <br />
+                  <div
+                    v-if="spinners.custom"
+                    class="w3-btn w3-border w3-white w3-padding"
+                  >
+                    <div class="loader"></div>
+                  </div>
+                  <button
+                    v-else
+                    class="w3-btn w3-white w3-border"
+                    v-on:click="sendCustomRequest()"
+                  >
+                    Send Custom Request
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="pure-u-1 pure-u-md-1-3">
+            <header class="messages-header">
+              <h3 class="w3-text-grey text-bold">
+                Webhook Messages
+              </h3>
+              <p class="w3-text-grey w3-small">Session {{sessionMiniId}}</p>
+            </header>
+            <div
+              class="w3-round w3-light-grey"
+              style="overflow-y: auto; height: 100%;"
+            >
+              <table class="w3-table w3-light-grey">
+                <tr>
+                  <th></th>
+                  <th></th>
+                </tr>
+                <tr v-if="messages.length === 0">
+                  <td class="w3-small w3-text-grey">
+                    Messages will appear here
+                  </td>
+                </tr>
+                <tr v-for="message in messages">
+                  <td style="text-align: left; min-width: 80px;">
+                    {{message.time}}
+                  </td>
+                  <td
+                    style="
+                      text-align: right;
+                      max-width: 300px;
+                      word-wrap: break-word;
+                    "
+                  >
+                    {{message.content}}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </section>
         </div>
       </main>
     </div>
@@ -666,6 +809,7 @@
       const app = new Vue({
         el: "#app",
         data: {
+          currentTab: "",
           sessionId: "",
           socket: null,
           verityURL: "",
@@ -674,8 +818,7 @@
           issuerDID: "",
           issuerVerKey: "",
           institutionName: "Verity Demo App",
-          institutionLogoURL:
-            "https://pbs.twimg.com/profile_images/1022255393395929088/0eYH-Os_.jpg",
+          institutionLogoURL: "https://i.ibb.co/b5XYr6n/logo-evernym.png",
           accentColor: "evernym-green",
           inviteDetailQRCode: "",
           schemas: [],
@@ -842,14 +985,7 @@
             ) {
               alert("You need to run Setup Issuer first");
             } else {
-              for (const content of document.getElementsByClassName(
-                "hidden-content"
-              )) {
-                content.className = content.className.replace(" w3-show", "");
-                if (content.id === tabName + "-content") {
-                  content.className += " w3-show";
-                }
-              }
+              this.currentTab = this.currentTab === tabName ? "" : tabName;
               sessionStorage.verityDemoCurrentTab = tabName;
             }
           },
@@ -1078,7 +1214,7 @@
               message: message,
             });
           },
-          // updates congifuration (logoUrl, name) on VAS
+          // updates configuration (logoUrl, name) on VAS
           updateConfig: async function () {
             this.spinners.configuration = true;
             try {
