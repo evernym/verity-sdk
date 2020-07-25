@@ -32,8 +32,8 @@
     <div id="app">
       <header v-bind:style="{ backgroundColor: accentColor}">
         <nav class="navbar">
-          <section class="left-navbar">
-            <div class="logo w3-container">
+          <section class="flex">
+            <div class="flex-center w3-container">
               <img
                 v-bind:src="institutionLogoURL"
                 alt="evernym logo"
@@ -88,7 +88,7 @@
               <header>
                 <h3 class="w3-text-grey text-bold">Functions</h3>
               </header>
-              <div id="configuration" class="w3-margin-bottom">
+              <section id="configuration" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('configuration')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
@@ -135,6 +135,8 @@
                       class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
                       type="text"
                       v-model="institutionName"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
                     />
                   </div>
                   <div class="w3-margin-top w3-margin-bottom">
@@ -146,6 +148,8 @@
                       class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
                       type="text"
                       v-model="institutionLogoURL"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
                     />
                   </div>
                   <div class="w3-margin-top w3-margin-bottom">
@@ -172,7 +176,7 @@
                     </div>
                     <button
                       v-else
-                      class="w3-border w3-padding w3-round w3-small pointer"
+                      class="w3-border w3-padding-large w3-round w3-small pointer"
                       v-on:click="updateConfig()"
                       @mouseover="areFunctionsBtnsHovered = true"
                       @mouseleave="areFunctionsBtnsHovered = false"
@@ -182,8 +186,8 @@
                     </button>
                   </div>
                 </div>
-              </div>
-              <div id="setup-issuer" class="w3-margin-bottom">
+              </section>
+              <section id="setup-issuer" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('setup-issuer')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
@@ -198,63 +202,57 @@
                 </button>
                 <div
                   id="setup-issuer-content"
-                  class="w3-padding w3-row"
                   v-show="currentTab === 'setup-issuer'"
                 >
-                  <div class="w3-half w3-padding">
-                    <input
-                      class="w3-input"
-                      style="text-align: center;"
-                      type="text"
-                      v-model="issuerDID"
-                      disabled
-                    />
-                    <label style="font-weight: bold;">Issuer DID</label>
-                    <input
-                      class="w3-input"
-                      style="text-align: center;"
-                      type="text"
-                      v-model="issuerVerKey"
-                      disabled
-                    />
-                    <label style="font-weight: bold;">Issuer VerKey</label>
-                  </div>
-                  <div class="w3-half w3-column w3-padding">
-                    <div
-                      style="
-                        height: 110px;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                      "
-                    >
-                      <div
-                        v-if="spinners.setupIssuer"
-                        class="w3-btn w3-border w3-white w3-padding"
-                      >
-                        <div class="loader"></div>
-                      </div>
-                      <button
-                        v-else
-                        class="w3-border w3-padding w3-round w3-small pointer"
-                        v-on:click="setupIssuer()"
-                        @mouseover="areFunctionsBtnsHovered = true"
-                        @mouseleave="areFunctionsBtnsHovered = false"
-                        v-bind:style="funtionsBtnsStyles"
-                      >
-                        Setup Issuer
-                      </button>
-                    </div>
-                    <p>
-                      This will create issuer keys on VAS and will then register
-                      created DID/Verkey as Endorser on Staging Net using Sovrin
-                      SelfServe portal. Monitor webhook messages to check if
-                      DID/Verkey were successfully written to the ledger
+                  <div class="w3-panel bg-info w3-padding w3-padding-16 flex">
+                    <div class="info-icon"></div>
+                    <p class="w3-small w3-margin-left" style="color: #9a9d01;">
+                      Clicking “Setup Issuer” will create issuer keys on VAS and
+                      will then register created DID/Verkey as Endorser on
+                      Staging Net using Sovrin SelfServe portal. Monitor webhook
+                      messages to check if FID/Verkey were successfully written
+                      to the ledger.
                     </p>
                   </div>
+                  <div>
+                    <div
+                      v-if="spinners.setupIssuer"
+                      class="w3-btn w3-border w3-white w3-padding"
+                    >
+                      <div class="loader"></div>
+                    </div>
+                    <button
+                      v-else
+                      class="w3-border w3-padding-large w3-round w3-small pointer"
+                      v-on:click="setupIssuer()"
+                      @mouseover="areFunctionsBtnsHovered = true"
+                      @mouseleave="areFunctionsBtnsHovered = false"
+                      v-bind:style="funtionsBtnsStyles"
+                    >
+                      Setup Issuer
+                    </button>
+                  </div>
+
+                  <section v-if="issuerDID !== ''">
+                    <div class="w3-margin-top">
+                      <p class="w3-text-gray w3-small">
+                        Issuer DID
+                      </p>
+                      <p class="w3-text-gray w3-small"><b>{{issuerDID}}</b></p>
+                    </div>
+
+                    <div class="w3-margin-top">
+                      <p class="w3-text-gray w3-small">
+                        Issuer VerKey
+                      </p>
+                      <p class="w3-text-gray w3-small">
+                        <b>{{issuerVerKey}}</b>
+                      </p>
+                    </div>
+                  </section>
                 </div>
-              </div>
-              <div id="write-schemas" class="w3-margin-bottom">
+              </section>
+              <section id="write-schemas" class="w3-margin-bottom">
                 <button
                   id="schemas"
                   v-on:click="openTab('write-schemas')"
@@ -316,8 +314,8 @@
                     </form>
                   </div>
                 </div>
-              </div>
-              <div id="cred-defs" class="w3-margin-bottom">
+              </section>
+              <section id="cred-defs" class="w3-margin-bottom">
                 <button
                   id="credentialDefinitions"
                   v-on:click="openTab('cred-defs')"
@@ -382,8 +380,8 @@
                     </form>
                   </div>
                 </div>
-              </div>
-              <div id="connections" class="w3-margin-bottom">
+              </section>
+              <section id="connections" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('connections')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
@@ -435,8 +433,8 @@
                     </button>
                   </div>
                 </div>
-              </div>
-              <div id="creds" class="w3-margin-bottom">
+              </section>
+              <section id="creds" class="w3-margin-bottom">
                 <button
                   id="issueCredential"
                   v-on:click="openTab('creds')"
@@ -496,8 +494,8 @@
                     Issue Credential
                   </button>
                 </div>
-              </div>
-              <div id="proofs" class="w3-margin-bottom">
+              </section>
+              <section id="proofs" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('proofs')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
@@ -575,8 +573,8 @@
                     </button>
                   </div>
                 </div>
-              </div>
-              <div id="structured-messages" class="w3-margin-bottom">
+              </section>
+              <section id="structured-messages" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('structured-messages')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
@@ -656,8 +654,8 @@
                     </button>
                   </div>
                 </div>
-              </div>
-              <div id="customRequest" class="w3-margin-bottom">
+              </section>
+              <section id="customRequest" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('customRequest')"
                   class="pointer w3-block w3-border-0 w3-left-align w3-padding-large w3-round-large"
@@ -720,7 +718,7 @@
                     Send Custom Request
                   </button>
                 </div>
-              </div>
+              </section>
             </div>
           </section>
 
@@ -908,6 +906,12 @@
           },
         },
         methods: {
+          handleFocus: function (event) {
+            event.target.style.outline = "1px auto " + this.accentColor;
+          },
+          handleBlur: function (event) {
+            event.target.style.outline = "";
+          },
           // changes color of tabs to selected accent color
           changeColor: function (event) {
             sessionStorage.accentColor = this.accentColor;

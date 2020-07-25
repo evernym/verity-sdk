@@ -36,6 +36,16 @@ p {
   height: 30px;
 }
 
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 input:disabled {
   color: black;
   cursor: default;
@@ -49,16 +59,6 @@ nav.navbar {
   align-items: center;
 }
 
-.navbar .left-navbar {
-  display: flex;
-}
-
-div.logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .functions-wrapper {
   padding-right: 40px;
 }
@@ -67,7 +67,7 @@ div.logo {
   font-weight: bold;
 }
 
-button.pointer {
+.pointer {
   cursor: pointer;
 }
 
@@ -75,6 +75,18 @@ button.pointer {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+}
+
+.bg-info {
+  background-color: #feffbf;
+}
+
+.info-icon {
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCI+CiAgPHBhdGggZmlsbD0iIzlBOUQwMSIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTEgMTVoLTJ2LTZoMnY2em0wLThoLTJWN2gydjJ6Ii8+Cjwvc3ZnPgo=")
+    no-repeat center center;
+  height: 24px;
+  width: 24px;
+  flex-shrink: 0;
 }
 
 /* Safari */
