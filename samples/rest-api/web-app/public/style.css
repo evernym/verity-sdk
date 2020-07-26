@@ -59,10 +59,6 @@ nav.navbar {
   align-items: center;
 }
 
-.functions-wrapper {
-  padding-right: 40px;
-}
-
 .text-bold {
   font-weight: bold;
 }
@@ -110,4 +106,36 @@ nav.navbar {
 
 .rotated {
   transform: rotate(180deg); /* Equal to rotateZ(45deg) */
+}
+
+.table-wrapper {
+  overflow-y: auto;
+  max-height: 65vh;
+}
+
+.w3-table td:last-child {
+  padding-right: 16px;
+}
+
+.pure-g > div {
+  box-sizing: border-box;
+}
+
+.l-box {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media (min-width: 1120px) {
+  .pure-g .l-box:first-child {
+    padding-left: 0;
+  }
+
+  .pure-g .l-box:last-child {
+    padding-right: 0;
+  }
+
+  .table-wrapper {
+    overflow-x: hidden;
+  }
 }

@@ -52,6 +52,7 @@
           </section>
 
           <div>
+            <!-- Button to delete all data from browser storage and reset VueJS to initial settings -->
             <button
               @mouseover="isResetHovered = true"
               @mouseleave="isResetHovered = false"
@@ -79,11 +80,9 @@
             </div>
           </div>
         </div>
-        <!-- Button to delete all data from browser storage and reset VueJS to initial settings -->
-        <br />
 
         <div class="w3-content w3-padding-32 pure-g" style="max-width: 1080px;">
-          <section class="pure-u-1 pure-u-md-2-3">
+          <section class="pure-u-1 pure-u-md-5-8 l-box">
             <div class="functions-wrapper">
               <header>
                 <h3 class="w3-text-grey text-bold">Functions</h3>
@@ -217,7 +216,7 @@
                   <div>
                     <div
                       v-if="spinners.setupIssuer"
-                      class="w3-btn w3-border w3-white w3-padding"
+                      class="w3-white w3-padding flex-center"
                     >
                       <div class="loader"></div>
                     </div>
@@ -722,41 +721,31 @@
             </div>
           </section>
 
-          <section class="pure-u-1 pure-u-md-1-3">
+          <section class="pure-u-1 pure-u-md-3-8 l-box">
             <header class="messages-header">
               <h3 class="w3-text-grey text-bold">
                 Webhook Messages
               </h3>
               <p class="w3-text-grey w3-small">Session {{sessionMiniId}}</p>
             </header>
-            <div
-              class="w3-round w3-light-grey"
-              style="overflow-y: auto; height: 100%;"
-            >
-              <table class="w3-table w3-light-grey">
-                <tr>
-                  <th></th>
-                  <th></th>
-                </tr>
-                <tr v-if="messages.length === 0">
-                  <td class="w3-small w3-text-grey">
-                    Messages will appear here
-                  </td>
-                </tr>
-                <tr v-for="message in messages">
-                  <td style="text-align: left; min-width: 80px;">
-                    {{message.time}}
-                  </td>
-                  <td
-                    style="
-                      text-align: right;
-                      max-width: 300px;
-                      word-wrap: break-word;
-                    "
-                  >
-                    {{message.content}}
-                  </td>
-                </tr>
+
+            <div class="table-wrapper">
+              <table class="w3-table w3-light-grey w3-round">
+                <tbody class="w3-small w3-text-gray">
+                  <tr v-if="messages.length === 0">
+                    <td class="w3-small w3-text-grey">
+                      Messages will appear here
+                    </td>
+                  </tr>
+                  <tr v-for="message in messages">
+                    <td>
+                      {{message.time}}
+                    </td>
+                    <td style="max-width: 300px; word-wrap: break-word;">
+                      {{message.content}}
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </section>
