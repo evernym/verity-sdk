@@ -284,6 +284,7 @@
                       ledger or you won't be able to write a schema.
                     </p>
                   </div>
+
                   <div class="pure-g">
                     <section class="pure-u-1 pure-u-md-1-2 w3-padding">
                       <h3 class="w3-medium w3-text-grey text-bold">
@@ -360,11 +361,12 @@
                       <h3 class="w3-medium w3-text-grey text-bold">
                         Current Schemas
                       </h3>
+
                       <div v-if="schemas.length === 0" class="">
                         <img src="images/none-yet.png" alt="None Schemas Yet" />
                       </div>
 
-                      <div v-else class="schemas-display">
+                      <div v-else class="scroll-display-height-300">
                         <div v-for="schema in schemas">
                           <div class="w3-margin-top">
                             <p class="w3-text-gray w3-small">
@@ -403,54 +405,143 @@
                   Credential Definitions
                 </button>
                 <div id="cred-defs-content" v-show="currentTab === 'cred-defs'">
-                  <p>
-                    NOTE: Make sure you wrote the Issuer DID and VerKey to the
-                    ledger or you won't be able to write a credential
-                    definition.
-                  </p>
-                  <div class="w3-half w3-padding">
-                    <h4>Current Credential Definitions</h4>
-                    <table class="w3-table w3-bordered">
-                      <tr>
-                        <th>Name</th>
-                        <th>ID</th>
-                      </tr>
-                      <tr v-for="credDef in credDefs">
-                        <td>{{credDef.name}}</td>
-                        <td>{{credDef.id}}</td>
-                      </tr>
-                    </table>
+                  <div
+                    class="w3-panel bg-info w3-padding w3-padding-16 flex-align-center"
+                  >
+                    <div class="info-icon"></div>
+                    <p class="w3-small w3-margin-left">
+                      Make sure you wrote the Issuer DID and VerKey to the
+                      ledger or you won't be able to write a credential
+                      definition.
+                    </p>
                   </div>
-                  <div class="w3-half w3-padding">
-                    <h4>Write a New Credential Definition</h4>
-                    <form class="w3-form" v-on:submit.prevent="writeCredDef()">
-                      <input class="w3-input" v-model="credDef.name" />
-                      <label>Credential Definition Name</label>
 
-                      <input class="w3-input" v-model="credDef.schemaId" />
-                      <label>Schema ID</label>
+                  <div class="pure-g">
+                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
+                      <h3 class="w3-medium w3-text-grey text-bold">
+                        Write a New Credential Definition
+                      </h3>
 
-                      <input class="w3-input" v-model="credDef.tag" />
-                      <label>Tag (optional)</label>
-
-                      <input
-                        class="w3-input"
-                        v-model="credDef.revocationDetails"
-                      />
-                      <label>Revocation Details (optional)</label>
-
-                      <br />
-                      <br />
-                      <div
-                        v-if="spinners.credDefs"
-                        class="w3-btn w3-border w3-white w3-padding"
+                      <form
+                        class="w3-form"
+                        v-on:submit.prevent="writeCredDef()"
                       >
-                        <div class="loader"></div>
+                        <div class="w3-margin-top w3-margin-bottom">
+                          <label
+                            for="cred-def-name"
+                            class="w3-text-gray w3-small"
+                            >Credential Definition Name</label
+                          >
+                          <input
+                            id="cred-def-name"
+                            class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                            type="text"
+                            v-model="credDef.name"
+                            @focus="handleFocus"
+                            @blur="handleBlur"
+                          />
+                        </div>
+
+                        <div class="w3-margin-top w3-margin-bottom">
+                          <label
+                            for="cred-def-schema-id"
+                            class="w3-text-gray w3-small"
+                            >Schema ID</label
+                          >
+                          <input
+                            id="cred-def-schema-id"
+                            class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                            type="text"
+                            v-model="credDef.schemaId"
+                            @focus="handleFocus"
+                            @blur="handleBlur"
+                          />
+                        </div>
+
+                        <div class="w3-margin-top w3-margin-bottom">
+                          <label
+                            for="cred-def-tag"
+                            class="w3-text-gray w3-small"
+                            >Tag (optional)</label
+                          >
+                          <input
+                            id="cred-def-tag"
+                            class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                            type="text"
+                            v-model="credDef.tag"
+                            @focus="handleFocus"
+                            @blur="handleBlur"
+                          />
+                        </div>
+
+                        <div class="w3-margin-top w3-margin-bottom">
+                          <label
+                            for="cred-def-revocation-details"
+                            class="w3-text-gray w3-small"
+                            >Revocation Details (optional)</label
+                          >
+                          <input
+                            id="cred-def-revocation-details"
+                            class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                            type="text"
+                            v-model="credDef.revocationDetails"
+                            @focus="handleFocus"
+                            @blur="handleBlur"
+                          />
+                        </div>
+
+                        <div
+                          v-if="spinners.credDefs"
+                          class="w3-btn w3-border w3-white w3-padding"
+                        >
+                          <div class="loader"></div>
+                        </div>
+
+                        <button
+                          v-else
+                          class="w3-border w3-padding-large w3-round w3-small pointer"
+                          @mouseover="areFunctionsBtnsHovered = true"
+                          @mouseleave="areFunctionsBtnsHovered = false"
+                          v-bind:style="funtionsBtnsStyles"
+                        >
+                          Write Credential Definition
+                        </button>
+                      </form>
+                    </section>
+
+                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
+                      <h3 class="w3-medium w3-text-grey text-bold">
+                        Current Credential Definitions
+                      </h3>
+
+                      <div v-if="credDefs.length === 0" class="">
+                        <img
+                          src="images/none-yet.png"
+                          alt="None Credentials Yet"
+                        />
                       </div>
-                      <button v-else class="w3-btn w3-border w3-white">
-                        Write Credential Definition
-                      </button>
-                    </form>
+
+                      <div v-else class="scroll-display-height-300">
+                        <div v-for="credDef in credDefs">
+                          <div class="w3-margin-top">
+                            <p class="w3-text-gray w3-small">
+                              Credential Definition Name
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{credDef.name}}
+                            </p>
+                          </div>
+                          <div>
+                            <p class="w3-text-gray w3-small">
+                              Credential Definition Id
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{credDef.id}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
                   </div>
                 </div>
               </section>
