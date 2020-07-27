@@ -2,7 +2,7 @@ import requests
 from verity_sdk.utils.Did import Did
 
 
-def retrieve_verity_public_did(verity_url) -> Did:
+async def retrieve_verity_public_did(verity_url) -> Did:
     full_url = f'{verity_url}/agency'
     result = requests.get(full_url)
     status_code = result.status_code

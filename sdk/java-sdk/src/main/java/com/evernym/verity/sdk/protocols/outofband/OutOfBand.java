@@ -3,7 +3,7 @@ package com.evernym.verity.sdk.protocols.outofband;
 import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
 
 /**
- * Builds and sends a new encrypted agent message for the Connections protocol.
+ * The OutOfBand protocol allow an interaction intent, connection information and reuse of a relationship.
  */
 public class OutOfBand {
     private OutOfBand() {

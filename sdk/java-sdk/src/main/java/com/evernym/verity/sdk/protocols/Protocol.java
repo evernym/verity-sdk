@@ -82,8 +82,9 @@ public abstract class Protocol {
     }
 
     /**
-     * Packs the connection message for the verity
+     * Packs the connection message for the verity-application
      * @param context an instance of Context that has been initialized with your wallet and key details
+     * @param message the message to be packed for the verity-application
      * @return Encrypted connection message ready to be sent to the verity
      * @throws WalletException when there are issues with encryption and decryption
      * @throws UndefinedContextException when the context don't have enough information for this operation

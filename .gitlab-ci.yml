@@ -1,4 +1,4 @@
-image: gitlab.corp.evernym.com:4567/dev/containers/build-sdk:a31083e8
+image: gitlab.corp.evernym.com:4567/dev/containers/build-sdk:5de0ac04
 
 stages:
   - docker-images

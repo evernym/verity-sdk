@@ -120,7 +120,7 @@ public class Util {
      * Extracts the message in the byte array that has been packaged and encrypted for a key that is locally held.
      *
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param message the message received from the verity-application agent
+     * @param message the raw message received from the verity-application agent
      * @return an unencrypted messages as a JSON object
      * @throws WalletException when wallet operations fails (including decryption)
      */

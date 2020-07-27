@@ -45,7 +45,8 @@ public interface ProvisionV0_7 extends MessageFamily {
     String CREATE_EDGE_AGENT = "create-edge-agent";
 
     /**
-     * Sends the connection create message to Verity
+     * Sends provisioning message that directs the creation of an agent to the to verity-application
+     *
      * @param context an instance of the Context object initialized to a verity-application agent
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws VerityException when wallet operations fails or given invalid context

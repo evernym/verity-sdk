@@ -11,6 +11,12 @@ import java.io.IOException;
 import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 
 @SuppressWarnings("CPD-START")
+/*
+ * NON_VISIBLE
+ *
+ * This is an implementation of OutOfBandImplV1_0 but is not viable to user of Verity SDK. Created using the
+ * static PresentProof class
+ */
 class OutOfBandImplV1_0 extends Protocol implements OutOfBandV1_0 {
     final static String CONNECTION_INVITATION = "reuse";
 
@@ -38,7 +44,6 @@ class OutOfBandImplV1_0 extends Protocol implements OutOfBandV1_0 {
 
     @Override
     public void handshakeReuse(Context context) throws IOException, VerityException, UnsupportedOperationException {
-//        throw new UnsupportedOperationException("Not supported yet.");
         send(context, handshakeReuseMsg(context));
     }
 

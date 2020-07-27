@@ -3,14 +3,30 @@ from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 
 
 class WriteSchema(Protocol):
+    """
+    The WriteCredentialDefinition protocol writes credential definitions to an Indy Identity Ledger
+    (often the Sovrin Ledger). This protocol expect that the issuer has been setup.
+    """
+
     MSG_FAMILY = 'write-schema'
+    """the family name for the message family"""
     MSG_FAMILY_VERSION = '0.6'
+    """the version for the message family"""
 
     # Messages
     WRITE_SCHEMA = 'write'
+    """Name for 'write' control message"""
+
     STATUS = 'status-report'
+    """Name for 'status-report' signal message"""
 
     def __init__(self, name: str, version: str, attrs: [str]):
+        """
+        Args:
+            name (str): The given name for the schema
+            version (str): The given version of the schema
+            attrs (list[str]): A list of attribute name in the schema
+        """
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
@@ -20,7 +36,25 @@ class WriteSchema(Protocol):
         self.version = version
         self.attrs = attrs
 
-    def write_msg(self, _):
+    async def write(self, context):
+        """
+        Directs verity-application to write the specified Schema to the Ledger
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.write_msg_packed(context))
+
+    def write_msg(self, context):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
         msg = self._get_base_message(self.WRITE_SCHEMA)
         msg['name'] = self.name
         msg['version'] = self.version
@@ -28,7 +62,13 @@ class WriteSchema(Protocol):
         return msg
 
     async def write_msg_packed(self, context):
-        return await self.get_message_bytes(context, self.write_msg(context))
+        """
+        Creates and packages message without sending it.
 
-    async def write(self, context):
-        await self.send_message(context, await self.write_msg_packed(context))
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
+        return await self.get_message_bytes(context, self.write_msg(context))

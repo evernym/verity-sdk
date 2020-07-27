@@ -15,7 +15,7 @@ credential_values = {
     'degree': 'Bachelors',
     'gpa': '3.67'
 }
-price = '5'
+price = '0'
 auto_issue = True
 thread_id = 'some thread id'
 

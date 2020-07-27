@@ -21,7 +21,7 @@ public class Connecting {
      * Constructor for the 1.0 Connections object. This constructor creates an object that is ready to accept
      * an invitation and start the Connections protocol.
      *
-     * @param forRelationship The relationship identifier (DID) to use for the connections exchange. Normally, it
+     * @param forRelationship The relationship identifier (DID) to use for the connections exchange. Normally, its
      *                        relationship will have been created as a reaction to receiving the invitation.
      * @param label A human readable string that will label the caller identity (often an organization).
      *              E.g. 'Acme Corp`
@@ -38,7 +38,7 @@ public class Connecting {
      * threadId. This object can only check status of the protocol.
      *
      * @param forRelationship The relationship identifier (DID) to use for the connections protocol.
-     * @param threadId The thread id of the already started protocol
+     * @param threadId the thread id of the already started protocol
      * @return 1.0 Connections object
      */
     public static ConnectionsV1_0 v1_0(String forRelationship, String threadId) {
