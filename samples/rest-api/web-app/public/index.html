@@ -70,7 +70,7 @@
       <main>
         <div id="invite-detail-modal" class="w3-modal">
           <div class="w3-modal-content">
-            <div class="w3-container">
+            <div class="w3-container flex-center">
               <span
                 onclick="document.getElementById('invite-detail-modal').style.display='none'; app.spinners.connections = false"
                 class="w3-button w3-display-topright"
@@ -390,6 +390,7 @@
                   </div>
                 </div>
               </section>
+
               <section id="cred-defs" class="w3-margin-bottom">
                 <button
                   id="credentialDefinitions"
@@ -545,6 +546,7 @@
                   </div>
                 </div>
               </section>
+
               <section id="connections" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('connections')"
@@ -563,41 +565,84 @@
                   class="w3-row w3-padding"
                   v-show="currentTab === 'connections'"
                 >
-                  <div class="w3-half w3-padding">
-                    <h4>Existing Connections</h4>
-                    <table class="w3-table w3-bordered">
-                      <tr>
-                        <th>Name</th>
-                        <th>Relationship DID</th>
-                      </tr>
-                      <tr v-for="connection in connections">
-                        <td>{{connection.name}}</td>
-                        <td>{{connection.did}}</td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div class="w3-half w3-padding">
-                    <h4>Add Connections</h4>
-                    <input class="w3-input" v-model="connection.name" />
-                    <label>Connection Name</label>
-                    <br />
-                    <br />
-                    <div
-                      v-if="spinners.connections"
-                      class="w3-btn w3-border w3-white w3-padding"
-                    >
-                      <div class="loader"></div>
-                    </div>
-                    <button
-                      v-else
-                      class="w3-btn w3-white w3-border"
-                      v-on:click="newConnection()"
-                    >
-                      Add New Connection
-                    </button>
+                  <div class="pure-g">
+                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
+                      <h3 class="w3-medium w3-text-grey text-bold">
+                        Add Connections
+                      </h3>
+
+                      <div class="w3-margin-top w3-margin-bottom">
+                        <label
+                          for="connection-name"
+                          class="w3-text-gray w3-small"
+                          >Connection Name</label
+                        >
+                        <input
+                          id="connection-name"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                          type="text"
+                          v-model="connection.name"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        />
+                      </div>
+
+                      <div
+                        v-if="spinners.connections"
+                        class="w3-btn w3-border w3-white w3-padding"
+                      >
+                        <div class="loader"></div>
+                      </div>
+
+                      <button
+                        v-else
+                        class="w3-border w3-padding-large w3-round w3-small pointer"
+                        @mouseover="areFunctionsBtnsHovered = true"
+                        @mouseleave="areFunctionsBtnsHovered = false"
+                        v-bind:style="funtionsBtnsStyles"
+                        v-on:click="newConnection()"
+                      >
+                        Add New Connection
+                      </button>
+                    </section>
+
+                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
+                      <h3 class="w3-medium w3-text-grey text-bold">
+                        Existing Connections
+                      </h3>
+
+                      <div v-if="connections.length === 0" class="">
+                        <img
+                          src="images/none-yet.png"
+                          alt="None Connections Yet"
+                        />
+                      </div>
+
+                      <div v-else class="scroll-display-height-300">
+                        <div v-for="connection in connections">
+                          <div class="w3-margin-top">
+                            <p class="w3-text-gray w3-small">
+                              Connection Name
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{connection.name}}
+                            </p>
+                          </div>
+                          <div>
+                            <p class="w3-text-gray w3-small">
+                              Connection DID
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{connection.did}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
                   </div>
                 </div>
               </section>
+
               <section id="creds" class="w3-margin-bottom">
                 <button
                   id="issueCredential"
