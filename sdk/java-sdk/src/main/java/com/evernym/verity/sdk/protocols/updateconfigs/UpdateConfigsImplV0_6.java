@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.updateconfigs;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.updateconfigs.v0_6.UpdateConfigsV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONArray;
@@ -15,7 +15,7 @@ import java.io.IOException;
  * This is an implementation of UpdateConfigsImplV0_6 but is not viable to user of Verity SDK. Created using the
  * static UpdateConfigs class
  */
-class UpdateConfigsImplV0_6 extends Protocol implements UpdateConfigsV0_6 {
+class UpdateConfigsImplV0_6 extends AbstractProtocol implements UpdateConfigsV0_6 {
 
     final String UPDATE_CONFIGS = "update";
     final String GET_STATUS = "get-status";

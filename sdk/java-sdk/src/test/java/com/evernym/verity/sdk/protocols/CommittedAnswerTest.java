@@ -4,6 +4,8 @@ import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
 import com.evernym.verity.sdk.protocols.questionanswer.v1_0.CommittedAnswerV1_0;
+import com.evernym.verity.sdk.protocols.relationship.Relationship;
+import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -36,6 +38,17 @@ public class CommittedAnswerTest {
                 testProtocol.version(),
                 msgName);
         assertEquals(msgType, testProtocol.messageType(msgName));
+    }
+
+    @Test
+    public void testGetThreadId() {
+        CommittedAnswerV1_0 testProtocol = CommittedAnswer.v1_0(
+                forRelationship,
+                questionText,
+                questionDetail,
+                validResponses,
+                requireSignature);
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test

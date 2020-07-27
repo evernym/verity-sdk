@@ -2,6 +2,8 @@ package com.evernym.verity.sdk.protocols.relationship.v1_0;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.provision.Provision;
+import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
 import com.evernym.verity.sdk.protocols.relationship.Relationship;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -39,6 +41,12 @@ public class RelationshipTest {
             ),
             relationshipProvisioning.messageType(msgName)
         );
+    }
+
+    @Test
+    public void testGetThreadId() {
+        RelationshipV1_0 testProtocol = Relationship.v1_0(label);
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test

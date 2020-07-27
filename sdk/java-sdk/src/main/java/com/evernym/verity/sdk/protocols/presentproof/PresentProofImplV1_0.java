@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.presentproof;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
 import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
@@ -20,7 +20,7 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
  * static PresentProof class
  */
 @SuppressWarnings("CPD-START")
-class PresentProofImplV1_0 extends Protocol implements PresentProofV1_0 {
+class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 {
 
     final String PROOF_REQUEST = "request";
     final String STATUS = "status";
