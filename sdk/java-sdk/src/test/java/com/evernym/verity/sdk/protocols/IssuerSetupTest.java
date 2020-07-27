@@ -4,6 +4,8 @@ import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
 import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
+import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
+import com.evernym.verity.sdk.protocols.questionanswer.v1_0.CommittedAnswerV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -27,6 +29,12 @@ public class IssuerSetupTest {
                 msgName);
 
         assertEquals(expectedType, t.messageType(msgName));
+    }
+
+    @Test
+    public void testGetThreadId() {
+        IssuerSetupV0_6 testProtocol = IssuerSetup.v0_6();
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test

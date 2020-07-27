@@ -2,6 +2,8 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
+import com.evernym.verity.sdk.protocols.writecreddef.v0_6.WriteCredentialDefinitionV0_6;
 import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
 import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
@@ -26,6 +28,12 @@ public class WriteSchemaTest {
         assertEquals(
                 Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
                 testProtocol.messageType(msgName));
+    }
+
+    @Test
+    public void testGetThreadId() {
+        WriteSchemaV0_6 testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1);
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test

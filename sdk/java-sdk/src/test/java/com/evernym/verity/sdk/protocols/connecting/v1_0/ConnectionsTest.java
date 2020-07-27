@@ -31,6 +31,12 @@ public class ConnectionsTest extends TestBase {
     }
 
     @Test
+    public void testGetThreadId() {
+        ConnectionsV1_0 connecting = Connecting.v1_0(label, base64Url);
+        assertNotNull(connecting.getThreadId());
+    }
+
+    @Test
     public void testAcceptInvitation() throws Exception {
         withContext ( context -> {
             ConnectionsV1_0 testProtocol = Connecting.v1_0(label, base64Url);

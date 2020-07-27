@@ -1,6 +1,8 @@
 package com.evernym.verity.sdk.protocols.issue_cred.v1_0;
 
 import com.evernym.verity.sdk.TestBase;
+import com.evernym.verity.sdk.protocols.connecting.Connecting;
+import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.utils.Util;
@@ -41,6 +43,15 @@ public class IssueCredentialTest extends TestBase {
                 Util.getMessageType(Util.COMMUNITY_MSG_QUALIFIER, testProtocol.family(),
                         testProtocol.version(), msgName), testProtocol.messageType(msgName)
         );
+    }
+
+    @Test
+    public void testGetThreadId() {
+        IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(
+                forRelationship,
+                threadId
+        );
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test(expected = IllegalArgumentException.class)

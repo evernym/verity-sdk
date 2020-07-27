@@ -3,6 +3,8 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
+import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointV0_6;
 import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
 import com.evernym.verity.sdk.protocols.writecreddef.v0_6.RevocationRegistryConfig;
 import com.evernym.verity.sdk.protocols.writecreddef.v0_6.WriteCredentialDefinitionV0_6;
@@ -29,6 +31,12 @@ public class WriteCredentialDefinitionTest {
                 Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, writeCredDef.family(), writeCredDef.version(), msgName),
                 writeCredDef.messageType(msgName)
         );
+    }
+
+    @Test
+    public void testGetThreadId() {
+        WriteCredentialDefinitionV0_6 testProtocol = WriteCredentialDefinition.v0_6(name, schemaId, tag, revocationDetails);
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test

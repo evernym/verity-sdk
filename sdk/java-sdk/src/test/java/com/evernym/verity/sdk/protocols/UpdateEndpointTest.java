@@ -1,6 +1,8 @@
 package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
+import com.evernym.verity.sdk.protocols.updateconfigs.UpdateConfigs;
+import com.evernym.verity.sdk.protocols.updateconfigs.v0_6.UpdateConfigsV0_6;
 import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
 import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointV0_6;
 import com.evernym.verity.sdk.utils.Context;
@@ -23,6 +25,12 @@ public class UpdateEndpointTest {
                 Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, testProtocol.family(), testProtocol.version(), msgName),
                 testProtocol.messageType(msgName)
         );
+    }
+
+    @Test
+    public void testGetThreadId() {
+        UpdateEndpointV0_6 testProtocol = UpdateEndpoint.v0_6();
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test
