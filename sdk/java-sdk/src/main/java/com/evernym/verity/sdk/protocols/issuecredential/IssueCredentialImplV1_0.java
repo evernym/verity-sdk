@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.issuecredential;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.DbcUtil;
@@ -20,7 +20,7 @@ import java.util.Map;
  * This is an implementation of IssueCredentialV1_0 but is not viable to user of Verity SDK. Created using the
  * static IssueCredential class
  */
-class IssueCredentialImplV1_0 extends Protocol implements IssueCredentialV1_0 {
+class IssueCredentialImplV1_0 extends AbstractProtocol implements IssueCredentialV1_0 {
 
     // flag if this instance started the interaction
     boolean created = false;

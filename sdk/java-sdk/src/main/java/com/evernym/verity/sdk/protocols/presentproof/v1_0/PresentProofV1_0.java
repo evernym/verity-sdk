@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols.presentproof.v1_0;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
 import com.evernym.verity.sdk.protocols.presentproof.common.Restriction;
@@ -17,7 +18,7 @@ import java.io.IOException;
  * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/4fae574c03f9f1013db30bf2c0c676b1122f7149/features/0037-present-proof" target="_blank" rel="noopener noreferrer">Aries 0037: Present Proof Protocol 1.0</a>
  */
 @SuppressWarnings("CPD-START")
-public interface PresentProofV1_0 extends MessageFamily {
+public interface PresentProofV1_0 extends Protocol {
     /**
      * The qualifier for the message family. Uses the community qualifier.
      */

@@ -4,7 +4,7 @@ import com.evernym.verity.sdk.exceptions.ProvisionTokenException;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.utils.Context;
@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
  * This is an implementation of ProvisionImplV0_7 but is not viable to user of Verity SDK. Created using the
  * static Provision class
  */
-class ProvisionImplV0_7 extends Protocol implements ProvisionV0_7 {
+class ProvisionImplV0_7 extends AbstractProtocol implements ProvisionV0_7 {
 
     private String token;
 
@@ -91,7 +91,7 @@ class ProvisionImplV0_7 extends Protocol implements ProvisionV0_7 {
         }
 
         JSONObject rtn = new JSONObject()
-                .put("@id", Protocol.getNewId())
+                .put("@id", AbstractProtocol.getNewId())
                 .put("@type", messageType(CREATE_EDGE_AGENT))
                 .put("requesterVk", context.sdkVerKey());
         

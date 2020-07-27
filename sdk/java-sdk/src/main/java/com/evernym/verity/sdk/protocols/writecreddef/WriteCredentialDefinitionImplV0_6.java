@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.writecreddef;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.writecreddef.v0_6.RevocationRegistryConfig;
 import com.evernym.verity.sdk.protocols.writecreddef.v0_6.WriteCredentialDefinitionV0_6;
 import com.evernym.verity.sdk.utils.Context;
@@ -15,7 +15,7 @@ import java.io.IOException;
  * This is an implementation of WriteCredentialDefinitionImplV0_6 but is not viable to user of Verity SDK. Created using the
  * static WriteCredentialDefinition class
  */
-class WriteCredentialDefinitionImplV0_6 extends Protocol implements WriteCredentialDefinitionV0_6 {
+class WriteCredentialDefinitionImplV0_6 extends AbstractProtocol implements WriteCredentialDefinitionV0_6 {
 
     final String name;
     protected final String schemaId;

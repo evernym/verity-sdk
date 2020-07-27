@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols.connecting.v1_0;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -13,7 +14,7 @@ import java.io.IOException;
  *
  * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/9b0aaa39df7e8bd434126c4b33c097aae78d65bf/features/0160-connection-protocol" target="_blank" rel="noopener noreferrer">Aries 0160: Connection Protocol</a>
  */
-public interface ConnectionsV1_0 extends MessageFamily {
+public interface ConnectionsV1_0 extends Protocol {
     /**
      * The qualifier for the message family. Uses the community qualifier.
      */

@@ -1,8 +1,7 @@
 package com.evernym.verity.sdk.protocols.questionanswer;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.MessageFamily;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,7 +11,7 @@ import java.io.IOException;
 /*
  * NON_VISIBLE
  */
-abstract class AskCommonImpl extends Protocol implements MessageFamily {
+abstract class AskCommonImpl extends AbstractProtocol {
 
     final String forRelationship;
     String questionText;
