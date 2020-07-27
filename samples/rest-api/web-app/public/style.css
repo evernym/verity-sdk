@@ -46,6 +46,11 @@ p {
   align-items: center;
 }
 
+.flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
 input:disabled {
   color: black;
   cursor: default;
@@ -75,6 +80,7 @@ nav.navbar {
 
 .bg-info {
   background-color: #feffbf;
+  color: #9a9d01;
 }
 
 .info-icon {
@@ -117,6 +123,11 @@ nav.navbar {
   padding-right: 16px;
 }
 
+.w3-text-grey,
+.w3-text-gray {
+  color: #505050 !important;
+}
+
 .pure-g > div {
   box-sizing: border-box;
 }
@@ -124,6 +135,11 @@ nav.navbar {
 .l-box {
   padding-left: 20px;
   padding-right: 20px;
+}
+
+.schemas-display {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 @media (min-width: 1120px) {

@@ -108,21 +108,23 @@
                     <p class="w3-text-gray w3-small">
                       Verity URL
                     </p>
-                    <p class="w3-text-gray w3-small"><b>{{verityURL}}</b></p>
+                    <p class="w3-text-gray w3-small text-bold">{{verityURL}}</p>
                   </div>
 
                   <div class="w3-margin-top">
                     <p class="w3-text-gray w3-small">
                       Domain DID
                     </p>
-                    <p class="w3-text-gray w3-small"><b>{{domainDID}}</b></p>
+                    <p class="w3-text-gray w3-small text-bold">{{domainDID}}</p>
                   </div>
 
                   <div class="w3-margin-top">
                     <p class="w3-text-gray w3-small">
                       Webhook URL
                     </p>
-                    <p class="w3-text-gray w3-small"><b>{{webhookURL}}</b></p>
+                    <p class="w3-text-gray w3-small text-bold">
+                      {{webhookURL}}
+                    </p>
                   </div>
 
                   <div class="w3-margin-top w3-margin-bottom">
@@ -138,6 +140,7 @@
                       @blur="handleBlur"
                     />
                   </div>
+
                   <div class="w3-margin-top w3-margin-bottom">
                     <label for="logo-url" class="w3-text-gray w3-small"
                       >Institution Logo Url</label
@@ -205,7 +208,7 @@
                 >
                   <div class="w3-panel bg-info w3-padding w3-padding-16 flex">
                     <div class="info-icon"></div>
-                    <p class="w3-small w3-margin-left" style="color: #9a9d01;">
+                    <p class="w3-small w3-margin-left">
                       Clicking “Setup Issuer” will create issuer keys on VAS and
                       will then register created DID/Verkey as Endorser on
                       Staging Net using Sovrin SelfServe portal. Monitor webhook
@@ -213,6 +216,7 @@
                       to the ledger.
                     </p>
                   </div>
+
                   <div>
                     <div
                       v-if="spinners.setupIssuer"
@@ -220,6 +224,7 @@
                     >
                       <div class="loader"></div>
                     </div>
+
                     <button
                       v-else
                       class="w3-border w3-padding-large w3-round w3-small pointer"
@@ -270,47 +275,116 @@
                   class="w3-row"
                   v-show="currentTab === 'write-schemas'"
                 >
-                  <p>
-                    NOTE: Make sure that Issuer DID and VerKey is written to the
-                    ledger or you won't be able to write a schema.
-                  </p>
-                  <div class="w3-half w3-padding">
-                    <h4>Current Schemas</h4>
-                    <table class="w3-table w3-bordered">
-                      <tr>
-                        <th>Name</th>
-                        <th>ID</th>
-                      </tr>
-                      <tr v-for="schema in schemas">
-                        <td>{{schema.name}}</td>
-                        <td>{{schema.id}}</td>
-                      </tr>
-                    </table>
+                  <div
+                    class="w3-panel bg-info w3-padding w3-padding-16 flex-align-center"
+                  >
+                    <div class="info-icon"></div>
+                    <p class="w3-small w3-margin-left">
+                      Make sure that Issuer DID and VerKey is written to the
+                      ledger or you won't be able to write a schema.
+                    </p>
                   </div>
-                  <div class="w3-half w3-padding">
-                    <h4>Write a New Schema</h4>
-                    <form class="w3-form" v-on:submit.prevent="writeSchema()">
-                      <input class="w3-input" v-model="schema.name" />
-                      <label>Schema Name</label>
+                  <div class="pure-g">
+                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
+                      <h3 class="w3-medium w3-text-grey text-bold">
+                        Write a New Schema
+                      </h3>
 
-                      <input class="w3-input" v-model="schema.version" />
-                      <label>Schema Version</label>
+                      <form class="w3-form" v-on:submit.prevent="writeSchema()">
+                        <div class="w3-margin-top w3-margin-bottom">
+                          <label for="schema-name" class="w3-text-gray w3-small"
+                            >Schema Name</label
+                          >
+                          <input
+                            id="schema-name"
+                            class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                            type="text"
+                            v-model="schema.name"
+                            @focus="handleFocus"
+                            @blur="handleBlur"
+                          />
+                        </div>
 
-                      <input class="w3-input" v-model="schema.attrs" />
-                      <label>Schema Attrs (comma deliminated)</label>
+                        <div class="w3-margin-top w3-margin-bottom">
+                          <label
+                            for="schema-version"
+                            class="w3-text-gray w3-small"
+                            >Schema Version</label
+                          >
+                          <input
+                            id="schema-version"
+                            class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                            type="text"
+                            v-model="schema.version"
+                            @focus="handleFocus"
+                            @blur="handleBlur"
+                          />
+                        </div>
 
-                      <br />
-                      <br />
-                      <div
-                        v-if="spinners.schemas"
-                        class="w3-btn w3-border w3-white w3-padding"
-                      >
-                        <div class="loader"></div>
+                        <div class="w3-margin-top w3-margin-bottom">
+                          <label
+                            for="schema-attrs"
+                            class="w3-text-gray w3-small"
+                            >Schema Attrs (comma deliminated)</label
+                          >
+                          <input
+                            id="schema-attrs"
+                            class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                            type="text"
+                            v-model="schema.attrs"
+                            @focus="handleFocus"
+                            @blur="handleBlur"
+                          />
+                        </div>
+
+                        <div
+                          v-if="spinners.schemas"
+                          class="w3-btn w3-border w3-white w3-padding"
+                        >
+                          <div class="loader"></div>
+                        </div>
+
+                        <button
+                          v-else
+                          class="w3-border w3-padding-large w3-round w3-small pointer"
+                          @mouseover="areFunctionsBtnsHovered = true"
+                          @mouseleave="areFunctionsBtnsHovered = false"
+                          v-bind:style="funtionsBtnsStyles"
+                        >
+                          Write Schema
+                        </button>
+                      </form>
+                    </section>
+
+                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
+                      <h3 class="w3-medium w3-text-grey text-bold">
+                        Current Schemas
+                      </h3>
+                      <div v-if="schemas.length === 0" class="">
+                        <img src="images/none-yet.png" alt="None Schemas Yet" />
                       </div>
-                      <button v-else class="w3-btn w3-border w3-white">
-                        Write Schema
-                      </button>
-                    </form>
+
+                      <div v-else class="schemas-display">
+                        <div v-for="schema in schemas">
+                          <div class="w3-margin-top">
+                            <p class="w3-text-gray w3-small">
+                              Schema Name
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{schema.name}}
+                            </p>
+                          </div>
+                          <div>
+                            <p class="w3-text-gray w3-small">
+                              Schema Id
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{schema.id}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
                   </div>
                 </div>
               </section>
