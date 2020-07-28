@@ -70,14 +70,24 @@
       <!-- Hidden Modal that will present QR code for a new connection-->
       <main>
         <div id="invite-detail-modal" class="w3-modal">
-          <div class="w3-modal-content">
-            <div class="w3-container flex-center">
+          <div class="modal-content w3-round">
+            <div class="padding-16 flex-vertical flex-justify-center">
               <span
                 onclick="document.getElementById('invite-detail-modal').style.display='none'; app.spinners.connections = false"
-                class="w3-button w3-display-topright"
+                class="w3-button w3-display-topright w3-text-gray w3-xlarge"
                 >&times;</span
               >
-              <img :src="inviteDetailQRCode" />
+
+              <div class="w3-text-gray">
+                <p class="text-bold">Scan to Create Connection</p>
+                <p class="w3-small">
+                  Scan this QR code with the Connect.Me app
+                </p>
+              </div>
+
+              <div class="flex-center">
+                <img :src="inviteDetailQRCode" class="img-qr" />
+              </div>
             </div>
           </div>
         </div>
@@ -104,8 +114,9 @@
                 <div
                   v-show="currentTab === 'configuration'"
                   id="configuration-content"
+                  class="padding-vertical-20"
                 >
-                  <div class="w3-margin-top">
+                  <div class="">
                     <p class="w3-text-gray w3-small">
                       Verity URL
                     </p>
@@ -170,7 +181,7 @@
                       />
                     </div>
                   </div>
-                  <div class="w3-padding-16">
+                  <div>
                     <div
                       v-if="spinners.configuration"
                       class="w3-btn w3-border w3-white w3-padding"
@@ -190,6 +201,7 @@
                   </div>
                 </div>
               </section>
+
               <section id="setup-issuer" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('setup-issuer')"
@@ -206,14 +218,17 @@
                 <div
                   id="setup-issuer-content"
                   v-show="currentTab === 'setup-issuer'"
+                  class="padding-vertical-20"
                 >
-                  <div class="w3-panel bg-info w3-padding w3-padding-16 flex">
+                  <div
+                    class="w3-margin-bottom bg-info w3-padding w3-padding-16 flex"
+                  >
                     <div class="info-icon"></div>
                     <p class="w3-small w3-margin-left">
                       Clicking “Setup Issuer” will create issuer keys on VAS and
                       will then register created DID/Verkey as Endorser on
                       Staging Net using Sovrin SelfServe portal. Monitor webhook
-                      messages to check if FID/Verkey were successfully written
+                      messages to check if DID/Verkey were successfully written
                       to the ledger.
                     </p>
                   </div>
@@ -257,6 +272,7 @@
                   </section>
                 </div>
               </section>
+
               <section id="write-schemas" class="w3-margin-bottom">
                 <button
                   id="schemas"
@@ -273,27 +289,29 @@
                 </button>
                 <div
                   id="write-schemas-content"
-                  class="w3-row"
                   v-show="currentTab === 'write-schemas'"
+                  class="padding-vertical-20"
                 >
                   <div
-                    class="w3-panel bg-info w3-padding w3-padding-16 flex-align-center"
+                    class="w3-margin-bottom bg-info w3-padding w3-padding-16 flex-align-center"
                   >
                     <div class="info-icon"></div>
                     <p class="w3-small w3-margin-left">
-                      Make sure that Issuer DID and VerKey is written to the
-                      ledger or you won't be able to write a schema.
+                      Issuer DID and VerKey must be written to the ledger in
+                      order to write a schema.
                     </p>
                   </div>
 
                   <div class="pure-g">
-                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
-                      <h3 class="w3-medium w3-text-grey text-bold">
+                    <section class="pure-u-1 pure-u-md-1-2 padding-right">
+                      <h3
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
+                      >
                         Write a New Schema
                       </h3>
 
                       <form class="w3-form" v-on:submit.prevent="writeSchema()">
-                        <div class="w3-margin-top w3-margin-bottom">
+                        <div class="w3-margin-bottom">
                           <label for="schema-name" class="w3-text-gray w3-small"
                             >Schema Name</label
                           >
@@ -358,8 +376,10 @@
                       </form>
                     </section>
 
-                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
-                      <h3 class="w3-medium w3-text-grey text-bold">
+                    <section class="pure-u-1 pure-u-md-1-2 padding-left">
+                      <h3
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
+                      >
                         Current Schemas
                       </h3>
 
@@ -406,21 +426,26 @@
                   ></span>
                   Credential Definitions
                 </button>
-                <div id="cred-defs-content" v-show="currentTab === 'cred-defs'">
+                <div
+                  id="cred-defs-content"
+                  v-show="currentTab === 'cred-defs'"
+                  class="padding-vertical-20"
+                >
                   <div
-                    class="w3-panel bg-info w3-padding w3-padding-16 flex-align-center"
+                    class="w3-margin-bottom bg-info w3-padding w3-padding-16 flex-align-center"
                   >
                     <div class="info-icon"></div>
                     <p class="w3-small w3-margin-left">
-                      Make sure you wrote the Issuer DID and VerKey to the
-                      ledger or you won't be able to write a credential
-                      definition.
+                      Issuer DID and VerKey must be written to the ledger in
+                      order to write a credential definition.
                     </p>
                   </div>
 
                   <div class="pure-g">
-                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
-                      <h3 class="w3-medium w3-text-grey text-bold">
+                    <section class="pure-u-1 pure-u-md-1-2 padding-right">
+                      <h3
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
+                      >
                         Write a New Credential Definition
                       </h3>
 
@@ -428,7 +453,7 @@
                         class="w3-form"
                         v-on:submit.prevent="writeCredDef()"
                       >
-                        <div class="w3-margin-top w3-margin-bottom">
+                        <div class="w3-margin-bottom">
                           <label
                             for="cred-def-name"
                             class="w3-text-gray w3-small"
@@ -511,8 +536,10 @@
                       </form>
                     </section>
 
-                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
-                      <h3 class="w3-medium w3-text-grey text-bold">
+                    <section class="pure-u-1 pure-u-md-1-2 padding-left">
+                      <h3
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
+                      >
                         Current Credential Definitions
                       </h3>
 
@@ -563,16 +590,18 @@
                 </button>
                 <div
                   id="connections-content"
-                  class="w3-row w3-padding"
                   v-show="currentTab === 'connections'"
+                  class="padding-vertical-20"
                 >
                   <div class="pure-g">
-                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
-                      <h3 class="w3-medium w3-text-grey text-bold">
-                        Add Connections
+                    <section class="pure-u-1 pure-u-md-1-2 padding-right">
+                      <h3
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
+                      >
+                        Add a New Connection
                       </h3>
 
-                      <div class="w3-margin-top w3-margin-bottom">
+                      <div class="w3-margin-bottom">
                         <label
                           for="connection-name"
                           class="w3-text-gray w3-small"
@@ -607,8 +636,10 @@
                       </button>
                     </section>
 
-                    <section class="pure-u-1 pure-u-md-1-2 w3-padding">
-                      <h3 class="w3-medium w3-text-grey text-bold">
+                    <section class="pure-u-1 pure-u-md-1-2 padding-left">
+                      <h3
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
+                      >
                         Existing Connections
                       </h3>
 
@@ -658,38 +689,85 @@
                   ></span>
                   Issue Credentials
                 </button>
-                <div id="creds-content" v-show="currentTab === 'creds'">
-                  <input class="w3-input" v-model="credential.name" />
-                  <label>Credential Name</label>
 
-                  <select class="w3-input" v-model="credential.relationshipDID">
-                    <option disabled value=""> -- select an option -- </option>
-                    <option
-                      v-for="option in connections"
-                      v-bind:value="option.did"
+                <div
+                  id="creds-content"
+                  v-show="currentTab === 'creds'"
+                  class="padding-vertical-20"
+                >
+                  <div class="w3-margin-bottom">
+                    <label for="credential-name" class="w3-text-gray w3-small"
+                      >Credential Name</label
                     >
-                      {{ option.did }}
-                    </option>
-                  </select>
-                  <label>Relationship DID</label>
+                    <input
+                      id="credential-name"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                      v-model="credential.name"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                    />
+                  </div>
 
-                  <select class="w3-input" v-model="credential.credDefId">
-                    <option disabled value=""> -- select an option -- </option>
-                    <option v-for="option in credDefs" v-bind:value="option.id">
-                      {{ option.id }}
-                    </option>
-                  </select>
-                  <label>Credential Definition ID</label>
+                  <div class="w3-margin-top w3-margin-bottom">
+                    <label for="relationship-did" class="w3-text-gray w3-small"
+                      >Relationship DID</label
+                    >
+                    <select
+                      id="relationship-did"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding select-css"
+                      v-model="credential.relationshipDID"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                    >
+                      <option disabled value="">
+                        -- select an option --
+                      </option>
+                      <option
+                        v-for="option in connections"
+                        v-bind:value="option.did"
+                      >
+                        {{ option.did }}
+                      </option>
+                    </select>
+                  </div>
 
-                  <input
-                    class="w3-input"
-                    v-model="credential.values"
-                    placeholder='{"attr1":"value1", "attr2":"value2"}'
-                  />
-                  <label>Credential Values (as JSON)</label>
+                  <div class="w3-margin-top w3-margin-bottom">
+                    <label for="cred-def-id" class="w3-text-gray w3-small"
+                      >Credential Definition ID</label
+                    >
+                    <select
+                      id="cred-def-id"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding select-css"
+                      v-model="credential.credDefId"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                    >
+                      <option disabled value="">
+                        -- select an option --
+                      </option>
+                      <option
+                        v-for="option in credDefs"
+                        v-bind:value="option.id"
+                      >
+                        {{ option.id }}
+                      </option>
+                    </select>
+                  </div>
 
-                  <br />
-                  <br />
+                  <div class="w3-margin-top w3-margin-bottom">
+                    <label for="credential-values" class="w3-text-gray w3-small"
+                      >Credential Values (as JSON)</label
+                    >
+                    <input
+                      id="credential-values"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                      v-model="credential.values"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                      placeholder='{"attr1":"value1", "attr2":"value2"}'
+                    />
+                  </div>
+
                   <div
                     v-if="spinners.creds"
                     class="w3-btn w3-border w3-white w3-padding"
@@ -698,13 +776,17 @@
                   </div>
                   <button
                     v-else
-                    class="w3-btn w3-white w3-border"
+                    class="w3-border w3-padding-large w3-round w3-small pointer"
+                    @mouseover="areFunctionsBtnsHovered = true"
+                    @mouseleave="areFunctionsBtnsHovered = false"
+                    v-bind:style="funtionsBtnsStyles"
                     v-on:click="offerCredential()"
                   >
                     Issue Credential
                   </button>
                 </div>
               </section>
+
               <section id="proofs" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('proofs')"
@@ -718,7 +800,11 @@
                   ></span>
                   Request Proofs
                 </button>
-                <div id="proofs-content" v-show="currentTab === 'proofs'">
+                <div
+                  id="proofs-content"
+                  v-show="currentTab === 'proofs'"
+                  class="padding-vertical-20"
+                >
                   <div class="w3-half w3-padding">
                     <h4>Received Proofs</h4>
                     <table class="w3-table w3-bordered">
@@ -784,6 +870,7 @@
                   </div>
                 </div>
               </section>
+
               <section id="structured-messages" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('structured-messages')"
@@ -800,6 +887,7 @@
                 <div
                   id="structured-messages-content"
                   v-show="currentTab === 'structured-messages'"
+                  class="padding-vertical-20"
                 >
                   <div class="w3-half w3-padding">
                     <h4>Received Answers</h4>
@@ -865,6 +953,7 @@
                   </div>
                 </div>
               </section>
+
               <section id="customRequest" class="w3-margin-bottom">
                 <button
                   v-on:click="openTab('customRequest')"
@@ -881,6 +970,7 @@
                 <div
                   id="customRequest-content"
                   v-show="currentTab === 'customRequest'"
+                  class="padding-vertical-20"
                 >
                   <input
                     class="w3-input"
