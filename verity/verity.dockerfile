@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 WORKDIR /root
 
 ENV LIBINDY_VERSION 1.15.0-xenial
-ENV VERITY_APPLICATION_VERSION 0.4.91738644.3fe8dde
+ENV VERITY_APPLICATION_VERSION 0.4.95524299.7cbac90
 
 RUN apt-get update && apt-get install -y \
     software-properties-common \
