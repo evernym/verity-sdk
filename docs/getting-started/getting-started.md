@@ -1,6 +1,6 @@
 # Getting Started with the Verity SDK
 
-TODO: introduction (Vlad maybe it would best to let you introduce this guide)
+The Getting Started Guide is intended to demonstrate the main functionalities of Verity and to walk you through setting up and using Verity SDK. Besides using Verity SDK, you also have a possibility to use Verity REST API to integrate with Verity. See the Open API docs for the Verity REST API at https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0
 
 This guided walkthrough has three main high-level steps:
 1. Getting Connect.Me
@@ -214,7 +214,5 @@ After the proof is exchanged with the Verity server instance, the simulated inte
 > **NOTE:** The Verity-SDK holds and manages one key-pair used to communicate with the Verity-Application. The public verification key of the key-pair is part of the Context object. It can be viewed using the `sdkVerKey` method on the Context object or the `sdkVerKey` field when the Context object is converted to JSON.
 
 > **NOTE:** A Verity-SDK Context can also be used with the Verity REST API. Use the `restApiToken` method on the Context object to get the required API key. 
-
-> **NOTE:** See the Open API docs for the Verity REST API at https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0
 
 © 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
