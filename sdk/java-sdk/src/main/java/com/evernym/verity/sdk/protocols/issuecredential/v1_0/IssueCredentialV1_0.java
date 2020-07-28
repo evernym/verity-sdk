@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols.issuecredential.v1_0;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -13,7 +14,7 @@ import java.io.IOException;
  *
  * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/bb42a6c35e0d5543718fb36dd099551ab192f7b0/features/0036-issue-credential" target="_blank" rel="noopener noreferrer">Aries 0036: Issue Credential Protocol 1.0</a>
  */
-public interface IssueCredentialV1_0 extends MessageFamily {
+public interface IssueCredentialV1_0 extends Protocol {
     /**
      * The qualifier for message family. Uses the community qualifier.
      */

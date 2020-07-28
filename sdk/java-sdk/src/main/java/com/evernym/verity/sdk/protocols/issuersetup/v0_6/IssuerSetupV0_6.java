@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols.issuersetup.v0_6;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -11,7 +12,7 @@ import java.io.IOException;
 /**
  * An interface for controlling a 0.6 IssuerSetup protocol.
  */
-public interface IssuerSetupV0_6 extends MessageFamily {
+public interface IssuerSetupV0_6 extends Protocol {
     /**
      * @see MessageFamily#qualifier()
      */

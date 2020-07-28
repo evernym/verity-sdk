@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.relationship;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.GoalCode;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.utils.Context;
@@ -18,7 +18,7 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
  * This is an implementation of RelationshipImplV1_0 but is not viable to user of Verity SDK. Created using the
  * static Relationship class
  */
-class RelationshipImplV1_0 extends Protocol implements RelationshipV1_0 {
+class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 {
     final static String CREATE = "create";
     final static String CONNECTION_INVITATION = "connection-invitation";
     final static String OUT_OF_BAND_INVITATION = "out-of-band-invitation";

@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols.provision.v0_7;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -11,7 +12,7 @@ import java.io.IOException;
 /**
  * An interface for controlling a 0.7 Provision protocol.
  */
-public interface ProvisionV0_7 extends MessageFamily {
+public interface ProvisionV0_7 extends Protocol {
     /**
      * The qualifier for the message family. Uses Evernym's qualifier.
      */

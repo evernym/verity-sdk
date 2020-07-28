@@ -2,6 +2,7 @@ package com.evernym.verity.sdk.protocols.relationship.v1_0;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -11,7 +12,7 @@ import java.io.IOException;
 /**
  * An interface for controlling a 1.0 Relationship protocol.
  */
-public interface RelationshipV1_0 extends MessageFamily {
+public interface RelationshipV1_0 extends Protocol {
     /**
      * The qualifier for the message family. Uses Evernym's qualifier.
      */

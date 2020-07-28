@@ -2,6 +2,8 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
+import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
 import com.evernym.verity.sdk.protocols.updateconfigs.UpdateConfigs;
 import com.evernym.verity.sdk.protocols.updateconfigs.v0_6.UpdateConfigsV0_6;
 import com.evernym.verity.sdk.utils.Context;
@@ -31,6 +33,12 @@ public class UpdateConfigsTest {
                 testProtocol.version(),
                 msgName
         ), testProtocol.messageType(msgName));
+    }
+
+    @Test
+    public void testGetThreadId() {
+        UpdateConfigsV0_6 testProtocol = UpdateConfigs.v0_6(name, logoUrl);
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test

@@ -8,22 +8,38 @@ import org.junit.Test;
 import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
 import static org.junit.Assert.assertEquals;
 
-class SomeProtocol extends Protocol {
+class SomeProtocol extends AbstractProtocol {
+  private static final String MSG_QUALIFIER = "did:sov:some_did";
   private static final String MSG_FAMILY = "some-protocol";
   private static final String MSG_FAMILY_VERSION = "9.9.9";
 
   SomeProtocol() {
     super();
   }
+
+  @Override
+  public String qualifier() {
+    return MSG_QUALIFIER;
+  }
+
+  @Override
+  public String family() {
+    return MSG_FAMILY;
+  }
+
+  @Override
+  public String version() {
+    return MSG_FAMILY_VERSION;
+  }
 }
 
-public class ProtocolTest {
+public class AbstractProtocolTest {
 
   @Test
   public void testGetMessage() throws Exception {
     JSONObject message = new JSONObject("{\"hello\": \"world\"}");
     Context context = TestHelpers.getContext();
-    byte[] packedMessage = Protocol.packMsg(context, message);
+    byte[] packedMessage = AbstractProtocol.packMsg(context, message);
     JSONObject unpackedMessage = unpackForwardMessage(context, packedMessage);
     assertEquals(unpackedMessage.getString("hello"), "world");
 

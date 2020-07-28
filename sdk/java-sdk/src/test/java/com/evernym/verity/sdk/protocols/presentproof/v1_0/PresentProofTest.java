@@ -2,6 +2,8 @@ package com.evernym.verity.sdk.protocols.presentproof.v1_0;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.outofband.OutOfBand;
+import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
 import com.evernym.verity.sdk.protocols.presentproof.PresentProof;
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
@@ -39,6 +41,17 @@ public class PresentProofTest {
                 testProtocol.version(),
                 msgName
         ), testProtocol.messageType(msgName));
+    }
+
+    @Test
+    public void testGetThreadId() {
+        PresentProofV1_0 testProtocol = PresentProof.v1_0(
+                forRelationship,
+                proofRequestName,
+                new Attribute[]{attr1},
+                new Predicate[]{pred1}
+        );
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test

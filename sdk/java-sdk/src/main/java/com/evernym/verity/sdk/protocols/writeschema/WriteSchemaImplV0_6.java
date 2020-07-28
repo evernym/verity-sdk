@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.writeschema;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONArray;
@@ -15,7 +15,7 @@ import java.io.IOException;
  * This is an implementation of IssuerSetupImplV0_6 but is not viable to user of Verity SDK. Created using the
  * static IssuerSetup class
  */
-class WriteSchemaImplV0_6 extends Protocol implements WriteSchemaV0_6 {
+class WriteSchemaImplV0_6 extends AbstractProtocol implements WriteSchemaV0_6 {
 
     final String name;
     final String version;

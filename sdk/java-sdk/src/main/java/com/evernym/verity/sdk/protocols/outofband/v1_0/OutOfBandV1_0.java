@@ -2,13 +2,14 @@ package com.evernym.verity.sdk.protocols.outofband.v1_0;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-public interface OutOfBandV1_0 extends MessageFamily {
+public interface OutOfBandV1_0 extends Protocol {
     /**
      * The qualifier for the message family. Uses the community qualifier.
      */

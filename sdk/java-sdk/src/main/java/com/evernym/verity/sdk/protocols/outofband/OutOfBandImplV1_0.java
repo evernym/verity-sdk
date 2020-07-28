@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.outofband;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
@@ -17,7 +17,7 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
  * This is an implementation of OutOfBandImplV1_0 but is not viable to user of Verity SDK. Created using the
  * static PresentProof class
  */
-class OutOfBandImplV1_0 extends Protocol implements OutOfBandV1_0 {
+class OutOfBandImplV1_0 extends AbstractProtocol implements OutOfBandV1_0 {
     final static String CONNECTION_INVITATION = "reuse";
 
     private final String inviteUrl;

@@ -2,6 +2,10 @@ package com.evernym.verity.sdk.protocols.provision;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.presentproof.PresentProof;
+import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
+import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
+import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
 import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
@@ -61,5 +65,9 @@ public class ProvisionTestV0_7 {
         catch (VerityException ignored) {}
     }
 
-
+    @Test
+    public void testGetThreadId() {
+        ProvisionV0_7 testProtocol = Provision.v0_7();
+        assertNotNull(testProtocol.getThreadId());
+    }
 }

@@ -3,6 +3,7 @@ package com.evernym.verity.sdk.protocols.updateconfigs.v0_6;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
+import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -12,7 +13,7 @@ import java.io.IOException;
 /**
  * An interface for controlling a 0.6 UpdateConfigs protocol.
  */
-public interface UpdateConfigsV0_6 extends MessageFamily {
+public interface UpdateConfigsV0_6 extends Protocol {
 
     /**
      * The qualifier for the message family. Uses Evernym's qualifier.

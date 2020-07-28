@@ -2,6 +2,8 @@ package com.evernym.verity.sdk.protocols.outofband.v1_0;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
+import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
+import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.protocols.outofband.OutOfBand;
 import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
 import com.evernym.verity.sdk.utils.Util;
@@ -30,6 +32,12 @@ public class OutOfBandTest {
                 ),
                 Util.getMessageType(outofbandProvisioning, msgName)
         );
+    }
+
+    @Test
+    public void testGetThreadId() {
+        OutOfBandV1_0 testProtocol = OutOfBand.v1_0("testForRelationship", "testInviteUrl");
+        assertNotNull(testProtocol.getThreadId());
     }
 
     @Test

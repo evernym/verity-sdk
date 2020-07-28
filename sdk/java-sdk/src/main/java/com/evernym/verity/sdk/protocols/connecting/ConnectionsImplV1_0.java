@@ -1,7 +1,7 @@
 package com.evernym.verity.sdk.protocols.connecting;
 
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.Protocol;
+import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
@@ -15,7 +15,7 @@ import java.io.IOException;
  * This is an implementation of ConnectionsV1_0 but is not viable to user of Verity SDK. Created using the
  * static Connecting class
  */
-class ConnectionsImplV1_0 extends Protocol implements ConnectionsV1_0 {
+class ConnectionsImplV1_0 extends AbstractProtocol implements ConnectionsV1_0 {
 
     final String forRelationship;
     final String label;
