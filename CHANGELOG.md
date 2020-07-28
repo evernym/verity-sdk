@@ -1,3 +1,32 @@
+# Release notes - Verity 2.1 (0.4.95258837.49f840f) - July 28 2020
+
+## Bugs
+    * [VE-1457] - Node.Js Verity SDK bug with uuid dependency
+    * [VE-1542] - Committed Answer protocol not working on the Verity 2.0 (0.4.91738644.3fe8dde)
+    * [VE-1559] - Acme Corp (try.connect.me) should be using proper logo instead of the robohash logo
+    * [VE-1581] - Verity should be using Enterprise name and logo from the UpdateConfigs call in the ConnectionInvitation
+    * [VE-1605] - DynamoDB high read condition
+    * [VE-1659] - Endpoint URLs containing IP addresses fail URL validation
+    * [VE-1667] - Field verification_result in presentation-result message has a wrong value
+    * [VE-1637] - Faber/Alice demo broken on team1 EAS 
+    * [VE-1500] - Fix problem with too much logging in CAS
+
+## Tasks
+    * [VE-1540] - As Evernym TE, I need to add puppet config for enforcing token provisioning on VAS
+    * [VE-1554] - Change REST API token provisioing script to use 0.7
+
+## Stories
+    * [VE-1322] - As Verity customer, I want to be able to issue credential in one step (instead of two)
+    * [VE-1412] - Create comprehensive Verity SDK documentation
+    * [VE-1458] - Design and Implement connection redirect (or connection reuse) on Verity using Aries protocols
+    * [VE-1536] - Log wrongly formatted REST API payload
+    * [VE-1547] - As Evernym Customer, I want access a source code of web app based on vcx-customer toolkit
+    * [VE-1557] - As Evernym  Verity SDK customer, I want to install Verity SDK from language specific repos
+    * [VE-1568] - As Evernym  Verity SDK customer, I want a way to easily run example apps using Docker
+    * [VE-1621] - I want to configure a custom SMS text message per customer
+    * [VE-1590] - Add support for multiple sponser app to be able to use push notification service
+    * [VE-1672] - Tokenizer use sponsor push service
+
 # Release Notes - Verity version 2.0 (0.4.91738644.3fe8dde) - Jun 17 2020
 
 ## Bugs
