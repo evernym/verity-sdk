@@ -33,14 +33,15 @@
     <div id="app">
       <header v-bind:style="{ backgroundColor: accentColor}">
         <nav class="navbar">
-          <section class="flex">
+          <section class="flex flex-center">
             <div class="flex-center w3-container">
               <img
                 v-bind:src="institutionLogoURL"
-                alt="evernym logo"
+                alt="company logo"
                 style="height: 100%; max-height: 30px;"
               />
             </div>
+            <div class="separator" :style="{backgroundColor: textColor}"></div>
             <div class="w3-container">
               <p
                 class="w3-large"
@@ -1121,43 +1122,98 @@
                   ></span>
                   Custom Verity Request
                 </button>
+
                 <div
                   id="customRequest-content"
                   v-show="currentTab === 'customRequest'"
                   class="padding-vertical-20"
                 >
-                  <input
-                    class="w3-input"
-                    v-model="customRequest.msgFamilyQualifier"
-                    placeholder="BzCbsNYhMrjHiqZDTUASHg"
-                  />
-                  <label>Message Family Qualifier</label>
-                  <input
-                    class="w3-input"
-                    v-model="customRequest.msgFamily"
-                    placeholder="issue-credential"
-                  />
-                  <label>Message Family</label>
-                  <input
-                    class="w3-input"
-                    v-model="customRequest.msgFamilyVersion"
-                    placeholder="1.0"
-                  />
-                  <label>Message Family Version</label>
-                  <input
-                    class="w3-input"
-                    v-model="customRequest.msgName"
-                    placeholder="offer"
-                  />
-                  <label>Message Name</label>
-                  <textarea
-                    class="w3-input"
-                    v-model="customRequest.message"
-                    placeholder='{"~for_relationship": "RVCowETXe7E9t7myVs6eHY","cred_def_id": "7MXRWDen2pkBnaMnznEuS4:3:CL:120754:latest","credential_values": {"first":"ABC", "second":"DEF"},"price": 0}'
-                  ></textarea>
-                  <label>Message Body JSON (without @type field)</label>
-                  <br />
-                  <br />
+                  <div class="w3-margin-bottom">
+                    <label
+                      for="customRequest-msgFamilyQualifier"
+                      class="w3-text-gray w3-small"
+                      >Message Family Qualifier</label
+                    >
+                    <input
+                      id="customRequest-msgFamilyQualifier"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                      v-model="customRequest.msgFamilyQualifier"
+                      placeholder="BzCbsNYhMrjHiqZDTUASHg"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                    />
+                  </div>
+
+                  <div class="w3-margin-bottom">
+                    <label
+                      for="customRequest-msgFamily"
+                      class="w3-text-gray w3-small"
+                      >Message Family</label
+                    >
+                    <input
+                      id="customRequest-msgFamily"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                      v-model="customRequest.msgFamily"
+                      placeholder="issue-credential"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                    />
+                  </div>
+
+                  <div class="w3-margin-bottom">
+                    <label
+                      for="customRequest-msgFamilyVersion"
+                      class="w3-text-gray w3-small"
+                      >Message Family Version</label
+                    >
+                    <input
+                      id="customRequest-msgFamilyVersion"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                      v-model="customRequest.msgFamilyVersion"
+                      placeholder="1.0"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                    />
+                  </div>
+
+                  <div class="w3-margin-bottom">
+                    <label
+                      for="customRequest-msgName"
+                      class="w3-text-gray w3-small"
+                      >Message Name</label
+                    >
+                    <input
+                      id="customRequest-msgName"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                      v-model="customRequest.msgName"
+                      placeholder="offer"
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                    />
+                  </div>
+
+                  <div class="w3-margin-bottom">
+                    <label
+                      for="customRequest-message"
+                      class="w3-text-gray w3-small"
+                      >Message Body JSON (without @type field)</label
+                    >
+                    <textarea
+                      id="customRequest.message"
+                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                      v-model="customRequest.message"
+                      rows="6"
+                      placeholder='{
+                      "~for_relationship": "RVCowETXe7E9t7myVs6eHY",
+                      "cred_def_id": "7MXRWDen2pkBnaMnznEuS4:3:CL:120754:latest",
+                      "credential_values": {"first":"ABC", "second":"DEF"},
+                      "price": 0
+}'
+                      @focus="handleFocus"
+                      @blur="handleBlur"
+                    ></textarea>
+                  </div>
+
                   <div
                     v-if="spinners.custom"
                     class="w3-btn w3-border w3-white w3-padding"
@@ -1166,7 +1222,10 @@
                   </div>
                   <button
                     v-else
-                    class="w3-btn w3-white w3-border"
+                    class="w3-border w3-padding-large w3-round w3-small pointer"
+                    @mouseover="areFunctionsBtnsHovered = true"
+                    @mouseleave="areFunctionsBtnsHovered = false"
+                    v-bind:style="funtionsBtnsStyles"
                     v-on:click="sendCustomRequest()"
                   >
                     Send Custom Request

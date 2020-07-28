@@ -36,6 +36,11 @@ p {
   height: 30px;
 }
 
+.separator {
+  width: 1px;
+  height: 28px;
+}
+
 .flex {
   display: flex;
 }
