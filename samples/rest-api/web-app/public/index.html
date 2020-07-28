@@ -610,7 +610,6 @@
                         <input
                           id="connection-name"
                           class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
-                          type="text"
                           v-model="connection.name"
                           @focus="handleFocus"
                           @blur="handleBlur"
@@ -805,68 +804,151 @@
                   v-show="currentTab === 'proofs'"
                   class="padding-vertical-20"
                 >
-                  <div class="w3-half w3-padding">
-                    <h4>Received Proofs</h4>
-                    <table class="w3-table w3-bordered">
-                      <tr>
-                        <th>Relationship DID</th>
-                        <th>Data</th>
-                      </tr>
-                      <tr v-for="proof in proofs">
-                        <td>{{proof.did}}</td>
-                        <td>{{proof.data}}</td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div class="w3-half w3-padding">
-                    <h4>Send Proof Request</h4>
-
-                    <input class="w3-input" v-model="proof.name" />
-                    <label>Proof Request Name</label>
-
-                    <select class="w3-input" v-model="proof.relationshipDID">
-                      <option disabled value="">
-                        -- select an option --
-                      </option>
-                      <option
-                        v-for="option in connections"
-                        v-bind:value="option.did"
+                  <div class="pure-g">
+                    <section class="pure-u-1 pure-u-md-1-2 padding-right">
+                      <h4
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
                       >
-                        {{ option.did }}
-                      </option>
-                    </select>
-                    <label>Relationship DID</label>
+                        Send Proof Request
+                      </h4>
 
-                    <input
-                      class="w3-input"
-                      v-model="proof.attrs"
-                      placeholder='[{"name":"first_attr"},{"name":"second_attr"}]'
-                    />
-                    <label>JSON Array of Proof Attrs</label>
+                      <div class="w3-margin-bottom">
+                        <label for="proof-name" class="w3-text-gray w3-small"
+                          >Proof Request Name</label
+                        >
+                        <input
+                          id="proof-name"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                          v-model="proof.name"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        />
+                      </div>
 
-                    <input class="w3-input" v-model="proof.predicates" />
-                    <label>JSON Array of Proof Predicates (Optional)</label>
+                      <div class="w3-margin-top w3-margin-bottom">
+                        <label
+                          for="proof-relationship-did"
+                          class="w3-text-gray w3-small"
+                          >Relationship DID</label
+                        >
+                        <select
+                          id="proof-relationship-did"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding select-css"
+                          v-model="proof.relationshipDID"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        >
+                          <option disabled value="">
+                            -- select an option --
+                          </option>
+                          <option
+                            v-for="option in connections"
+                            v-bind:value="option.did"
+                          >
+                            {{ option.did }}
+                          </option>
+                        </select>
+                      </div>
 
-                    <input
-                      class="w3-input"
-                      v-model="proof.revocationInterval"
-                    />
-                    <label>Revocation Interval (Optional)</label>
-                    <br />
-                    <br />
-                    <div
-                      v-if="spinners.proofs"
-                      class="w3-btn w3-border w3-white w3-padding"
-                    >
-                      <div class="loader"></div>
-                    </div>
-                    <button
-                      v-else
-                      class="w3-btn w3-white w3-border"
-                      v-on:click="sendProofRequest()"
-                    >
-                      Send Proof Request
-                    </button>
+                      <div class="w3-margin-bottom">
+                        <label for="proof-attrs" class="w3-text-gray w3-small"
+                          >JSON Array of Proof Attrs</label
+                        >
+                        <input
+                          id="proof-attrs"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                          v-model="proof.attrs"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                          placeholder='[{"name":"first_attr"},{"name":"second_attr"}]'
+                        />
+                      </div>
+
+                      <div class="w3-margin-bottom">
+                        <label
+                          for="proof-predicates"
+                          class="w3-text-gray w3-small"
+                          >JSON Array of Proof Predicates (optional)</label
+                        >
+                        <input
+                          id="proof-predicates"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                          v-model="proof.predicates"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        />
+                      </div>
+
+                      <div class="w3-margin-bottom">
+                        <label
+                          for="proof-revocationInterval"
+                          class="w3-text-gray w3-small"
+                          >Revocation Interval (optional)</label
+                        >
+                        <input
+                          id="proof-revocationInterval"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                          v-model="proof.revocationInterval"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        />
+                      </div>
+
+                      <div
+                        v-if="spinners.proofs"
+                        class="w3-btn w3-border w3-white w3-padding"
+                      >
+                        <div class="loader"></div>
+                      </div>
+
+                      <button
+                        v-else
+                        class="w3-border w3-padding-large w3-round w3-small pointer"
+                        @mouseover="areFunctionsBtnsHovered = true"
+                        @mouseleave="areFunctionsBtnsHovered = false"
+                        v-bind:style="funtionsBtnsStyles"
+                        v-on:click="sendProofRequest()"
+                      >
+                        Send Proof Request
+                      </button>
+                    </section>
+
+                    <section class="pure-u-1 pure-u-md-1-2 padding-left">
+                      <h4
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
+                      >
+                        Received Proofs
+                      </h4>
+
+                      <div v-if="proofs.length === 0">
+                        <img
+                          src="images/none-yet.png"
+                          alt="None Received Proof Yet"
+                        />
+                      </div>
+
+                      <div v-else class="scroll-display-height-300">
+                        <div v-for="proof in proofs">
+                          <div class="w3-margin-top">
+                            <p class="w3-text-gray w3-small">
+                              Relationship DID
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{proof.did}}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p class="w3-text-gray w3-small">
+                              Data
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{proof.data}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
                   </div>
                 </div>
               </section>
@@ -889,67 +971,139 @@
                   v-show="currentTab === 'structured-messages'"
                   class="padding-vertical-20"
                 >
-                  <div class="w3-half w3-padding">
-                    <h4>Received Answers</h4>
-                    <table class="w3-table w3-bordered">
-                      <tr>
-                        <th>Relationship DID</th>
-                        <th>Data</th>
-                      </tr>
-                      <tr v-for="answer in questionResponses">
-                        <td>{{answer.did}}</td>
-                        <td>{{answer.data}}</td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div class="w3-half w3-padding">
-                    <h4>Send Structured Message</h4>
-
-                    <input class="w3-input" v-model="structuredMessage.text" />
-                    <label>Question Text</label>
-
-                    <input
-                      class="w3-input"
-                      v-model="structuredMessage.detail"
-                    />
-                    <label>Question Detail</label>
-
-                    <input
-                      class="w3-input"
-                      v-model="structuredMessage.responses"
-                    />
-                    <label>Valid Responses (comma deliminated)</label>
-
-                    <select
-                      class="w3-input"
-                      v-model="structuredMessage.relationshipDID"
-                    >
-                      <option disabled value="">
-                        -- select an option --
-                      </option>
-                      <option
-                        v-for="option in connections"
-                        v-bind:value="option.did"
+                  <div class="pure-g">
+                    <section class="pure-u-1 pure-u-md-1-2 padding-right">
+                      <h4
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
                       >
-                        {{ option.did }}
-                      </option>
-                    </select>
-                    <label>Relationship DID</label>
-                    <br />
-                    <br />
-                    <div
-                      v-if="spinners.structMsgs"
-                      class="w3-btn w3-border w3-white w3-padding"
-                    >
-                      <div class="loader"></div>
-                    </div>
-                    <button
-                      v-else
-                      class="w3-btn w3-white w3-border"
-                      v-on:click="sendStructuredMessage()"
-                    >
-                      Send Structured Message
-                    </button>
+                        Send Structured Message
+                      </h4>
+
+                      <div class="w3-margin-bottom">
+                        <label
+                          for="structuredMessage-name"
+                          class="w3-text-gray w3-small"
+                          >Question Text</label
+                        >
+                        <input
+                          id="structuredMessage-name"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                          v-model="structuredMessage.text"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        />
+                      </div>
+
+                      <div class="w3-margin-bottom">
+                        <label
+                          for="structuredMessage-detail"
+                          class="w3-text-gray w3-small"
+                          >Question Detail</label
+                        >
+                        <input
+                          id="structuredMessage-detail"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                          v-model="structuredMessage.detail"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        />
+                      </div>
+
+                      <div class="w3-margin-bottom">
+                        <label
+                          for="structuredMessage-responses"
+                          class="w3-text-gray w3-small"
+                          >Valid Responses (comma deliminated)</label
+                        >
+                        <input
+                          id="structuredMessage-responses"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                          v-model="structuredMessage.responses"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        />
+                      </div>
+
+                      <div class="w3-margin-top w3-margin-bottom">
+                        <label
+                          for="structuredMessage-relationshipDID"
+                          class="w3-text-gray w3-small"
+                          >Relationship DID</label
+                        >
+                        <select
+                          id="structuredMessage-relationshipDID"
+                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding select-css"
+                          v-model="structuredMessage.relationshipDID"
+                          @focus="handleFocus"
+                          @blur="handleBlur"
+                        >
+                          <option disabled value="">
+                            -- select an option --
+                          </option>
+                          <option
+                            v-for="option in connections"
+                            v-bind:value="option.did"
+                          >
+                            {{ option.did }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div
+                        v-if="spinners.structMsgs"
+                        class="w3-btn w3-border w3-white w3-padding"
+                      >
+                        <div class="loader"></div>
+                      </div>
+
+                      <button
+                        v-else
+                        class="w3-border w3-padding-large w3-round w3-small pointer"
+                        @mouseover="areFunctionsBtnsHovered = true"
+                        @mouseleave="areFunctionsBtnsHovered = false"
+                        v-bind:style="funtionsBtnsStyles"
+                        v-on:click="sendStructuredMessage()"
+                      >
+                        Send Structured Message
+                      </button>
+                    </section>
+
+                    <section class="pure-u-1 pure-u-md-1-2 padding-left">
+                      <h4
+                        class="w3-medium w3-text-grey text-bold w3-margin-bottom"
+                      >
+                        Received Answers
+                      </h4>
+
+                      <div v-if="questionResponses.length === 0">
+                        <img
+                          src="images/none-yet.png"
+                          alt="None Received Answers Yet"
+                        />
+                      </div>
+
+                      <div v-else class="scroll-display-height-300">
+                        <div v-for="answer in questionResponses">
+                          <div class="w3-margin-top">
+                            <p class="w3-text-gray w3-small">
+                              Relationship DID
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{answer.did}}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p class="w3-text-gray w3-small">
+                              Data
+                            </p>
+                            <p class="w3-text-gray w3-small text-bold">
+                              {{answer.data}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
                   </div>
                 </div>
               </section>
