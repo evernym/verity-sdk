@@ -78,13 +78,12 @@ java-release:
   extends:
     - .java-common
   script:
-    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
-    - gpg --batch --passphrase $OSSHR_GPG_PASSPHRASE --import $OSSRH_GPG_SIGNING_KEY
-    - mvn versions:set -DnewVersion=$RELEASE_VERSION                          # set version to tagged version
-    - mvn clean deploy --settings ./settings.xml -DskipTests -P release             # deploy to sonatype OSSRH repo
-    - mvn javadoc:javadoc                                                     # build javadoc
-    - aws s3 sync doc/_build s3://developer.evernym.com/doc/java/$RELEASE_VERSION # upload javadoc to s3
-  when: manual
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`                        # pull version from tag name
+    - gpg --batch --passphrase $OSSHR_GPG_PASSPHRASE --import $OSSRH_GPG_SIGNING_KEY # set GPG key to keyring
+    - mvn versions:set -DnewVersion=$RELEASE_VERSION                                 # set version to tagged version
+    - mvn clean deploy --settings ./settings.xml -DskipTests -P release              # deploy to sonatype OSSRH repo
+    - mvn javadoc:javadoc                                                            # build javadoc
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/java/$RELEASE_VERSION    # upload javadoc to s3
   allow_failure: true
   only:
     refs:
@@ -152,14 +151,12 @@ python-release:
   extends:
     - .python-common
   script:
-    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`                   # pull version from tag name
     - echo "VERSION = '$RELEASE_VERSION'" > verity_sdk/version.py               # set version to tagged version
     - echo "$RELEASE_VERSION"
-    - cat verity_sdk/version.py
     - make upload-to-pypi                                                       # upload to pypi
     - make doc-build                                                            # build doc
     - aws s3 sync doc/_build s3://developer.evernym.com/doc/python/$RELEASE_VERSION # upload javadoc to s3
-  when: manual
   allow_failure: true
   only:
     refs:
@@ -218,13 +215,12 @@ nodejs-release:
   extends:
     - .nodejs-common
   script:
-    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
-    - npm version --no-git-tag-version $RELEASE_VERSION                         # set version to tagged version
-    - npm install                                                               # pre for publish
-    - npm publish                                                               # publish to npm
-    - npm run doc-build                                                         # build doc
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`                       # pull version from tag name
+    - npm version --no-git-tag-version $RELEASE_VERSION                             # set version to tagged version
+    - npm install                                                                   # pre for publish
+    - npm publish                                                                   # publish to npm
+    - npm run doc-build                                                             # build doc
     - aws s3 sync doc/_build s3://developer.evernym.com/doc/nodejs/$RELEASE_VERSION # upload javadoc to s3
-  when: manual
   allow_failure: true
   only:
     refs:
