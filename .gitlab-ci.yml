@@ -81,7 +81,6 @@ java-release:
   tags:
     - s3docs
     - docker-machine
-    - micro
   extends:
     - .java-common
   before_script:
@@ -165,7 +164,6 @@ python-release:
   tags:
     - s3docs
     - docker-machine
-    - micro
   extends:
     - .python-common
   before_script:
@@ -231,9 +229,8 @@ nodejs-publish:
 nodejs-release:
   stage: publish
   tags:
-    - docker-machine
-    - micro
     - s3docs
+    - docker-machine
   extends:
     - .nodejs-common
   before_script:
