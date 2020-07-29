@@ -1,8 +1,8 @@
 __copyright__ = "COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC."
 
 import json
-import sys
 import random
+import sys
 from halo import Halo
 
 ANSII_GREEN = '\u001b[32m'

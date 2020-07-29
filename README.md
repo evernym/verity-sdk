@@ -33,7 +33,7 @@ without heavy involvement in the interactions.
 
 The instructions for this SDK use the following terms:
 
-* **Verity server instance** -- A demo version of the Verity server for testing the SDK
+* **Verity Application instance** -- A demo version of the Verity server for testing the SDK
 
 * **Example application** -- A sample application provided by Evernym that demonstrates the basic 
 steps involved in various Connect.Me transactions
@@ -71,12 +71,12 @@ Using the Verity SDK requires the following rules in your firewall:
 
 ### Next Step
 Getting Started Guide (Guided example application walkthrough)
-* [Guide](/docs/getting-started/getting-started.md)
+* [Guide](docs/getting-started/getting-started.md)
 
 Install the language-specific elements of the SDK:
-* [Java](/sdk/java-sdk/README.md)
-* [NodeJs](/sdk/nodejs-sdk/README.md)
-* [Python](/sdk/python-sdk/README.md)
+* [Java](sdk/java-sdk/README.md)
+* [NodeJs](sdk/nodejs-sdk/README.md)
+* [Python](sdk/python-sdk/README.md)
 
 
 For more information about Evernym products, visit https://www.evernym.com/products/.

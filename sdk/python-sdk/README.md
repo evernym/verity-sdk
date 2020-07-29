@@ -8,28 +8,24 @@ This procedure shows you how to set up your Python development environment to us
 Install the following items:
 * `libindy` -- Install a stable version. Follow the instructions on the 
 [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
-* `Ngrok` -- This is a temporary installation to facilitate early experimentation. 
-Follow the instructions on the [Ngrok website](https://ngrok.com/download).
+
+## Get Latest Python Verity SDK
+See [pypi project](https://pypi.org/project/verity-sdk/) page to find the latest release. 
+
+Install verity-sdk via pip:
+```sh
+pip install verity-sdk
+```
+
+## Develop the Python Verity SDK
+
+### Development Prerequisites
 * `Python3` -- Follow the instructions on the [Python3 website](https://www.python.org/downloads/)
 
-> **NOTE:** Verify that you have read access to the Public PyPi repo.
+### Pip Install
+Install dependencies:
+```sh
+pip install -r requirements.txt
+```
 
-## Build the Python Verity SDK
-Go to the directory where you extracted the tarball.
-
-1. Go to the Python Verity SDK project folder
-  
-   ```sh
-   cd verity-sdk/sdk/python-sdk
-   ```
-
-2. Install dependencies
-
-   ```sh
-   pip install -r requirements.txt
-   ```
-3. Build and install `verity-sdk` to local packages 
-
-    ```sh
-    python setup.py develop 
-    ```
+### Hack away

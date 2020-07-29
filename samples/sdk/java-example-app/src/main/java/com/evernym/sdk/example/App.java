@@ -299,7 +299,7 @@ public class App extends Helper {
                 
                 if (!(System.getenv("HTTP_SERVER_URL") == null) ) {
                     println("Open the following URL in your browser and scan presented QR code");
-                    println(ANSII_GREEN + System.getenv("HTTP_SERVER_URL") + "/java-sdk/example/qrcode.html" + ANSII_RESET);
+                    println(ANSII_GREEN + System.getenv("HTTP_SERVER_URL") + "/java-example-app/qrcode.html" + ANSII_RESET);
                 }
                 else {
                     println("QR code generated at: qrcode.png");

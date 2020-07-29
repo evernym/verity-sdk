@@ -33,7 +33,7 @@ NGROK_HOST="$(curl -m 1 -s http://127.0.0.1:4041/api/tunnels 2> /dev/null | jq -
 export HTTP_SERVER_URL="https://${NGROK_HOST}"
 
 # Create html pages to serve QR code
-echo '<div style="text-align:center;"><p>Scan this QR code with your ConnectMe app</p><br><br><img src="qrcode.png" height=300px width=300px alt="qrcode goes here"></img></div>' | tee nodejs-sdk/qrcode.html python-sdk/example/qrcode.html java-sdk/example/qrcode.html >/dev/null
+echo '<div style="text-align:center;"><p>Scan this QR code with your ConnectMe app</p><br><br><img src="qrcode.png" height=300px width=300px alt="qrcode goes here"></img></div>' | tee nodejs-example-app/qrcode.html python-example-app/qrcode.html java-example-app/qrcode.html >/dev/null
 # Start static HTTP server
 http-server -p $HTTP_SERVER_PORT -c-1 &>/dev/null &
 

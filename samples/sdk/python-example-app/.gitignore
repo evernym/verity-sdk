@@ -1,0 +1,11 @@
+build
+dist
+.venv
+inviteDetails.json
+verityConfig.json
+qrcode.png
+verity-context.json
+/bin/
+/include/
+/lib/
+/pip-selfcheck.json

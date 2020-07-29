@@ -33,30 +33,30 @@ The included `Dockerfile` will setup a complete environment for running the exam
 * `docker` is required for this path and installation instructions can be found at [Get Docker Page](https://docs.docker.com/get-docker/). 
 
 ### Steps:
-1. Build docker image. Run the following command in this directory (`../verity-sdk/docs/getting-started`):
+1. Build docker image. Run the following command from the root directory of the `verity-sdk` project:
 
    ```sh
-   docker build -f Dockerfile -t verity-sdk ../.. 
+   docker build -f samples/sdk/Dockerfile -t verity-sdk .
    ```
 1. Run built docker image. Run the following command:
    ```sh
    docker run -it verity-sdk
    ```
-   > **NOTE:** The example application will provision an agent, create a key-pair in a local wallet and generate a context json. All of this will happen inside of the docker container. If this docker container is lost, **YOU WILL NOT** be able to continue to use that agent.
+   > **NOTE:** The example application will provision an agent, create a key-pair in a local wallet and generate a context json. All of this will happen inside of the docker container. If this docker container is lost, **YOU WILL NOT** be able to continue to use that provisioned agent on the Verity Application.
 1. Launch example application. Run the following commands in the shell started inside the docker container that was just started:
     * For NodeJs:
         ```sh
-        cd /sdk/nodejs-sdk
+        cd nodejs-example-app
         node example.js
         ```
     * For Python:
         ```sh
-        cd /sdk/python-sdk/example
+        cd python-example-app
         python3 app.py
         ```
     * For Java:
         ```sh
-        cd /sdk/java-sdk/example
+        cd java-example-app
         mvn exec:java
         ```
     The example application should start and present the following question:
@@ -75,12 +75,26 @@ The example application can be lunched from a local development environment. Usi
 Follow the instructions on the [Ngrok website](https://ngrok.com/download).
 
 ### Build
-Follow language specific instructions to set up a development environment for the target language verity-sdk. These instructions show how to set up an environment and build the verity-sdk code for each language. 
-* [java-sdk instructions](../../sdk/java-sdk/README.md)
-   
-   > *NOTE*: Makes sure you build both the `java-sdk` version of verity-sdk and the example application. Since java is a compiled language, the example application must also be compiled before launching.
-* [nodejs-sdk instructions](../../sdk/nodejs-sdk/README.md)
-* [python-sdk instructions](../../sdk/python-sdk/README.md)
+Follow language specific instructions to set up a development environment for the target language verity-sdk. These instructions show how to set up an environment and build the verity-sdk code for each language.
+
+* Build Java example app:
+```sh
+cd /samples/sdk/java-example-app
+mvn compile
+```
+
+* Build Python example app:
+```sh
+cd /samples/sdk/nodejs-example-app
+npm install
+``` 
+
+* Build Python example app:
+```sh
+cd /samples/sdk/python-example-app
+pip3 install -r requirements.txt
+``` 
+
 ### Launch Example Application
 1. **Start `ngrok`**
 
@@ -112,21 +126,21 @@ Follow language specific instructions to set up a development environment for th
    
    `https://<id>.ngrok.io`
    
-   > **NOTE:** `ngrok` must be left running during the whole time that the example application is running.
+   > **NOTE:** `ngrok` must be left running during the whole time the example application is running.
 1. **Start application**
     * For NodeJs:
         ```sh
-        cd /sdk/nodejs-sdk
+        cd /samples/sdk/nodejs-example-app
         node example.js
         ```
     * For Python:
         ```sh
-        cd /sdk/python-sdk/example
+        cd /samples/sdk/python-example-app
         python3 app.py
         ```
     * For Java:
         ```sh
-        cd /sdk/java-sdk/example
+        cd /samples/sdk/java-example-app
         mvn exec:java
         ```
     The example application should start and present the following question:

@@ -1,0 +1,5 @@
+verity-sdk==0.4.0
+aiohttp==3.5.4
+pyqrcode==1.2.1
+pypng==0.0.20
+halo==0.0.29
