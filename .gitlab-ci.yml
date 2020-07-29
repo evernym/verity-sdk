@@ -89,7 +89,7 @@ java-release:
     - mvn versions:set -DnewVersion=$RELEASE_VERSION                          # set version to tagged version
     - mvn clean deploy --settings ./settings.xml -DskipTests -P release             # deploy to sonatype OSSRH repo
     - mvn javadoc:javadoc                                                     # build javadoc
-    - aws s3 sync doc/_build s3://developer.evernym.com/java/$RELEASE_VERSION # upload javadoc to s3
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/java/$RELEASE_VERSION # upload javadoc to s3
   dependencies:
     - java-package
   when: manual
@@ -170,7 +170,7 @@ python-release:
     - echo "VERSION = '$RELEASE_VERSION'" > verity_sdk/version.py               # set version to tagged version
     - make upload-to-pypi                                                       # upload to pypi
     - make doc-build                                                            # build doc
-    - aws s3 sync doc/_build s3://developer.evernym.com/python/$RELEASE_VERSION # upload javadoc to s3
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/python/$RELEASE_VERSION # upload javadoc to s3
   dependencies:
     - python-package
   when: manual
@@ -237,7 +237,7 @@ nodejs-release:
     - npm install                                                               # pre for publish
     - npm publish                                                               # publish to npm
     - npm run doc-build                                                         # build doc
-    - aws s3 sync doc/_build s3://developer.evernym.com/nodejs/$RELEASE_VERSION # upload javadoc to s3
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/nodejs/$RELEASE_VERSION # upload javadoc to s3
   when: manual
   allow_failure: true
   only:
