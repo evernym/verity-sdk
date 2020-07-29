@@ -83,10 +83,9 @@ java-release:
     - docker-machine
   extends:
     - .java-common
-  before_script:
+  script:
     - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
     - gpg --batch --passphrase $OSSHR_GPG_PASSPHRASE --import $OSSRH_GPG_SIGNING_KEY
-  script:
     - mvn versions:set -DnewVersion=$RELEASE_VERSION                          # set version to tagged version
     - mvn clean deploy --settings ./settings.xml -DskipTests -P release             # deploy to sonatype OSSRH repo
     - mvn javadoc:javadoc                                                     # build javadoc
@@ -166,9 +165,8 @@ python-release:
     - docker-machine
   extends:
     - .python-common
-  before_script:
-    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
   script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
     - echo "VERSION = '$RELEASE_VERSION'" > verity_sdk/version.py               # set version to tagged version
     - make upload-to-pypi                                                       # upload to pypi
     - make doc-build                                                            # build doc
@@ -233,9 +231,8 @@ nodejs-release:
     - docker-machine
   extends:
     - .nodejs-common
-  before_script:
-    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
   script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
     - npm version --no-git-tag-version $RELEASE_VERSION                         # set version to tagged version
     - npm install                                                               # pre for publish
     - npm publish                                                               # publish to npm
