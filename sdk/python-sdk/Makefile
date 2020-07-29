@@ -23,5 +23,5 @@ upload:
 
 upload-to-pypi:
 	make build-artifacts
-	python3 -m twine upload dist/*
+	python3 -m twine upload --skip-existing dist/*
 

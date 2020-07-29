@@ -42,10 +42,6 @@ java-package:
     - .java-common
   script:
     - mvn package -DskipTests
-  artifacts:
-    paths:
-      - sdk/java-sdk/target/java-sdk*.jar
-    expire_in: 1 week
 
 java-doc:
   stage: doc
@@ -66,8 +62,6 @@ java-publish:
     - .java-common
   script:
     - mvn --errors deploy --settings ./settings.xml -DskipTests
-  dependencies:
-    - java-package
   when: on_success
   only:
     refs:
@@ -81,19 +75,15 @@ java-release:
   tags:
     - s3docs
     - docker-machine
-    - micro
   extends:
     - .java-common
-  before_script:
+  script:
     - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
     - gpg --batch --passphrase $OSSHR_GPG_PASSPHRASE --import $OSSRH_GPG_SIGNING_KEY
-  script:
     - mvn versions:set -DnewVersion=$RELEASE_VERSION                          # set version to tagged version
     - mvn clean deploy --settings ./settings.xml -DskipTests -P release             # deploy to sonatype OSSRH repo
     - mvn javadoc:javadoc                                                     # build javadoc
-    - aws s3 sync doc/_build s3://developer.evernym.com/java/$RELEASE_VERSION # upload javadoc to s3
-  dependencies:
-    - java-package
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/java/$RELEASE_VERSION # upload javadoc to s3
   when: manual
   allow_failure: true
   only:
@@ -127,10 +117,6 @@ python-package:
     - .python-common
   script:
     - make build-artifacts
-  artifacts:
-    paths:
-      - sdk/python-sdk/dist/*
-    expire_in: 1 week
 
 python-doc:
   stage: doc
@@ -151,8 +137,6 @@ python-publish:
     - .python-common
   script:
     - make upload
-  dependencies:
-    - python-package
   only:
     refs:
       - "master@dev/verity/verity-sdk"
@@ -165,18 +149,16 @@ python-release:
   tags:
     - s3docs
     - docker-machine
-    - micro
   extends:
     - .python-common
-  before_script:
-    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
   script:
-    - echo "VERSION = '$RELEASE_VERSION'" > verity_sdk/version.py # set version to tagged version
-    - make upload-to-pypi # upload to pypi
-#    - make doc-build # build doc
-#    - aws s3 sync doc/_build s3://developer.evernym.com/python/$RELEASE_VERSION # upload javadoc to s3
-  dependencies:
-    - python-package
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
+    - echo "VERSION = '$RELEASE_VERSION'" > verity_sdk/version.py               # set version to tagged version
+    - echo "$RELEASE_VERSION"
+    - cat verity_sdk/version.py
+    - make upload-to-pypi                                                       # upload to pypi
+    - make doc-build                                                            # build doc
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/python/$RELEASE_VERSION # upload javadoc to s3
   when: manual
   allow_failure: true
   only:
@@ -231,19 +213,17 @@ nodejs-publish:
 nodejs-release:
   stage: publish
   tags:
-    - docker-machine
-    - micro
     - s3docs
+    - docker-machine
   extends:
     - .nodejs-common
-  before_script:
-    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
   script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
     - npm version --no-git-tag-version $RELEASE_VERSION                         # set version to tagged version
     - npm install                                                               # pre for publish
     - npm publish                                                               # publish to npm
-#    - npm run doc-build                                                         # build doc
-#    - aws s3 sync doc/_build s3://developer.evernym.com/nodejs/$RELEASE_VERSION # upload javadoc to s3
+    - npm run doc-build                                                         # build doc
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/nodejs/$RELEASE_VERSION # upload javadoc to s3
   when: manual
   allow_failure: true
   only:
