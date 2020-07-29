@@ -168,6 +168,8 @@ python-release:
   script:
     - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`
     - echo "VERSION = '$RELEASE_VERSION'" > verity_sdk/version.py               # set version to tagged version
+    - echo "$RELEASE_VERSION"
+    - echo verity_sdk/version.py
     - make upload-to-pypi                                                       # upload to pypi
     - make doc-build                                                            # build doc
     - aws s3 sync doc/_build s3://developer.evernym.com/doc/python/$RELEASE_VERSION # upload javadoc to s3
