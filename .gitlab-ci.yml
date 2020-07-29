@@ -42,10 +42,6 @@ java-package:
     - .java-common
   script:
     - mvn package -DskipTests
-  artifacts:
-    paths:
-      - sdk/java-sdk/target/java-sdk*.jar
-    expire_in: 1 week
 
 java-doc:
   stage: doc
@@ -66,8 +62,6 @@ java-publish:
     - .java-common
   script:
     - mvn --errors deploy --settings ./settings.xml -DskipTests
-  dependencies:
-    - java-package
   when: on_success
   only:
     refs:
@@ -90,8 +84,6 @@ java-release:
     - mvn clean deploy --settings ./settings.xml -DskipTests -P release             # deploy to sonatype OSSRH repo
     - mvn javadoc:javadoc                                                     # build javadoc
     - aws s3 sync doc/_build s3://developer.evernym.com/doc/java/$RELEASE_VERSION # upload javadoc to s3
-  dependencies:
-    - java-package
   when: manual
   allow_failure: true
   only:
@@ -125,10 +117,6 @@ python-package:
     - .python-common
   script:
     - make build-artifacts
-  artifacts:
-    paths:
-      - sdk/python-sdk/dist/*
-    expire_in: 1 week
 
 python-doc:
   stage: doc
@@ -149,8 +137,6 @@ python-publish:
     - .python-common
   script:
     - make upload
-  dependencies:
-    - python-package
   only:
     refs:
       - "master@dev/verity/verity-sdk"
@@ -173,8 +159,6 @@ python-release:
     - make upload-to-pypi                                                       # upload to pypi
     - make doc-build                                                            # build doc
     - aws s3 sync doc/_build s3://developer.evernym.com/doc/python/$RELEASE_VERSION # upload javadoc to s3
-  dependencies:
-    - python-package
   when: manual
   allow_failure: true
   only:
