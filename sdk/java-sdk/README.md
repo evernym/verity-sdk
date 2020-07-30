@@ -12,7 +12,7 @@ Install the following items:
 > **NOTE:** Verify that you have read access to the Public Sovrin Maven repo.
 
 ## Get Latest Java Verity SDK
-See [mvnrepository artifact](https://mvnrepository.com/artifact/com.evernym.verity/verity-sdk) page to find the latest release. 
+See [maven artifact](https://search.maven.org/artifact/com.evernym.verity/verity-sdk) page to find the latest release. 
 
 Add verity-sdk as a dependency to your desired build tool.
 
