@@ -33,7 +33,7 @@ without heavy involvement in the interactions.
 
 The instructions for this SDK use the following terms:
 
-* **Verity Application instance** -- A demo version of the Verity server for testing the SDK
+* **Verity Application instance** -- A demo version of the Verity Application instance for testing the SDK
 
 * **Example application** -- A sample application provided by Evernym that demonstrates the basic 
 steps involved in various Connect.Me transactions
@@ -42,7 +42,7 @@ steps involved in various Connect.Me transactions
 
 These are the general steps for setting up the Verity SDK for development:
 
-1. Stand up a Verity server instance in the cloud. 
+1. Stand up a Verity Application instance in the cloud. 
 2. Download and integrate the language-specific library of your choice.
 3. **Optional** -- Run the example application against the Verity server instance.
 
@@ -51,9 +51,9 @@ At this point you will be ready to write and test your application.
 
 <a id="cloud"></a>
 
-## 1. Stand up a Verity server instance in the cloud
+## 1. Stand up a Verity Application instance in the cloud
 
-Evernym will stand up a Verity server instance for you and provision it. 
+Evernym will stand up a Verity Application instance for you and provision it. 
 Contact us for instructions on connecting to it.
 
 ### Firewall Rules
