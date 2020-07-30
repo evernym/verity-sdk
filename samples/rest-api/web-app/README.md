@@ -1,4 +1,4 @@
-## Verity Demo App
+## Verity Sample Web App
 
 This is a sample web app which is using Verity REST API.
 

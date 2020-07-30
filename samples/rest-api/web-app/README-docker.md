@@ -1,5 +1,4 @@
-
-## Verity Demo App
+## Verity Sample Web App
 
 To quickly try out the demo web app using docker-based setup follow these steps:
 - Fill in values for VERITY_URL, DOMAIN_DID and X_API_KEY (you should have received these inputs from Evernym) into **.env** file. Properly filled **.env** file should look like this:
