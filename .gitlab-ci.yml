@@ -217,6 +217,7 @@ nodejs-release:
   script:
     - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`                       # pull version from tag name
     - npm version --no-git-tag-version $RELEASE_VERSION                             # set version to tagged version
+    - echo '//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}' > .npmrc            # set rc file to use auth token
     - npm install                                                                   # pre for publish
     - npm publish                                                                   # publish to npm
     - npm run doc-build                                                             # build doc

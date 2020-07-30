@@ -17,6 +17,10 @@ Add verity-sdk to npm project:
 npm i verity-sdk
 ```
 
+## Documentation
+**API Documentation**:
+* [0.4.0](https://developer.evernym.com/doc/nodejs/0.4.0/index.html)
+
 ## Develop the NodeJs Verity SDK
 
 ### Development Prerequisites

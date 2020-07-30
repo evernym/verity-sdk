@@ -17,6 +17,10 @@ Install verity-sdk via pip:
 pip install verity-sdk
 ```
 
+## Documentation
+**API Documentation**:
+* [0.4.0](https://developer.evernym.com/doc/python/0.4.0/index.html)
+
 ## Develop the Python Verity SDK
 
 ### Development Prerequisites
