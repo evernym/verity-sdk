@@ -5,10 +5,11 @@ const http = require('http')
 const bodyParser = require('body-parser')
 const readline = require('readline')
 const fs = require('fs')
-const sdk = require('./src/index')
+const sdk = require('verity-sdk')
 const Spinner = require('cli-spinner').Spinner
 const QRCode = require('qrcode')
 const request = require('request-promise-native')
+const { v4: uuidv4 } = require('uuid')
 
 const LISTENING_PORT = 4000
 const CONFIG_PATH = 'verity-context.json'
@@ -101,7 +102,7 @@ async function createRelationship () {
           console.log()
           if (process.env.HTTP_SERVER_URL) {
             console.log('Open the following URL in your browser and scan presented QR code')
-            console.log(`${ANSII_GREEN}${process.env.HTTP_SERVER_URL}/nodejs-sdk/qrcode.html${ANSII_RESET}`)
+            console.log(`${ANSII_GREEN}${process.env.HTTP_SERVER_URL}/nodejs-example-app/qrcode.html${ANSII_RESET}`)
           } else {
             console.log('QR code generated at: qrcode.png')
             console.log('Open this file and scan QR code to establish a connection')
@@ -637,13 +638,6 @@ function printObject (obj, prefix, preamble) {
 function nonHandle (msg) {
   console.error(msg)
   process.exit(-1)
-}
-
-function uuidv4 () {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = Math.random() * 16 | 0; var v = c === 'x' ? r : (r & 0x3 | 0x8)
-    return v.toString(16)
-  })
 }
 
 function sleep (ms) {

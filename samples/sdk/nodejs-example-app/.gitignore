@@ -1,0 +1,7 @@
+node_modules
+verity-sdk*.tgz
+verityConfig.json
+connectionId.txt
+/qrcode.png
+/verity-context.json
+/doc/_build/

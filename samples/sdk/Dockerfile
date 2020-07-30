@@ -36,31 +36,28 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get install -y nodejs
 
 # Copy SDKs into the container
-COPY /sdk/ /sdk
-COPY /docs/getting-started/docker_scripts/ /docker_scripts/
+COPY /samples/ /samples
 
 # Install Python3 packages
-WORKDIR /sdk/python-sdk
-RUN pip3 install -r requirements.txt && \
-    python3 setup.py develop 
+WORKDIR /samples/sdk/python-example-app
+RUN pip3 install -r requirements.txt
 
 # Install Java packages
-WORKDIR /sdk/java-sdk
 ENV JAVA_HOME /usr/lib/jvm/java-1.11.0-openjdk-amd64/
-RUN mvn install
-WORKDIR /sdk/java-sdk/example
+WORKDIR /samples/sdk/java-example-app
 RUN mvn compile
 
 # Install npm packages
-WORKDIR /sdk/nodejs-sdk
+WORKDIR /samples/sdk/nodejs-example-app
 RUN npm install 2>/dev/null
+RUN npm rebuild 2>/dev/null
 
 # Install static HTTP server to serve generated QR code
 RUN npm install -g http-server
 
-WORKDIR /sdk
+WORKDIR /samples/sdk
 EXPOSE 4000
 
 # Start Ngrok tunnel for webhook URL in docker entrypoint
-ENTRYPOINT ["/docker_scripts/docker_entrypoint.sh"]
+ENTRYPOINT ["/samples/sdk/entrypoint.sh"]
 

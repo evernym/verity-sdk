@@ -2,25 +2,25 @@ __copyright__ = 'COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.'
 
 import asyncio
 import logging
-import pyqrcode
-import traceback
 import os
+import pyqrcode
 import requests
+import traceback
 from aiohttp import web
 from aiohttp.web_routedef import RouteTableDef
 from asyncio.base_events import Server
 from example.helper import *
 from verity_sdk.handlers import Handlers
-from verity_sdk.protocols.v1_0.Relationship import Relationship
-from verity_sdk.protocols.v1_0.Connecting import Connecting
-from verity_sdk.protocols.v1_0.IssueCredential import IssueCredential
 from verity_sdk.protocols.v0_6.IssuerSetup import IssuerSetup
-from verity_sdk.protocols.v1_0.PresentProof import PresentProof
-from verity_sdk.protocols.v0_7.Provision import Provision
 from verity_sdk.protocols.v0_6.UpdateConfigs import UpdateConfigs
 from verity_sdk.protocols.v0_6.UpdateEndpoint import UpdateEndpoint
 from verity_sdk.protocols.v0_6.WriteCredentialDefinition import WriteCredentialDefinition
 from verity_sdk.protocols.v0_6.WriteSchema import WriteSchema
+from verity_sdk.protocols.v0_7.Provision import Provision
+from verity_sdk.protocols.v1_0.Connecting import Connecting
+from verity_sdk.protocols.v1_0.IssueCredential import IssueCredential
+from verity_sdk.protocols.v1_0.PresentProof import PresentProof
+from verity_sdk.protocols.v1_0.Relationship import Relationship
 from verity_sdk.utils.Context import Context
 
 INSTITUTION_NAME = 'Faber College'
@@ -109,7 +109,7 @@ async def create_relationship(loop) -> str:
 
             if os.environ.get("HTTP_SERVER_URL"):
                 print('Open the following URL in your browser and scan presented QR code')
-                print(f'{ANSII_GREEN}{os.environ.get("HTTP_SERVER_URL")}/python-sdk/example/qrcode.html{ANSII_RESET}')
+                print(f'{ANSII_GREEN}{os.environ.get("HTTP_SERVER_URL")}/python-example-app/qrcode.html{ANSII_RESET}')
             else:
                 print('QR code generated at: qrcode.png')
                 print('Open this file and scan QR code to establish a connection')

@@ -17,11 +17,6 @@
 
   <repositories>
     <repository>
-      <id>evernym</id>
-      <name>evernym</name>
-      <url>https://evernym.mycloudrepo.io/public/repositories/evernym-dev/</url>
-    </repository>
-    <repository>
       <id>sovrin</id>
       <name>sovrin</name>
       <url>https://repo.sovrin.org/repository/maven-public/</url>
@@ -32,7 +27,7 @@
     <dependency>
       <groupId>com.evernym.verity</groupId>
       <artifactId>verity-sdk</artifactId>
-      <version>0.0.0-SNAPSHOT</version> <!-- this is a local SNAPSHOT, this should be point to public release once we have released it -->
+      <version>0.4.0</version>
     </dependency>
     <dependency>
       <groupId>net.glxn</groupId>

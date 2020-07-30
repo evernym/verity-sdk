@@ -1,10 +1,10 @@
-## Verity Demo App
+## Verity Sample Web App
 
 This is a sample web app which is using Verity REST API.
 
 Requirements:
 - You have received Domain DID and REST API key from Evernym
-- You have NodeJS v12 installed
+- You have NodeJs v12 installed
 - You have ngrok installed ([https://ngrok.com/](https://ngrok.com/)). [Ngrok is used to create a public webhook URL which will forward response messages from Verity Application Server to the demo web app. If you have capabilities to start the application on a public IP address then you don't need ngrok]
 
 To try out the  demo web app follow these steps:
@@ -13,7 +13,7 @@ To try out the  demo web app follow these steps:
 ```sh
 ngrok http 3000
 ```
-- Install required NodeJS packages:
+- Install required NodeJs packages:
 ```sh
 npm install
 ```
