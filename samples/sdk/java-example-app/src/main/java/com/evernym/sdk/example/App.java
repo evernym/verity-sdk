@@ -146,19 +146,7 @@ public class App extends Helper {
         AtomicBoolean setupComplete = new AtomicBoolean(false); // spinlock bool
 
         // handler for created issuer identifier message
-        handle(newIssuerSetup, (String msgName, JSONObject message) -> {
-            if("public-identifier-created".equals(msgName))
-            {
-                printlnMessage(msgName, message);
-                issuerDID = message.getJSONObject("identifier").getString("did");
-                issuerVerkey = message.getJSONObject("identifier").getString("verKey");
-                setupComplete.set(true);
-            }
-            else {
-                nonHandled("Message Name is not handled - "+msgName);
-            }
-        });
-
+        setupIssuerHandler(newIssuerSetup, setupComplete);
         // request that issuer identifier be created
         newIssuerSetup.create(context);
 
@@ -208,6 +196,22 @@ public class App extends Helper {
             waitFor("Press ENTER when DID is on ledger");
         }
     }
+
+    private void setupIssuerHandler(IssuerSetupV0_6 newIssuerSetup, AtomicBoolean setupComplete) {
+        handle(newIssuerSetup, (String msgName, JSONObject message) -> {
+            if("public-identifier-created".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                issuerDID = message.getJSONObject("identifier").getString("did");
+                issuerVerkey = message.getJSONObject("identifier").getString("verKey");
+                setupComplete.set(true);
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+    }
+
 
     void issuerIdentifier() throws IOException, VerityException {
         // constructor for the Issuer Setup protocol
@@ -494,9 +498,11 @@ public class App extends Helper {
         // handler for signal messages
         handle(issue, (String msgName, JSONObject message) -> {
             if("sent".equals(msgName) && !offerSent.get()) {
+                printlnMessage(msgName, message);
                 offerSent.set(true);
             }
             else if("sent".equals(msgName)) {
+                printlnMessage(msgName, message);
                 credSent.set(true);
             }
             else {
