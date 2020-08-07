@@ -1,7 +1,7 @@
 # Verifier Documentation
 It is assumed that Java Spring Framework is used.
 
-## Helpers:
+## Utils:
 ### Object used to register response message handlers
 The `handlers` variable is defined as field variable in the controller class like this:
 <a name="Handlers"></a>
