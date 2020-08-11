@@ -146,19 +146,7 @@ public class App extends Helper {
         AtomicBoolean setupComplete = new AtomicBoolean(false); // spinlock bool
 
         // handler for created issuer identifier message
-        handle(newIssuerSetup, (String msgName, JSONObject message) -> {
-            if("public-identifier-created".equals(msgName))
-            {
-                printlnMessage(msgName, message);
-                issuerDID = message.getJSONObject("identifier").getString("did");
-                issuerVerkey = message.getJSONObject("identifier").getString("verKey");
-                setupComplete.set(true);
-            }
-            else {
-                nonHandled("Message Name is not handled - "+msgName);
-            }
-        });
-
+        setupIssuerHandler(newIssuerSetup, setupComplete);
         // request that issuer identifier be created
         newIssuerSetup.create(context);
 
@@ -209,12 +197,38 @@ public class App extends Helper {
         }
     }
 
+    private void setupIssuerHandler(IssuerSetupV0_6 newIssuerSetup, AtomicBoolean setupComplete) {
+        handle(newIssuerSetup, (String msgName, JSONObject message) -> {
+            if("public-identifier-created".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                issuerDID = message.getJSONObject("identifier").getString("did");
+                issuerVerkey = message.getJSONObject("identifier").getString("verKey");
+                setupComplete.set(true);
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+    }
+
+
     void issuerIdentifier() throws IOException, VerityException {
         // constructor for the Issuer Setup protocol
         IssuerSetupV0_6 issuerSetup = IssuerSetup.v0_6();
 
         AtomicBoolean issuerComplete = new AtomicBoolean(false); // spinlock bool
 
+        issuerIdentifierHandler(issuerSetup, issuerComplete);
+
+        // query the current identifier
+        issuerSetup.currentPublicIdentifier(context);
+
+        // wait for response from verity-application
+        waitFor(issuerComplete, "Waiting for current issuer DID");
+    }
+
+    void issuerIdentifierHandler(IssuerSetupV0_6 issuerSetup, AtomicBoolean issuerComplete) {
         // handler for current issuer identifier message
         handle(issuerSetup, (String msgName, JSONObject message) -> {
             if("public-identifier".equals(msgName))
@@ -225,12 +239,6 @@ public class App extends Helper {
             }
             issuerComplete.set(true);
         });
-
-        // query the current identifier
-        issuerSetup.currentPublicIdentifier(context);
-
-        // wait for response from verity-application
-        waitFor(issuerComplete, "Waiting for current issuer DID");
     }
 
     void setup() throws IOException, VerityException {
@@ -277,6 +285,25 @@ public class App extends Helper {
         AtomicReference<String> threadId = new AtomicReference<>();
         AtomicReference<String> relDID = new AtomicReference<>();
 
+       relationshipHandler(relProvisioning, threadId, relDID, startRelationshipComplete, invitationComplete);
+
+        relProvisioning.create(context);
+
+        waitFor(startRelationshipComplete, "Waiting to start relationship");
+
+        RelationshipV1_0 relationship = Relationship.v1_0(relDID.get(), threadId.get());
+        relationship.connectionInvitation(context);
+        waitFor(invitationComplete, "Waiting for invite");
+
+        // return owning DID for the connection
+        return relDID.get();
+    }
+
+    private void relationshipHandler(RelationshipV1_0 relProvisioning,
+                                     AtomicReference<String> threadId,
+                                     AtomicReference<String> relDID,
+                                     AtomicBoolean startRelationshipComplete,
+                                     AtomicBoolean invitationComplete) {
         handle(relProvisioning, (String msgName, JSONObject message) -> {
             if("created".equals(msgName))
             {
@@ -296,7 +323,7 @@ public class App extends Helper {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                
+
                 if (!(System.getenv("HTTP_SERVER_URL") == null) ) {
                     println("Open the following URL in your browser and scan presented QR code");
                     println(ANSII_GREEN + System.getenv("HTTP_SERVER_URL") + "/java-example-app/qrcode.html" + ANSII_RESET);
@@ -312,17 +339,6 @@ public class App extends Helper {
                 nonHandled("Message Name is not handled - " + msgName);
             }
         });
-        
-        relProvisioning.create(context);
-
-        waitFor(startRelationshipComplete, "Waiting to start relationship");
-
-        RelationshipV1_0 relationship = Relationship.v1_0(relDID.get(), threadId.get());
-        relationship.connectionInvitation(context);
-        waitFor(invitationComplete, "Waiting for invite");
-
-        // return owning DID for the connection
-        return relDID.get();
     }
 
     private String createConnection(String relDID) throws IOException, VerityException {
@@ -388,6 +404,20 @@ public class App extends Helper {
         AtomicBoolean schemaComplete = new AtomicBoolean(false); // spinlock bool
         AtomicReference<String> schemaIdRef = new AtomicReference<>();
 
+        writeSchemaHandler(writeSchema, schemaIdRef, schemaComplete);
+        
+        // request schema be written to ledger
+        writeSchema.write(context);
+
+        // wait for operation to be complete
+        waitFor(schemaComplete, "Waiting to write schema to ledger");
+        // returns ledger schema identifier
+        return schemaIdRef.get();
+    }
+    
+    private void writeSchemaHandler(WriteSchemaV0_6 writeSchema, 
+                                    AtomicReference<String> schemaIdRef, 
+                                    AtomicBoolean schemaComplete) {
         // handler for message received when schema is written
         handle(writeSchema, (String msgName, JSONObject message) -> {
             if("status-report".equals(msgName)) {
@@ -400,14 +430,6 @@ public class App extends Helper {
                 nonHandled("Message Name is not handled - "+msgName);
             }
         });
-
-        // request schema be written to ledger
-        writeSchema.write(context);
-
-        // wait for operation to be complete
-        waitFor(schemaComplete, "Waiting to write schema to ledger");
-        // returns ledger schema identifier
-        return schemaIdRef.get();
     }
 
     private String writeLedgerCredDef(String schemaId) throws IOException, VerityException {
@@ -422,6 +444,19 @@ public class App extends Helper {
         AtomicBoolean defComplete = new AtomicBoolean(false); // spinlock bool
         AtomicReference<String> defIdRef = new AtomicReference<>();
 
+        writeCredDefHandler(def, defIdRef, defComplete);
+
+        // request the cred def be writen to ledger
+        def.write(context);
+        // wait for operation to be complete
+        waitFor(defComplete, "Waiting to write cred def to ledger");
+        // returns ledger cred def identifier
+        return defIdRef.get();
+    }
+
+    private void writeCredDefHandler(WriteCredentialDefinitionV0_6 def,
+                                    AtomicReference<String> defIdRef,
+                                    AtomicBoolean defComplete) {
         // handler for message received when schema is written
         handle(def, (String msgName, JSONObject message) -> {
             if("status-report".equals(msgName)) {
@@ -434,13 +469,6 @@ public class App extends Helper {
                 nonHandled("Message Name is not handled - "+msgName);
             }
         });
-
-        // request the cred def be writen to ledger
-        def.write(context);
-        // wait for operation to be complete
-        waitFor(defComplete, "Waiting to write cred def to ledger");
-        // returns ledger cred def identifier
-        return defIdRef.get();
     }
 
     private void issueCredential(String forDID, String defId) throws IOException, VerityException, InterruptedException {
@@ -455,18 +483,7 @@ public class App extends Helper {
         AtomicBoolean offerSent = new AtomicBoolean(false); // spinlock bool
         AtomicBoolean credSent = new AtomicBoolean(false); // spinlock bool
 
-        // handler for signal messages
-        handle(issue, (String msgName, JSONObject message) -> {
-            if("sent".equals(msgName) && !offerSent.get()) {
-                offerSent.set(true);
-            }
-            else if("sent".equals(msgName)) {
-                credSent.set(true);
-            }
-            else {
-                nonHandled("Message Name is not handled - "+msgName);
-            }
-        });
+        issueCredentialHandler(issue, offerSent, credSent);
 
         // request that credential is offered
         issue.offerCredential(context);
@@ -475,6 +492,23 @@ public class App extends Helper {
         waitFor(credSent, "Wait for Connect.me to request the credential and credential to be sent");
 
         Thread.sleep(3000); // Give time for Credential to get to mobile device
+    }
+
+    private void issueCredentialHandler(IssueCredentialV1_0 issue, AtomicBoolean offerSent, AtomicBoolean credSent) {
+        // handler for signal messages
+        handle(issue, (String msgName, JSONObject message) -> {
+            if("sent".equals(msgName) && !offerSent.get()) {
+                printlnMessage(msgName, message);
+                offerSent.set(true);
+            }
+            else if("sent".equals(msgName)) {
+                printlnMessage(msgName, message);
+                credSent.set(true);
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
     }
 
     private void requestProof(String forDID) throws IOException, VerityException {
@@ -494,6 +528,15 @@ public class App extends Helper {
 
         AtomicBoolean proofComplete = new AtomicBoolean(false); // spinlock bool
 
+        requestProofHandler(proof, proofComplete);
+
+        // request proof
+        proof.request(context);
+        // wait for connect.me user to present the requested proof
+        waitFor(proofComplete, "Waiting for proof presentation from Connect.me");
+    }
+
+    private void requestProofHandler(PresentProofV1_0 proof, AtomicBoolean proofComplete) {
         // handler for the result of the proof presentation
         handle(proof, (String msgName, JSONObject message) -> {
             if("presentation-result".equals(msgName)) {
@@ -503,10 +546,5 @@ public class App extends Helper {
                 nonHandled("Message Name is not handled - "+msgName);
             }
         });
-
-        // request proof
-        proof.request(context);
-        // wait for connect.me user to present the requested proof
-        waitFor(proofComplete, "Waiting for proof presentation from Connect.me");
     }
 }
