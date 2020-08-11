@@ -1,14 +1,14 @@
 # Verifier Documentation
 Here are basic code examples showing how to interface with verity-sdk to: 
-1. Create an Agent on Verity - [Provision](../howto/python-verity-flow.md#Provisioning agent on Verity)
-2. Handle asynchronous response messages from Verity - [Message Handling](../howto/python-verity-flow.md#Handling Asynchronous response messages)
-3. Setting up an Issuer - [Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity)
-4. Writing a schema to the ledger - [Write Schema](../howto/python-verity-flow.md#Write Schema to Ledger)
-5. Writing a credential definition to the ledger - [Write Credential Definition](../howto/python-verity-flow.md#Write Credential Definition to Ledger)
-6. Establishing Connections between parties - [Connecting](../howto/python-verity-flow.md#Connecting)
-7. Issuing credentials - [Issue Credential](../howto/python-verity-flow.md#Issue Credential)
-8. Requesting Proof Presentations - [Request Proof Presentation](../howto/python-verity-flow.md#Request Proof Presentation)
-9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../howto/python-verity-flow.md#Utils)
+1. Create an Agent on Verity - [Provision](../howto/python-verity-flow.md#provisioning-agent-on-verity)
+2. Handle asynchronous response messages from Verity - [Message Handling](../howto/python-verity-flow.md#handling-asynchronous-response-messages)
+3. Setting up an Issuer - [Issuer Setup](../howto/python-verity-flow.md#setting-up-an-issuer-identity)
+4. Writing a schema to the ledger - [Write Schema](../howto/python-verity-flow.md#write-schema-to-ledger)
+5. Writing a credential definition to the ledger - [Write Credential Definition](../howto/python-verity-flow.md#write-credential-definition-to-ledger)
+6. Establishing Connections between parties - [Connecting](../howto/python-verity-flow.md#connecting)
+7. Issuing credentials - [Issue Credential](../howto/python-verity-flow.md#issue-credential)
+8. Requesting Proof Presentations - [Request Proof Presentation](../howto/python-verity-flow.md#request-proof-presentation)
+9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../howto/python-verity-flow.md#utils)
 
 ## Setup
 ### Provisioning agent on Verity
@@ -55,7 +55,6 @@ with open('verity-context.json', 'w') as f:
 ```
 
 Example Webhook
-- This example uses the Java Spring Framework but Java Spring is not required for verity-sdk.
 ```python
 @routes.post('/')
 async def endpoint_handler(request):
@@ -70,7 +69,7 @@ async def endpoint_handler(request):
 ### Response message handling 
 Most Verity interactions respond to a request asynchronously. Here are some details that will help with the handling of these messages.
 1. A response message is delivered via HTTPs. These messages can be processed however the application thinks best. Our example applications use webhooks.
-    The http body will contain an encrypted protocol message which needs to be handled by the [Handlers](../howto/python-verity-flow.md#Registers Message Handler) object. Decryption of the message happens here.
+    The http body will contain an encrypted protocol message which needs to be handled by the [Handlers](../howto/python-verity-flow.md#registers-message-handler) object. Decryption of the message happens here.
     ```python
     await handlers.handle_message(context, await request.read())
     ``` 
@@ -81,7 +80,7 @@ Most Verity interactions respond to a request asynchronously. Here are some deta
    - `~thread`: `{"thid":"<id>"}`
    - Message specific fields
 3. Example handler: 
-    - Registering the handler [Registers Message Handler](../howto/python-verity-flow.md#Registers Message Handler)
+    - Registering the handler [Registers Message Handler](../howto/python-verity-flow.md#registers-message-handler)
     - Protocol Message handlers: 
         > **NOTE:** The MessageFamily in this example is an instance of ConnectionsV1_0.
     ```python
@@ -98,7 +97,7 @@ Most Verity interactions respond to a request asynchronously. Here are some deta
     ```
 
 ## Setting up an Issuer identity
-When an entity wants to issue a credential, they need to have privileged keys on the ledger. This is the step to create \
+When an entity issues a credential, they need to have privileged keys on the ledger. This is the step to create \
 the issuer keys and register them on the dedicated cloud agent so that writing to the ledger and issuing credentials can be accomplished.
 ### Check to see if Issuer is already setup
 Checks to see if issuer setup has been done. Gets did and verkey from the Verity Application
@@ -169,7 +168,7 @@ await configs.update(context)
 
 ## Write Schema to Ledger
 When data is going to be shared via credential exchange, the data needs to be publicaly defined. 
-This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity) must be complete to have the proper permissions.
+This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../howto/python-verity-flow.md#setting-up-an-issuer-identity) must be complete to have the proper permissions.
 ```python
 # input parameters for schema
 schema_name = 'Diploma'
@@ -200,8 +199,8 @@ Message Response:
 ## Write Credential Definition to Ledger
 An issuer will write a credential definition to the ledger which corresponds to a specific Schema. \
 This is how an entity can publicaly define the data which will be sent in a credential.
-[Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity) must be complete to have the proper permissions to both write to the ledger and sign data in a credential.
-* `schema_id`: received in the write schema response [Write Schema](../howto/python-verity-flow.md#Write Schema to Ledger)
+[Issuer Setup](../howto/python-verity-flow.md#setting-up-an-issuer-identity) must be complete to have the proper permissions to both write to the ledger and sign data in a credential.
+* `schema_id`: received in the write schema response [Write Schema](../howto/python-verity-flow.md#write-schema-to-ledger)
 ```python
 # input parameters for cred definition
 cred_def_name = 'Trinity College Diplomas'
@@ -230,7 +229,7 @@ Message Response:
 * Save the `credDefId`. This will be used to specify the type of credential to be issued. 
 
 ## Connecting
-When an entity wants to interact with another party, a connection is established. This process creates keys specifically for this interaction. Data can be requested and delivered over this channel.
+Connecting creates communication channel to interact on. This process creates keys specifically for this interaction. Data can be requested and delivered over this channel.
 
 ### Creating an Invitation with Relationship Protocol
 We create an api which will return the invitation. That invitation can be converted to QR code which can be scanned by Connect.me.
@@ -304,13 +303,13 @@ handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, invit
 
 ## Issue Credential
 
-When an entity wants to provide data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity) and [Write Credential Definition](../howto/python-verity-flow.md#Write Credential Definition to Ledger) protocols need to have been completed.
+When an entity provides data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../howto/python-verity-flow.md#setting-up-an-issuer-identity) and [Write Credential Definition](../howto/python-verity-flow.md#write-credential-definition-to-ledger) protocols need to have been completed.
 
 The Issue Credential has two steps: 
 
 1. Send the Credential Offer
 * `cred_def_id`: received in the credential definition response [Credential Definition Response](../howto/python-verity-flow.md#Write Credential Definition to Ledger)    
-* `rel_did`: received in the create Relationship response [Create Relationship](../howto/python-verity-flow.md#Creating an Invitation with Relationship Protocol)
+* `rel_did`: received in the create Relationship response [Create Relationship](../howto/python-verity-flow.md#creating-an-invitation-with-relationship-protocol)
     ```python
     # input parameters for issue credential
     cred_def_id = ...
@@ -333,10 +332,10 @@ The Issue Credential has two steps:
 2. Send the Credential once the holder sends a `accept-request` - This is automated in the sdk
 
 ## Request Proof Presentation
-When an entity wants another party to prove specific things by providing self attested information or information corresponding to an already issued credential, the Proof Presentation protocol is used. 
+When an entity requests a party prove specific things by providing self attested information or information corresponding to an already issued credential, the Proof Presentation protocol is used. 
 
-* `issuer_did`: received in the IssuerSetup response [Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity)
-* `for_did`: received in the create Relationship response [Create Relationship](../howto/python-verity-flow.md#Creating an Invitation with Relationship Protocol)
+* `issuer_did`: received in the IssuerSetup response [Issuer Setup](../howto/python-verity-flow.md#setting-up-an-issuer-identity)
+* `for_did`: received in the create Relationship response [Create Relationship](../howto/python-verity-flow.md#creating-an-invitation-with-relationship-protocol)
 ```python
 global issuer_did
 
