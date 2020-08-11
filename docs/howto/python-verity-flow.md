@@ -1,46 +1,18 @@
 # Verifier Documentation
+Here are basic code examples showing how to interface with verity-sdk to: 
+1. Create an Agent on Verity - [Provision](../howto/python-verity-flow.md#Provisioning agent on Verity)
+2. Handle asynchronous response messages from Verity - [Message Handling](../howto/python-verity-flow.md#Handling Asynchronous response messages)
+3. Setting up an Issuer - [Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity)
+4. Writing a schema to the ledger - [Write Schema](../howto/python-verity-flow.md#Write Schema to Ledger)
+5. Writing a credential definition to the ledger - [Write Credential Definition](../howto/python-verity-flow.md#Write Credential Definition to Ledger)
+6. Establishing Connections between parties - [Connecting](../howto/python-verity-flow.md#Connecting)
+7. Issuing credentials - [Issue Credential](../howto/python-verity-flow.md#Issue Credential)
+8. Requesting Proof Presentations - [Request Proof Presentation](../howto/python-verity-flow.md#Request Proof Presentation)
+9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../howto/python-verity-flow.md#Utils)
 
-## Utils:
-### Object used to register response message handlers
-The `handlers` variable is defined as field variable in the controller class like this:
-<a name="Handlers"></a>
-```python
-handlers: Handlers = Handlers()
-```
-### Registers Message Handler
-Sets a specific response handler for protocol interactions
-<a name="handle"></a>
-```python
-await handlers.handle_message(context, await request.read())
-``` 
-### Loading Context Object
-Saved context should be loaded with code like this:
-```python
-def load_context(file_path) -> str:
-    with open(file_path, 'r') as f:
-        config = f.read()
-        context = await Context.create_with_config(config)
-        return context
-```
-Example Context Object: 
-```json
-{
-  "verityPublicVerKey": "ETLgZKeQEKxBW7gXA6FBn7nBwYhXFoogZLCCn5EeRSQV",
-  "verityUrl": "https://vas-team1.pdev.evernym.com",
-  "verityAgentVerKey": "ZT8HE1t4eF2iMm6x8a2fPjPM1TiY2vuBZ8BMejL3Q9a",
-  "walletKey": "examplewallet1",
-  "sdkVerKey": "DNZ9Yw2bowKkjCZ1cuX8o4UmTMYNSjSsw5cszuTaPjLz",
-  "walletName": "examplewallet1",
-  "endpointUrl": "http://4153716fd8e9.ngrok.io",
-  "verityPublicDID": "Rgj7LVEonrMzcRC1rhkx76",
-  "sdkVerKeyId": "PhXp3RnCSinuCZsqYmy15T",
-  "version": "0.2",
-  "domainDID": "KWyJwot75jqnGAH1P5jioe"
-}
-```
 ## Setup
-### Provisioning agent on verity
-Provisioning is done only once.
+### Provisioning agent on Verity
+Provisioning is the first step done when interacting with Verity. It creates a dedicated cloud agent on Verity for the user of the sdk. Provisioning is done only once.
 
 ```python
 global context
@@ -63,7 +35,7 @@ The wallet (usualy created in $HOME/.indy_client/wallet/<wallet-name>) needs to 
 
 ## Handling Asynchronous response messages
 ### Setting up Webhook
-For receiving messages an endpoint is needed. The UpdateEndpoint protocol should be used for setting up the address of this endpoint.
+Most Verity response messages are sent asynchronously. For receiving messages, a public endpoint is needed. The UpdateEndpoint protocol should be used for setting up the address of this endpoint.
 The endpoint dedicated for receiving messages from Verity Server, may look like this:
 
 ```python
@@ -83,6 +55,7 @@ with open('verity-context.json', 'w') as f:
 ```
 
 Example Webhook
+- This example uses the Java Spring Framework but Java Spring is not required for verity-sdk.
 ```python
 @routes.post('/')
 async def endpoint_handler(request):
@@ -125,6 +98,8 @@ Most Verity interactions respond to a request asynchronously. Here are some deta
     ```
 
 ## Setting up an Issuer identity
+When an entity wants to issue a credential, they need to have privileged keys on the ledger. This is the step to create \
+the issuer keys and register them on the dedicated cloud agent so that writing to the ledger and issuing credentials can be accomplished.
 ### Check to see if Issuer is already setup
 Checks to see if issuer setup has been done. Gets did and verkey from the Verity Application
 ```python
@@ -193,6 +168,8 @@ await configs.update(context)
 ```
 
 ## Write Schema to Ledger
+When data is going to be shared via credential exchange, the data needs to be publicaly defined. 
+This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity) must be complete to have the proper permissions.
 ```python
 # input parameters for schema
 schema_name = 'Diploma'
@@ -221,7 +198,9 @@ Message Response:
 * Save the `schemaId`. This will be used to create credential definitions. 
 
 ## Write Credential Definition to Ledger
-
+An issuer will write a credential definition to the ledger which corresponds to a specific Schema. \
+This is how an entity can publicaly define the data which will be sent in a credential.
+[Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity) must be complete to have the proper permissions to both write to the ledger and sign data in a credential.
 * `schema_id`: received in the write schema response [Write Schema](../howto/python-verity-flow.md#Write Schema to Ledger)
 ```python
 # input parameters for cred definition
@@ -251,6 +230,7 @@ Message Response:
 * Save the `credDefId`. This will be used to specify the type of credential to be issued. 
 
 ## Connecting
+When an entity wants to interact with another party, a connection is established. This process creates keys specifically for this interaction. Data can be requested and delivered over this channel.
 
 ### Creating an Invitation with Relationship Protocol
 We create an api which will return the invitation. That invitation can be converted to QR code which can be scanned by Connect.me.
@@ -323,11 +303,14 @@ handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, invit
 ```
 
 ## Issue Credential
+
+When an entity wants to provide data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity) and [Write Credential Definition](../howto/python-verity-flow.md#Write Credential Definition to Ledger) protocols need to have been completed.
+
 The Issue Credential has two steps: 
 
 1. Send the Credential Offer
-    * `cred_def_id`: received in the credential definition response [Credential Definition Response](../howto/python-verity-flow.md#Write Credential Definition to Ledger)    
-    * `rel_did`: received in the create Relationship response [Create Relationship](../howto/python-verity-flow.md#Creating an Invitation with Relationship Protocol)
+* `cred_def_id`: received in the credential definition response [Credential Definition Response](../howto/python-verity-flow.md#Write Credential Definition to Ledger)    
+* `rel_did`: received in the create Relationship response [Create Relationship](../howto/python-verity-flow.md#Creating an Invitation with Relationship Protocol)
     ```python
     # input parameters for issue credential
     cred_def_id = ...
@@ -350,6 +333,8 @@ The Issue Credential has two steps:
 2. Send the Credential once the holder sends a `accept-request` - This is automated in the sdk
 
 ## Request Proof Presentation
+When an entity wants another party to prove specific things by providing self attested information or information corresponding to an already issued credential, the Proof Presentation protocol is used. 
+
 * `issuer_did`: received in the IssuerSetup response [Issuer Setup](../howto/python-verity-flow.md#Setting up an Issuer identity)
 * `for_did`: received in the create Relationship response [Create Relationship](../howto/python-verity-flow.md#Creating an Invitation with Relationship Protocol)
 ```python
@@ -412,3 +397,43 @@ Message Response:
     }
     ```
     * to see if the presentation is valid, evaluate `verification_result`
+    
+    
+## Utils
+### Object used to register response message handlers
+The `handlers` variable is defined as field variable in the controller class like this:
+<a name="Handlers"></a>
+```python
+handlers: Handlers = Handlers()
+```
+### Registers Message Handler
+Sets a specific response handler for protocol interactions
+<a name="handle"></a>
+```python
+await handlers.handle_message(context, await request.read())
+``` 
+### Loading Context Object
+Saved context should be loaded with code like this:
+```python
+def load_context(file_path) -> str:
+    with open(file_path, 'r') as f:
+        config = f.read()
+        context = await Context.create_with_config(config)
+        return context
+```
+Example Context Object: 
+```json
+{
+  "verityPublicVerKey": "ETLgZKeQEKxBW7gXA6FBn7nBwYhXFoogZLCCn5EeRSQV",
+  "verityUrl": "https://vas-team1.pdev.evernym.com",
+  "verityAgentVerKey": "ZT8HE1t4eF2iMm6x8a2fPjPM1TiY2vuBZ8BMejL3Q9a",
+  "walletKey": "examplewallet1",
+  "sdkVerKey": "DNZ9Yw2bowKkjCZ1cuX8o4UmTMYNSjSsw5cszuTaPjLz",
+  "walletName": "examplewallet1",
+  "endpointUrl": "http://4153716fd8e9.ngrok.io",
+  "verityPublicDID": "Rgj7LVEonrMzcRC1rhkx76",
+  "sdkVerKeyId": "PhXp3RnCSinuCZsqYmy15T",
+  "version": "0.2",
+  "domainDID": "KWyJwot75jqnGAH1P5jioe"
+}
+```
