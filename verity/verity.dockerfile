@@ -45,10 +45,19 @@ RUN apt-get update && apt-get install -y \
     libindy=${LIBINDY_VERSION} \
     libnullpay=${LIBINDY_VERSION} \
     indy-cli=${LIBINDY_VERSION}
-
 RUN apt-get update && apt-get install -y \
     verity-application=${VERITY_APPLICATION_VERSION} \
     ; exit 0
+RUN apt-get autoremove -y && \
+    apt-get clean && \
+    sed '/repo\.corp\.evernym\.com/d' /etc/apt/sources.list && \
+    rm -rf /var/lib/apt/lists/* \
+    ; exit 0
+
+# Add LevelDB dependency
+RUN JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ mvn dependency:get \
+    -Dartifact=org.iq80.leveldb:leveldb:0.9 \
+    -Dartifact=org.fusesource.leveldbjni:leveldbjni-all:1.8
 
 RUN rm -rf /etc/verity/verity-application/*
 ADD configuration/ /etc/verity/verity-application/.
