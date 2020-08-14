@@ -152,6 +152,11 @@ pip3 install -r requirements.txt
 ## Example Application Interactions
 After you have launched the example application in the previous step and have Connect.Me ready to go, you can follow the example application as it completes a series of self-sovereign interactions between the verity-application and Connect.Me.
 
+Code Examples: 
+[ [Java](docs/howto/java-verity-flow.md) ]
+[ [Python](docs/howto/python-verity-flow.md) ]
+[ [Node](docs/howto/nodejs-verity-flow.md) ]
+    
 1. **Setup**
    
    During this setup interaction, three tasks are accomplished:
