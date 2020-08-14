@@ -95,14 +95,11 @@ provision() {
 start_ngrok() {
   ngrok http 9000 >> /dev/null &
   NGROK_PID=$!
-
   until curl -m 1 -q http://127.0.0.1:4040/api/tunnels 2> /dev/null | jq -M -r -e '.tunnels[0].public_url' > /dev/null 2>&1
   do
     echo -n "."
     sleep 1
   done
-  HOST_ADDRESS="http://$(curl -m 1 -s http://127.0.0.1:4040/api/tunnels 2> /dev/null | jq -M -r '.tunnels[0].public_url' | cut -d'/' -f3)"
-  export HOST_ADDRESS
 }
 
 save_env() {
@@ -150,7 +147,10 @@ start_verity() {
     echo "No HOST_ADDRESS specified"
     echo -n Starting ngrok..
     start_ngrok
+    export HOST_ADDRESS=$(curl -m 1 -s http://127.0.0.1:4040/api/tunnels 2> /dev/null | jq -M -r '.tunnels[0].public_url')
   fi
+
+  export HOST_DOMAIN=`echo $HOST_ADDRESS |  cut -d'/' -f3`
 
   echo
   printf "Verity Endpoint is: ${ANSII_GREEN}${HOST_ADDRESS}${ANSII_RESET}"
