@@ -152,11 +152,6 @@ pip3 install -r requirements.txt
 ## Example Application Interactions
 After you have launched the example application in the previous step and have Connect.Me ready to go, you can follow the example application as it completes a series of self-sovereign interactions between the verity-application and Connect.Me.
 
-Code Examples: 
-[ [Java](docs/howto/java-verity-flow.md) ]
-[ [Python](docs/howto/python-verity-flow.md) ]
-[ [Node](docs/howto/nodejs-verity-flow.md) ]
-    
 1. **Setup**
    
    During this setup interaction, three tasks are accomplished:
@@ -164,9 +159,9 @@ Code Examples:
    1. Provisioning an Agent: 
    
       Code Examples: 
-        [ [Java](docs/howto/java-verity-flow.md#provisioning-agent-on-verity) ]
-        [ [Python](docs/howto/python-verity-flow.md#provisioning-agent-on-verity) ]
-        [ [Node](docs/howto/nodejs-verity-flow.md#provisioning-agent-on-verity) ]
+        [ [Java](../howto/java-verity-flow.md#provisioning-agent-on-verity) ]
+        [ [Python](../howto/python-verity-flow.md#provisioning-agent-on-verity) ]
+        [ [Node](/howto/nodejs-verity-flow.md#provisioning-agent-on-verity) ]
    
       This provisioning creates an Agent that serves one **Identity Owner** During that process keys are generated and exchanged.
       
