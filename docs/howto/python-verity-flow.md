@@ -1,4 +1,6 @@
 # Verifier Documentation
+The getting started guide has more comprehensive explanations for the Verity flow. [Getting Started Guide](../howto/python-verity-flow.md#provisioning-agent-on-verity)
+
 Here are basic code examples showing how to interface with verity-sdk to: 
 1. Create an Agent on Verity - [Provision](../howto/python-verity-flow.md#provisioning-agent-on-verity)
 2. Handle asynchronous response messages from Verity - [Message Handling](../howto/python-verity-flow.md#handling-asynchronous-response-messages)
