@@ -1,5 +1,5 @@
 # Verifier Documentation
-The getting started guide has more comprehensive explanations for the Verity flow. [Getting Started Guide](../howto/python-verity-flow.md#provisioning-agent-on-verity)
+The getting started guide has more comprehensive explanations for the Verity flow. [Getting Started Guide](../getting-started/getting-started.md)
 
 Here are basic code examples showing how to interface with verity-sdk to: 
 1. Create an Agent on Verity - [Provision](../howto/python-verity-flow.md#provisioning-agent-on-verity)
