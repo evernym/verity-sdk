@@ -1,6 +1,6 @@
 # Getting Started with the Verity SDK
 
-The Getting Started Guide is intended to demonstrate the main functionalities of Verity and to walk you through setting up and using Verity SDK. Besides using Verity SDK, you also have a possibility to use Verity REST API to integrate with Verity. See the Open API docs for the Verity REST API at https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0
+The Getting Started Guide is intended to demonstrate the main functionalities of Verity and to walk you through setting up and using Verity SDK. Besides using Verity SDK, you also have a possibility to use Verity REST API to integrate with Verity. See the Open API .. for the Verity REST API at https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0
 
 This guided walkthrough has three main high-level steps:
 1. Getting Connect.Me
@@ -30,7 +30,7 @@ After these steps, Connect.Me is ready for the interactions that are demonstrate
 The included `Dockerfile` will setup a complete environment for running the example application in all supported languages. This is the quickest way to try the verity-sdk and avoid some complexity around `ngrok` and `libindy` when working on Windows/MacOS.
 
 ### Prerequisites
-* `docker` is required for this path and installation instructions can be found at [Get Docker Page](https://docs.docker.com/get-docker/). 
+* `docker` is required for this path and installation instructions can be found at [Get Docker Page](https://...docker.com/get-docker/). 
 
 ### Steps:
 1. Build docker image. Run the following command from the root directory of the `verity-sdk` project:
@@ -159,9 +159,9 @@ After you have launched the example application in the previous step and have Co
    1. Provisioning an Agent: 
    
       Code Examples: 
-        [ [Java](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/java-verity-flow.md#provisioning-agent-on-verity) ]
-        [ [Python](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/python-verity-flow.md#provisioning-agent-on-verity) ]
-        [ [Node](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/nodejs-verity-flow.md#provisioning-agent-on-verity) ]
+        [ [Java](../howto/java-verity-flow.md#provisioning-agent-on-verity) ]
+        [ [Python](../howto/python-verity-flow.md#provisioning-agent-on-verity) ]
+        [ [Node](/howto/nodejs-verity-flow.md#provisioning-agent-on-verity) ]
    
       This provisioning creates an Agent that serves one **Identity Owner** During that process keys are generated and exchanged.
       
@@ -172,18 +172,18 @@ After you have launched the example application in the previous step and have Co
    2. Registering a webhook:
    
       Code Examples: 
-        [ [Java](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/java-verity-flow.md#handling-asynchronous-response-messages) ]
-        [ [Python](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/python-verity-flow.md#handling-asynchronous-response-messages) ]
-        [ [Node](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/nodejs-verity-flow.md#handling-asynchronous-response-messages) ]
+        [ [Java](../howto/java-verity-flow.md#handling-asynchronous-response-messages) ]
+        [ [Python](../howto/python-verity-flow.md#handling-asynchronous-response-messages) ]
+        [ [Node](../howto/nodejs-verity-flow.md#handling-asynchronous-response-messages) ]
    
        The webhook is a URL for a web server that will receive communication from the Verity server instance. It must be publicly available. (`ngrok` is generally used to meet that requirement.)
 
    3. Setting up an Issuer identity:
    
       Code Examples: 
-        [ [Java](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/java-verity-flow.md#setting-up-an-issuer-identity) ]
-        [ [Python](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/python-verity-flow.md#setting-up-an-issuer-identity) ]
-        [ [Node](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/nodejs-verity-flow.md#setting-up-an-issuer-identity) ]
+        [ [Java](../howto/java-verity-flow.md#setting-up-an-issuer-identity) ]
+        [ [Python](../howto/python-verity-flow.md#setting-up-an-issuer-identity) ]
+        [ [Node](../howto/nodejs-verity-flow.md#setting-up-an-issuer-identity) ]
    
       This is a public identity that will need to be written to a Sovrin Ledger (for this demo use-cases the Sovrin Staging should be used). This identity will be used and associated with Credentials issued by this Agent previously provisioned.
    
@@ -204,9 +204,9 @@ After you have launched the example application in the previous step and have Co
 1. **Connect**
 
     Code Examples: 
-    [ [Java](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/java-verity-flow.md#connecting) ]
-    [ [Python](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/python-verity-flow.md#connecting) ]
-    [ [Node](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/nodejs-verity-flow.md#connecting) ]
+    [ [Java](../howto/java-verity-flow.md#connecting) ]
+    [ [Python](../howto/python-verity-flow.md#connecting) ]
+    [ [Node](../howto/nodejs-verity-flow.md#connecting) ]
    
    Connecting is used to form a pairwise relationship between the Identity owner represented by the Agent provision, and the user of Connect.Me. This connection interaction is between two parties and happens over aysncronous messages between these parties. 
    
@@ -218,9 +218,9 @@ After you have launched the example application in the previous step and have Co
 1. **Write Schema to Ledger**
 
     Code Examples: 
-    [ [Java](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/java-verity-flow.md#write-schema-to-ledger) ]
-    [ [Python](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/python-verity-flow.md#write-schema-to-ledger) ]
-    [ [Node](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/nodejs-verity-flow.md#write-schema-to-ledger) ]
+    [ [Java](../howto/java-verity-flow.md#write-schema-to-ledger) ]
+    [ [Python](../howto/python-verity-flow.md#write-schema-to-ledger) ]
+    [ [Node](../howto/nodejs-verity-flow.md#write-schema-to-ledger) ]
    
    The `schema` is an essential element of Verifiable Credentials Exchange. This `schema` must be publicly available from a trusted source. The Identity ledger provided by Sovrin is used for the purpose. The `schema` is used to express the shape of the data in the credential. This interaction uses the `write-schema` protocol to both create and write the `schema` object to the ledger.
 
@@ -230,9 +230,9 @@ After you have launched the example application in the previous step and have Co
 1. **Write Credential Definition to Ledger**
 
     Code Examples: 
-    [ [Java](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/java-verity-flow.md#write-credential-definition-to-ledger) ]
-    [ [Python](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/python-verity-flow.md#write-credential-definition-to-ledger) ]
-    [ [Node](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/nodejs-verity-flow.md#write-credential-definition-to-ledger) ]
+    [ [Java](../howto/java-verity-flow.md#write-credential-definition-to-ledger) ]
+    [ [Python](../howto/python-verity-flow.md#write-credential-definition-to-ledger) ]
+    [ [Node](../howto/nodejs-verity-flow.md#write-credential-definition-to-ledger) ]
 
    The `credDef` object is similar to the `schema` object. It is also used for Verifiable Credentials Exchange and writen to an identity ledger. The `credDef` is used to hold public keys for an Issuer. This interaction uses the `write-cred-def` protocol to both create and write the `credDef` object to the ledger.
 
@@ -242,9 +242,9 @@ After you have launched the example application in the previous step and have Co
 1. **Issue Degree Credential**
 
     Code Examples: 
-    [ [Java](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/java-verity-flow.md#issue-credential) ]
-    [ [Python](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/python-verity-flow.md#issue-credential) ]
-    [ [Node](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/nodejs-verity-flow.md#issue-credential) ]
+    [ [Java](../howto/java-verity-flow.md#issue-credential) ]
+    [ [Python](../howto/python-verity-flow.md#issue-credential) ]
+    [ [Node](../howto/nodejs-verity-flow.md#issue-credential) ]
    
    The `issue-credential` protocol used in this interaction is the heart of the Verifiable Credentials Exchange. Using the `schema`, `credDef` and `connection` created before, a Credential can issued. 
    
@@ -254,9 +254,9 @@ After you have launched the example application in the previous step and have Co
 1. **Request Proof Presentation**
 
     Code Examples: 
-    [ [Java](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/java-verity-flow.md#request-proof-presentation) ]
-    [ [Python](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/python-verity-flow.md#request-proof-presentation) ]
-    [ [Node](https://gitlab.corp.evernym.com/dev/verity/verity-sdk/-/tree/master/docs/howto/nodejs-verity-flow.md#request-proof-presentation) ]
+    [ [Java](../howto/java-verity-flow.md#request-proof-presentation) ]
+    [ [Python](../howto/python-verity-flow.md#request-proof-presentation) ]
+    [ [Node](../howto/nodejs-verity-flow.md#request-proof-presentation) ]
    
    The `present-proof` protocol used in this interaction allow the final step of the Verifiable Credentials Exchange. Requesting a presentation of proof derived by a verifiable credential allow for the exchange of information from parities that test each other. 
 
