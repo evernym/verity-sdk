@@ -1,7 +1,7 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 WORKDIR /root
 
-ENV LIBINDY_VERSION 1.15.0-xenial
+ENV LIBINDY_VERSION 1.15.0-bionic
 ENV VERITY_APPLICATION_VERSION 0.4.95524299.7cbac90
 
 RUN apt-get update && apt-get install -y \
@@ -34,7 +34,7 @@ RUN update-ca-certificates
 
 # Setup apt for Sovrin repository
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
-    add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable"
+    add-apt-repository "deb https://repo.sovrin.org/sdk/deb bionic stable"
 
 # Setup apt for evernym repositories
 RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
@@ -50,12 +50,12 @@ RUN apt-get update && apt-get install -y \
     ; exit 0
 RUN apt-get autoremove -y && \
     apt-get clean && \
-    sed '/repo\.corp\.evernym\.com/d' /etc/apt/sources.list && \
+    sed -i '/repo\.corp\.evernym\.com/d' /etc/apt/sources.list && \
     rm -rf /var/lib/apt/lists/* \
     ; exit 0
 
 # Add LevelDB dependency
-RUN JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ mvn dependency:get \
+RUN mvn dependency:get \
     -Dartifact=org.iq80.leveldb:leveldb:0.9 \
     -Dartifact=org.fusesource.leveldbjni:leveldbjni-all:1.8
 
