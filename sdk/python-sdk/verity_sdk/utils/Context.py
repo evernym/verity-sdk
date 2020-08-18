@@ -1,4 +1,6 @@
 import json
+from urllib.parse import urljoin
+
 import requests
 from base58 import b58encode
 
@@ -95,7 +97,7 @@ class Context:
         self.wallet_credentials = json.dumps({'key': wallet_key})
 
     async def _update_verity_info(self):
-        full_url = f'{self.verity_url}/agency'
+        full_url = urljoin(self.verity_url, 'agency')
         result = requests.get(full_url)
         status_code = result.status_code
         if status_code > 399:
