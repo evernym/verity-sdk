@@ -66,7 +66,7 @@ The included `Dockerfile` will setup a complete environment for running the exam
    At this point, the application is running and ready. Proceed to the [Example Application Interactions](../getting-started/getting-started.md#Example Application Interactions) section of this document for instructions on walking through the set of interactions executed by the example application.
    
 ## Launching the Example Application Locally
-The example application can be lunched from a local development environment. Using this local environment, one can try the verity-sdk in a similar environment that a developer developing with verity-sdk would use. This path requires a few more steps, but these steps would be required to build an application with verity-sdk.
+The example application can be launched from a local development environment. Using this local environment, one can try the verity-sdk in a similar environment that a developer developing with verity-sdk would use. This path requires a few more steps, but these steps would be required to build an application with verity-sdk.
 
 ### Prerequisites
 * `libindy` -- Install a stable version. Follow the instructions on the 
