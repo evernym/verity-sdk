@@ -68,12 +68,16 @@ class ProvisionImplV0_7 extends AbstractProtocol implements ProvisionV0_7 {
         return Util.unpackMessage(context, respBytes);
     }
 
-    public Context provision(Context context) throws IOException, UndefinedContextException, WalletException {
+    public Context provision(Context context) throws ProvisionTokenException, IOException, UndefinedContextException, WalletException {
         if(context == null) {
             throw new UndefinedContextException("Context cannot be NULL");
         }
 
         JSONObject resp = sendToVerity(context, provisionMsgPacked(context));
+        
+	if (resp.getString("@type").equals(messageType("problem-report"))) {
+            throw new ProvisionTokenException(resp.getString("msg"));
+        }
 
         String domainDID = resp.getString("selfDID");
         String verityAgentVerKey = resp.getString("agentVerKey");

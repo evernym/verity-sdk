@@ -408,7 +408,15 @@ async def provision_agent() -> str:
     context = await Context.create(wallet_name, wallet_key, verity_url)
 
     # ask that an agent by provision (setup) and associated with created key pair
-    return await Provision(token).provision(context)
+    try:
+        response = await Provision(token).provision(context)
+        return response
+    except Exception as e:
+        print(e)
+        print("Provisioning failed! Likely causes:")
+        print("- token not provided but Verity Endpoint requires it")
+        print("- token provided but is invalid or expired")
+        sys.exit(1)
 
 
 async def update_webhook_endpoint():

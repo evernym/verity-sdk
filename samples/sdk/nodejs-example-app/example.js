@@ -442,10 +442,20 @@ async function provisionAgent () {
   var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
   console.log('wallet created')
   const provision = new sdk.protocols.v0_7.Provision(null, token)
-  console.log('provision object')
-
+  // console.log(`provision object ${JSON.stringify(provision)}`)
+  
   // ask that an agent by provision (setup) and associated with created key pair
-  return provision.provision(ctx)
+  try { 
+    let provisioningResponse = await provision.provision(ctx)
+    return provisioningResponse
+  }
+  catch (e) {
+    console.log(e)
+    console.log("Provisioning failed! Likely causes:")
+    console.log("- token not provided but Verity Endpoint requires it")
+    console.log("- token provided but is invalid or expired")
+    process.exit(1)
+  }	
 }
 
 async function updateWebhookEndpoint () {

@@ -7,6 +7,7 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
+import com.evernym.verity.sdk.exceptions.ProvisionTokenException;
 import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
 import com.evernym.verity.sdk.protocols.relationship.Relationship;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
@@ -99,7 +100,18 @@ public class App extends Helper {
         Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
 
         // ask that an agent by provision (setup) and associated with created key pair
-        return provisioner.provision(ctx);
+	Context provisioningResponse = null;
+	try { 
+	    provisioningResponse = provisioner.provision(ctx);
+        }
+        catch (ProvisionTokenException e) {
+            println(e.toString());  
+            println("Provisioning failed! Likely causes:");
+            println("- token not provided but Verity Endpoint requires it");
+            println("- token provided but is invalid or expired");
+            System.exit(1);  
+        }	
+      	return provisioningResponse;
     }
 
     Context loadContext(File contextFile) throws IOException, WalletOpenException {

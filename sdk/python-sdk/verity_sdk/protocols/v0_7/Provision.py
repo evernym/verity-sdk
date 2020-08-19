@@ -90,6 +90,8 @@ class Provision(Protocol):
         msg = await self.provision_msg_packed(context)
 
         resp = await self._send_to_verity(context, msg)
+        if resp['@type'] == self.message_type(self.PROBLEM_REPORT):
+            raise Exception(resp['msg'])
 
         domain_did: str = resp['selfDID']
         verity_agent_verkey: str = resp['agentVerKey']
