@@ -103,6 +103,9 @@ class Provision extends Protocol {
 
     const packedMsg = await this.provisionMsgPacked(context)
     const response = await this.sendToVerity(context, packedMsg)
+    if (response['@type'] === this._getMessageType(this.msgNames.PROBLEM_REPORT)) {
+      throw new Error(response.msg)
+    }
     context.domainDID = response.selfDID
     context.verityAgentVerKey = response.agentVerKey
     return context

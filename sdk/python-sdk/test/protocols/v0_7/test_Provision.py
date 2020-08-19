@@ -34,6 +34,7 @@ async def test_process_message():
 
     async def mock_send(_, __):
         return {
+            '@type': 'did:sov:123456789abcdefghi1234;spec/agent-provisioning/0.7/AGENT_CREATED',
             'selfDID': '4ut8tgCBdUMCYZrJh5JS4o',
             'agentVerKey': '38fBEUX2sUQF7ZsY6epz1cbCvfBfDbQghUZUzFP6JChE'
         }
