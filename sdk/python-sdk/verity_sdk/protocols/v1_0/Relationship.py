@@ -62,7 +62,8 @@ class Relationship(Protocol):
                  for_relationship: str = None,
                  thread_id: str = None,
                  label: str = None,
-                 logo_url: str = None):
+                 logo_url: str = None,
+                 short_invite: bool = None):
         """
         Args:
             for_relationship (str): the relationship identifier (DID) for the pairwise relationship that will be used
@@ -84,6 +85,7 @@ class Relationship(Protocol):
             self.label = ''
         self.goal = GoalsList.P2P_MESSAGING
         self.logo_url = logo_url
+        self.short_invite = short_invite
 
     async def create(self, context):
         """
@@ -146,6 +148,8 @@ class Relationship(Protocol):
         msg = self._get_base_message(self.CONNECTION_INVITATION)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
+        if self.short_invite is not None:
+            msg['shortInvite'] = self.short_invite
         return msg
 
     async def connection_invitation_msg_packed(self, context):
@@ -184,6 +188,8 @@ class Relationship(Protocol):
         msg['goal'] = self.goal.value.name
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
+        if self.short_invite is not None:
+            msg['shortInvite'] = self.short_invite
         return msg
 
     async def out_of_band_invitation_msg_packed(self, context):

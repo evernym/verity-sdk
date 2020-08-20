@@ -21,6 +21,7 @@ public class RelationshipTest {
     final String label = "Alice";
     final URL logoUrl = new URL("http://server.com/profile_url.png");
     final String forRelationship = "did1";
+    final boolean shortInvite = true;
 
     public RelationshipTest() throws MalformedURLException {
     }
@@ -74,26 +75,44 @@ public class RelationshipTest {
     public void testConnectionInvitationMsg() throws VerityException, IOException {
         RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
         JSONObject msg = relationship.connectionInvitationMsg(TestHelpers.getContext());
-        testConnectionInvitationMsg(msg);
+        testConnectionInvitationMsg(msg, false);
     }
 
-    private void testConnectionInvitationMsg(JSONObject msg) {
+    @Test
+    public void testConnectionInvitationMsgWithShortInvite() throws VerityException, IOException {
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id", shortInvite);
+        JSONObject msg = relationship.connectionInvitationMsg(TestHelpers.getContext());
+        testConnectionInvitationMsg(msg, true);
+    }
+
+    private void testConnectionInvitationMsg(JSONObject msg, boolean hasShortInvite) {
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/connection-invitation", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertNotNull(forRelationship, msg.getString("~for_relationship"));
+        if (hasShortInvite)
+            assertEquals(shortInvite, msg.getBoolean("shortInvite"));
     }
 
     @Test
     public void testOutOfBandIInvitationMsg() throws VerityException, IOException {
         RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
         JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext());
-        testOutOfBandInvitationMsg(msg);
+        testOutOfBandInvitationMsg(msg, false);
     }
 
-    private void testOutOfBandInvitationMsg(JSONObject msg) {
+    @Test
+    public void testOutOfBandIInvitationMsgWithShortInvite() throws VerityException, IOException {
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id", shortInvite);
+        JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext());
+        testOutOfBandInvitationMsg(msg, true);
+    }
+
+    private void testOutOfBandInvitationMsg(JSONObject msg, boolean hasShortInvite) {
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/out-of-band-invitation", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assert(msg.getString("goalCode").equals(GoalCode.P2P_MESSAGING.code()));
         assert(msg.getString("goal").equals(GoalCode.P2P_MESSAGING.goalName()));
+        if (hasShortInvite)
+            assertEquals(shortInvite, msg.getBoolean("shortInvite"));
     }
 }

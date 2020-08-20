@@ -26,6 +26,7 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     String forRelationship;
     String label;
     URL logoUrl = null;
+    Boolean shortInvite = null;
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -53,6 +54,12 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     RelationshipImplV1_0(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
+    }
+
+    RelationshipImplV1_0(String forRelationship, String threadId, boolean shortInvite) {
+        super(threadId);
+        this.forRelationship = forRelationship;
+        this.shortInvite = shortInvite;
     }
 
     @Override
@@ -85,7 +92,8 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     public JSONObject connectionInvitationMsg(Context context) {
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(CONNECTION_INVITATION))
-                .put("@id", getNewId());
+                .put("@id", getNewId())
+                .put("shortInvite", shortInvite);
 
         if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
 
@@ -110,7 +118,8 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
                 .put("@type", messageType(OUT_OF_BAND_INVITATION))
                 .put("@id", getNewId())
                 .put("goalCode", invitationGoal.code())
-                .put("goal", invitationGoal.goalName());
+                .put("goal", invitationGoal.goalName())
+                .put("shortInvite", shortInvite);
 
         if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
         addThread(rtn);

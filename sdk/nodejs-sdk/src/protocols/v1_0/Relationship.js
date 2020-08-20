@@ -26,7 +26,7 @@ class Relationship extends Protocol {
    * @property {String} this.goalCode - 'p2p-messaging'
    * @property {String} this.goal - 'To establish a peer-to-peer messaging relationship'
    */
-  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null) {
+  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null, shortInvite = null) {
     const msgFamily = 'relationship'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
@@ -43,6 +43,7 @@ class Relationship extends Protocol {
     this.logoUrl = logoUrl
     this.goalCode = 'p2p-messaging'
     this.goal = 'To establish a peer-to-peer messaging relationship'
+    this.shortInvite = shortInvite
   }
 
   /**
@@ -93,6 +94,9 @@ class Relationship extends Protocol {
     var msg = this._getBaseMessage(this.msgNames.CONNECTION_INVITATION)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
+    if (this.shortInvite != null) {
+      msg.shortInvite = this.shortInvite
+    }
     return msg
   }
 
@@ -129,6 +133,9 @@ class Relationship extends Protocol {
     msg.goal = this.goal
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
+    if (this.shortInvite != null) {
+      msg.shortInvite = this.shortInvite
+    }
     return msg
   }
 
