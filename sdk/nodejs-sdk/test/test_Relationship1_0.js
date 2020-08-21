@@ -10,6 +10,7 @@ const forRelationship = 'RxRJCMe5XNqc9e9J1YPwhL'
 const threadId = '7a80285e-896c-45f6-b386-39ed7c49230c'
 const label = 'test label'
 const logoUrl = 'http://test.logo/url'
+const shortInvite = true
 
 describe('Relationship', () => {
   it('should init correctly', async () => {
@@ -68,7 +69,19 @@ describe('Relationship', () => {
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
   })
-
+  it('should build INVITATION msg with shortInvite correctly', async () => {
+    const rel = new Relationship(
+      forRelationship,
+      threadId
+    )
+    const msg = await rel.connectionInvitationMsg(null, shortInvite)
+    expect(msg['@type']).to.equal(
+     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CONNECTION_INVITATION}`
+    )
+    expect(msg['~for_relationship']).to.equal(forRelationship)
+    expect(msg['~thread'].thid).to.equal(threadId)
+    expect(msg.shortInvite).to.equal(shortInvite)
+  })
   it('should build OutOfBand invitation msg correctly', async () => {
     const rel = new Relationship(
       'RxRJCMe5XNqc9e9J1YPwhL',
@@ -80,5 +93,18 @@ describe('Relationship', () => {
     )
     expect(msg.goalCode).to.equal('p2p-messaging')
     expect(msg.goal).to.equal('To establish a peer-to-peer messaging relationship')
+  })
+  it('should build OutOfBand invitation msg with shortInvite correctly', async () => {
+    const rel = new Relationship(
+      'RxRJCMe5XNqc9e9J1YPwhL',
+      '7a80285e-896c-45f6-b386-39ed7c49230c'
+    )
+    const msg = await rel.outOfBandInvitationMsg(null, shortInvite)
+    expect(msg['@type']).to.equal(
+     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
+    )
+    expect(msg.goalCode).to.equal('p2p-messaging')
+    expect(msg.goal).to.equal('To establish a peer-to-peer messaging relationship')
+    expect(msg.shortInvite).to.equal(shortInvite)
   })
 })
