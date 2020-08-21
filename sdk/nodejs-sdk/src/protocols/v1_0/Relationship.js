@@ -26,7 +26,7 @@ class Relationship extends Protocol {
    * @property {String} this.goalCode - 'p2p-messaging'
    * @property {String} this.goal - 'To establish a peer-to-peer messaging relationship'
    */
-  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null, shortInvite = null) {
+  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null) {
     const msgFamily = 'relationship'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
@@ -43,7 +43,6 @@ class Relationship extends Protocol {
     this.logoUrl = logoUrl
     this.goalCode = 'p2p-messaging'
     this.goal = 'To establish a peer-to-peer messaging relationship'
-    this.shortInvite = shortInvite
   }
 
   /**
@@ -90,12 +89,12 @@ class Relationship extends Protocol {
      *
      * @see #connectionInvitation
      */
-  async connectionInvitationMsg (context) {
+  async connectionInvitationMsg (context, shortInvite = null) {
     var msg = this._getBaseMessage(this.msgNames.CONNECTION_INVITATION)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
-    if (this.shortInvite != null) {
-      msg.shortInvite = this.shortInvite
+    if (shortInvite != null) {
+      msg.shortInvite = shortInvite
     }
     return msg
   }
@@ -107,8 +106,8 @@ class Relationship extends Protocol {
      *
      * @see #connectionInvitation
      */
-  async connectionInvitationMsgPacked (context) {
-    return this.getMessageBytes(context, await this.connectionInvitationMsg(context))
+  async connectionInvitationMsgPacked (context, shortInvite = null) {
+    return this.getMessageBytes(context, await this.connectionInvitationMsg(context, shortInvite))
   }
 
   /**
@@ -116,8 +115,8 @@ class Relationship extends Protocol {
      *
      * @param context an instance of the Context object initialized to a verity-application agent
      */
-  async connectionInvitation (context) {
-    await this.sendMessage(context, await this.connectionInvitationMsgPacked(context))
+  async connectionInvitation (context, shortInvite = null) {
+    await this.sendMessage(context, await this.connectionInvitationMsgPacked(context, shortInvite))
   }
 
   /**
@@ -127,14 +126,14 @@ class Relationship extends Protocol {
    *
    * @see #connectionInvitation
    */
-  async outOfBandInvitationMsg (context) {
+  async outOfBandInvitationMsg (context, shortInvite = null) {
     var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
     msg.goalCode = this.goalCode
     msg.goal = this.goal
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
-    if (this.shortInvite != null) {
-      msg.shortInvite = this.shortInvite
+    if (shortInvite != null) {
+      msg.shortInvite = shortInvite
     }
     return msg
   }
@@ -146,8 +145,8 @@ class Relationship extends Protocol {
    *
    * @see #connectionInvitation
    */
-  async outOfBandInvitationMsgPacked (context) {
-    return this.getMessageBytes(context, await this.outOfBandInvitationMsg(context))
+  async outOfBandInvitationMsgPacked (context, shortInvite = null) {
+    return this.getMessageBytes(context, await this.outOfBandInvitationMsg(context, shortInvite))
   }
 
   /**
@@ -155,8 +154,8 @@ class Relationship extends Protocol {
    *
    * @param context an instance of the Context object initialized to a verity-application agent
    */
-  async outOfBandInvitation (context) {
-    await this.sendMessage(context, await this.outOfBandInvitationMsgPacked(context))
+  async outOfBandInvitation (context, shortInvite = null) {
+    await this.sendMessage(context, await this.outOfBandInvitationMsgPacked(context, shortInvite))
   }
 }
 module.exports = Relationship

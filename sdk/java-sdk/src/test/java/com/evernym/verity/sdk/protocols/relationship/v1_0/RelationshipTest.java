@@ -2,15 +2,12 @@ package com.evernym.verity.sdk.protocols.relationship.v1_0;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.provision.Provision;
-import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
 import com.evernym.verity.sdk.protocols.relationship.Relationship;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -74,14 +71,14 @@ public class RelationshipTest {
     @Test
     public void testConnectionInvitationMsg() throws VerityException, IOException {
         RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
-        JSONObject msg = relationship.connectionInvitationMsg(TestHelpers.getContext());
+        JSONObject msg = relationship.connectionInvitationMsg(TestHelpers.getContext(), null);
         testConnectionInvitationMsg(msg, false);
     }
 
     @Test
     public void testConnectionInvitationMsgWithShortInvite() throws VerityException, IOException {
-        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id", shortInvite);
-        JSONObject msg = relationship.connectionInvitationMsg(TestHelpers.getContext());
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
+        JSONObject msg = relationship.connectionInvitationMsg(TestHelpers.getContext(), shortInvite);
         testConnectionInvitationMsg(msg, true);
     }
 
@@ -96,14 +93,14 @@ public class RelationshipTest {
     @Test
     public void testOutOfBandIInvitationMsg() throws VerityException, IOException {
         RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
-        JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext());
+        JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext(), null);
         testOutOfBandInvitationMsg(msg, false);
     }
 
     @Test
     public void testOutOfBandIInvitationMsgWithShortInvite() throws VerityException, IOException {
-        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id", shortInvite);
-        JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext());
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
+        JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext(), shortInvite);
         testOutOfBandInvitationMsg(msg, true);
     }
 

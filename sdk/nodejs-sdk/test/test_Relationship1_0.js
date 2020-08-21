@@ -72,12 +72,9 @@ describe('Relationship', () => {
   it('should build INVITATION msg with shortInvite correctly', async () => {
     const rel = new Relationship(
       forRelationship,
-      threadId,
-      null,
-      null,
-      shortInvite
+      threadId
     )
-    const msg = await rel.connectionInvitationMsg(null)
+    const msg = await rel.connectionInvitationMsg(null, shortInvite)
     expect(msg['@type']).to.equal(
      `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CONNECTION_INVITATION}`
     )
@@ -100,12 +97,9 @@ describe('Relationship', () => {
   it('should build OutOfBand invitation msg with shortInvite correctly', async () => {
     const rel = new Relationship(
       'RxRJCMe5XNqc9e9J1YPwhL',
-      '7a80285e-896c-45f6-b386-39ed7c49230c',
-      null,
-      null,
-      shortInvite
+      '7a80285e-896c-45f6-b386-39ed7c49230c'
     )
-    const msg = await rel.outOfBandInvitationMsg(null)
+    const msg = await rel.outOfBandInvitationMsg(null, shortInvite)
     expect(msg['@type']).to.equal(
      `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
     )

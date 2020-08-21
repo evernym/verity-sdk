@@ -51,17 +51,4 @@ public class Relationship {
     public static RelationshipV1_0 v1_0(String forRelationship, String threadId) {
         return new RelationshipImplV1_0(forRelationship, threadId);
     }
-
-    /**
-     * Constructor for the 1.0 Relationship object. This constructor re-creates an object from a known relationship and
-     * threadId. This object can only check status of the protocol.
-     *
-     * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
-     * @param threadId the thread id of the already started protocol
-     * @param shortInvite when requesting invite, provide also the short version
-     * @return 1.0 Relationship object
-     */
-    public static RelationshipV1_0 v1_0(String forRelationship, String threadId, boolean shortInvite) {
-        return new RelationshipImplV1_0(forRelationship, threadId, shortInvite);
-    }
 }

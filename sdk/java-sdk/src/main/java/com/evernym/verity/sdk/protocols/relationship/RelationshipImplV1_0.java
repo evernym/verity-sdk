@@ -26,7 +26,6 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     String forRelationship;
     String label;
     URL logoUrl = null;
-    Boolean shortInvite = null;
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -56,12 +55,6 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
         this.forRelationship = forRelationship;
     }
 
-    RelationshipImplV1_0(String forRelationship, String threadId, boolean shortInvite) {
-        super(threadId);
-        this.forRelationship = forRelationship;
-        this.shortInvite = shortInvite;
-    }
-
     @Override
     public JSONObject createMsg(Context context) {
         if(!created) {
@@ -89,7 +82,7 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     }
 
     @Override
-    public JSONObject connectionInvitationMsg(Context context) {
+    public JSONObject connectionInvitationMsg(Context context, Boolean shortInvite) {
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(CONNECTION_INVITATION))
                 .put("@id", getNewId())
@@ -103,16 +96,21 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
 
     @Override
     public void connectionInvitation(Context context) throws IOException, VerityException {
-        send(context, connectionInvitationMsg(context));
+        send(context, connectionInvitationMsg(context, null));
     }
 
     @Override
-    public byte[] connectionInvitationMsgPacked(Context context) throws VerityException {
-        return packMsg(context, connectionInvitationMsg(context));
+    public void connectionInvitation(Context context, Boolean shortInvite) throws IOException, VerityException {
+        send(context, connectionInvitationMsg(context, shortInvite));
     }
 
     @Override
-    public JSONObject outOfBandInvitationMsg(Context context) {
+    public byte[] connectionInvitationMsgPacked(Context context, Boolean shortInvite) throws VerityException {
+        return packMsg(context, connectionInvitationMsg(context, shortInvite));
+    }
+
+    @Override
+    public JSONObject outOfBandInvitationMsg(Context context, Boolean shortInvite) {
         GoalCode invitationGoal = GoalCode.P2P_MESSAGING;
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(OUT_OF_BAND_INVITATION))
@@ -128,11 +126,16 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
 
     @Override
     public void outOfBandInvitation(Context context) throws IOException, VerityException {
-        send(context, outOfBandInvitationMsg(context));
+        send(context, outOfBandInvitationMsg(context, null));
     }
 
     @Override
-    public byte[] outOfBandInvitationMsgPacked(Context context) throws VerityException {
-        return packMsg(context, outOfBandInvitationMsg(context));
+    public void outOfBandInvitation(Context context, Boolean shortInvite) throws IOException, VerityException {
+        send(context, outOfBandInvitationMsg(context, shortInvite));
+    }
+
+    @Override
+    public byte[] outOfBandInvitationMsgPacked(Context context, Boolean shortInvite) throws VerityException {
+        return packMsg(context, outOfBandInvitationMsg(context, shortInvite));
     }
 }
