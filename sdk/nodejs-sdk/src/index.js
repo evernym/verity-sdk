@@ -26,7 +26,8 @@ module.exports = {
       IssueCredential: require('./protocols/v1_0/IssueCredential'),
       PresentProof: require('./protocols/v1_0/PresentProof'),
       CommittedAnswer: require('./protocols/v1_0/CommittedAnswer'),
-      Relationship: require('./protocols/v1_0/Relationship')
+      Relationship: require('./protocols/v1_0/Relationship'),
+      GoalCodes: require('./protocols/v1_0/GoalCodes')
     }
   },
   utils: require('./utils/index'),

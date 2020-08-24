@@ -90,13 +90,33 @@ public interface RelationshipV1_0 extends Protocol {
     /**
      * Creates the control message without packaging and sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    JSONObject connectionInvitationMsg(Context context) throws VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
      * @param shortInvite decides should short invite be provided as well
      * @return the constructed message (JSON object)
      * @throws VerityException when given invalid context
      *
      * @see #connectionInvitation
      */
-    JSONObject connectionInvitationMsg(Context context, Boolean shortInvite) throws IOException, VerityException;
+    JSONObject connectionInvitationMsg(Context context, Boolean shortInvite) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    byte[] connectionInvitationMsgPacked(Context context) throws VerityException;
 
     /**
      * Creates and packages message without sending it.
@@ -107,7 +127,7 @@ public interface RelationshipV1_0 extends Protocol {
      *
      * @see #connectionInvitation
      */
-    byte[] connectionInvitationMsgPacked(Context context, Boolean shortInvite) throws IOException, VerityException;
+    byte[] connectionInvitationMsgPacked(Context context, Boolean shortInvite) throws VerityException;
 
     /**
      * Ask for aries out of band invitation from the verity-application agent for the relationship created by this protocol
@@ -128,6 +148,28 @@ public interface RelationshipV1_0 extends Protocol {
      */
     void outOfBandInvitation(Context context, Boolean shortInvite) throws IOException, VerityException;
 
+
+    /**
+     * Ask for aries out of band invitation from the verity-application agent for the relationship created by this protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param shortInvite decides should short invite be provided as well
+     * @param goal the initial intended goal of the relationship (this goal is expressed in the invite)
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void outOfBandInvitation(Context context, Boolean shortInvite, GoalCode goal) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    JSONObject outOfBandInvitationMsg(Context context) throws VerityException;
+
     /**
      * Creates the control message without packaging and sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
@@ -137,7 +179,29 @@ public interface RelationshipV1_0 extends Protocol {
      *
      * @see #connectionInvitation
      */
-    JSONObject outOfBandInvitationMsg(Context context, Boolean shortInvite) throws IOException, VerityException;
+    JSONObject outOfBandInvitationMsg(Context context, Boolean shortInvite) throws VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param shortInvite decides should short invite be provided as well
+     * @param goal the initial intended goal of the relationship (this goal is expressed in the invite)
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    JSONObject outOfBandInvitationMsg(Context context, Boolean shortInvite, GoalCode goal) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    byte[] outOfBandInvitationMsgPacked(Context context) throws VerityException;
 
     /**
      * Creates and packages message without sending it.
@@ -148,5 +212,17 @@ public interface RelationshipV1_0 extends Protocol {
      *
      * @see #connectionInvitation
      */
-    byte[] outOfBandInvitationMsgPacked(Context context, Boolean shortInvite) throws IOException, VerityException;
+    byte[] outOfBandInvitationMsgPacked(Context context, Boolean shortInvite) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param shortInvite decides should short invite be provided as well
+     * @param goal the initial intended goal of the relationship (this goal is expressed in the invite)
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    byte[] outOfBandInvitationMsgPacked(Context context, Boolean shortInvite, GoalCode goal) throws VerityException;
 }

@@ -1,16 +1,17 @@
 from enum import Enum
 
 from verity_sdk.protocols.Protocol import Protocol
-from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
-
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER, Context
 
 
 class GoalsList(Enum):
     """An enumeration of possible goals (reasons) for a relationship."""
+
     class GoalCode:
         """
         a tuple with a short code string and human readable name string
         """
+
         def __init__(self, code, name) -> None:
             """
             Args:
@@ -82,7 +83,6 @@ class Relationship(Protocol):
             self.label = label
         else:
             self.label = ''
-        self.goal = GoalsList.P2P_MESSAGING
         self.logo_url = logo_url
 
     async def create(self, context):
@@ -94,7 +94,7 @@ class Relationship(Protocol):
         """
         await self.send_message(context, await self.create_msg_packed(context))
 
-    def create_msg(self, _):
+    def create_msg(self, context: Context):
         """
         Creates the control message without packaging and sending it.
 
@@ -112,7 +112,7 @@ class Relationship(Protocol):
 
         return msg
 
-    async def create_msg_packed(self, context):
+    async def create_msg_packed(self, context: Context):
         """
         Creates and packages message without sending it.
 
@@ -124,23 +124,23 @@ class Relationship(Protocol):
         """
         return await self.get_message_bytes(context, self.create_msg(context))
 
-    async def connection_invitation(self, context, short_invite: bool = None):
+    async def connection_invitation(self, context: Context, short_invite: bool = None):
         """
         Ask for aries invitation from the verity-application agent for the relationship created by this protocol
 
         Args:
-            :param context (Context): an instance of the Context object initialized to a verity-application agent
-            :param short_invite: Request the short invite
+            context (Context): an instance of the Context object initialized to a verity-application agent
+            short_invite (bool): Request the short invite
         """
         await self.send_message(context, await self.connection_invitation_msg_packed(context, short_invite))
 
-    def connection_invitation_msg(self, context, short_invite: bool = None):
+    def connection_invitation_msg(self, context: Context, short_invite: bool = None):
         """
         Creates the control message without packaging and sending it.
 
         Args:
-            :param context (Context): an instance of the Context object initialized to a verity-application agent
-            :param short_invite: Request the short invite
+            context (Context): an instance of the Context object initialized to a verity-application agent
+            short_invite (bool): Request the short invite
         Return:
             the constructed message (dict object)
         """
@@ -151,55 +151,71 @@ class Relationship(Protocol):
             msg['shortInvite'] = short_invite
         return msg
 
-    async def connection_invitation_msg_packed(self, context, short_invite: bool = None):
+    async def connection_invitation_msg_packed(self, context: Context, short_invite: bool = None):
         """
         Creates and packages message without sending it.
 
         Args:
-            :param context (Context): an instance of the Context object initialized to a verity-application agent
-            :param short_invite: Request the short invite
+            context (Context): an instance of the Context object initialized to a verity-application agent
+            short_invite (bool): Request the short invite
         Return:
             the bytes ready for transport
         """
         return await self.get_message_bytes(context, self.connection_invitation_msg(context, short_invite))
 
-    async def out_of_band_invitation(self, context, short_invite: bool = None):
+    async def out_of_band_invitation(self,
+                                     context: Context,
+                                     short_invite: bool = None,
+                                     goal: GoalsList = GoalsList.P2P_MESSAGING):
         """
-        Ask for aries out of band invitation from the verity-application agent for the relationship created by this protocol
+        Ask for aries out of band invitation from the verity-application agent for the relationship
+        created by this protocol
 
         Args:
-            :param context (Context): an instance of the Context object initialized to a verity-application agent
-            :param short_invite: Request the short invite
+            context (Context): an instance of the Context object initialized to a verity-application agent
+            short_invite (bool): Request the short invite
+            goal (GoalsList): the initial intended goal of the relationship (this goal is expressed in the invite)
         """
-        await self.send_message(context, await self.out_of_band_invitation_msg_packed(context, short_invite))
+        await self.send_message(context, await self.out_of_band_invitation_msg_packed(context, short_invite, goal))
 
-    def out_of_band_invitation_msg(self, context, short_invite: bool = None):
+    def out_of_band_invitation_msg(self,
+                                   context: Context,
+                                   short_invite: bool = None,
+                                   goal: GoalsList = GoalsList.P2P_MESSAGING):
         """
         Creates the control message without packaging and sending it.
 
         Args:
-            :param context (Context): an instance of the Context object initialized to a verity-application agent
-            :param short_invite: Request the short invite
+            context (Context): an instance of the Context object initialized to a verity-application agent
+            short_invite (bool): Request the short invite
+            goal (GoalsList): the initial intended goal of the relationship (this goal is expressed in the invite)
         Return:
             the constructed message (dict object)
         """
         msg = self._get_base_message(self.OUT_OF_BAND_INVITATION)
-        msg['goalCode'] = self.goal.value.code
-        msg['goal'] = self.goal.value.name
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
         if short_invite is not None:
             msg['shortInvite'] = short_invite
+
+        if goal:
+            msg['goalCode'] = goal.value.code
+            msg['goal'] = goal.value.name
+
         return msg
 
-    async def out_of_band_invitation_msg_packed(self, context, short_invite: bool = None):
+    async def out_of_band_invitation_msg_packed(self,
+                                                context: Context,
+                                                short_invite: bool = None,
+                                                goal: GoalsList = GoalsList.P2P_MESSAGING):
         """
         Creates and packages message without sending it.
 
         Args:
-            :param context (Context): an instance of the Context object initialized to a verity-application agent
-            :param short_invite: Request the short invite
+            context (Context): an instance of the Context object initialized to a verity-application agent
+            short_invite (bool): Request the short invite
+            goal (GoalsList): the initial intended goal of the relationship (this goal is expressed in the invite)
         Return:
             the bytes ready for transport
         """
-        return await self.get_message_bytes(context, self.out_of_band_invitation_msg(context, short_invite))
+        return await self.get_message_bytes(context, self.out_of_band_invitation_msg(context, short_invite, goal))
