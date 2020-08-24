@@ -43,6 +43,9 @@ The included `Dockerfile` will setup a complete environment for running the exam
    docker run -it verity-sdk
    ```
    > **NOTE:** The example application will provision an agent, create a key-pair in a local wallet and generate a context json. All of this will happen inside of the docker container. If this docker container is lost, **YOU WILL NOT** be able to continue to use that provisioned agent on the Verity Application.
+
+   > **NOTE:** A couple of process are started when entering the above docker container. There are two ngrok processes, and a simple http server process. In particular, the ngrok processes allows for a public addressable endpoint for the webhook that receives messages from Verity Application. While this is very useful, ngrok does times out after **7 hour**. To reset ngrok, simple re-run the `entrypoint.sh` script that was run when entering the docker container. It is located at `/samples/sdk/entrypoint.sh`. It will kill the existing (and timed out) ngrok processes and start new ones. At which point you are go for another 7 hours.
+ 
 1. Launch example application. Run the following commands in the shell started inside the docker container that was just started:
     * For NodeJs:
         ```sh
