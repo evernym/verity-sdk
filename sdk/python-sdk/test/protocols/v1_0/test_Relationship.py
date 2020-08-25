@@ -133,6 +133,31 @@ async def test_out_of_band_invitation():
 
 
 @pytest.mark.asyncio
+async def test_out_of_band_invitation_with_goal():
+    context = await Context.create_with_config(await get_test_config())
+    relationship = Relationship(
+        for_relationship=for_relationship,
+        thread_id=thread_id,
+        label=label
+    )
+
+    msg = relationship.out_of_band_invitation_msg(context, goal=GoalsList.ISSUE_VC)
+
+    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+        EVERNYM_MSG_QUALIFIER,
+        Relationship.MSG_FAMILY,
+        Relationship.MSG_FAMILY_VERSION,
+        Relationship.OUT_OF_BAND_INVITATION
+    )
+    assert msg['@id'] is not None
+    assert msg['~thread'] is not None
+    assert msg['~thread']['thid'] is not None
+    assert msg['~for_relationship'] == for_relationship
+    assert msg['goalCode'] == GoalsList.ISSUE_VC.value.code
+    assert msg['goal'] == GoalsList.ISSUE_VC.value.name
+
+
+@pytest.mark.asyncio
 async def test_out_of_band_invitation_with_short_invite():
     context = await Context.create_with_config(await get_test_config())
     relationship = Relationship(

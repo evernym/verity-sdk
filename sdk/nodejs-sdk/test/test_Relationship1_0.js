@@ -5,6 +5,7 @@ const expect = chai.expect
 chai.use(require('chai-as-promised'))
 // const Context = require('../src/utils/Context')
 const Relationship = require('../src/protocols/v1_0/Relationship')
+const GoalCodes = require('../src/protocols/v1_0/GoalCodes')
 
 const forRelationship = 'RxRJCMe5XNqc9e9J1YPwhL'
 const threadId = '7a80285e-896c-45f6-b386-39ed7c49230c'
@@ -91,8 +92,20 @@ describe('Relationship', () => {
     expect(msg['@type']).to.equal(
      `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
     )
-    expect(msg.goalCode).to.equal('p2p-messaging')
-    expect(msg.goal).to.equal('To establish a peer-to-peer messaging relationship')
+    expect(msg.goalCode).to.equal(GoalCodes.P2P_MESSAGING().code)
+    expect(msg.goal).to.equal(GoalCodes.P2P_MESSAGING().goalName)
+  })
+  it('should build OutOfBand invitation msg correctly with goal', async () => {
+    const rel = new Relationship(
+      'RxRJCMe5XNqc9e9J1YPwhL',
+      '7a80285e-896c-45f6-b386-39ed7c49230c'
+    )
+    const msg = await rel.outOfBandInvitationMsg(null, null, GoalCodes.ISSUE_VC())
+    expect(msg['@type']).to.equal(
+     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
+    )
+    expect(msg.goalCode).to.equal(GoalCodes.ISSUE_VC().code)
+    expect(msg.goal).to.equal(GoalCodes.ISSUE_VC().goalName)
   })
   it('should build OutOfBand invitation msg with shortInvite correctly', async () => {
     const rel = new Relationship(

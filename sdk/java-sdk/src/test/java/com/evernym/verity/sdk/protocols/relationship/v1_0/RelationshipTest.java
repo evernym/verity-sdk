@@ -104,6 +104,19 @@ public class RelationshipTest {
         testOutOfBandInvitationMsg(msg, true);
     }
 
+    @Test
+    public void testOutOfBandIInvitationMsgWithGoalCode() throws VerityException, IOException {
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
+        JSONObject msg = relationship.outOfBandInvitationMsg(
+                TestHelpers.getContext(),
+                null,
+                GoalCode.REQUEST_PROOF
+        );
+//        testOutOfBandInvitationMsg(msg, false);
+        assert(msg.getString("goalCode").equals(GoalCode.REQUEST_PROOF.code()));
+        assert(msg.getString("goal").equals(GoalCode.REQUEST_PROOF.goalName()));
+    }
+
     private void testOutOfBandInvitationMsg(JSONObject msg, boolean hasShortInvite) {
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/out-of-band-invitation", msg.getString("@type"));
         assertNotNull(msg.getString("@id"));

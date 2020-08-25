@@ -3,6 +3,7 @@ package com.evernym.verity.sdk.utils;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.wallet.DefaultWalletConfig;
 import com.evernym.verity.sdk.wallet.WalletConfig;
+import com.evernym.verity.sdk.wallet.WalletUtil;
 import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
@@ -25,8 +26,8 @@ public class TestWallet implements AutoCloseable, WalletConfig {
     public TestWallet(String walletName, String walletKey, String seed) throws WalletException {
         try {
             walletConfig = DefaultWalletConfig.build(walletName, walletKey);
-            Wallet.createWallet(walletConfig.config(), walletConfig.credential()).get();
-            Wallet walletHandle = Wallet.openWallet(walletConfig.config(), walletConfig.credential()).get();
+            WalletUtil.tryCreateWallet(walletConfig);
+            Wallet walletHandle = WalletUtil.openIndyWallet(walletConfig);
 
             Did theirResult = Did.createNewDid(walletHandle);
             this.verityPublicDID = theirResult.did;

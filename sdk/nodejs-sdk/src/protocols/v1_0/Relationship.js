@@ -1,6 +1,8 @@
 'use strict'
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
+const GoalCodes = require('./GoalCodes')
+
 /**
  * An interface for controlling a 1.0 Relationship protocol.
  * @extends Protocol
@@ -126,7 +128,7 @@ class Relationship extends Protocol {
    *
    * @see #connectionInvitation
    */
-  async outOfBandInvitationMsg (context, shortInvite = null) {
+  async outOfBandInvitationMsg (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
     var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
     msg.goalCode = this.goalCode
     msg.goal = this.goal
@@ -134,6 +136,11 @@ class Relationship extends Protocol {
     msg = this._addThread(msg)
     if (shortInvite != null) {
       msg.shortInvite = shortInvite
+    }
+
+    if (goal != null) {
+      msg.goalCode = goal.code
+      msg.goal = goal.goalName
     }
     return msg
   }
@@ -145,8 +152,8 @@ class Relationship extends Protocol {
    *
    * @see #connectionInvitation
    */
-  async outOfBandInvitationMsgPacked (context, shortInvite = null) {
-    return this.getMessageBytes(context, await this.outOfBandInvitationMsg(context, shortInvite))
+  async outOfBandInvitationMsgPacked (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
+    return this.getMessageBytes(context, await this.outOfBandInvitationMsg(context, shortInvite, goal))
   }
 
   /**
@@ -154,8 +161,9 @@ class Relationship extends Protocol {
    *
    * @param context an instance of the Context object initialized to a verity-application agent
    */
-  async outOfBandInvitation (context, shortInvite = null) {
-    await this.sendMessage(context, await this.outOfBandInvitationMsgPacked(context, shortInvite))
+  async outOfBandInvitation (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
+    await this.sendMessage(context, await this.outOfBandInvitationMsgPacked(context, shortInvite, goal))
   }
 }
+
 module.exports = Relationship

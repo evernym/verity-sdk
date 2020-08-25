@@ -4,6 +4,7 @@ import com.evernym.verity.sdk.exceptions.*;
 import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.bitcoinj.core.Base58;
 import org.hyperledger.indy.sdk.IndyException;
+import org.hyperledger.indy.sdk.LibIndy;
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONException;
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 
 import static com.evernym.verity.sdk.utils.ContextConstants.*;
+import static com.evernym.verity.sdk.wallet.WalletUtil.openIndyWallet;
 
 /**
  * This Context object holds the data for accessing an agent on a verity-application. A complete and correct data in
@@ -95,12 +97,7 @@ public final class Context implements AsJsonObject{
             throw new WalletOpenException("Unable to open wallet without wallet configuration.");
         }
 
-        try {
-            return Wallet.openWallet(walletConfig.config(), walletConfig.credential()).get();
-        }
-        catch (IndyException | ExecutionException | InterruptedException e){
-            throw new WalletOpenException("Wallet failed to open", e);
-        }
+        return openIndyWallet(walletConfig);
     }
 
     /**

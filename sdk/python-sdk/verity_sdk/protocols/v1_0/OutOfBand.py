@@ -1,3 +1,5 @@
+from decimal import Context
+
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
 
@@ -31,7 +33,7 @@ class OutOfBand(Protocol):
         self.for_relationship = for_relationship
         self.invite_url = invite_url
 
-    async def reuse(self, context):
+    async def reuse(self, context: Context):
         """
         Direct the verity-application agent to reuse the relationship given.
 
@@ -40,7 +42,7 @@ class OutOfBand(Protocol):
         """
         await self.send_message(context, await self.reuse_msg_packed(context))
 
-    def reuse_msg(self, _):
+    def reuse_msg(self, context: Context):
         """
         Creates the control message without packaging and sending it.
 
@@ -57,7 +59,7 @@ class OutOfBand(Protocol):
         msg['inviteUrl'] = self.invite_url
         return msg
 
-    async def reuse_msg_packed(self, context):
+    async def reuse_msg_packed(self, context: Context):
         """
         Creates and packages message without sending it.
 

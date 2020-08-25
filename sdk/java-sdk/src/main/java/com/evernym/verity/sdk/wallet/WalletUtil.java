@@ -1,9 +1,12 @@
 package com.evernym.verity.sdk.wallet;
 
 import com.evernym.verity.sdk.exceptions.WalletException;
+import com.evernym.verity.sdk.exceptions.WalletOpenException;
 import org.hyperledger.indy.sdk.IndyException;
+import org.hyperledger.indy.sdk.LibIndy;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.hyperledger.indy.sdk.wallet.WalletExistsException;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
@@ -62,6 +65,9 @@ public class WalletUtil {
 
     private static void tryToCreateWallet(String walletConfig, String walletCredentials) throws WalletException {
         try {
+            if(LibIndy.api == null) {
+                throw new WalletException("Libindy failed to initialize - likely the shared library was not found");
+            }
             Wallet.createWallet(walletConfig, walletCredentials).get();
         }
         catch (WalletExistsException ignored) {} // This is ok, we want to only create if wallet don't exist
@@ -70,6 +76,18 @@ public class WalletUtil {
                 throw new WalletException("Unable to try-create wallet", e);
             }
             // This is ok, we want to only create if wallet don't exist
+        }
+    }
+
+    public static Wallet openIndyWallet(WalletConfig walletConfig) throws WalletOpenException, JSONException {
+        try {
+            if(LibIndy.api == null) {
+                throw new WalletOpenException("Libindy failed to initialize - likely the shared library was not found");
+            }
+            return Wallet.openWallet(walletConfig.config(), walletConfig.credential()).get();
+        }
+        catch (IndyException | ExecutionException | InterruptedException e){
+            throw new WalletOpenException("Wallet failed to open", e);
         }
     }
 }
