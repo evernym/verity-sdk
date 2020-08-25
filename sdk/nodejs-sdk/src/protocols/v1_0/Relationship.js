@@ -3,7 +3,6 @@ const utils = require('../../utils')
 const Protocol = require('../Protocol')
 const GoalCodes = require('./GoalCodes')
 
-
 /**
  * An interface for controlling a 1.0 Relationship protocol.
  * @extends Protocol
@@ -138,9 +137,7 @@ class Relationship extends Protocol {
     if (shortInvite != null) {
       msg.shortInvite = shortInvite
     }
-    console.log("******")
-    console.log(goal)
-    console.log(goal.code)
+
     if (goal != null) {
       msg.goalCode = goal.code
       msg.goal = goal.goalName
