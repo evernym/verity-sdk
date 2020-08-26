@@ -45,7 +45,8 @@ RUN pip3 install -r requirements.txt
 # Install Java packages
 ENV JAVA_HOME /usr/lib/jvm/java-1.11.0-openjdk-amd64/
 WORKDIR /samples/sdk/java-example-app
-RUN mvn compile
+RUN mvn test
+RUN mvn exec:help # pre-download plug-in dependencies
 
 # Install npm packages
 WORKDIR /samples/sdk/nodejs-example-app
