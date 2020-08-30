@@ -30,7 +30,7 @@ After these steps, Connect.Me is ready for the interactions that are demonstrate
 The included `Dockerfile` will setup a complete environment for running the example application in all supported languages. This is the quickest way to try the verity-sdk and avoid some complexity around `ngrok` and `libindy` when working on Windows/MacOS.
 
 ### Prerequisites
-* `docker` is required for this path and installation instructions can be found at [Get Docker Page](https://...docker.com/get-docker/). 
+* `docker` is required for this path and installation instructions can be found at [Get Docker Page](https://www.docker.com/get-docker/). 
 
 ### Steps:
 1. Build docker image. Run the following command from the root directory of the `verity-sdk` project:
