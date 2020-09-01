@@ -25,8 +25,6 @@ class Relationship extends Protocol {
    * @property {String} this.msgNames.OUT_OF_BAND_INVITATION - 'out-of-band-invitation'
    * @property {String} this.msgNames.CREATED - 'created'
    * @property {String} this.msgNames.INVITATION - 'invitation'
-   * @property {String} this.goalCode - 'p2p-messaging'
-   * @property {String} this.goal - 'To establish a peer-to-peer messaging relationship'
    */
   constructor (forRelationship = null, threadId = null, label = null, logoUrl = null) {
     const msgFamily = 'relationship'
@@ -43,8 +41,6 @@ class Relationship extends Protocol {
     this.forRelationship = forRelationship
     this.label = label
     this.logoUrl = logoUrl
-    this.goalCode = 'p2p-messaging'
-    this.goal = 'To establish a peer-to-peer messaging relationship'
   }
 
   /**
@@ -130,8 +126,6 @@ class Relationship extends Protocol {
    */
   async outOfBandInvitationMsg (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
     var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
-    msg.goalCode = this.goalCode
-    msg.goal = this.goal
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     if (shortInvite != null) {
