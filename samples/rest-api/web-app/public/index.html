@@ -1076,7 +1076,7 @@
                         Received Answers
                       </h4>
 
-                      <div v-if="questionResponses.length === 0">
+                      <div v-if="structMsgs.length === 0">
                         <img
                           src="images/none-yet.png"
                           alt="None Received Answers Yet"
@@ -1084,7 +1084,7 @@
                       </div>
 
                       <div v-else class="scroll-display-height-300">
-                        <div v-for="answer in questionResponses">
+                        <div v-for="answer in structMsgs">
                           <div class="w3-margin-top">
                             <p class="w3-text-gray w3-small">
                               Relationship DID
@@ -1288,7 +1288,7 @@
           credDefs: [],
           connections: [],
           proofs: [],
-          questionResponses: [],
+          structMsgs: [],
           messages: [],
           schema: {
             name: "",
@@ -1346,7 +1346,7 @@
             "credDefs",
             "connections",
             "proofs",
-            "questionResponses",
+            "structMsgs",
             "messages",
             "schema",
             "credDef",
@@ -1557,7 +1557,7 @@
                   break;
                 case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/answer-given":
                   this.structMsgs.push({
-                    did: this.proof.relationshipDID,
+                    did: this.structuredMessage.relationshipDID,
                     data: message.answer,
                   });
                   this.structuredMessage.relationshipDID = "";
@@ -1810,7 +1810,7 @@
             try {
               this.spinners.connections = true;
               const message = {
-                label: this.institutionName,
+                label: this.institutionName
               };
               await this.sendMessage("relationship", "1.0", "create", message);
             } catch (err) {
