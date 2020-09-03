@@ -2,7 +2,7 @@
 
 This is the tutorial for building a sample Issuer application using [Verity REST API](https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0).
 
-This tutorial is written for Node.js framework, but it can be easily adapted to any language that supports asynchronous web requests. For more information on handling Verity asynchronous responses in your client application read [this document](docs/howto/Asynchronous-Architecture.md)
+This tutorial is written for Node.js framework, but it can be easily adapted to any language that supports asynchronous web requests. For more information on handling Verity asynchronous responses in your client application read [this document](../howto/Asynchronous-Architecture.md)
 
 ## Pre-requisites
 
@@ -360,4 +360,4 @@ switch (message['@type']) {
 }
 ```
 
-Completed Issuer application code is available [here](samples/rest-api/issuer/Issuer.js)
+Completed Issuer application code is available [here](../../samples/rest-api/issuer/Issuer.js)
