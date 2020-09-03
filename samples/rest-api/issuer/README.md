@@ -1,7 +1,7 @@
 ## Sample Verity Issuer App
 
 This is a sample Issuer app which is using Verity REST API.
-For more information on this Sample Issuer app read this explanatory [document](docs/howto/How-to-build-Issuer-using-REST-API.md)
+For more information on this Sample Issuer app read this explanatory [document](../../../docs/howto/How-to-build-Issuer-using-REST-API.md)
 
 Requirements:
 - You have received Verity application endpoint, Domain DID and REST API key from Evernym

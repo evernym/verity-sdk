@@ -164,7 +164,7 @@ After you have launched the example application in the previous step and have Co
       Code Examples: 
         [ [Java](../howto/java-verity-flow.md#provisioning-agent-on-verity) ]
         [ [Python](../howto/python-verity-flow.md#provisioning-agent-on-verity) ]
-        [ [Node](/howto/nodejs-verity-flow.md#provisioning-agent-on-verity) ]
+        [ [Node](../howto/nodejs-verity-flow.md#provisioning-agent-on-verity) ]
    
       This provisioning creates an Agent that serves one **Identity Owner** During that process keys are generated and exchanged.
       
