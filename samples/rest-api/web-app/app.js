@@ -51,7 +51,7 @@ async function readInputParameters () {
     process.exit(1)
   }
   domainDid = await readlineInput('Domain DID', process.env.DOMAIN_DID)
-  if (domainDid.length < 22 || domainDid.length > 23) {
+  if (domainDid.length < 21 || domainDid.length > 22) {
     console.log('Invalid DID')
     process.exit(1)
   }
