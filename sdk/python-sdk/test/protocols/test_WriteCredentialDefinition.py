@@ -34,6 +34,7 @@ async def test_write():
         WriteCredentialDefinition.WRITE_CRED_DEF
     )
     assert msg['@id'] is not None
+    assert msg['~thread']['thid'] is not None
     assert msg['name'] == name
     assert msg['schemaId'] == schema_id
     assert msg['tag'] == tag

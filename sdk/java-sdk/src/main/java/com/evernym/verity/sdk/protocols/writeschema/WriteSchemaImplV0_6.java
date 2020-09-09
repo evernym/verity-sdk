@@ -38,6 +38,7 @@ class WriteSchemaImplV0_6 extends AbstractProtocol implements WriteSchemaV0_6 {
         JSONObject message = new JSONObject();
         message.put("@type", messageType(WRITE_SCHEMA));
         message.put("@id", getNewId());
+        addThread(message);
         message.put("name", this.name);
         message.put("version", this.version);
         message.put("attrNames", new JSONArray(attrs));

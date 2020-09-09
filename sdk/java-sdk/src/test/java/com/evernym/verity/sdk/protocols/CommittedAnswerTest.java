@@ -66,8 +66,7 @@ public class CommittedAnswerTest {
     }
 
     private void testAskMessages(JSONObject msg) {
-
-        assertNotNull(msg.getString("@id"));
+        testBaseMessage(msg);
         assertEquals(forRelationship, msg.getString("~for_relationship"));
         assertEquals(questionText, msg.getString("text"));
         assertEquals(questionDetail, msg.getString("detail"));
@@ -90,6 +89,7 @@ public class CommittedAnswerTest {
 
             byte[] message = testProtocol.askMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
+            testBaseMessage(unpackedMessage);
             assertEquals(
                     "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/ask-question",
                     unpackedMessage.getString("@type")
@@ -100,5 +100,11 @@ public class CommittedAnswerTest {
         } finally {
             TestHelpers.cleanup(context);
         }
+    }
+
+    private void testBaseMessage(JSONObject msg) {
+        assertNotNull(msg.getString("@type"));
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
     }
 }

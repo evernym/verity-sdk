@@ -59,6 +59,7 @@ class WriteSchema(Protocol):
         msg['name'] = self.name
         msg['version'] = self.version
         msg['attrNames'] = self.attrs
+        self._add_thread(msg)
         return msg
 
     async def write_msg_packed(self, context):

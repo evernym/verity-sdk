@@ -92,6 +92,7 @@ public class WriteCredentialDefinitionTest {
             WriteCredentialDefinitionV0_6 testProtocol = WriteCredentialDefinition.v0_6(name, schemaId, tag, revocationDetails);
             byte[] message = testProtocol.writeMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
+            testBaseMessage(unpackedMessage);
             assertEquals("did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/write", unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
@@ -99,5 +100,11 @@ public class WriteCredentialDefinitionTest {
         } finally {
             TestHelpers.cleanup(context);
         }
+    }
+
+    private void testBaseMessage(JSONObject msg) {
+        assertNotNull(msg.getString("@type"));
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
     }
 }
