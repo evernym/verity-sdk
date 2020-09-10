@@ -59,8 +59,8 @@ public class RelationshipTest {
     }
 
     private void testCreateMsg(JSONObject msg, boolean hasLogo) {
+        testBaseMessage(msg);
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/create", msg.getString("@type"));
-        assertNotNull(msg.getString("@id"));
         assertEquals(label, msg.getString("label"));
         if (hasLogo)
             assertEquals(logoUrl.toString(), msg.getString("logoUrl"));
@@ -83,8 +83,8 @@ public class RelationshipTest {
     }
 
     private void testConnectionInvitationMsg(JSONObject msg, boolean hasShortInvite) {
+        testBaseMessage(msg);
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/connection-invitation", msg.getString("@type"));
-        assertNotNull(msg.getString("@id"));
         assertNotNull(forRelationship, msg.getString("~for_relationship"));
         if (hasShortInvite)
             assertEquals(shortInvite, msg.getBoolean("shortInvite"));
@@ -118,11 +118,17 @@ public class RelationshipTest {
     }
 
     private void testOutOfBandInvitationMsg(JSONObject msg, boolean hasShortInvite) {
+        testBaseMessage(msg);
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/out-of-band-invitation", msg.getString("@type"));
-        assertNotNull(msg.getString("@id"));
         assert(msg.getString("goalCode").equals(GoalCode.P2P_MESSAGING.code()));
         assert(msg.getString("goal").equals(GoalCode.P2P_MESSAGING.goalName()));
         if (hasShortInvite)
             assertEquals(shortInvite, msg.getBoolean("shortInvite"));
+    }
+
+    private void testBaseMessage(JSONObject msg) {
+        assertNotNull(msg.getString("@type"));
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
     }
 }

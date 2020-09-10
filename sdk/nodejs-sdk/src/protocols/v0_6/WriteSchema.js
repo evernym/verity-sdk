@@ -47,7 +47,8 @@ class WriteSchema extends Protocol {
      * @see #write
      */
   async writeMsg (context) {
-    const msg = this._getBaseMessage(this.msgNames.WRITE_SCHEMA)
+    var msg = this._getBaseMessage(this.msgNames.WRITE_SCHEMA)
+    msg = this._addThread(msg)
     msg.name = this.name
     msg.version = this.version
     msg.attrNames = this.attrs

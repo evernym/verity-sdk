@@ -72,23 +72,21 @@ public class PresentProofTest {
     }
 
     private void testRequestMsgMessages(JSONObject requestMsg) {
+        testBaseMessage(requestMsg);
         assertEquals(
                 "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request",
                 requestMsg.getString("@type")
         );
-        assertNotNull(requestMsg.getString("@id"));
-        assertNotNull(requestMsg.getJSONObject("~thread").getString("thid"));
         assertEquals(forRelationship, requestMsg.getString("~for_relationship"));
         assertEquals(proofRequestName, requestMsg.getString("name"));
         assertEquals(attr1.toJson().toString(), requestMsg.getJSONArray("proof_attrs").get(0).toString());
     }
 
     private void testStatusMsg(JSONObject statusMsg) {
+        testBaseMessage(statusMsg);
         assertEquals(
                 "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/status",
                 statusMsg.getString("@type"));
-        assertNotNull(statusMsg.getString("@id"));
-        assertNotNull(statusMsg.getJSONObject("~thread").getString("thid"));
         assertEquals(forRelationship, statusMsg.getString("~for_relationship"));
     }
 
@@ -100,6 +98,7 @@ public class PresentProofTest {
             PresentProofV1_0 presentProof = PresentProof.v1_0(forRelationship, proofRequestName, attr1);
             byte [] message = presentProof.requestMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
+            testBaseMessage(unpackedMessage);
             assertEquals(
                     "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request",
                     unpackedMessage.getString("@type")
@@ -120,6 +119,7 @@ public class PresentProofTest {
             PresentProofV1_0 testProtocol = PresentProof.v1_0(forRelationship, UUID.randomUUID().toString());
             byte [] message = testProtocol.statusMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
+            testBaseMessage(unpackedMessage);
             assertEquals(
                     "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/status",
                     unpackedMessage.getString("@type")
@@ -140,6 +140,7 @@ public class PresentProofTest {
             PresentProofV1_0 testProtocol = PresentProof.v1_0(forRelationship, UUID.randomUUID().toString());
             byte [] message = testProtocol.rejectMsgPacked(context, "because");
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
+            testBaseMessage(unpackedMessage);
             assertEquals(
                     "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/reject",
                     unpackedMessage.getString("@type")
@@ -153,5 +154,11 @@ public class PresentProofTest {
         } finally {
             TestHelpers.cleanup(context);
         }
+    }
+
+    private void testBaseMessage(JSONObject msg) {
+        assertNotNull(msg.getString("@type"));
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
     }
 }

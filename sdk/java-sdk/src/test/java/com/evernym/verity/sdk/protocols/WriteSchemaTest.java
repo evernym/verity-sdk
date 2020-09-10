@@ -66,6 +66,7 @@ public class WriteSchemaTest {
             WriteSchemaV0_6 testProtocol = WriteSchema.v0_6(schemaName, schemaVersion, attr1, attr2);
             byte[] message = testProtocol.writeMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
+            testBaseMessage(unpackedMessage);
             assertEquals(
                     "did:sov:123456789abcdefghi1234;spec/write-schema/0.6/write",
                     unpackedMessage.getString("@type")
@@ -76,5 +77,11 @@ public class WriteSchemaTest {
         } finally {
             TestHelpers.cleanup(context);
         }
+    }
+
+    private void testBaseMessage(JSONObject msg) {
+        assertNotNull(msg.getString("@type"));
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
     }
 }

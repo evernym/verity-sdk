@@ -49,10 +49,15 @@ public class OutOfBandTest {
     }
 
     private void testHandshakeReuseMsg(JSONObject msg) {
+        testBaseMessage(msg);
         assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/out-of-band/1.0/reuse", msg.getString("@type"));
-        assertNotNull(msg.getString("@id"));
-        assertNotNull(msg.getJSONObject("~thread"));
         assertEquals("testForRelationship", msg.getString("~for_relationship"));
         assertEquals("testInviteUrl", msg.getString("inviteUrl"));
+    }
+
+    private void testBaseMessage(JSONObject msg) {
+        assertNotNull(msg.getString("@type"));
+        assertNotNull(msg.getString("@id"));
+        assertNotNull(msg.getJSONObject("~thread").getString("thid"));
     }
 }

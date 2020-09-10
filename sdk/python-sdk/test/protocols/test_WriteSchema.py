@@ -32,6 +32,7 @@ async def test_write():
         WriteSchema.WRITE_SCHEMA
     )
     assert msg['@id'] is not None
+    assert msg['~thread']['thid'] is not None
     assert msg['name'] == schema_name
     assert msg['version'] == schema_version
     assert msg['attrNames'] == list(attrs)
