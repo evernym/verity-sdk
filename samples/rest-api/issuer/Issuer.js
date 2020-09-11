@@ -213,12 +213,12 @@ app.post('/webhook', async (req, res) => {
     case 'did:sov:123456789abcdefghi1234;spec/relationship/1.0/invitation':
       relInvitationResolve(message.inviteURL)
       break
-    case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/response-sent':
+    case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/request-received':
       break
-    case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/trust_ping/1.0/sent-response':
+    case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/response-sent':
       connectionResolve(null)
       break
-    case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/request-received':
+    case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/trust_ping/1.0/sent-response':
       break
     case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/sent':
       if (message.msg.hasOwnProperty('credentials~attach')) {
