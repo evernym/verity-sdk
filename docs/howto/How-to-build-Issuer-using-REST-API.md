@@ -360,4 +360,4 @@ switch (message['@type']) {
 }
 ```
 
-Completed Issuer application code is available [here](../../samples/rest-api/issuer/Issuer.js)
+Completed Issuer application code is available [here](../../samples/rest-api/issuer)

@@ -206,6 +206,8 @@ We then await for the Holder to initiate *Connection* protocol and accept the co
       break
     case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/trust_ping/1.0/sent-response':
       break
+
+      did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/out-of-band/1.0/relationship-reused
   }
   ```
 
@@ -260,4 +262,4 @@ switch (message['@type']) {
 }
 ```
 
-Completed Verifier application code is available [here](../../samples/rest-api/issuer/Issuer.js)
+Completed Verifier application code is available [here](../../samples/rest-api/verifier)
