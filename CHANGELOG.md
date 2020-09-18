@@ -1,3 +1,44 @@
+# Release notes - Verity 2.3.1 (0.4.100298448.69d2cf3) - Sep 18 2020
+
+## Bugs
+    * [VE-1966] - Verification result "ProofUndefined" in presentation-result message
+    * [VE-1969] - Add threadId() for WriteSchema protocol in all 3 SDKs
+    * [VE-1970] - Problem with push notifications with Aries protocols
+
+## Stories
+    * [VE-1967] - When protocol receives unexpected message (for state) it should respond with problem-report.
+    * [VE-1975] - Add message type to outer layer of aires outgoing messages
+    * [VE-1977] - Short URL returns c_i in the response body
+
+# Release notes - Verity 2.3.0 (0.4.99581977.9703ac5) - Sep 8 2020
+
+## Bugs
+    * [VE-1957] - No linkage between relationship-reused thid/pthid and OutofBand invitation message thid/@id
+    * [VE-1958] - profileUrl is not set when out-of-band-invitation is used
+
+## Stories
+    * [VE-1491] - As Evernym Customer using Aries 1.0 connections protocol, I need to have be able to send a connection using URL
+    * [VE-1811] - Verity Application needs to persists events in docker container
+    * [VE-1883] - Implement support for goal-code and goal in Out-Of-Band protocol on Verity
+
+# Release notes - Verity 2.2.1 (0.4.98503368.232c874) - Sep 2 2020
+
+## Bugs
+    * [VE-1925] - Fix legacy agent routes (found issues during release)
+    * [VE-1926] - relationship data model validation issues
+
+# Release notes - Verity 2.2.0 (0.4.98263760.043e6b5) - Aug 26 2020
+
+## Bugs
+    * [VE-1667] - Field verification_result in presentation-result message has a wrong value
+    * [VE-1829] - Question answer should use url_safe base64 encoding.
+    * [VE-1899] - Example app crashes when Verity Application endpoint with trailing slash is specified
+    * [VE-1900] - Fix example app output once if expired token is used.
+
+## Stories
+    * [VE-1551] - Cache used provisioning tokes on Verity so token cannot be used more than once within the token window
+    * [VE-1790] - Publish verity intergration test runner
+
 # Release notes - Verity 2.1 (0.4.95258837.49f840f) - July 28 2020
 
 ## Bugs
