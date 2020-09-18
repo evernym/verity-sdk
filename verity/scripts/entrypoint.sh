@@ -8,7 +8,7 @@ ANSII_RESET='\x1b[0m'
 # Handle ctrl-C to exit the application
 trap_ctrlC() {
     if [ -n "$NGROK_PID" ]; then
-        kill $NGROK_PID
+        kill "$NGROK_PID"
     fi
     exit 1
 }
@@ -82,7 +82,7 @@ provision() {
   fi
 
   # Write out TAA configruation to the file
-  echo "agency.lib-indy.ledger.transaction_author_agreement.agreements = {\"${TAA_VERSION}\" = { digest = \${?TAA_HASH}, mechanism = on_file, time-of-acceptance = \${?TAA_ACCEPTANCE}}}" > /etc/verity/verity-application/taa.conf
+  echo "verity.lib-indy.ledger.transaction_author_agreement.agreements = {\"${TAA_VERSION}\" = { digest = \${?TAA_HASH}, mechanism = on_file, time-of-acceptance = \${?TAA_ACCEPTANCE}}}" > /etc/verity/verity-application/taa.conf
 
   # Generate random logo
   ROBO_HASH=$(date +%s | md5sum | base64 | head -c 8)

@@ -15,4 +15,6 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
+    <turboFilter class="com.evernym.verity.IgnoreLoggerFilter"/>
+
 </configuration>
