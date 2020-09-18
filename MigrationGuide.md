@@ -1,5 +1,10 @@
 ##Migration Guide 
 
+### `0.4.1` to `0.4.2`
+####Java
+The Provision protocol (v0.7) method `provision` now throws `ProvisionTokenException` exception which will provide 
+details about why provisioning failed.
+
 ### `0.2.0-beta` to `0.3.0-beta`
 #### Removed protocols
 To better support the interoperable `Aries` protocols several `0.6` versions of the protocols have been dropped. These `0.6` versions were designed and implemented before the `Aries` community fully organized and standardized these protocols.
