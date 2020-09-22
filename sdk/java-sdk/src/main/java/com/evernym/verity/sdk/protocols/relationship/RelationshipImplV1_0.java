@@ -21,11 +21,14 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
 class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 {
     final static String CREATE = "create";
     final static String CONNECTION_INVITATION = "connection-invitation";
+    final static String SMS_CONNECTION_INVITATION = "sms-connection-invitation";
     final static String OUT_OF_BAND_INVITATION = "out-of-band-invitation";
+    final static String SMS_OUT_OF_BAND_INVITATION = "sms-out-of-band-invitation";
 
     String forRelationship;
     String label;
     URL logoUrl = null;
+    String phoneNumber = null;
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -50,6 +53,18 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
         this.created = true;
     }
 
+    RelationshipImplV1_0(String label, URL logoUrl, String phoneNumber) {
+        if (!isNullOrWhiteSpace(label)) {
+            this.label = label;
+        } else {
+            this.label = "";
+        }
+        this.logoUrl = logoUrl;
+        this.phoneNumber = phoneNumber;
+
+        this.created = true;
+    }
+
     RelationshipImplV1_0(String forRelationship, String threadId) {
         super(threadId);
         this.forRelationship = forRelationship;
@@ -67,6 +82,8 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
                 .put("label", label);
         if (logoUrl != null)
             rtn.put("logoUrl", logoUrl.toString());
+        if (!isNullOrWhiteSpace(phoneNumber))
+            rtn.put("phoneNumber", phoneNumber);
         addThread(rtn);
         return rtn;
     }
@@ -119,6 +136,27 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
         return packMsg(context, connectionInvitationMsg(context, shortInvite));
     }
 
+    @Override
+    public void smsConnectionInvitation(Context context) throws IOException, VerityException {
+        send(context, smsConnectionInvitationMsg(context));
+    }
+
+    @Override
+    public JSONObject smsConnectionInvitationMsg(Context context) {
+        JSONObject rtn = new JSONObject()
+                .put("@type", messageType(SMS_CONNECTION_INVITATION))
+                .put("@id", getNewId());
+
+        if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
+
+        addThread(rtn);
+        return rtn;
+    }
+
+    @Override
+    public byte[] smsConnectionInvitationMsgPacked(Context context) throws VerityException {
+        return packMsg(context, smsConnectionInvitationMsg(context));
+    }
 
     @Override
     public void outOfBandInvitation(Context context) throws IOException, VerityException {
@@ -182,5 +220,49 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     @Override
     public byte[] outOfBandInvitationMsgPacked(Context context, Boolean shortInvite, GoalCode goal) throws VerityException {
         return packMsg(context, outOfBandInvitationMsg(context, shortInvite, goal));
+    }
+
+    @Override
+    public void smsOutOfBandInvitation(Context context) throws IOException, VerityException {
+        send(context, smsOutOfBandInvitationMsg(context));
+    }
+
+    @Override
+    public void smsOutOfBandInvitation(Context context, GoalCode goal) throws IOException, VerityException {
+        send(context, smsOutOfBandInvitationMsg(context, goal));
+    }
+
+    @Override
+    public JSONObject smsOutOfBandInvitationMsg(Context context) throws VerityException {
+        return smsOutOfBandInvitationMsg(context, null);
+    }
+
+    @Override
+    public JSONObject smsOutOfBandInvitationMsg(Context context, GoalCode goal) {
+        JSONObject rtn = new JSONObject()
+                .put("@type", messageType(SMS_OUT_OF_BAND_INVITATION))
+                .put("@id", getNewId());
+
+        if(goal == null){
+            rtn.put("goalCode", GoalCode.P2P_MESSAGING.code())
+                    .put("goal", GoalCode.P2P_MESSAGING.goalName());
+        } else {
+            rtn.put("goalCode", goal.code())
+                    .put("goal", goal.goalName());
+        }
+
+        if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
+        addThread(rtn);
+        return rtn;
+    }
+
+    @Override
+    public byte[] smsOutOfBandInvitationMsgPacked(Context context) throws VerityException {
+        return packMsg(context, smsOutOfBandInvitationMsg(context));
+    }
+
+    @Override
+    public byte[] smsOutOfBandInvitationMsgPacked(Context context, GoalCode goal) throws VerityException {
+        return packMsg(context, smsOutOfBandInvitationMsg(context, goal));
     }
 }

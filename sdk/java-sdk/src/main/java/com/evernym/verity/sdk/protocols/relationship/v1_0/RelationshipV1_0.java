@@ -130,6 +130,35 @@ public interface RelationshipV1_0 extends Protocol {
     byte[] connectionInvitationMsgPacked(Context context, Boolean shortInvite) throws VerityException;
 
     /**
+     * Ask for sending SMS aries invitation from the verity-application agent for the relationship created by this protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void smsConnectionInvitation(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    JSONObject smsConnectionInvitationMsg(Context context) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    byte[] smsConnectionInvitationMsgPacked(Context context) throws VerityException;
+
+    /**
      * Ask for aries out of band invitation from the verity-application agent for the relationship created by this protocol
      *
      * @param context an instance of the Context object initialized to a verity-application agent
@@ -225,4 +254,65 @@ public interface RelationshipV1_0 extends Protocol {
      * @see #connectionInvitation
      */
     byte[] outOfBandInvitationMsgPacked(Context context, Boolean shortInvite, GoalCode goal) throws VerityException;
+
+    /**
+     * Ask for sending SMS aries out of band invitation from the verity-application agent for the relationship created by this protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void smsOutOfBandInvitation(Context context) throws IOException, VerityException;
+
+    /**
+     * Ask for sending SMS aries out of band invitation from the verity-application agent for the relationship created by this protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param goal the initial intended goal of the relationship (this goal is expressed in the invite)
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void smsOutOfBandInvitation(Context context, GoalCode goal) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    JSONObject smsOutOfBandInvitationMsg(Context context) throws VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param goal the initial intended goal of the relationship (this goal is expressed in the invite)
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    JSONObject smsOutOfBandInvitationMsg(Context context, GoalCode goal) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    byte[] smsOutOfBandInvitationMsgPacked(Context context) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param goal the initial intended goal of the relationship (this goal is expressed in the invite)
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #connectionInvitation
+     */
+    byte[] smsOutOfBandInvitationMsgPacked(Context context, GoalCode goal) throws VerityException;
 }

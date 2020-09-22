@@ -15,6 +15,7 @@ class Relationship extends Protocol {
    * @param threadId the thread id of the already started protocol
    * @param label the label presented in the invitation to connect to this relationship
    * @param logoUrl logo url presented in invitation
+   * @param phoneNumber mobile phone number which can be used for sending SMS invitations.
    * @return 1.0 Relationship object
    *
    * @property {String} msgFamily - 'relationship'
@@ -23,10 +24,12 @@ class Relationship extends Protocol {
    * @property {String} this.msgNames.CREATE - 'create'
    * @property {String} this.msgNames.CONNECTION_INVITATION - 'connection-invitation'
    * @property {String} this.msgNames.OUT_OF_BAND_INVITATION - 'out-of-band-invitation'
+   * @property {String} this.msgNames.SMS_CONNECTION_INVITATION - 'sms-connection-invitation'
+   * @property {String} this.msgNames.SMS_OUT_OF_BAND_INVITATION - 'sms-out-of-band-invitation'
    * @property {String} this.msgNames.CREATED - 'created'
    * @property {String} this.msgNames.INVITATION - 'invitation'
    */
-  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null) {
+  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null, phoneNumber = null) {
     const msgFamily = 'relationship'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
@@ -35,12 +38,15 @@ class Relationship extends Protocol {
     this.msgNames.CREATE = 'create'
     this.msgNames.CONNECTION_INVITATION = 'connection-invitation'
     this.msgNames.OUT_OF_BAND_INVITATION = 'out-of-band-invitation'
+    this.msgNames.SMS_CONNECTION_INVITATION = 'sms-connection-invitation'
+    this.msgNames.SMS_OUT_OF_BAND_INVITATION = 'sms-out-of-band-invitation'
     this.msgNames.CREATED = 'created'
     this.msgNames.INVITATION = 'invitation'
 
     this.forRelationship = forRelationship
     this.label = label
     this.logoUrl = logoUrl
+    this.phoneNumber = phoneNumber
   }
 
   /**
@@ -56,6 +62,9 @@ class Relationship extends Protocol {
     msg.label = this.label
     if (this.logoUrl) {
       msg.logoUrl = this.logoUrl
+    }
+    if (this.phoneNumber) {
+      msg.phoneNumber = this.phoneNumber
     }
     return msg
   }
@@ -83,6 +92,7 @@ class Relationship extends Protocol {
   /**
      * Creates the control message without packaging and sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param shortInvite enables short version of invite to be generated
      * @return the constructed message (JSON object)
      *
      * @see #connectionInvitation
@@ -100,6 +110,7 @@ class Relationship extends Protocol {
   /**
      * Creates and packages message without sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param shortInvite enables short version of invite to be generated
      * @return the byte array ready for transport
      *
      * @see #connectionInvitation
@@ -112,17 +123,54 @@ class Relationship extends Protocol {
      * Ask for aries invitation from the verity-application agent for the relationship created by this protocol
      *
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param shortInvite enables short version of invite to be generated
      */
   async connectionInvitation (context, shortInvite = null) {
     await this.sendMessage(context, await this.connectionInvitationMsgPacked(context, shortInvite))
   }
 
   /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #smsConnectionInvitation
+     */
+  async smsConnectionInvitationMsg (context) {
+    var msg = this._getBaseMessage(this.msgNames.SMS_CONNECTION_INVITATION)
+    msg['~for_relationship'] = this.forRelationship
+    msg = this._addThread(msg)
+    return msg
+  }
+
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #smsConnectionInvitation
+     */
+  async smsConnectionInvitationMsgPacked (context) {
+    return this.getMessageBytes(context, await this.smsConnectionInvitationMsg(context))
+  }
+
+  /**
+     * Ask for aries invitation from the verity-application agent for the relationship created by this protocol
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     */
+  async smsConnectionInvitation (context) {
+    await this.sendMessage(context, await this.smsConnectionInvitationMsgPacked(context))
+  }
+
+  /**
    * Creates the control message without packaging and sending it.
    * @param context an instance of the Context object initialized to a verity-application agent
+   * @param shortInvite enables short version of invite to be generated
+   * @param goal goal code for providing the goal of the connection
    * @return the constructed message (JSON object)
    *
-   * @see #connectionInvitation
+   * @see #outOfBandInvitation
    */
   async outOfBandInvitationMsg (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
     var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
@@ -142,9 +190,11 @@ class Relationship extends Protocol {
   /**
    * Creates and packages message without sending it.
    * @param context an instance of the Context object initialized to a verity-application agent
+   * @param shortInvite enables short version of invite to be generated
+   * @param goal goal code for providing the goal of the connection
    * @return the byte array ready for transport
    *
-   * @see #connectionInvitation
+   * @see #outOfBandInvitation
    */
   async outOfBandInvitationMsgPacked (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
     return this.getMessageBytes(context, await this.outOfBandInvitationMsg(context, shortInvite, goal))
@@ -154,9 +204,53 @@ class Relationship extends Protocol {
    * Ask for aries out of band invitation from the verity-application agent for the relationship created by this protocol
    *
    * @param context an instance of the Context object initialized to a verity-application agent
+   * @param shortInvite enables short version of invite to be generated
+   * @param goal goal code for providing the goal of the connection
    */
   async outOfBandInvitation (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
     await this.sendMessage(context, await this.outOfBandInvitationMsgPacked(context, shortInvite, goal))
+  }
+
+  /**
+   * Creates the control message without packaging and sending it.
+   * @param context an instance of the Context object initialized to a verity-application agent
+   * @param goal goal code for providing the goal of the connection
+   * @return the constructed message (JSON object)
+   *
+   * @see #smsOutOfBandInvitation
+   */
+  async smsOutOfBandInvitationMsg (context, goal = GoalCodes.P2P_MESSAGING()) {
+    var msg = this._getBaseMessage(this.msgNames.SMS_OUT_OF_BAND_INVITATION)
+    msg['~for_relationship'] = this.forRelationship
+    msg = this._addThread(msg)
+
+    if (goal != null) {
+      msg.goalCode = goal.code
+      msg.goal = goal.goalName
+    }
+    return msg
+  }
+
+  /**
+   * Creates and packages message without sending it.
+   * @param context an instance of the Context object initialized to a verity-application agent
+   * @param goal goal code for providing the goal of the connection
+   * @return the byte array ready for transport
+   *
+   * @see #smsOutOfBandInvitation
+   */
+  async smsOutOfBandInvitationMsgPacked (context, goal = GoalCodes.P2P_MESSAGING()) {
+    return this.getMessageBytes(context, await this.smsOutOfBandInvitationMsg(context, goal))
+  }
+
+  /**
+   * Ask for SMS aries out of band invitation from the verity-application agent for the relationship created by this protocol
+   *
+   * @param context an instance of the Context object initialized to a verity-application agent
+   * @param goal goal code for providing the goal of the connection
+   */
+  async smsOutOfBandInvitation (context, goal = GoalCodes.P2P_MESSAGING()) {
+    await this.sendMessage(context, await this.smsOutOfBandInvitationMsgPacked(context, goal))
   }
 }
 

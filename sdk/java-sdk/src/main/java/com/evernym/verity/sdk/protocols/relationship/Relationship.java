@@ -41,6 +41,19 @@ public class Relationship {
     }
 
     /**
+     * Constructor for the 1.0 Relationship object. This constructor creates an object that is ready to create a new
+     * relationship.
+     *
+     * @param label the label presented in the invitation to connect to this relationship
+     * @param logoUrl logo url presented in invitation
+     * @param phoneNumber mobile phone number
+     * @return 1.0 Relationship object
+     */
+    public static RelationshipV1_0 v1_0(String label, URL logoUrl, String phoneNumber) {
+        return new RelationshipImplV1_0(label, logoUrl, phoneNumber);
+    }
+
+    /**
      * Constructor for the 1.0 Relationship object. This constructor re-creates an object from a known relationship and
      * threadId. This object can only check status of the protocol.
      *
