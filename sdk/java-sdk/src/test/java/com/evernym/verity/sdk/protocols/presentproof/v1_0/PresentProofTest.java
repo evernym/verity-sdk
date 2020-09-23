@@ -29,7 +29,7 @@ public class PresentProofTest {
             .issuerDid("UOISDFOPUASOFIUSAF")
             .build();
     private final Attribute attr1 = PresentProofV1_0.attribute("age", r1);
-    private final Predicate pred1 = new Predicate("age", 18, r1);
+    private final Predicate pred1 = new Predicate("age", ">=", 18, r1);
 
     @Test
     public void testGetMessageType() {
