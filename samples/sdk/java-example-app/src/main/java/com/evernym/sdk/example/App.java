@@ -67,7 +67,7 @@ public class App extends Helper {
         String relDID = createRelationship();
         createConnection(relDID);
 
-//        askQuestion(forDID);
+        askQuestion(relDID);
 
         String schemaId = writeLedgerSchema();
         String defId = writeLedgerCredDef(schemaId);
@@ -144,7 +144,7 @@ public class App extends Helper {
 
     void updateConfigs() throws IOException, VerityException {
         String INSTITUTION_NAME = "Faber College";
-        String LOGO_URL = "http://robohash.org/235";
+        String LOGO_URL = "https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png";
 
         UpdateConfigsV0_6 updateConfigs = UpdateConfigs.v0_6(INSTITUTION_NAME, LOGO_URL);
         updateConfigs.update(context);
@@ -289,7 +289,7 @@ public class App extends Helper {
         // 1. create relationship key
         // 2. create invitation
 
-        RelationshipV1_0 relProvisioning = Relationship.v1_0("inviter");
+        RelationshipV1_0 relProvisioning = Relationship.v1_0("Faber College");
 
         // handler for the response to the request to start the Connecting protocol.
         AtomicBoolean startRelationshipComplete = new AtomicBoolean(false);
@@ -375,35 +375,35 @@ public class App extends Helper {
         return relDID;
     }
 
-//    private void askQuestion(String forDID) throws IOException, VerityException {
-//        String questionText = "Hi Alice, how are you today?";
-//        String questionDetail = "Checking up on you today.";
-//        String[] validResponses = {"Great!", "Not so good."};
-//
-//        CommittedAnswerV1_0 committedAnswer = CommittedAnswer.v1_0(
-//                forDID,
-//                questionText,
-//                questionDetail,
-//                validResponses,
-//                true);
-//
-//
-//        AtomicBoolean questionComplete = new AtomicBoolean(false); // spinlock bool
-//        handle(committedAnswer, (String msgName, JSONObject message) -> {
-//            if("answer-given".equals(msgName))
-//            {
-//                printlnMessage(msgName, message);
-//                questionComplete.set(true);
-//
-//            }
-//            else {
-//                nonHandled("Message Name is not handled - "+msgName);
-//            }
-//        });
-//
-//        committedAnswer.ask(context);
-//        waitFor(questionComplete, "Waiting for Connect.Me to answer the question");
-//    }
+    private void askQuestion(String forDID) throws IOException, VerityException {
+        String questionText = "Hi Alice, how are you today?";
+        String questionDetail = "Checking up on you today.";
+        String[] validResponses = {"Great!", "Not so good."};
+
+        CommittedAnswerV1_0 committedAnswer = CommittedAnswer.v1_0(
+                forDID,
+                questionText,
+                questionDetail,
+                validResponses,
+                true);
+
+
+        AtomicBoolean questionComplete = new AtomicBoolean(false); // spinlock bool
+        handle(committedAnswer, (String msgName, JSONObject message) -> {
+            if("answer-given".equals(msgName))
+            {
+                printlnMessage(msgName, message);
+                questionComplete.set(true);
+
+            }
+            else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        committedAnswer.ask(context);
+        waitFor(questionComplete, "Waiting for Connect.Me to answer the question");
+    }
 
     private String writeLedgerSchema() throws IOException, VerityException {
         // input parameters for schema
@@ -487,10 +487,10 @@ public class App extends Helper {
         // input parameters for issue credential
         String credentialName = "Degree";
         Map<String, String> credentialData = new HashMap<>();
-        credentialData.put("name", "Joe Smith");
+        credentialData.put("name", "Alice Smith");
         credentialData.put("degree", "Bachelors");
         // constructor for the Issue Credential protocol
-        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0", true);
+        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "Degree", "0", true);
 
         AtomicBoolean offerSent = new AtomicBoolean(false); // spinlock bool
         AtomicBoolean credSent = new AtomicBoolean(false); // spinlock bool

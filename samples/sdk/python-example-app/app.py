@@ -24,7 +24,7 @@ from verity_sdk.protocols.v1_0.Relationship import Relationship
 from verity_sdk.utils.Context import Context
 
 INSTITUTION_NAME = 'Faber College'
-LOGO_URL = 'http://robohash.org/235'
+LOGO_URL = 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
 
 context: Context
 issuer_did: str = ''
@@ -65,7 +65,7 @@ async def create_relationship(loop) -> str:
     # 2. create invitation
 
     # Constructor for the Relationship API
-    relationship: Relationship = Relationship(label='inviter')
+    relationship: Relationship = Relationship(label=INSTITUTION_NAME)
 
     rel_did = loop.create_future()
     thread_id = loop.create_future()
@@ -247,41 +247,41 @@ async def write_ledger_cred_def(loop, schema_id: str) -> str:
     return cred_def_id  # returns ledger cred def identifier
 
 
-# async def ask_question(loop, for_did):
-#     question_text = 'Hi Alice, how are you today?'
-#     question_detail = 'Checking up on you today.'
-#     valid_responses = ['Great!', 'Not so good.']
-#
-#     question = CommittedAnswer(for_did, None, question_text, question_detail, valid_responses, True)
-#     first_step = loop.create_future()
-#
-#     spinner = make_spinner('Waiting for Connect.Me to answer the question')  # Console spinner
-#
-#     async def receive_answer(msg_name, message):
-#         spinner.stop_and_persist('Done')
-#         print_message(msg_name, message)
-#         if msg_name == CommittedAnswer.ANSWER_GIVEN:
-#             first_step.set_result(None)
-#         else:
-#             non_handled(f'Message name is not handled - {msg_name}', message)
-#
-#     handlers.add_handler(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION, receive_answer)
-#
-#     spinner.start()
-#
-#     await question.ask(context)
+async def ask_question(loop, for_did):
+    question_text = 'Hi Alice, how are you today?'
+    question_detail = 'Checking up on you today.'
+    valid_responses = ['Great!', 'Not so good.']
+
+    question = CommittedAnswer(for_did, None, question_text, question_detail, valid_responses, True)
+    first_step = loop.create_future()
+
+    spinner = make_spinner('Waiting for Connect.Me to answer the question')  # Console spinner
+
+    async def receive_answer(msg_name, message):
+        spinner.stop_and_persist('Done')
+        print_message(msg_name, message)
+        if msg_name == CommittedAnswer.ANSWER_GIVEN:
+            first_step.set_result(None)
+        else:
+            non_handled(f'Message name is not handled - {msg_name}', message)
+
+    handlers.add_handler(CommittedAnswer.MSG_FAMILY, CommittedAnswer.MSG_FAMILY_VERSION, receive_answer)
+
+    spinner.start()
+
+    await question.ask(context)
 
 
 async def issue_credential(loop, rel_did, cred_def_id):
     # input parameters for issue credential
     credential_name = 'Degree'
     credential_data = {
-        'name': 'Joe Smith',
+        'name': 'Alice Smith',
         'degree': 'Bachelors'
     }
 
     # constructor for the Issue Credential protocol
-    issue = IssueCredential(rel_did, None, cred_def_id, credential_data, 'comment', 0, True)
+    issue = IssueCredential(rel_did, None, cred_def_id, credential_data, 'Degree', 0, True)
 
     offer_sent = loop.create_future()
     cred_sent = loop.create_future()

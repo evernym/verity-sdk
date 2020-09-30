@@ -70,7 +70,7 @@ public class Listener {
         @Override
         public void log(final Exception ex) {
             if (ex instanceof SocketTimeoutException) {
-                System.err.println("Connection timed out");
+                // System.err.println("Connection timed out");
             } else if (ex instanceof ConnectionClosedException) {
                 // System.err.println(ex.getMessage());
             } else if (ex instanceof SocketException) {
