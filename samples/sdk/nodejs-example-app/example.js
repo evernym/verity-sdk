@@ -14,7 +14,7 @@ const { v4: uuidv4 } = require('uuid')
 const LISTENING_PORT = 4000
 const CONFIG_PATH = 'verity-context.json'
 const INSTITUTION_NAME = 'Faber College'
-const LOGO_URL = 'http://robohash.org/235'
+const LOGO_URL = 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
 const ANSII_GREEN = '\u001b[32m'
 const ANSII_RESET = '\x1b[0m'
 const rl = readline.createInterface({
@@ -35,7 +35,7 @@ async function example () {
   const relDID = await createRelationship()
   await createConnection(relDID)
 
-  //  await askQuestion(relDID)
+  await askQuestion(relDID)
 
   const schemaId = await writeLedgerSchema()
   const defId = await writeLedgerCredDef(schemaId)
@@ -56,7 +56,7 @@ async function createRelationship () {
   // Step 1
 
   // Constructor for the Connecting API
-  const relProvisioning = new sdk.protocols.v1_0.Relationship(null, null, 'inviter')
+  const relProvisioning = new sdk.protocols.v1_0.Relationship(null, null, INSTITUTION_NAME)
   var spinner = new Spinner('Waiting to create relationship ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for the response to the request to start the Relationship protocol.
@@ -184,33 +184,33 @@ async function createConnection () {
 //* ***********************
 //        QUESTION
 //* ***********************
-//  async function askQuestion (forDID) {
-//  const questionText = 'Hi Alice, how are you today?'
-//  const questionDetail = 'Checking up on you today.'
-//  const validAnswers = ['Great!', 'Not so good.']
-//
-//  const committedAnswer = new sdk.protocols.CommittedAnswer(forDID, null, questionText, null, questionDetail, validAnswers, true)
-//  var spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450) // Console spinner
-//
-//  var firstStep = new Promise((resolve) => {
-//    handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
-//      switch (msgName) {
-//        case committedAnswer.msgNames.ANSWER_GIVEN:
-//          spinner.stop()
-//          printMessage(msgName, message)
-//
-//          resolve(null)
-//          break
-//        default:
-//          printMessage(msgName, message)
-//          nonHandle('Message Name is not handled - ' + msgName)
-//      }
-//    })
-//  })
-//  spinner.start()
-//  await committedAnswer.ask(context)
-//  return firstStep
-//  }
+async function askQuestion (forDID) {
+  const questionText = 'Hi Alice, how are you today?'
+  const questionDetail = 'Checking up on you today.'
+  const validAnswers = ['Great!', 'Not so good.']
+
+  const committedAnswer = new sdk.protocols.CommittedAnswer(forDID, null, questionText, null, questionDetail, validAnswers, true)
+  var spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450) // Console spinner
+
+  var firstStep = new Promise((resolve) => {
+    handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
+      switch (msgName) {
+        case committedAnswer.msgNames.ANSWER_GIVEN:
+          spinner.stop()
+          printMessage(msgName, message)
+
+          resolve(null)
+          break
+        default:
+          printMessage(msgName, message)
+          nonHandle('Message Name is not handled - ' + msgName)
+      }
+    })
+  })
+  spinner.start()
+  await committedAnswer.ask(context)
+  return firstStep
+}
 
 //* ***********************
 //        SCHEMA
@@ -289,12 +289,12 @@ async function writeLedgerCredDef (schemaId) {
 async function issueCredential (relDID, defId) {
   // input parameters for issue credential
   const credentialData = {
-    name: 'Joe Smith',
+    name: 'Alice Smith',
     degree: 'Bachelors'
   }
 
   // constructor for the Issue Credential protocol
-  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, 'comment', 0, true)
+  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, 'Degree', 0, true)
   var spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for 'sent` message when the offer is sent
@@ -443,19 +443,18 @@ async function provisionAgent () {
   console.log('wallet created')
   const provision = new sdk.protocols.v0_7.Provision(null, token)
   // console.log(`provision object ${JSON.stringify(provision)}`)
-  
+
   // ask that an agent by provision (setup) and associated with created key pair
-  try { 
-    let provisioningResponse = await provision.provision(ctx)
+  try {
+    const provisioningResponse = await provision.provision(ctx)
     return provisioningResponse
-  }
-  catch (e) {
+  } catch (e) {
     console.log(e)
-    console.log("Provisioning failed! Likely causes:")
-    console.log("- token not provided but Verity Endpoint requires it")
-    console.log("- token provided but is invalid or expired")
+    console.log('Provisioning failed! Likely causes:')
+    console.log('- token not provided but Verity Endpoint requires it')
+    console.log('- token provided but is invalid or expired')
     process.exit(1)
-  }	
+  }
 }
 
 async function updateWebhookEndpoint () {
