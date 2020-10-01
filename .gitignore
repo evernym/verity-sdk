@@ -203,3 +203,4 @@ Cargo.lock
 # End of https://www.gitignore.io/api/rust,linux,python,java,node.js,javascript,vscode
 **/qrcode.png
 **/verity-context.json
+node_modules/
