@@ -46,7 +46,7 @@ public class Relationship {
      *
      * @param label the label presented in the invitation to connect to this relationship
      * @param logoUrl logo url presented in invitation
-     * @param phoneNumber mobile phone number
+     * @param phoneNumber mobile phone number in international format, eg. +18011234567
      * @return 1.0 Relationship object
      */
     public static RelationshipV1_0 v1_0(String label, URL logoUrl, String phoneNumber) {

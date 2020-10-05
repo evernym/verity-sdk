@@ -17,7 +17,7 @@ public class RelationshipTest {
 
     final String label = "Alice";
     final URL logoUrl = new URL("http://server.com/profile_url.png");
-    final String phoneNumber = "123456";
+    final String phoneNumber = "+18011234567";
     final String forRelationship = "did1";
     final boolean shortInvite = true;
 

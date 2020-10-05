@@ -9,7 +9,7 @@ for_relationship = 'RxRJCMe5XNqc9e9J1YPwhL'
 thread_id = '7a80285e-896c-45f6-b386-39ed7c49230c'
 label = 'test_label'
 logo_url = 'logo_url'
-phone_number = '123456'
+phone_number = '+18011234567'
 short_invite = False
 
 

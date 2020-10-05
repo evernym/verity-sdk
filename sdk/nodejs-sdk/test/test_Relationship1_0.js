@@ -11,7 +11,7 @@ const forRelationship = 'RxRJCMe5XNqc9e9J1YPwhL'
 const threadId = '7a80285e-896c-45f6-b386-39ed7c49230c'
 const label = 'test label'
 const logoUrl = 'http://test.logo/url'
-const phoneNumber = '123456'
+const phoneNumber = '+18011234567'
 const shortInvite = true
 
 describe('Relationship', () => {

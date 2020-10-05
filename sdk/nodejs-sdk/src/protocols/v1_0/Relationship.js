@@ -15,7 +15,7 @@ class Relationship extends Protocol {
    * @param threadId the thread id of the already started protocol
    * @param label the label presented in the invitation to connect to this relationship
    * @param logoUrl logo url presented in invitation
-   * @param phoneNumber mobile phone number which can be used for sending SMS invitations.
+   * @param phoneNumber mobile phone number in international format (eg. +18011234567) which can be used for sending SMS invitations.
    * @return 1.0 Relationship object
    *
    * @property {String} msgFamily - 'relationship'

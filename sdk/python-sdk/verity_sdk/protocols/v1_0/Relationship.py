@@ -76,6 +76,7 @@ class Relationship(Protocol):
             thread_id (str): the thread id of the already started protocol
             label (str): he label presented in the invitation to connect to this relationship
             logo_url (str): logo url presented in invitation
+            phone_number (str): Mobile phone number in international format, eg. +18011234567
         """
         super().__init__(
             self.MSG_FAMILY,
