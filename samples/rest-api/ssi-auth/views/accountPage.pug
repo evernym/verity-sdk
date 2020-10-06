@@ -1,0 +1,32 @@
+html
+   head
+      title Account page
+      link(rel='stylesheet', href='https://www.w3schools.com/w3css/4/w3.css')
+   body
+      if email
+         div.w3-container.w3-light-blue.w3-center
+            |
+            h2 Account page
+         div.w3-margin-left.w3-padding-48
+            h3.w3-padding-24
+               | Welcome back 
+               span.w3-text-red
+                  strong #{name}
+               | !
+            p
+               | You are logged in as: 
+               span.w3-text-red
+                  strong #{name} [#{email}]
+            p  
+               | Your pairwise connection DID is: 
+               span.w3-text-red
+                  strong #{did}
+            div.w3-padding-24 Want to log out?
+            form(action='/logout', method='POST')
+               input.w3-btn.w3-red(type='submit' value='Logout')
+      else
+         h1.w3-margin-left.w3-text-red Not logged in!
+         div.w3-margin-left.w3-padding-48
+            p Go back to the main page?
+            form(action='/logout', method='POST')
+               input.w3-btn.w3-red(type='submit' value='Back')
