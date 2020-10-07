@@ -17,6 +17,7 @@ public class RelationshipTest {
 
     final String label = "Alice";
     final URL logoUrl = new URL("http://server.com/profile_url.png");
+    final String phoneNumber = "+18011234567";
     final String forRelationship = "did1";
     final boolean shortInvite = true;
 
@@ -51,14 +52,18 @@ public class RelationshipTest {
     public void testCreateMsg() throws VerityException, IOException {
         RelationshipV1_0 relationship = Relationship.v1_0(label);
         JSONObject msg = relationship.createMsg(TestHelpers.getContext());
-        testCreateMsg(msg, false);
+        testCreateMsg(msg, false, false);
 
         RelationshipV1_0 relationship2 = Relationship.v1_0(label, logoUrl);
         JSONObject msg2 = relationship2.createMsg(TestHelpers.getContext());
-        testCreateMsg(msg2, true);
+        testCreateMsg(msg2, true, false);
+
+        RelationshipV1_0 relationship3 = Relationship.v1_0(label, logoUrl, phoneNumber);
+        JSONObject msg3 = relationship3.createMsg(TestHelpers.getContext());
+        testCreateMsg(msg3, true, true);
     }
 
-    private void testCreateMsg(JSONObject msg, boolean hasLogo) {
+    private void testCreateMsg(JSONObject msg, boolean hasLogo, boolean hasPhoneNumber) {
         testBaseMessage(msg);
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/create", msg.getString("@type"));
         assertEquals(label, msg.getString("label"));
@@ -66,6 +71,10 @@ public class RelationshipTest {
             assertEquals(logoUrl.toString(), msg.getString("logoUrl"));
         else
             assertFalse(msg.has("logoUrl"));
+        if (hasPhoneNumber)
+            assertEquals(phoneNumber, msg.getString("phoneNumber"));
+        else
+            assertFalse(msg.has("phoneNumber"));
     }
 
     @Test
@@ -91,17 +100,30 @@ public class RelationshipTest {
     }
 
     @Test
+    public void testSMSConnectionInvitationMsg() throws VerityException, IOException {
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
+        JSONObject msg = relationship.smsConnectionInvitationMsg(TestHelpers.getContext());
+        testSMSConnectionInvitationMsg(msg);
+    }
+
+    private void testSMSConnectionInvitationMsg(JSONObject msg) {
+        testBaseMessage(msg);
+        assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/sms-connection-invitation", msg.getString("@type"));
+        assertNotNull(forRelationship, msg.getString("~for_relationship"));
+    }
+
+    @Test
     public void testOutOfBandIInvitationMsg() throws VerityException, IOException {
         RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
-        JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext(), null);
-        testOutOfBandInvitationMsg(msg, false);
+        JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext());
+        testOutOfBandInvitationMsg(msg, false, GoalCode.P2P_MESSAGING);
     }
 
     @Test
     public void testOutOfBandIInvitationMsgWithShortInvite() throws VerityException, IOException {
         RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
         JSONObject msg = relationship.outOfBandInvitationMsg(TestHelpers.getContext(), shortInvite);
-        testOutOfBandInvitationMsg(msg, true);
+        testOutOfBandInvitationMsg(msg, true, GoalCode.P2P_MESSAGING);
     }
 
     @Test
@@ -112,18 +134,40 @@ public class RelationshipTest {
                 null,
                 GoalCode.REQUEST_PROOF
         );
-//        testOutOfBandInvitationMsg(msg, false);
-        assert(msg.getString("goalCode").equals(GoalCode.REQUEST_PROOF.code()));
-        assert(msg.getString("goal").equals(GoalCode.REQUEST_PROOF.goalName()));
+        testOutOfBandInvitationMsg(msg, false, GoalCode.REQUEST_PROOF);
     }
 
-    private void testOutOfBandInvitationMsg(JSONObject msg, boolean hasShortInvite) {
+    private void testOutOfBandInvitationMsg(JSONObject msg, boolean hasShortInvite, GoalCode goalCode) {
         testBaseMessage(msg);
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/out-of-band-invitation", msg.getString("@type"));
-        assert(msg.getString("goalCode").equals(GoalCode.P2P_MESSAGING.code()));
-        assert(msg.getString("goal").equals(GoalCode.P2P_MESSAGING.goalName()));
+        assert(msg.getString("goalCode").equals(goalCode.code()));
+        assert(msg.getString("goal").equals(goalCode.goalName()));
         if (hasShortInvite)
             assertEquals(shortInvite, msg.getBoolean("shortInvite"));
+    }
+
+    @Test
+    public void testSMSOutOfBandIInvitationMsg() throws VerityException, IOException {
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
+        JSONObject msg = relationship.smsOutOfBandInvitationMsg(TestHelpers.getContext());
+        testSMSOutOfBandInvitationMsg(msg, GoalCode.P2P_MESSAGING);
+    }
+
+    @Test
+    public void testSMSOutOfBandIInvitationMsgWithGoalCode() throws VerityException, IOException {
+        RelationshipV1_0 relationship = Relationship.v1_0(forRelationship, "thread-id");
+        JSONObject msg = relationship.smsOutOfBandInvitationMsg(
+                TestHelpers.getContext(),
+                GoalCode.REQUEST_PROOF
+        );
+        testSMSOutOfBandInvitationMsg(msg, GoalCode.REQUEST_PROOF);
+    }
+
+    private void testSMSOutOfBandInvitationMsg(JSONObject msg, GoalCode goalCode) {
+        testBaseMessage(msg);
+        assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/sms-out-of-band-invitation", msg.getString("@type"));
+        assert(msg.getString("goalCode").equals(goalCode.code()));
+        assert(msg.getString("goal").equals(goalCode.goalName()));
     }
 
     private void testBaseMessage(JSONObject msg) {
