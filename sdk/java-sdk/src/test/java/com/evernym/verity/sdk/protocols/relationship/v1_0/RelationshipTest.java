@@ -50,23 +50,36 @@ public class RelationshipTest {
 
     @Test
     public void testCreateMsg() throws VerityException, IOException {
-        RelationshipV1_0 relationship = Relationship.v1_0(label);
+        RelationshipV1_0 relationship = Relationship.v1_0();
         JSONObject msg = relationship.createMsg(TestHelpers.getContext());
-        testCreateMsg(msg, false, false);
+        testCreateMsg(msg, false, false, false);
 
-        RelationshipV1_0 relationship2 = Relationship.v1_0(label, logoUrl);
+        RelationshipV1_0 relationship1 = Relationship.v1_0(label);
+        JSONObject msg1 = relationship1.createMsg(TestHelpers.getContext());
+        testCreateMsg(msg1, true, false, false);
+
+        RelationshipV1_0 relationship2 = Relationship.v1_0(null, logoUrl);
         JSONObject msg2 = relationship2.createMsg(TestHelpers.getContext());
-        testCreateMsg(msg2, true, false);
 
-        RelationshipV1_0 relationship3 = Relationship.v1_0(label, logoUrl, phoneNumber);
+        testCreateMsg(msg2, false, true, false);
+
+        RelationshipV1_0 relationship3 = Relationship.v1_0(label, logoUrl);
         JSONObject msg3 = relationship3.createMsg(TestHelpers.getContext());
-        testCreateMsg(msg3, true, true);
+        testCreateMsg(msg3, true, true, false); 
+
+        RelationshipV1_0 relationship4 = Relationship.v1_0(label, logoUrl, phoneNumber);
+        JSONObject msg4 = relationship4.createMsg(TestHelpers.getContext());
+        testCreateMsg(msg4, true, true, true);
     }
 
-    private void testCreateMsg(JSONObject msg, boolean hasLogo, boolean hasPhoneNumber) {
+    private void testCreateMsg(JSONObject msg, boolean hasLabel, boolean hasLogo, boolean hasPhoneNumber) {
+
         testBaseMessage(msg);
         assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/create", msg.getString("@type"));
-        assertEquals(label, msg.getString("label"));
+        if (hasLabel)
+            assertEquals(label.toString(), msg.getString("label"));
+        else
+            assertFalse(msg.has("label"));
         if (hasLogo)
             assertEquals(logoUrl.toString(), msg.getString("logoUrl"));
         else

@@ -30,7 +30,7 @@ def test_init():
         label=None
     )
 
-    assert relationship.label == ''
+    assert relationship.label is None
     assert relationship.logo_url is None
 
 
