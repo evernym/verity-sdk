@@ -59,7 +59,9 @@ class Relationship extends Protocol {
   async createMsg (context) {
     var msg = this._getBaseMessage(this.msgNames.CREATE)
     msg = this._addThread(msg)
-    msg.label = this.label
+    if (this.label) {
+      msg.label = this.label
+    }
     if (this.logoUrl) {
       msg.logoUrl = this.logoUrl
     }

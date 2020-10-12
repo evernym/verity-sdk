@@ -33,21 +33,17 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     // flag if this instance started the interaction
     boolean created = false;
 
-    RelationshipImplV1_0(String label) {
-        if (!isNullOrWhiteSpace(label))
-            this.label = label;
-        else
-            this.label = "";
+    RelationshipImplV1_0() {
+        this.created = true;
+    }
 
+    RelationshipImplV1_0(String label) {
+        this.label = label;
         this.created = true;
     }
 
     RelationshipImplV1_0(String label, URL logoUrl) {
-        if (!isNullOrWhiteSpace(label)) {
-            this.label = label;
-        } else {
-            this.label = "";
-        }
+        this.label = label;
         this.logoUrl = logoUrl;
 
         this.created = true;
@@ -78,8 +74,9 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
 
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(CREATE))
-                .put("@id", getNewId())
-                .put("label", label);
+                .put("@id", getNewId());
+        if (label != null)
+            rtn.put("label", label.toString());
         if (logoUrl != null)
             rtn.put("logoUrl", logoUrl.toString());
         if (!isNullOrWhiteSpace(phoneNumber))

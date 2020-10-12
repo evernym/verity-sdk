@@ -16,6 +16,16 @@ import java.net.URL;
  * @see Connecting
  */
 public class Relationship {
+     
+    /**
+     * Constructor for the 1.0 Relationship object. This constructor creates an object that is ready to create a new
+     * relationship.
+     *
+     * @return 1.0 Relationship object
+     */
+    public static RelationshipV1_0 v1_0() {
+        return new RelationshipImplV1_0();
+    }
 
     /**
      * Constructor for the 1.0 Relationship object. This constructor creates an object that is ready to create a new

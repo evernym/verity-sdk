@@ -86,10 +86,7 @@ class Relationship(Protocol):
         )
 
         self.for_relationship = for_relationship
-        if label:
-            self.label = label
-        else:
-            self.label = ''
+        self.label = label
         self.logo_url = logo_url
         self.phone_number = phone_number
 
@@ -114,7 +111,8 @@ class Relationship(Protocol):
         """
         msg = self._get_base_message(self.CREATE)
         self._add_thread(msg)
-        msg['label'] = self.label
+        if self.label:
+            msg['label'] = self.label
         if self.logo_url:
             msg['logoUrl'] = self.logo_url
         if self.phone_number:
