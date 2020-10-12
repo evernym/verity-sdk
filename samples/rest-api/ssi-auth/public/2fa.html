@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SSI Auth app</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css"/>
+    <script src="/socket.io/socket.io.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous">
+    </script>
+  </head>
+  <body>
+    <div class="w3-container w3-light-blue w3-center">
+      <h2>Use case: Using commited answer protocol for 2-factor authentication</h2>
+    </div>
+    <br>
+    <div class="w3-row-padding w3-padding-64">
+      <div class="w3-half w3-container">
+        <div class="w3-container w3-pale-blue w3-center w3-card-4" style="width:400px; margin:auto">
+          <br>
+          <p>Don't have an account yet?</p>
+          <br>
+          <form class="w3-container" id="registerForm" method="post" action="/2fa_register">
+            <br>
+            <i class="fa fa-user" aria-hidden="true"></i>
+            <label>Name</label>
+            <input class="w3-input w3-border" type="text" name="name" required>
+            <br> 
+            <i class="fa fa-envelope" aria-hidden="true"></i> 
+            <label>e-mail</label>  
+            <input class="w3-input w3-border" type="email" name="email" required>
+            <br> 
+            <i class="fa fa-lock" aria-hidden="true"></i>
+            <label>Password</label>   
+            <input class="w3-input w3-border" type="password" name="password" required>
+            <br>
+            <input class="socketId" name="socketId" hidden>
+            <br>  
+            <div class="w3-center">
+            <button class="w3-btn w3-blue w3-large" type="submit">Register</button>
+            </div>
+            <br><br>
+          </form>
+          <div id="registerSpinner" class="w3-center" style="display:none">
+           <i class="fa fa-spinner fa-2x" aria-hidden="true"></i><br>
+           <p>Generating QR code...</p>
+           <br>
+          </div>
+          <div id="qrcodeDiv" class="w3-center" style="display:none">
+            <img id="qrcode" style="height:300px; width:300px"></img><br><br>
+            <p>Scan this QR code with ConnectMe app to finish creation of your account </p>
+            <br>
+          </div>
+        </div>
+      </div>
+      
+      <div class="w3-half w3-container">
+        <div class="w3-container w3-pale-blue w3-center w3-card-4" style="width:400px; margin:auto">
+          <br>
+          <p>Already have an account with us?</p>
+          <br>
+        <form class="w3-container" id="loginForm" method="post" action="/2fa_login">
+          <br>
+            <i class="fa fa-envelope" aria-hidden="true"></i> 
+            <label>e-mail</label>   
+            <input class="w3-input  w3-border" type="email" id="login_email" name="email" required>
+          <br> 
+            <i class="fa fa-lock" aria-hidden="true"></i>
+            <label>Password</label>   
+            <input class="w3-input w3-border" type="password" id="login_password" name="password" required>
+          <br>
+            <input class="socketId" name="socketId" hidden>
+            <br>
+            <br>
+          <div class="w3-center">
+            <button class="w3-btn w3-green w3-large" type="submit">Login</button>
+            <br><br>
+          </div>
+      </form>
+        <div id="challengeDiv" class="w3-center" style="display:none">
+          <br>
+          <p>Select this response on your ConnectMe app to respond to 2FA challenge: </p>
+          <br><br>
+          <h2 class="w3-text-red" id="challenge"></h2>
+          <br><br>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+  </body>
+
+  <script>
+    $(document).ready(async function () {
+
+      $('#registerForm').submit(function (e) {
+        e.preventDefault()
+        $('#registerSpinner').show()
+        $('#registerForm').hide()
+        $.ajax({
+          url: '/2fa_register',
+          type: 'post',
+          data: $('#registerForm').serialize(),
+          success: function (result, textStatus, xhr) {
+          },
+          error: function (xhr, status, err) {
+            const message = xhr.status + ' ' + xhr.statusText + '\n' + xhr.responseText
+            alert(message)
+            window.location.reload()
+          }
+        })
+      })
+
+      $('#loginForm').submit(function (e) {
+        e.preventDefault()
+        $.ajax({
+          url: '/2fa_login',
+          type: 'post',
+          data: $('#loginForm').serialize(),
+          success: function (result, textStatus, xhr) {
+          },
+          error: function (xhr, status, err) {
+            $('#loginForm').trigger('reset')
+            const message = xhr.status + ' ' + xhr.statusText + '\n' + xhr.responseText
+            alert(message)
+            window.location.reload()
+          }
+        })
+      })
+
+      const socket = io()
+
+      socket.on('connect', () => {
+        $('.socketId').val(socket.id)
+      })
+
+      socket.on('qrcode', (data) => {
+        $('#registerSpinner').hide()
+        $('#qrcode').attr('src', data)
+        $('#qrcodeDiv').show()
+      })
+
+      socket.on('connection_response', (data) => {
+        switch (data.status) {
+          case 'accepted':
+            window.location.replace('/accountPage')
+            break
+          case 'timeout':
+            alert('Timeout waiting for connection acceptance')
+            window.location.reload()
+            break
+          case 'redirected':
+            alert('Got unexpected connection status REDIRECTED. Please delete your previous connection with the "SSI Savvvy Org" before starting this use case')
+            window.location.reload()
+            break
+          default:
+            alert(data.status)
+            window.location.reload()
+        }
+      })
+
+      socket.on('2fa_challenge', (data) => {
+        $('#loginForm').hide()
+        $('#challengeDiv').show()
+        $('#challenge').text(data)
+      })
+
+      socket.on('answer_verified', (data) => {
+        window.location.replace('/accountPage')
+      })
+
+    })
+  </script>
+</html>
