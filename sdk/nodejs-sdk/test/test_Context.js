@@ -5,6 +5,7 @@ const expect = chai.expect
 chai.use(require('chai-as-promised'))
 const Context = require('../src/utils/Context')
 const utils = require('../src/utils')
+const indy = require('../src/utils/indy')
 
 const testConfig = {
   verityUrl: 'http://vas-team1.pdev.evernym.com',
@@ -30,9 +31,10 @@ exports.getTestConfig = getTestConfig
 
 describe('Context', () => {
   it('should accept valid configuration and contain all data', async () => {
-    let config = getTestConfig()
-    const context = await Context.createWithConfig(config)
-    config = JSON.parse(config)
+    const configStr = getTestConfig()
+    const config = JSON.parse(configStr)
+    await indy.createWallet(JSON.stringify({ id: config.walletName }), JSON.stringify({ key: config.walletKey }))
+    const context = await Context.createWithConfig(configStr)
     expect(context.verityUrl).to.equal(config.verityUrl)
     expect(context.verityPublicDID).to.equal(config.verityPublicDID)
     expect(context.verityPublicVerKey).to.equal(config.verityPublicVerKey)
@@ -48,9 +50,10 @@ describe('Context', () => {
   }).timeout(5000)
 
   it('should parse config if a JSON value', async () => {
-    let config = getTestConfig()
-    const context = await Context.createWithConfig(JSON.parse(config))
-    config = JSON.parse(config)
+    const configStr = getTestConfig()
+    const config = JSON.parse(configStr)
+    await indy.createWallet(JSON.stringify({ id: config.walletName }), JSON.stringify({ key: config.walletKey }))
+    const context = await Context.createWithConfig(configStr)
     expect(context.verityUrl).to.equal(config.verityUrl)
     expect(context.verityPublicDID).to.equal(config.verityPublicDID)
     expect(context.verityPublicVerKey).to.equal(config.verityPublicVerKey)
@@ -100,6 +103,7 @@ describe('Context', () => {
       "sdkPairwiseDID": "XNRkA8tboikwHD3x1Yh7Uz"
     }`
 
+    await indy.createWallet(JSON.stringify({ id: JSON.parse(v01Str).walletName }), JSON.stringify({ key: JSON.parse(v01Str).walletKey }))
     const ctx = await Context.createWithConfig(v01Str)
 
     expect(ctx.domainDID).to.equal('NTvSuSXzygyxWrF3scrhdc')

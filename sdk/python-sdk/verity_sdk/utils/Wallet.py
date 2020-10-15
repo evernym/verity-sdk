@@ -21,21 +21,3 @@ async def create_and_open_wallet(wallet_config, wallet_credentials):
             raise e
 
     return await open_wallet(wallet_config, wallet_credentials)
-
-
-async def try_to_create_wallet(config: str, cred: str):
-    """
-    Tries to create a wallet with the given parameters. If creation fails because the wallet already exists, that
-    error is trapped and this function will complete but other errors will be raised.
-
-    Args:
-        config (str): indy wallet config
-        cred (str): indy wallet credential
-    """
-    try:
-        await create_wallet(config, cred)
-    except IndyError as e:
-        if ErrorCode.WalletAlreadyExistsError == e.error_code:
-            pass
-        else:
-            raise e

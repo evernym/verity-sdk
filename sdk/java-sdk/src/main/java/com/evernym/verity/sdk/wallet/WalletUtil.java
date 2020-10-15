@@ -90,4 +90,26 @@ public class WalletUtil {
             throw new WalletOpenException("Wallet failed to open", e);
         }
     }
+
+    /**
+     * Deletes indy wallet
+     * @param walletName the given name for the wallet to be deleted
+     * @param walletKey the given key for the wallet to be deleted
+     * @throws WalletException when the deletion of the wallet fails
+     */
+    public static void deleteWallet(String walletName, String walletKey) throws WalletException {
+        String walletConfig = new JSONObject().put("id", walletName).toString();
+        String walletCredentials = new JSONObject().put("key", walletKey).toString();
+        try {
+            if(LibIndy.api == null) {
+                throw new WalletException("Libindy failed to initialize - likely the shared library was not found");
+            }
+            Wallet.deleteWallet(walletConfig, walletCredentials).get();
+        }
+        catch (IndyException | InterruptedException | ExecutionException e) {
+            if( !(e.getCause() != null && e.getCause() instanceof WalletExistsException)) {
+                throw new WalletException("Unable to delete wallet", e);
+            }
+        }
+    }
 }

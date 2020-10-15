@@ -7,7 +7,7 @@ from base58 import b58encode
 from indy import wallet, crypto
 
 from verity_sdk.utils import Did
-from verity_sdk.utils.Wallet import create_and_open_wallet, try_to_create_wallet
+from verity_sdk.utils.Wallet import create_and_open_wallet
 
 V_0_1 = '0.1'
 V_0_2 = '0.2'
@@ -70,7 +70,10 @@ class Context:
         context.verity_url = verity_url
 
         await context._update_verity_info()
-        await context._open_wallet()
+        context.wallet_handle = await create_and_open_wallet(
+            context.wallet_config,
+            context.wallet_credentials
+        )
 
         context.endpoint_url = endpoint_url
 
@@ -110,9 +113,6 @@ class Context:
         except ValueError as e:
             raise IOError(f'Invalid and unexpected data from Verity -- response -- {e}')
 
-    async def _open_wallet(self):
-        self.wallet_handle = await create_and_open_wallet(self.wallet_config, self.wallet_credentials)
-
     @classmethod
     async def create_with_config(cls, config: str):
         """
@@ -134,9 +134,6 @@ class Context:
             context = cls._parse_v02(context, config)
         else:
             raise Exception(f'Invalid context version -- "{version}" is not supported')
-
-        # Ensure the wallet exists
-        await try_to_create_wallet(context.wallet_config, context.wallet_credentials)
 
         context.wallet_handle = await wallet.open_wallet(
             context.wallet_config,

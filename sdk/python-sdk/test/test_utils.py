@@ -80,6 +80,10 @@ async def test_v01_to_v02():
       "sdkPairwiseDID": "XNRkA8tboikwHD3x1Yh7Uz"
     }}"""
 
+    wallet_config = json.dumps({'id': str(wallet_name)})
+    wallet_credentials = json.dumps({'key': str(wallet_key)})
+    await wallet.create_wallet(wallet_config, wallet_credentials)
+
     ctx = await Context.create_with_config(v01Str)
     await ctx.close_wallet()
 
