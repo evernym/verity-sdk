@@ -19,7 +19,7 @@ exports.sdk = sdk
  * @param config wallet configuration
  * @param credentials wallet credentials
  */
-exports.createOrOpenWallet = async function (config, credentials) {
+exports.createAndOpenWallet = async function (config, credentials) {
   init()
   try {
     await sdk.createWallet(config, credentials)
@@ -28,6 +28,32 @@ exports.createOrOpenWallet = async function (config, credentials) {
       throw e
     }
   }
+  return sdk.openWallet(config, credentials)
+}
+
+/**
+ * Creates wallet if not already created
+ * @param config wallet configuration
+ * @param credentials wallet credentials
+ */
+exports.createWallet = async function (config, credentials) {
+  init()
+  try {
+    await sdk.createWallet(config, credentials)
+  } catch (e) {
+    if (e.message !== 'WalletAlreadyExistsError') {
+      throw e
+    }
+  }
+}
+
+/**
+ * Opens already existing wallet
+ * @param config wallet configuration
+ * @param credentials wallet credentials
+ */
+exports.openWallet = async function (config, credentials) {
+  init()
   return sdk.openWallet(config, credentials)
 }
 

@@ -10,7 +10,10 @@ const getTestConfig = require('./test_Context').getTestConfig
 module.exports.getTestContext = getTestContext
 
 async function getTestContext () {
-  const context = await Context.createWithConfig(getTestConfig());
+  const configStr = getTestConfig()
+  const config = JSON.parse(configStr)
+  await indy.createWallet(JSON.stringify({ id: config.walletName }), JSON.stringify({ key: config.walletKey }))
+  const context = await Context.createWithConfig(configStr);
   [context.verityPublicDID, context.verityPublicVerKey] = await indy.newDid(context);
   [context.domainDID, context.verityAgentVerKey] = await indy.newDid(context);
   [context.sdkVerKeyId, context.sdkVerKey] = await indy.newDid(context)

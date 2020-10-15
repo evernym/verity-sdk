@@ -48,11 +48,11 @@ class Context {
 
     if (V_0_1 === version) {
       const rtn = Context.parseV01(config)
-      await rtn.openWallet()
+      rtn.walletHandle = await indy.openWallet(rtn.walletConfig, rtn.walletCredentials)
       return rtn
     } else if (V_0_2 === version) {
       const rtn = Context.parseV02(config)
-      await rtn.openWallet()
+      rtn.walletHandle = await indy.openWallet(rtn.walletConfig, rtn.walletCredentials)
       return rtn
     } else {
       throw new Error(`Invalid context version -- '${version}' is not supported`)
@@ -138,7 +138,7 @@ class Context {
     context.buildWalletCredentails(walletKey)
 
     await context.updateVerityInfo()
-    await context.openWallet();
+    context.walletHandle = await indy.createAndOpenWallet(context.walletConfig, context.walletCredentials);
 
     [context.sdkVerKeyId, context.sdkVerKey] = await indy.newDid(context, seed)
 
@@ -182,13 +182,6 @@ class Context {
       console.error(e)
       throw new Error(`Unable to retrieve Verity public DID and Verkey from ${this.verityUrl}`)
     }
-  }
-
-  /**
-   * Opens the wallet and sets the walletHandle
-   */
-  async openWallet () {
-    this.walletHandle = await indy.createOrOpenWallet(this.walletConfig, this.walletCredentials)
   }
 
   /**
