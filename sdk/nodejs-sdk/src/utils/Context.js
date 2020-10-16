@@ -109,6 +109,7 @@ class Context {
    * @param verityAgentVerKey the verkey for the agent on the verity-application
    * @param endpointUrl the endpoint for receiving messages from the agent on the verity-application
    * @param seed seed used to create did
+   * @param walletPath custom path where libindy wallet should be stored (default is ~/.indy_client/wallet)
    */
   static async create (
     walletName,
@@ -117,7 +118,8 @@ class Context {
     domainDID = null,
     verityAgentVerKey = null,
     endpointUrl = null,
-    seed = null
+    seed = null,
+    walletPath = null
   ) {
     const context = new Context()
     context.verityUrl = verityUrl
@@ -134,7 +136,11 @@ class Context {
       context.endpointUrl = endpointUrl
     }
 
-    context.buildWalletConfig(walletName)
+    if (walletPath) {
+      context.walletPath = walletPath
+    }
+
+    context.buildWalletConfig(walletName, walletPath)
     context.buildWalletCredentails(walletKey)
 
     await context.updateVerityInfo()

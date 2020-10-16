@@ -6,13 +6,15 @@ const utils = require('../src/utils')
 const indy = require('../src/utils/indy')
 const Context = require('../src/utils/Context')
 const getTestConfig = require('./test_Context').getTestConfig
+const buildWalletConfig = require('./test_Context').buildWalletConfig
+const buildWalletCredentails = require('./test_Context').buildWalletCredentails
 
 module.exports.getTestContext = getTestContext
 
 async function getTestContext () {
   const configStr = getTestConfig()
   const config = JSON.parse(configStr)
-  await indy.createWallet(JSON.stringify({ id: config.walletName }), JSON.stringify({ key: config.walletKey }))
+  await indy.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
   const context = await Context.createWithConfig(configStr);
   [context.verityPublicDID, context.verityPublicVerKey] = await indy.newDid(context);
   [context.domainDID, context.verityAgentVerKey] = await indy.newDid(context);

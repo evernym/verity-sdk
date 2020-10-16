@@ -18,6 +18,7 @@ const testConfig = {
   endpointUrl: 'http://localhost:4002',
   walletName: utils.miniId(),
   walletKey: '12345',
+  walletPath: '/tmp',
   version: '0.2'
 }
 
@@ -27,13 +28,27 @@ function getTestConfig () {
   return JSON.stringify(config)
 }
 
+function buildWalletConfig (walletName, walletPath) {
+  const walletConfig = { id: walletName }
+  if (walletPath) {
+    walletConfig.storage_config = { path: walletPath }
+  }
+  return JSON.stringify(walletConfig)
+}
+
+function buildWalletCredentails (walletKey) {
+  return JSON.stringify({ key: walletKey })
+}
+
 exports.getTestConfig = getTestConfig
+exports.buildWalletConfig = buildWalletConfig
+exports.buildWalletCredentails = buildWalletCredentails
 
 describe('Context', () => {
   it('should accept valid configuration and contain all data', async () => {
     const configStr = getTestConfig()
     const config = JSON.parse(configStr)
-    await indy.createWallet(JSON.stringify({ id: config.walletName }), JSON.stringify({ key: config.walletKey }))
+    await indy.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
     const context = await Context.createWithConfig(configStr)
     expect(context.verityUrl).to.equal(config.verityUrl)
     expect(context.verityPublicDID).to.equal(config.verityPublicDID)
@@ -43,8 +58,8 @@ describe('Context', () => {
     expect(context.sdkVerKeyId).to.equal(config.sdkVerKeyId)
     expect(context.sdkVerKey).to.equal(config.sdkVerKey)
     expect(context.endpointUrl).to.equal(config.endpointUrl)
-    expect(context.walletConfig).to.equal(JSON.stringify({ id: config.walletName }))
-    expect(context.walletCredentials).to.equal(JSON.stringify({ key: config.walletKey }))
+    expect(context.walletConfig).to.equal(buildWalletConfig(config.walletName, config.walletPath))
+    expect(context.walletCredentials).to.equal(buildWalletCredentails(config.walletKey))
     expect(context.walletHandle).to.be.a('number')
     await context.deleteWallet()
   }).timeout(5000)
@@ -52,7 +67,7 @@ describe('Context', () => {
   it('should parse config if a JSON value', async () => {
     const configStr = getTestConfig()
     const config = JSON.parse(configStr)
-    await indy.createWallet(JSON.stringify({ id: config.walletName }), JSON.stringify({ key: config.walletKey }))
+    await indy.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
     const context = await Context.createWithConfig(configStr)
     expect(context.verityUrl).to.equal(config.verityUrl)
     expect(context.verityPublicDID).to.equal(config.verityPublicDID)
@@ -62,8 +77,8 @@ describe('Context', () => {
     expect(context.sdkVerKeyId).to.equal(config.sdkVerKeyId)
     expect(context.sdkVerKey).to.equal(config.sdkVerKey)
     expect(context.endpointUrl).to.equal(config.endpointUrl)
-    expect(context.walletConfig).to.equal(JSON.stringify({ id: config.walletName }))
-    expect(context.walletCredentials).to.equal(JSON.stringify({ key: config.walletKey }))
+    expect(context.walletConfig).to.equal(buildWalletConfig(config.walletName, config.walletPath))
+    expect(context.walletCredentials).to.equal(buildWalletCredentails(config.walletKey))
     expect(context.walletHandle).to.be.a('number')
     await context.deleteWallet()
   }).timeout(5000)

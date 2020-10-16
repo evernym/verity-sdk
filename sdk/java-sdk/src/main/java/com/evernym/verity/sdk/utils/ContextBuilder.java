@@ -76,6 +76,36 @@ public class ContextBuilder {
     /**
      * Initializes a ContextBuilder from scratch for a verity-sdk that is using an already provisioned agent on
      * the verity-application. This involves three main steps. First, a new local wallet is created
+     * using the given wallet id and key. Second, a new local key-pair is created in the new created wallet that will
+     * be used by the verity-sdk. Third, the verity-application public DID and verkey a retrieved from the
+     * verity-application instance referenced by the given verkey url. After these two step, a given fields are loaded
+     * into a blank ContextBuilder and returned.
+     * @param walletId the id for the local wallet
+     * @param walletKey the key (credential) for the local wallet
+     * @param verityUrl the url for the targeted instance of the verity-application
+     * @param domainDID the domain DID for the agent already provisioned
+     * @param verityAgentVerKey the verkey for the agent already provisioned
+     * @param seed the seed used to generate the local key-pair
+     * @param walletPath custom path where libindy wallet should be stored (default is ~/.indy_client/wallet/)
+     * @return a ContextBuilder with given, retrieved and created fields
+     * @throws IOException when retrieving info from the verity-application fails (bad url, unreachable, etc)
+     * @throws WalletException when wallet operations fail
+     */
+    public static Context fromScratch(String walletId,
+                                      String walletKey,
+                                      String verityUrl,
+                                      String domainDID,
+                                      String verityAgentVerKey,
+                                      String seed,
+                                      String walletPath) throws IOException, WalletException {
+        tryCreateWallet(walletId, walletKey, walletPath);
+        Context inter = scratchContext(DefaultWalletConfig.build(walletId, walletKey, walletPath), verityUrl, seed);
+        return withProvisionedAgent(inter, domainDID, verityAgentVerKey);
+    }
+
+    /**
+     * Initializes a ContextBuilder from scratch for a verity-sdk that is using an already provisioned agent on
+     * the verity-application. This involves three main steps. First, a new local wallet is created
      * using the given wallet config. Second, a new local key-pair is created in the new created wallet that will
      * be used by the verity-sdk. Third, the verity-application public DID and verkey a retrieved from the
      * verity-application instance referenced by the given verkey url. After these two step, a given fields are loaded

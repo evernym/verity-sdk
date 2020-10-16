@@ -67,6 +67,7 @@ class Context:
         context._set_wallet_credentials(wallet_key)
         context.wallet_name = wallet_name
         context.wallet_key = wallet_key
+        context.wallet_path = wallet_path
         context.verity_url = verity_url
 
         await context._update_verity_info()
