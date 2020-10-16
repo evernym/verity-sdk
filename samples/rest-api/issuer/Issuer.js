@@ -221,7 +221,7 @@ app.post('/webhook', async (req, res) => {
     case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/trust_ping/1.0/sent-response':
       break
     case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/sent':
-      if (message.msg.hasOwnProperty('credentials~attach')) {
+      if (message.msg['credentials~attach']) {
         credOfferResolve()
       }
       break

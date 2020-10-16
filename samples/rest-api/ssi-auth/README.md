@@ -2,7 +2,7 @@
 
 This is a sample web app demonstrating how SSI technologies could be used for user authentication.
 The application covers two use cases:
-- using Commited answer protocol as a form of two-factor authentication
+- using Committed answer protocol as a form of two-factor authentication
 - using Out-of-band protocol to register or login by scanning a QR code
 
 Sample web app uses Verity REST API.
@@ -12,7 +12,8 @@ Sample web app uses Verity REST API.
 Requirements:
 - You have received Domain DID and REST API key from Evernym
 - You have NodeJs v12 installed
-- You have ngrok installed ([https://ngrok.com/](https://ngrok.com/)). [Ngrok is used to create a public webhook URL which will forward response messages from Verity Application Server to the SSI authenticatoin web app. If you have capabilities to start the application on a public IP address then you don't need ngrok]
+- You have ngrok installed ([https://ngrok.com/](https://ngrok.com/)).
+> NOTE: Ngrok is used to create a public webhook URL which will forward response messages from Verity Application Server to the web app. If you have capabilities to start the application on a public IP address then you don't need ngrok]
 
 To try out the application follow these steps:
 
@@ -37,7 +38,7 @@ X-API-KEY: <copy API key received from Evernym>
 Webhook URL: <copy public URL address of the Ngrok forwarding tunnel to your local port 3000>
 ```
 
-Demo web app will be available on http://localhost:3000
+The application will be available on http://localhost:3000
 
 ### Launching the application using Docker
 
@@ -62,6 +63,6 @@ Start a Docker container:
 docker run -p 3000:3000 --env-file .env -it ssi-auth-app
 ```
 
-Demo web app will be available on http://localhost:3000
+The application will be available on http://localhost:3000
 
 © 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
