@@ -26,7 +26,7 @@ let webhookUrl // public URL for the started Ngrok tunnel to the application por
 let webhookResolve
 
 // Function to sends a Verity REST API call to the VAS
-// Full URL address for the REST API call is dinamycially constructed based on the arguments
+// Full URL address for the REST API call is dynamically constructed based on the arguments
 // Field @type is dynamically constructed based on the arguments and added to the message payload
 async function sendVerityRESTMessage (qualifier, msgFamily, msgFamilyVersion, msgName, message, threadId) {
   // Add @type and @id fields to the message
@@ -101,7 +101,7 @@ async function validateVerityUrl (verityUrl) {
 }
 
 // generate N random numbers in the interval [min,max) without duplicates
-// this is used to generate choices for the 2FA challege
+// this is used to generate choices for the 2FA challenge
 function generateChallenges (n, min, max) {
   const challenges = []
   for (var i = 0; i < n; i++) {
@@ -144,7 +144,7 @@ async function createInvitation () {
 }
 
 // This function waits until the user accepts connection invite (Connection promise is resolved)
-// or the timeout has occured (Timeout promise is resolved)
+// or the timeout has occurred (Timeout promise is resolved)
 // It returns connection status ['accepted', 'redirected' or 'timeout'] and redirectDID
 async function waitConnectionAccepted (relationshipDid) {
   const ConnectionPromise = new Promise(function (resolve, reject) {
@@ -219,7 +219,7 @@ async function main () {
   app.post('/2fa_register', async function (req, res) {
     // Return error if the email already exists (email is used as the username)
     if (usersMap.has(req.body.email)) {
-      res.status(400).send(`User with email ${req.body.email} alrady exist!`)
+      res.status(400).send(`User with email ${req.body.email} already exist!`)
       return
     }
 
