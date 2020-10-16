@@ -28,8 +28,9 @@ public class WalletUtil {
      * exists.
      */
     public static void tryCreateWallet(String walletName, String walletKey) throws WalletException {
-        String walletConfig = new JSONObject().put("id", walletName).toString();
-        String walletCredentials = new JSONObject().put("key", walletKey).toString();
+        DefaultWalletConfig wallet = DefaultWalletConfig.build(walletName, walletKey);
+        String walletConfig = wallet.config();
+        String walletCredentials = wallet.credential();
         tryToCreateWallet(walletConfig, walletCredentials);
     }
 
@@ -43,11 +44,10 @@ public class WalletUtil {
      * exists.
      */
     public static void tryCreateWallet(String walletName, String walletKey, String walletPath) throws WalletException {
-        String walletConfig = new JSONObject()
-                .put("id", walletName)
-                .put("path", walletPath)
-                .toString();
-        String walletCredentials = new JSONObject().put("key", walletKey).toString();
+        DefaultWalletConfig wallet = DefaultWalletConfig.build(walletName, walletKey, walletPath);
+        String walletConfig = wallet.config();
+        String walletCredentials = wallet.credential();
+
         tryToCreateWallet(walletConfig, walletCredentials);
     }
 
