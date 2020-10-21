@@ -133,6 +133,27 @@ public class PresentProofTest {
     }
 
     @Test
+    public void testAcceptProposal() throws Exception {
+        Context context = null;
+        try {
+            context = TestHelpers.getContext();
+            PresentProofV1_0 testProtocol = PresentProof.v1_0(forRelationship, UUID.randomUUID().toString());
+            byte [] message = testProtocol.acceptProposalMsgPacked(context);
+            JSONObject unpackedMessage = unpackForwardMessage(context, message);
+            testBaseMessage(unpackedMessage);
+            assertEquals(
+                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/accept-proposal",
+                    unpackedMessage.getString("@type")
+            );
+        } catch(Exception e) {
+            e.printStackTrace();
+            fail();
+        } finally {
+            TestHelpers.cleanup(context);
+        }
+    }
+
+    @Test
     public void testReject() throws Exception {
         Context context = null;
         try {

@@ -25,6 +25,7 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     final String PROOF_REQUEST = "request";
     final String STATUS = "status";
     final String REJECT = "reject";
+    final String ACCEPT_PROPOSAL = "accept-proposal";
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -87,18 +88,38 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     }
 
     @Override
-    public void accept(Context context) {
+    public void acceptRequest(Context context) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public JSONObject acceptMsg(Context context) {
+    public JSONObject acceptRequestMsg(Context context) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public byte[] acceptMsgPacked(Context context) {
+    public byte[] acceptRequestMsgPacked(Context context) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void acceptProposal(Context context) throws IOException, VerityException {
+        send(context, acceptProposalMsg(context));
+    }
+
+    @Override
+    public JSONObject acceptProposalMsg(Context context) {
+        JSONObject msg = new JSONObject();
+        msg.put("@type", messageType(ACCEPT_PROPOSAL));
+        msg.put("@id", getNewId());
+        addThread(msg);
+        msg.put("~for_relationship", this.forRelationship);
+        return msg;
+    }
+
+    @Override
+    public byte[] acceptProposalMsgPacked(Context context) throws VerityException {
+        return packMsg(context, acceptProposalMsg(context));
     }
 
     @Override

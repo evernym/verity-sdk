@@ -20,6 +20,8 @@ class PresentProof(Protocol):
     """Name for 'status' control message"""
     REJECT = 'reject'
     """Name for 'reject' control message"""
+    ACCEPT_PROPOSAL = 'accept-proposal'
+    """Name for 'accept-proposal' control message"""
     PRESENTATION_RESULT = 'presentation-result'
     """Name for 'presentation-result' signal message"""
 
@@ -128,12 +130,50 @@ class PresentProof(Protocol):
         """
         return await self.get_message_bytes(context, self.status_msg())
 
+    async def accept_proposal(self, context):
+        """
+        Directs verity-application to accept the proposed presentation.
+        verity application will send presentation request based on the proposal.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+        """
+        await self.send_message(context, await self.accept_proposal_msg_packed(context))
+
+    def accept_proposal_msg(self):
+        """
+        Creates the control message without packaging and sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the constructed message (dict object)
+        """
+        msg = self._get_base_message(self.ACCEPT_PROPOSAL)
+        self._add_thread(msg)
+        self._add_relationship(msg, self.for_relationship)
+        return msg
+
+    async def accept_proposal_msg_packed(self, context):
+        """
+        Creates and packages message without sending it.
+
+        Args:
+            context (Context): an instance of the Context object initialized to a verity-application agent
+
+        Return:
+            the bytes ready for transport
+        """
+        return await self.get_message_bytes(context, self.accept_proposal_msg())
+
     async def reject(self, context, reason):
         """
         Directs verity-application to reject this presentation proof protocol
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            reason: the reason for rejection
         """
         await self.send_message(context, await self.reject_msg_packed(context, reason))
 
@@ -143,6 +183,7 @@ class PresentProof(Protocol):
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            reason: the reason for rejection
 
         Return:
             the constructed message (dict object)
@@ -160,6 +201,7 @@ class PresentProof(Protocol):
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            reason: the reason for rejection
 
         Return:
             the bytes ready for transport

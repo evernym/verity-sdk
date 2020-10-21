@@ -106,7 +106,7 @@ public interface PresentProofV1_0 extends Protocol {
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws VerityException when wallet operations fails or given invalid context
      */
-    void accept(Context context) throws IOException, VerityException;
+    void acceptRequest(Context context) throws IOException, VerityException;
 
     /**
      * Creates the control message without packaging and sending it.
@@ -114,9 +114,9 @@ public interface PresentProofV1_0 extends Protocol {
      * @return the constructed message (JSON object)
      * @throws VerityException when given invalid context
      *
-     * @see #accept
+     * @see #acceptRequest
      */
-    JSONObject acceptMsg(Context context) throws VerityException;
+    JSONObject acceptRequestMsg(Context context) throws VerityException;
 
     /**
      * Creates and packages message without sending it.
@@ -124,9 +124,39 @@ public interface PresentProofV1_0 extends Protocol {
      * @return the byte array ready for transport
      * @throws VerityException when wallet operations fails or given invalid context
      *
-     * @see #accept
+     * @see #acceptRequest
      */
-    byte[] acceptMsgPacked(Context context) throws VerityException;
+    byte[] acceptRequestMsgPacked(Context context) throws VerityException;
+
+    /**
+     * Directs verity-application to accept the proposal for present proof.
+     * verity-application will send presentation request based on the proposal.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void acceptProposal(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #acceptProposal
+     */
+    JSONObject acceptProposalMsg(Context context) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #acceptProposal
+     */
+    byte[] acceptProposalMsgPacked(Context context) throws VerityException;
 
 
     /**
