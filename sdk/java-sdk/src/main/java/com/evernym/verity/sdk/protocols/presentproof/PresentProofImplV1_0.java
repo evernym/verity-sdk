@@ -4,6 +4,8 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
+import com.evernym.verity.sdk.protocols.presentproof.common.ProposedAttribute;
+import com.evernym.verity.sdk.protocols.presentproof.common.ProposedPredicate;
 import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
@@ -34,6 +36,8 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     String name;
     Attribute[] proofAttrs;
     Predicate[] proofPredicates;
+    ProposedAttribute[] proposedAttributes;
+    ProposedPredicate[] proposedPredicates;
 
 
     PresentProofImplV1_0(String forRelationship, String threadId) {
@@ -57,6 +61,14 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
         this.name = name;
         this.proofAttrs = proofAttrs;
         this.proofPredicates = proofPredicates;
+        this.created = true;
+    }
+
+    PresentProofImplV1_0(String forRelationship, String threadId, ProposedAttribute[] attrs, ProposedPredicate[] predicates) {
+        super(threadId);
+        this.forRelationship = forRelationship;
+        this.proposedAttributes = attrs;
+        this.proposedPredicates = predicates;
         this.created = true;
     }
 
@@ -85,6 +97,21 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     @Override
     public byte[] requestMsgPacked(Context context) throws VerityException {
         return packMsg(context, requestMsg(context));
+    }
+
+    @Override
+    public void propose(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public JSONObject proposeMsg(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public byte[] proposeMsgPacked(Context context) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
