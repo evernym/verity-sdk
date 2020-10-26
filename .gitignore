@@ -204,3 +204,6 @@ Cargo.lock
 **/qrcode.png
 **/verity-context.json
 node_modules/
+/sdk/dotnet-sdk/src/VeritySDK/VeritySDK.csproj.user
+/sdk/dotnet-sdk/src/VeritySDK/VeritySDK.xml
+/.vs

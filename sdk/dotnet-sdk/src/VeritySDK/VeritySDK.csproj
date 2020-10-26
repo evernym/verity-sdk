@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <PackageId>VeritySDK for Net</PackageId>
+    <Authors>Evernym</Authors>
+    <Product>VeritySDK for Net</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\02_Projects\Evernum\Verity-SDK\sdk\dotnet-sdk\src\VeritySDK\VeritySDK.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Transports\Transport1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hyperledger.Indy" Version="1.11.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="SimpleBase" Version="2.1.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <PackageReference Include="System.Json" Version="4.7.1" />
+    <PackageReference Include="System.Security.Permissions" Version="4.7.0" />
+    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Protocols\IssuerSetup\" />
+  </ItemGroup>
+
+</Project>

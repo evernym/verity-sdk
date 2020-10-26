@@ -55,7 +55,7 @@ public class HTTPTransport extends Transport {
         HttpPost request = new HttpPost(url);
         request.setEntity(new ByteArrayEntity(message));
         request.setHeader("Content-Type", "application/octet-stream");
-        return request;
+        return request; 
     }
 
     private HttpResponse transportMessage(HttpPost request) throws IOException {

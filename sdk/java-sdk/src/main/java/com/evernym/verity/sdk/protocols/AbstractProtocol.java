@@ -63,6 +63,7 @@ public abstract class AbstractProtocol implements Protocol {
         msg.put("~thread", threadBlock);
     }
 
+
     /**
      * Encrypts and sends a specified message to Verity
      * @param context an instance of the Context object initialized to a verity-application agent
@@ -80,6 +81,10 @@ public abstract class AbstractProtocol implements Protocol {
         Transport transport = new HTTPTransport();
         transport.sendMessage(context.verityUrl(), messageToSend);
     }
+
+
+
+
 
     /**
      * Packs the connection message for the verity-application
