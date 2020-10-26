@@ -2,36 +2,42 @@
 The getting started guide has more comprehensive explanations for the Verity flow. [Getting Started Guide](../getting-started/getting-started.md)
 
 Here are basic code examples showing how to interface with verity-sdk to: 
-1. Create an Agent on Verity - [Provision](../howto/java-verity-flow.md#provisioning-agent-on-verity)
-2. Handle asynchronous response messages from Verity - [Message Handling](../howto/java-verity-flow.md#handling-asynchronous-response-messages)
-3. Setting up an Issuer - [Issuer Setup](../howto/java-verity-flow.md#setting-up-an-issuer-identity)
-4. Writing a schema to the ledger - [Write Schema](../howto/java-verity-flow.md#write-schema-to-ledger)
-5. Writing a credential definition to the ledger - [Write Credential Definition](../howto/java-verity-flow.md#write-credential-definition-to-ledger)
-6. Establishing Connections between parties - [Connecting](../howto/java-verity-flow.md#connecting)
-7. Issuing credentials - [Issue Credential](../howto/java-verity-flow.md#issue-credential)
-8. Requesting Proof Presentations - [Request Proof Presentation](../howto/java-verity-flow.md#request-proof-presentation)
-9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../howto/java-verity-flow.md#utils)
+1. Create an Agent on Verity - [Provision](../getting-started/nodejs-verity-flow.md#provisioning-agent-on-verity)
+2. Handle asynchronous response messages from Verity - [Message Handling](../getting-started/nodejs-verity-flow.md#handling-asynchronous-response-messages)
+3. Setting up an Issuer - [Issuer Setup](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity)
+4. Writing a schema to the ledger - [Write Schema](../getting-started/nodejs-verity-flow.md#write-schema-to-ledger)
+5. Writing a credential definition to the ledger - [Write Credential Definition](../getting-started/nodejs-verity-flow.md#write-credential-definition-to-ledger)
+6. Establishing Connections between parties - [Connecting](../getting-started/nodejs-verity-flow.md#connecting)
+7. Issuing credentials - [Issue Credential](../getting-started/nodejs-verity-flow.md#issue-credential)
+8. Requesting Proof Presentations - [Request Proof Presentation](../getting-started/nodejs-verity-flow.md#request-proof-presentation)
+9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../getting-started/nodejs-verity-flow.md#utils)
 
 ## Setup
 ### Provisioning agent on Verity
 Provisioning is the first step done when interacting with Verity. It creates a dedicated cloud agent on Verity for the user of the sdk. Provisioning is done only once.
 
-```java
-File contextFile = new File("verity-context.json");
-String verityUrl = "http://verity.url";
-// token used for provisioning - Evernym provides this offline for their customers
-String token = "..."; 
-
-// First we create an initial context.
-Context ctx = ContextBuilder.fromScratch("wallet-name", "wallet-secret-key", verityUrl);
-
-// do provisioning and get the context.
-ProvisionV0_7 provisioner = Provision.v0_7(token);
-ctx = provisioner.provision(ctx);
-
-// save the context to file.
-Files.write(contextFile.toPath(), ctx.toJson().toString(2).getBytes());
 ```
+const CONFIG_PATH = 'verity-context.json'
+cost walletName = 'examplewallet1'  
+const wallet_key = 'examplewallet1'
+wallet_key = 'examplewallet1'
+var verityUrl = ''
+// token used for provisioning - Evernym provides this offline for their customers
+var token = ...
+
+// create initial Context
+var ctx = await sdk.Context.create(walletName, walletKey, verityUrl, '')
+console.log('wallet created')
+const provision = new sdk.protocols.v0_7.Provision(null, token)
+console.log('provision object')
+
+// ask that an agent by provision (setup) and associated with created key pair
+const context = provision.provision(ctx)
+
+// Save context
+fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
+```
+
 The wallet (usualy created in $HOME/.indy_client/wallet/<wallet-name>) needs to be saved with the context file.
 
 ## Handling Asynchronous response messages
@@ -39,36 +45,57 @@ The wallet (usualy created in $HOME/.indy_client/wallet/<wallet-name>) needs to 
 Most Verity response messages are sent asynchronously. For receiving messages, a public endpoint is needed. The UpdateEndpoint protocol should be used for setting up the address of this endpoint.
 The endpoint dedicated for receiving messages from Verity Server, may look like this:
 
-```java
-// Needed if an updated endpoint is used
+```
+// New endpoint is set
+val webhook = context.endpointUrl
 
-String webhook = "";
-try {
-    webhook = context.endpointUrl();
-} catch (Exception ignored) {}
+context.endpointUrl = webhook
 
-context = context.toContextBuilder().endpointUrl(webhook).build();
+// request that verity application use specified webhook endpoint
+await new sdk.protocols.UpdateEndpoint().update(context)
 
-// request that verity-application use specified webhook endpoint
-UpdateEndpoint.v0_6().update(context);
+// Save context after updating the context
+fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
 ```
 
-Example Webhook 
-- This example uses the Java Spring Framework but Java Spring is not required for verity-sdk.
-```java
-@PostMapping("/verity-webhook")
-public String webHook(HttpEntity<byte[]> requestEntity) throws VerityException {
-    handlers.handleMessage(context, requestEntity.getBody());
-    return "OK";
+Example Webhook
+```
+async function main () {
+  await start()
+  // Run application 
+  await end()
+}
+
+async function start () {
+  const app = express()
+  app.use(bodyParser.text({
+    type: function (_) {
+      return 'text'
+    }
+  }))
+
+  app.post('/', async (req, res) => {
+    await handlers.handleMessage(context, Buffer.from(req.body, 'utf8'))
+    res.send('Success')
+  })
+
+  listener = http.createServer(app).listen(LISTENING_PORT)
+  console.log(`Listening on port ${LISTENING_PORT}`)
+}
+
+async function end () {
+  listener.close()
+  rl.close()
+  process.exit(0)
 }
 ```
 
 ### Response message handling 
 Most Verity interactions respond to a request asynchronously. Here are some details that will help with the handling of these messages.
 1. A response message is delivered via HTTPs. These messages can be processed however the application thinks best. Our example applications use webhooks.
-    The http body will contain an encrypted protocol message which needs to be handled by the [Handlers](../howto/java-verity-flow.md#registers-message-handler) object. Decryption of the message happens here.
-    ```java
-    handlers.handleMessage(context, requestEntity.getBody());
+    The http body will contain an encrypted protocol message which needs to be handled by the [Handlers](../getting-started/nodejs-verity-flow.md#registers-message-handler) object. Decryption of the message happens here.
+    ```
+    await handlers.handleMessage(context, Buffer.from(req.body, 'utf8'))
     ``` 
 2. Common Fields which show up in a response: 
    - `@type` - \<did info>;spec/\<message family>/\<version of protocol>/\<protocol message>" 
@@ -77,19 +104,24 @@ Most Verity interactions respond to a request asynchronously. Here are some deta
    - `~thread`: `{"thid":"<id>"}`
    - Message specific fields
 3. Example handler: 
-    - Registering the handler [Registers Message Handler](../howto/java-verity-flow.md#registers-message-handler)
+    - Registering the handler [Registers Message Handler](../getting-started/nodejs-verity-flow.md#registers-message-handler)
     - Protocol Message handlers: 
         > **NOTE:** The MessageFamily in this example is an instance of ConnectionsV1_0.
-    ```java
-    handle(Connecting.v1_0("",""), (String msgName, JSONObject message) -> {
-        if("request-received".equals(msgName)) {
-            // Received the Request
-        } else if("response-sent".equals(msgName)) {
-            // Response sent
-        } else {
-           // Message received but not supported by the Message Family. 
-        }
-    });
+    ```
+    // handler for the accept message sent when connection is accepted
+    new Promise((resolve) => {
+        // Adding the message handler to list of handlers
+        handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
+          switch (msgName) {
+            case 'request-receieved':
+              // Request receieved
+              resolve(null)
+              break
+            default:
+              printMessage(msgName, message)
+              nonHandle('Message Name is not handled - ' + msgName)
+         }
+    })
     ```
 
 ## Setting up an Issuer identity
@@ -97,17 +129,13 @@ When an entity issues a credential, they need to have privileged keys on the led
 the issuer keys and register them on the dedicated cloud agent so that writing to the ledger and issuing credentials can be accomplished.
 ### Check to see if Issuer is already setup
 Checks to see if issuer setup has been done. Gets did and verkey from the Verity Application
-```java
-// These values need to be saved during the handling of the response
-private String issuerDID;
-private String issuerVerkey;
-
+```
 // constructor for the Issuer Setup protocol
-IssuerSetupV0_6 issuerSetup = IssuerSetup.v0_6();
-
+const issuerSetup = new sdk.protocols.IssuerSetup()
 // 1. query the current identifier
 // 2. application's message handler should handle the asynchronous response
-issuerSetup.currentPublicIdentifier(context);
+await issuerSetup.currentPublicIdentifier(context)
+
 ```
 
 Message Response: 
@@ -127,17 +155,13 @@ Message Response:
     - `verkey`: newly created issuer verkey
 
 ### Setup new Issuer
-```java
-// These values need to be saved during the handling of the response
-private String issuerDID;
-private String issuerVerkey;
-
+```
 // constructor for the Issuer Setup protocol
-IssuerSetupV0_6 newIssuerSetup = IssuerSetup.v0_6();
+const issuerSetup = new sdk.protocols.IssuerSetup()
 
 // 1. request that issuer identifier be created
 // 2. application's message handler should handle the asynchronous response
-newIssuerSetup.create(context);
+await issuerSetup.create(context)
 ```
 
 Message Response: 
@@ -160,29 +184,29 @@ Message Response:
 
 ## Updating Config
 Update agent configs to set the institution's name and logo url. 
-```java
-String INSTITUTION_NAME = "Faber College";
-String LOGO_URL = "http://robohash.org/235";
-
-UpdateConfigsV0_6 updateConfigs = UpdateConfigs.v0_6(INSTITUTION_NAME, LOGO_URL);
-updateConfigs.update(context);
-updateConfigs.status(context);
+```
+const INSTITUTION_NAME = 'Faber College'
+const LOGO_URL = 'http://robohash.org/235'
+const updateConfigs = new sdk.protocols.UpdateConfigs(INSTITUTION_NAME, LOGO_URL)
+await updateConfigs.update(context)
 ```
 
 ## Write Schema to Ledger
 When data is going to be shared via credential exchange, the data needs to be publicaly defined. 
-This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../howto/java-verity-flow.md#setting-up-an-issuer-identity) must be complete to have the proper permissions.
-```java
+This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity) must be complete to have the proper permissions.
+```
 // input parameters for schema
-String schemaName = "Diploma "+ UUID.randomUUID().toString().substring(0, 8);
-String schemaVersion = "0.1";
+const schemaName = 'Diploma ' + uuidv4().substring(0, 8)
+const schemaVersion = '0.1'
+const schemaAttrs = ['name', 'degree']
 
 // constructor for the Write Schema protocol
-WriteSchemaV0_6 writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, "name", "degree");
+const schema = new sdk.protocols.WriteSchema(schemaName, schemaVersion, schemaAttrs)
+// add handler to the set of handlers
 
 // 1. request schema be written to ledger
 // 2. application's message handler should handle the asynchronous response
-writeSchema.write(context);
+await schema.write(context) 
 ```
 Message Response: 
 * type: `status-report`
@@ -199,22 +223,21 @@ Message Response:
 ## Write Credential Definition to Ledger
 An issuer will write a credential definition to the ledger which corresponds to a specific Schema. \
 This is how an entity can publicaly define the data which will be sent in a credential.
-[Issuer Setup](../howto/java-verity-flow.md#setting-up-an-issuer-identity) must be complete to have the proper permissions to both write to the ledger and sign data in a credential.
-* `schemaId`: received in the write schema response [Write Schema](../howto/java-verity-flow.md#write-schema-to-ledger)
+* `schemaId`: received in the write schema response [Write Schema](../getting-started/nodejs-verity-flow.md#write-schema-to-ledger)
 
-```java
-private String writeLedgerCredDef(String schemaId) throws IOException, VerityException {
-    // input parameters for cred definition
-    String credDefName = "Trinity Collage Diplomas";
-    String credDefTag = "latest";
+```
+// input parameters for cred definition
+const credDefName = 'Trinity College Diplomas'
+const credDefTag = 'latest'
 
-    // constructor for the Write Credential Definition protocol
-    WriteCredentialDefinitionV0_6 def = WriteCredentialDefinition.v0_6(credDefName, schemaId, credDefTag);
+// constructor for the Write Credential Definition protocol
+const def = new sdk.protocols.WriteCredentialDefinition(credDefName, schemaId, credDefTag)
 
-    // 1. request the cred def be writen to ledger
-    // 2. application's message handler should handle the asynchronous response
-    def.write(context);
-}
+// add handler to the set of handlers
+
+// 1. request the cred def be writen to ledger
+// 2. application's message handler should handle the asynchronous response
+await def.write(context) // wait for operation to be complete and returns ledger cred def identifier
 ```
 
 Message Response: 
@@ -238,10 +261,18 @@ This code is just an example, it does not handle error cases.
 
 The Relationship protocol has two steps: 
 1. create relationship key 
-    ```java
-    RelationshipV1_0 relProvisioning = Relationship.v1_0("inviter");
+    ```
+    // global context
+    // global handlers
 
-    relProvisioning.create(context);
+    // Constructor for the Connecting API
+    const relProvisioning = new sdk.protocols.v1_0.Relationship(null, null, 'inviter')
+
+
+    // add handler to the set of handlers
+
+    // starts the relationship protocol
+    await relProvisioning.create(context)
     ```
    Message Response: 
    * type: `created`
@@ -259,10 +290,10 @@ The Relationship protocol has two steps:
         - `did`: did created for a specific relationship
         - `verkey`: verkey created for a specific relationship
 2. create invitation
-    - `relDid` and `threadId` were given in the `created` response
-        ```java
-        RelationshipV1_0 relationship = Relationship.v1_0(relDID.get(), threadId.get());
-        relationship.connectionInvitation(context);
+    - `relDID` and `threadId` were given in the `created` response
+        ```
+        const relationship = new sdk.protocols.v1_0.Relationship(relDID, threadId)
+        await relationship.connectionInvitation(context)
         ```
     Message Response: 
     * type: `invitation`
@@ -279,62 +310,75 @@ The Relationship protocol has two steps:
 ### Connection Listener 
 Once the mobile device receives the `inviteURL` or scans the QR Code, the rest is automated in verity-sdk. \
 You can setup a handler to view incoming messages.
-```java
-handlers.addHandler(Connecting.v1_0("",""), (String msgName, JSONObject message) -> {
-    if("request-received".equals(msgName)) {
-        // Received the Request
-    } else if("response-sent".equals(msgName)) {
-        // Response sent
-    } 
-});
+```
+// handler for the response to the request to start the Connecting protocol.
+var firstStep = new Promise((resolve) => {
+handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
+  switch (msgName) {
+    case connecting.msgNames.REQUEST_RECEIVED:
+      printMessage(msgName, message)
+      resolve(null)
+      break
+    default:
+      printMessage(msgName, message)
+      nonHandle('Message Name is not handled - ' + msgName)
+  }
+})
 ```
 
 ## Issue Credential
-When an entity provides data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../howto/java-verity-flow.md#setting-up-an-issuer-identity) and [Write Credential Definition](../howto/java-verity-flow.md#write-credential-definition-to-ledger) protocols need to have been completed.
+When an entity provides data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity) and [Write Credential Definition](../getting-started/nodejs-verity-flow.md#write-credential-definition-to-ledger) protocols need to have been completed.
 
 The Issue Credential has two steps: 
 
 1. Send the Credential Offer
- * `defId`: received in the credential definition response [Credential Definition Response](../howto/java-verity-flow.md#write-credential-definition-to-ledger)    
- * `forDID`: received in the create Relationship response [Creating Relationship](../howto/java-verity-flow.md#creating-an-invitation-with-relationship-protocol)
-    ```java
-    // input parameters for issue credential
-    String credentialName = "Degree";
-    Map<String, String> credentialData = new HashMap<>();
-    credentialData.put("name", "Joe Smith");
-    credentialData.put("degree", "Bachelors");
-    // constructor for the Issue Credential protocol
-    IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0", true);
-
-    // request that credential is offered
-    issue.offerCredential(context);
+* `defId`: received in the credential definition response [Credential Definition Response](../getting-started/nodejs-verity-flow.md#write-credential-definition-to-ledger)    
+* `relDID`: received in the create Relationship response [Creating Relationship](../getting-started/nodejs-verity-flow.md#creating-an-invitation-with-relationship-protocol)
     ```
+    // input parameters for issue credential
+    const credentialData = {
+      name: 'Joe Smith',
+     degree: 'Bachelors'
+    }
+   
+    // constructor for the Issue Credential protocol
+    const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, 'comment', 0, true)
+    
+   //add handler to the set of handlers
+   
+   // 1. request that credential is offered
+   // 2. application's message handler should handle the asynchronous response
+   await issue.offerCredential(context)
+   ```
    
 2. Send the Credential once the holder sends a `accept-request` - This is automated in the sdk
 
 ## Request Proof Presentation
 When an entity requests a party prove specific things by providing self attested information or information corresponding to an already issued credential, the Proof Presentation protocol is used. 
 
-* `issuerDID`: received in the IssuerSetup response [Issuer Setup](../howto/java-verity-flow.md#setting-up-an-issuer-identity)
-* `forDID`: received in the create Relationship response [Creating Relationship](../howto/java-verity-flow.md#creating-an-invitation-with-relationship-protocol)
-```java
+* `issuerDID`: received in the IssuerSetup response [Issuer Setup](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity)
+* `relDID`: received in the create Relationship response [Creating Relationship](../getting-started/nodejs-verity-flow.md#creating-an-invitation-with-relationship-protocol)
+```
+// global issuer_did
 // input parameters for request proof
-String proofName = "Proof of Degree - "+UUID.randomUUID().toString().substring(0, 8);
-
-Restriction restriction =  RestrictionBuilder
-        .blank()
-        .issuerDid(issuerDID)
-        .build();
-
-Attribute nameAttr = PresentProofV1_0.attribute("name", restriction);
-Attribute degreeAttr = PresentProofV1_0.attribute("degree", restriction);
+const proofName = 'Proof of Degree' + uuidv4().substring(0, 8)
+const proofAttrs = [
+    {
+      name: 'name',
+      restrictions: [{ issuer_did: issuerDID }]
+    },
+    {
+      name: 'degree',
+      restrictions: [{ issuer_did: issuerDID }]
+    }
+]
 
 // constructor for the Present Proof protocol
-PresentProofV1_0 proof = PresentProof.v1_0(forDID, proofName, nameAttr, degreeAttr);
+const proof = new sdk.protocols.v1_0.PresentProof(relDID, null, proofName, proofAttrs)
 
 // 1. request proof
 // 2. application's message handler should handle the asynchronous response
-proof.request(context);
+await proof.request(context)
 ```
 
 Message Response: 
@@ -371,37 +415,26 @@ Message Response:
     }
     ```
     * to see if the presentation is valid, evaluate `verification_result`
-
+    
 ## Utils
 ### Object used to register response message handlers
 The `handlers` variable is defined as field variable in the controller class like this:
 <a name="Handlers"></a>
-```java
-Handlers handlers = new Handlers();
 ```
+handlers: Handlers = Handlers()
+```
+
 ### Registers Message Handler
 Sets a specific response handler for protocol interactions
 <a name="handle"></a>
-```java
-MessageFamily messageFamily = ...; 
-MessageHandler.Handler messageHandler = ...;
-handlers.addHandler(messageFamily, (String msgName, JSONObject message) -> {
-    try {
-        messageHandler.handle(msgName, message);
-    } catch(Exception ex) {
-        ex.printStackTrace();
-    }
-});
 ```
+await handlers.handleMessage(context, Buffer.from(req.body, 'utf8'))
+``` 
 ### Loading Context Object
 Saved context should be loaded with code like this:
-```java
-Context loadContext(File contextFile) throws IOException, WalletOpenException {
-    return ContextBuilder.fromJson(
-            new JSONObject(
-                    new String(Files.readAllBytes(contextFile.toPath()))
-            )
-    ).build();
+```
+async function loadContext (contextFile) {
+  return sdk.Context.createWithConfig(fs.readFileSync(CONFIG_PATH))
 }
 ```
 Example Context Object: 
