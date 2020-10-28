@@ -1,3 +1,25 @@
+# Release notes - Verity 2.5.0 (0.4.103141332.ef1e3e6) - Oct 21 2020
+
+## Bugs
+    * [VE-1968] - Python SDK example app sometimes throws libindy warning
+    * [VE-1997] - If label is not specified in Relationship create call, Python and Java SDKs do not default to the label specified in UpdateConfigs
+    * [VE-2015] - UPDATE_CONFIG protocol setting the logoUrl to null generates a NullPointerException and then crashes the UserAgent actor
+    * [VE-2057] - Not possible to specify the walletPath in public constructors for NodeJS SDK
+
+## Stories
+    * [VE-1564] - Validation of SMS phone number format
+    * [VE-1779] - Create Sample Web App demoing Connection-reuse
+
+# Release notes - Verity 2.4.0 (0.4.101396269.459d5b9) - Sep 29 2020
+
+## Bugs
+    * [VE-1974] - Cannot specify self attested values during Prover's Interaction in Present Proof 
+    * [VE-1976] - Trust-ping response can not be mapped to relationshipDID which sent the ping
+    * [VE-1990] - publicDid missing in case of SMS connection redirect for old (0.5 and 0.6 protocols)
+
+## Stories
+    * [VE-1528] - As Evernym Verity Customer, I want to send Connection invites v1.0 using SMS to Connect.Me
+
 # Release notes - Verity 2.3.1 (0.4.100298448.69d2cf3) - Sep 18 2020
 
 ## Bugs
