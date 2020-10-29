@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const readline = require('readline')
 const fs = require('fs')
 const sdk = require('verity-sdk')
+const indy = require('indy-sdk')
 const Spinner = require('cli-spinner').Spinner
 const QRCode = require('qrcode')
 const request = require('request-promise-native')
@@ -15,6 +16,8 @@ const LISTENING_PORT = 4000
 const CONFIG_PATH = 'verity-context.json'
 const INSTITUTION_NAME = 'Faber College'
 const LOGO_URL = 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
+const WALLET_NAME = 'examplewallet1'
+const WALLET_KEY = 'examplewallet1'
 const ANSII_GREEN = '\u001b[32m'
 const ANSII_RESET = '\x1b[0m'
 const rl = readline.createInterface({
@@ -56,7 +59,7 @@ async function createRelationship () {
   // Step 1
 
   // Constructor for the Connecting API
-  const relProvisioning = new sdk.protocols.v1_0.Relationship(null, null, INSTITUTION_NAME)
+  const relProvisioning = new sdk.protocols.v1_0.Relationship()
   var spinner = new Spinner('Waiting to create relationship ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for the response to the request to start the Relationship protocol.
@@ -128,43 +131,22 @@ async function createRelationship () {
 //       CONNECTION
 //* ***********************
 async function createConnection () {
-  // Connecting protocol has to steps
-  // 1. Start the protocol and receive the invite
-  // 2. Wait for the other participant to accept the invite
-
-  // Step 1
+  // Connecting protocol is started from the Holder's side (ConnectMe)
+  // by scanning the QR code containing connection invitation
+  // Connection is established when the Holder accepts the connection on the device
+  // i.e. when the RESPONSE_SENT control message is received
 
   // Constructor for the Connecting API
-  const connecting = new sdk.protocols.v1_0.Connecting(null, null, uuidv4(), null, true)
-  var spinner = new Spinner('Waiting to start connection ... %s').setSpinnerDelay(450) // Console spinner
+  const connecting = new sdk.protocols.v1_0.Connecting()
+  var spinner = new Spinner('Waiting to respond to connection ... %s').setSpinnerDelay(450) // Console spinner
 
-  // handler for the response to the request to start the Connecting protocol.
-  var firstStep = new Promise((resolve) => {
+  // handler for messages in Connecting protocol
+  var connection = new Promise((resolve) => {
     handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case connecting.msgNames.REQUEST_RECEIVED:
-          spinner.stop()
           printMessage(msgName, message)
-          resolve(null)
           break
-        default:
-          printMessage(msgName, message)
-          nonHandle('Message Name is not handled - ' + msgName)
-      }
-    })
-  })
-
-  spinner.start()
-  // starts the connecting protocol
-  await firstStep // wait for response from verity application
-
-  // Step 2
-
-  spinner = new Spinner('Waiting to respond to connection ... %s').setSpinnerDelay(450) // Console spinner
-  // handler for the accept message sent when connection is accepted
-  var secondStep = new Promise((resolve) => {
-    handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
-      switch (msgName) {
         case connecting.msgNames.RESPONSE_SENT:
           spinner.stop()
           printMessage(msgName, message)
@@ -178,7 +160,8 @@ async function createConnection () {
   })
 
   spinner.start()
-  await secondStep // wait for acceptance from connect.me user
+  // starts the connecting protocol
+  await connection // wait for response from verity application
 }
 
 //* ***********************
@@ -288,13 +271,14 @@ async function writeLedgerCredDef (schemaId) {
 //* ***********************
 async function issueCredential (relDID, defId) {
   // input parameters for issue credential
+  const credentialName = 'Degree'
   const credentialData = {
     name: 'Alice Smith',
     degree: 'Bachelors'
   }
 
   // constructor for the Issue Credential protocol
-  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, 'Degree', 0, true)
+  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, credentialName, 0, true)
   var spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for 'sent` message when the offer is sent
@@ -346,7 +330,7 @@ async function issueCredential (relDID, defId) {
 //* ***********************
 async function requestProof (relDID) {
   // input parameters for request proof
-  const proofName = 'Proof of Degree' + uuidv4().substring(0, 8)
+  const proofName = 'Proof of Degree'
   const proofAttrs = [
     {
       name: 'name',
@@ -389,12 +373,17 @@ async function requestProof (relDID) {
 //         SETUP
 //* ***********************
 async function setup () {
+  let config = ''
   if (fs.existsSync(CONFIG_PATH)) {
     if (await readlineYesNo('Reuse Verity Context (in ' + CONFIG_PATH + ')', true)) {
-      context = await loadContext(CONFIG_PATH)
+      config = fs.readFileSync(CONFIG_PATH)
     } else {
-      context = await provisionAgent()
+      indy.deleteWallet({ id: WALLET_NAME }, { key: WALLET_KEY })
     }
+  }
+
+  if (config) {
+    context = await sdk.Context.createWithConfig(config)
   } else {
     context = await provisionAgent()
   }
@@ -411,15 +400,13 @@ async function setup () {
 
   await issuerIdentifier()
 
-  console.log(issuerDID)
-
   if (issuerDID == null) {
+    console.log('\nIssuer DID is not created. Performing Issuer setup now...')
     await setupIssuer()
+  } else {
+    console.log(`Issuer DID:  ${ANSII_GREEN}${issuerDID}${ANSII_RESET}`)
+    console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
   }
-}
-
-async function loadContext (contextFile) {
-  return sdk.Context.createWithConfig(fs.readFileSync(CONFIG_PATH))
 }
 
 async function provisionAgent () {
@@ -439,7 +426,7 @@ async function provisionAgent () {
   console.log(`Using Verity Application Endpoint Url: ${ANSII_GREEN}${verityUrl}${ANSII_RESET}`)
 
   // create initial Context
-  var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
+  var ctx = await sdk.Context.create(WALLET_NAME, WALLET_KEY, verityUrl)
   console.log('wallet created')
   const provision = new sdk.protocols.v0_7.Provision(null, token)
   // console.log(`provision object ${JSON.stringify(provision)}`)
@@ -491,8 +478,10 @@ async function setupIssuer () {
           printMessage(msgName, message)
           issuerDID = message.identifier.did
           issuerVerkey = message.identifier.verKey
+          console.log(`Issuer DID:  ${ANSII_GREEN}${issuerDID}${ANSII_RESET}`)
+          console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
           console.log('The issuer DID and Verkey must be registered on the ledger.')
-          var automatedRegistration = await readlineYesNo('Attempt automated registration via https://selfserve.sovrin.org', true)
+          var automatedRegistration = await readlineYesNo(`Attempt automated registration via ${ANSII_GREEN}https://selfserve.sovrin.org${ANSII_RESET}`, true)
           if (automatedRegistration) {
             var res = await request.post({
               uri: 'https://selfserve.sovrin.org/nym',
@@ -505,13 +494,13 @@ async function setupIssuer () {
             })
             if (res.statusCode !== 200) {
               console.log('Something went wrong with contactig Sovrin portal')
-              console.log(`Please add DID (${issuerDID}) and Verkey (${issuerVerkey}) to ledger manually`)
+              console.log('Please add Issuer DID and Verkey to the ledger manually')
               await readlineInput('Press ENTER when DID is on ledger')
             } else {
               console.log(`Got response from Sovrin portal: ${ANSII_GREEN}${res.body}${ANSII_RESET}`)
             }
           } else {
-            console.log(`Please add DID (${issuerDID}) and Verkey (${issuerVerkey}) to ledger manually`)
+            console.log('Please add Issuer DID and Verkey to the ledger manually')
             await readlineInput('Press ENTER when DID is on ledger')
           }
           resolve(null)

@@ -12,6 +12,6 @@
     "qrcode": "^1.4.4",
     "request": "^2.34",
     "request-promise-native": "^1.0.8",
-    "verity-sdk": "^0.4.0"
+    "verity-sdk": "^0.4.3"
   }
 }
