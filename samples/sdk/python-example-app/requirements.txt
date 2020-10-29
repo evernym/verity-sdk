@@ -1,4 +1,4 @@
-verity-sdk==0.4.0
+verity-sdk==0.4.3
 aiohttp==3.5.4
 pyqrcode==1.2.1
 pypng==0.0.20

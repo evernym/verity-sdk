@@ -1,15 +1,14 @@
 __copyright__ = 'COPYRIGHT 2013-2019, ALL RIGHTS RESERVED, EVERNYM INC.'
 
-import asyncio
 import logging
 import os
 import pyqrcode
 import requests
 import traceback
+import asyncio
+from asyncio.base_events import Server
 from aiohttp import web
 from aiohttp.web_routedef import RouteTableDef
-from asyncio.base_events import Server
-from example.helper import *
 from verity_sdk.handlers import Handlers
 from verity_sdk.protocols.v0_6.IssuerSetup import IssuerSetup
 from verity_sdk.protocols.v0_6.UpdateConfigs import UpdateConfigs
@@ -21,10 +20,16 @@ from verity_sdk.protocols.v1_0.Connecting import Connecting
 from verity_sdk.protocols.v1_0.IssueCredential import IssueCredential
 from verity_sdk.protocols.v1_0.PresentProof import PresentProof
 from verity_sdk.protocols.v1_0.Relationship import Relationship
+from verity_sdk.protocols.v1_0.CommittedAnswer import CommittedAnswer
 from verity_sdk.utils.Context import Context
+from indy.wallet import delete_wallet
+from helper import *
 
-INSTITUTION_NAME = 'Faber College'
-LOGO_URL = 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
+INSTITUTION_NAME: str = 'Faber College'
+LOGO_URL: str = 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
+CONFIG_PATH: str = 'verity-context.json'
+WALLET_NAME: str = 'examplewallet1'
+WALLET_KEY: str = 'examplewallet1'
 
 context: Context
 issuer_did: str = ''
@@ -46,7 +51,7 @@ async def example(loop):
     rel_did = await create_relationship(loop)
     await create_connection(loop)
 
-    # await ask_question(loop, for_did)
+    await ask_question(loop, rel_did)
 
     schema_id = await write_ledger_schema(loop)
     cred_def_id = await write_ledger_cred_def(loop, schema_id)
@@ -65,7 +70,7 @@ async def create_relationship(loop) -> str:
     # 2. create invitation
 
     # Constructor for the Relationship API
-    relationship: Relationship = Relationship(label=INSTITUTION_NAME)
+    relationship: Relationship = Relationship()
 
     rel_did = loop.create_future()
     thread_id = loop.create_future()
@@ -102,12 +107,12 @@ async def create_relationship(loop) -> str:
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
         if msg_name == Relationship.INVITATION:
-            invite_url = message["inviteURL"]
+            invite_url = message['inviteURL']
             # write QRCode to disk
             qr = pyqrcode.create(invite_url)
             qr.png('qrcode.png')
 
-            if os.environ.get("HTTP_SERVER_URL"):
+            if os.environ.get('HTTP_SERVER_URL'):
                 print('Open the following URL in your browser and scan presented QR code')
                 print(f'{ANSII_GREEN}{os.environ.get("HTTP_SERVER_URL")}/python-example-app/qrcode.html{ANSII_RESET}')
             else:
@@ -131,52 +136,34 @@ async def create_connection(loop):
     global context
     global handlers
 
-    # Connecting protocol has two steps
-    # 1. Wait for connection request
-    # 2. Send connection response (connected)
+    # Connecting protocol is started from the Holder's side (ConnectMe)
+    # by scanning the QR code containing connection invitation
+    # Connection is established when the Holder accepts the connection on the device
+    # i.e. when the RESPONSE_SENT control message is received
 
-    # Step 1
+    connection = loop.create_future()
 
-    request_received = loop.create_future()
+    spinner = make_spinner('Waiting to respond to connection')  # Console spinner
 
-    spinner = make_spinner('Waiting to start connection')  # Console spinner
-
-    # handler for the response to the request to start the Connecting protocol.
-    async def inviter_handler(msg_name, message):
-        spinner.stop_and_persist('Done')
-        print_message(msg_name, message)
+    # handler for messages in Connecting protocol
+    async def connection_handler(msg_name, message):
         if msg_name == Connecting.REQUEST_RECEIVED:
-            request_received.set_result(None)
+            print()
+            print_message(msg_name, message)
+        elif msg_name == Connecting.RESPONSE_SENT:
+            spinner.stop_and_persist('Done')
+            print_message(msg_name, message)
+            connection.set_result(None)
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
 
     # adds handler to the set of handlers
-    handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, inviter_handler)
+    handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, connection_handler)
 
     spinner.start()
 
     # waits for request
-    await request_received  # wait for response from verity application
-
-    # Step 2
-    connected = loop.create_future()
-    spinner = make_spinner('Waiting to respond to connection')  # Console spinner
-
-    # handler for the accept message sent when connection is accepted
-    async def connection_response_handler(msg_name, message):
-        spinner.stop_and_persist('Done')
-        print_message(msg_name, message)
-        if msg_name == Connecting.RESPONSE_SENT:
-            connected.set_result(None)
-        else:
-            non_handled(f'Message name is not handled - {msg_name}', message)
-
-    spinner.start()
-    # note this overrides the handler for this message family! This is for demonstration purposes only.
-    handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, connection_response_handler)
-
-    await connected  # wait for acceptance from connect.me user
-
+    await connection  # wait for response from verity application
 
 async def write_ledger_schema(loop) -> str:
     # input parameters for schema
@@ -270,7 +257,7 @@ async def ask_question(loop, for_did):
     spinner.start()
 
     await question.ask(context)
-
+    await first_step
 
 async def issue_credential(loop, rel_did, cred_def_id):
     # input parameters for issue credential
@@ -281,7 +268,7 @@ async def issue_credential(loop, rel_did, cred_def_id):
     }
 
     # constructor for the Issue Credential protocol
-    issue = IssueCredential(rel_did, None, cred_def_id, credential_data, 'Degree', 0, True)
+    issue = IssueCredential(rel_did, None, cred_def_id, credential_data, credential_name, 0, True)
 
     offer_sent = loop.create_future()
     cred_sent = loop.create_future()
@@ -368,8 +355,17 @@ async def setup(loop):
     global context
     global issuer_did
 
+    config = ''
     # look for context on disk
-    config = load_context('verity-context.json')
+    try:
+        with open(CONFIG_PATH, 'r') as f:
+            if console_yes_no(f'Reuse Verity Context (in {CONFIG_PATH})', True):
+                config = f.read()
+            else:
+                await delete_wallet(json.dumps({'id': WALLET_NAME}), json.dumps({'key': WALLET_KEY}))
+    except FileNotFoundError:
+        pass
+
     if config:
         context = await Context.create_with_config(config)
     else:
@@ -390,22 +386,23 @@ async def setup(loop):
     await issuer_identifier(loop)
 
     if not issuer_did:
+        print('\nIssuer DID is not created. Performing Issuer setup now...')
         await setup_issuer(loop)
-
+    else:
+        print(f'Issuer DID:  {ANSII_GREEN}{issuer_did}{ANSII_RESET}')
+        print(f'Issuer Verkey: {ANSII_GREEN}{issuer_verkey}{ANSII_RESET}')
 
 async def provision_agent() -> str:
     global context
-    wallet_name = 'examplewallet1'  # for libindy wallet
-    wallet_key = 'examplewallet1'
     token = None
-    if console_yes_no("Provide Provision Token", True):
-        token = console_input("Token", os.environ.get("TOKEN"))
+    if console_yes_no('Provide Provision Token', True):
+        token = console_input('Token', os.environ.get('TOKEN'))
         print(f'Using provision token: {ANSII_GREEN}{token}{ANSII_RESET}')
 
-    verity_url = console_input(f'Verity Application Endpoint', os.environ.get("VERITY_SERVER"))
+    verity_url = console_input(f'Verity Application Endpoint', os.environ.get('VERITY_SERVER'))
     print(f'Using Verity Application Endpoint Url: {ANSII_GREEN}{verity_url}{ANSII_RESET}')
     # create initial Context
-    context = await Context.create(wallet_name, wallet_key, verity_url)
+    context = await Context.create(WALLET_NAME, WALLET_KEY, verity_url)
 
     # ask that an agent by provision (setup) and associated with created key pair
     try:
@@ -413,9 +410,9 @@ async def provision_agent() -> str:
         return response
     except Exception as e:
         print(e)
-        print("Provisioning failed! Likely causes:")
-        print("- token not provided but Verity Endpoint requires it")
-        print("- token provided but is invalid or expired")
+        print('Provisioning failed! Likely causes:')
+        print('- token not provided but Verity Endpoint requires it')
+        print('- token provided but is invalid or expired')
         sys.exit(1)
 
 
@@ -427,7 +424,7 @@ async def update_webhook_endpoint():
         # Default to localhost on the default port
         webhook_from_ctx = f'http://localhost:{port}'
 
-    webhook: str = console_input(f'Ngrok endpoint [{webhook_from_ctx}]', os.environ.get("WEBHOOK_URL"))
+    webhook: str = console_input(f'Ngrok endpoint [{webhook_from_ctx}]', os.environ.get('WEBHOOK_URL'))
 
     if not webhook:
         webhook = webhook_from_ctx
@@ -499,26 +496,28 @@ async def setup_issuer(loop):
         if msg_name == IssuerSetup.PUBLIC_IDENTIFIER_CREATED:
             issuer_did = message['identifier']['did']
             issuer_verkey = message['identifier']['verKey']
+            print(f'Issuer DID:  {ANSII_GREEN}{issuer_did}{ANSII_RESET}')
+            print(f'Issuer Verkey: {ANSII_GREEN}{issuer_verkey}{ANSII_RESET}')
             print('The issuer DID and Verkey must be registered on the ledger.')
-            automated_registration = console_yes_no('Attempt automated registration via https://selfserve.sovrin.org', True)
+            automated_registration = console_yes_no(f'Attempt automated registration via {ANSII_GREEN}https://selfserve.sovrin.org{ANSII_RESET}', True)
             if automated_registration:
                 url = 'https://selfserve.sovrin.org/nym'
                 payload = json.dumps({
-                            'network': 'stagingnet',
-                            'did': issuer_did,
-                            'verkey': issuer_verkey,
-                            'paymentaddr': ''
-                        })
+                    'network': 'stagingnet',
+                    'did': issuer_did,
+                    'verkey': issuer_verkey,
+                    'paymentaddr': ''
+                })
                 headers = {'Accept': 'application/json'}
-                response = requests.request("POST", url, headers=headers, data=payload)
+                response = requests.request('POST', url, headers=headers, data=payload)
                 if response.status_code != 200:
                     print('Something went wrong with contactig Sovrin portal')
-                    print(f'Please add DID ({issuer_did}) and Verkey ({issuer_verkey}) to ledger manually')
+                    print('Please add Issuer DID and Verkey to the ledger manually')
                     console_input('Press ENTER when DID is on ledger')
                 else:
                     print(f'Got response from Sovrin portal: {ANSII_GREEN}{response.text}{ANSII_RESET}')
             else:
-                print(f'Please add DID ({issuer_did}) and Verkey ({issuer_verkey}) to ledger manually')
+                print('Please add Issuer DID and Verkey to the ledger manually')
                 console_input('Press ENTER when DID is on ledger')
             first_step.set_result(None)
         else:

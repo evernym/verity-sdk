@@ -35,6 +35,7 @@ import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
 import com.evernym.verity.sdk.utils.Util;
+import com.evernym.verity.sdk.wallet.WalletUtil;
 import net.glxn.qrgen.QRCode;
 import org.json.JSONObject;
 
@@ -56,6 +57,9 @@ public class App extends Helper {
 
     private String issuerDID;
     private String issuerVerkey;
+
+    private final String WALLET_NAME = "examplewallet1";
+    private final String WALLET_KEY = "examplewallet1";
 
     public static void main( String[] args ) {
         new App().execute();
@@ -97,7 +101,7 @@ public class App extends Helper {
         println("Using Url: " + ANSII_GREEN + verityUrl + ANSII_RESET);
 
         // create initial Context
-        Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
+        Context ctx = ContextBuilder.fromScratch(WALLET_NAME, WALLET_KEY, verityUrl);
 
         // ask that an agent by provision (setup) and associated with created key pair
 	Context provisioningResponse = null;
@@ -112,14 +116,6 @@ public class App extends Helper {
             System.exit(1);  
         }	
       	return provisioningResponse;
-    }
-
-    Context loadContext(File contextFile) throws IOException, WalletOpenException {
-        return ContextBuilder.fromJson(
-                new JSONObject(
-                        new String(Files.readAllBytes(contextFile.toPath()))
-                )
-        ).build();
     }
 
     void updateWebhookEndpoint() throws IOException, VerityException {
@@ -164,9 +160,11 @@ public class App extends Helper {
 
         // wait for request to complete
         waitFor(setupComplete, "Waiting for setup to complete");
+        println("Issuer DID: " + ANSII_GREEN + issuerDID + ANSII_RESET);
+        println("Issuer Verkey: " + ANSII_GREEN + issuerVerkey + ANSII_RESET);
         println("The issuer DID and Verkey must be on the ledger.");
 
-        boolean automatedRegistration = consoleYesNo("Attempt automated registration via https://selfserve.sovrin.org", true);
+        boolean automatedRegistration = consoleYesNo("Attempt automated registration via " + ANSII_GREEN + "https://selfserve.sovrin.org" + ANSII_RESET, true);
         
         if (automatedRegistration) {
             CloseableHttpClient client = HttpClients.createDefault();
@@ -189,7 +187,7 @@ public class App extends Helper {
 
             if (statusCode != 200) {
                 println("Something went wrong with contactig Sovrin portal");
-                println(String.format("Please add DID (%s) and Verkey (%s) to ledger manually", issuerDID, issuerVerkey));
+                println("Please add Issuer DID and Verkey to the ledger manually");
                 waitFor("Press ENTER when DID is on ledger");
             } else {
                 BufferedReader bufReader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -204,7 +202,7 @@ public class App extends Helper {
             client.close();
         }
         else {
-            println(String.format("Please add DID (%s) and Verkey (%s) to ledger manually", issuerDID, issuerVerkey));
+            println("Please add Issuer DID and Verkey to the ledger manually");
             waitFor("Press ENTER when DID is on ledger");
         }
     }
@@ -255,12 +253,18 @@ public class App extends Helper {
 
     void setup() throws IOException, VerityException {
         File contextFile = new File("verity-context.json");
+        String config = null;
         if (contextFile.exists()) {
             if (consoleYesNo("Reuse Verity Context (in verity-context.json)", true)) {
-                context = loadContext(contextFile);
+                config = new String(Files.readAllBytes(contextFile.toPath()));
             } else {
-                context = provisionAgent();
+                WalletUtil.deleteWallet(WALLET_NAME, WALLET_KEY);
             }
+        }
+        if (config != null) {
+            context = ContextBuilder.fromJson(
+                         new JSONObject(config)
+                      ).build();
         }
         else {
             context = provisionAgent();
@@ -280,7 +284,12 @@ public class App extends Helper {
         issuerIdentifier();
 
         if (issuerDID == null) {
+            println("\nIssuer DID is not created. Performing Issuer setup now...");
             setupIssuer();
+        }
+        else {
+            println("Issuer DID: " + ANSII_GREEN + issuerDID + ANSII_RESET);
+            println("Issuer Verkey: " + ANSII_GREEN + issuerVerkey + ANSII_RESET);
         }
     }
 
@@ -289,7 +298,7 @@ public class App extends Helper {
         // 1. create relationship key
         // 2. create invitation
 
-        RelationshipV1_0 relProvisioning = Relationship.v1_0("Faber College");
+        RelationshipV1_0 relProvisioning = Relationship.v1_0();
 
         // handler for the response to the request to start the Connecting protocol.
         AtomicBoolean startRelationshipComplete = new AtomicBoolean(false);
@@ -354,24 +363,27 @@ public class App extends Helper {
     }
 
     private String createConnection(String relDID) throws IOException, VerityException {
+        // Connecting protocol is started from the Holder's side (ConnectMe)
+        // by scanning the QR code containing connection invitation
+        // Connection is established when the Holder accepts the connection on the device
+        // i.e. when the RESPONSE_SENT control message is received
 
         // Constructor for the Connecting API
         ConnectionsV1_0 listener = Connecting.v1_0("", "");
-        AtomicBoolean requestReceived = new AtomicBoolean(false);
-        AtomicBoolean startResponse = new AtomicBoolean(false);
+        AtomicBoolean connection = new AtomicBoolean(false);
 
         handle(listener, (String msgName, JSONObject message) -> {
             if("request-received".equals(msgName)) {
-                requestReceived.set(true);
+                printlnMessage(msgName, message);
             } else if("response-sent".equals(msgName)) {
-                startResponse.set(true);
+                printlnMessage(msgName, message);
+                connection.set(true);
             } else {
                 nonHandled("Message Name is not handled - "+msgName);
             }
         });
 
-        waitFor(requestReceived, "Waiting to receive Request");
-        waitFor(startResponse, "Responding to connection request");
+        waitFor(connection, "Responding to connection request");
         return relDID;
     }
 
@@ -490,7 +502,7 @@ public class App extends Helper {
         credentialData.put("name", "Alice Smith");
         credentialData.put("degree", "Bachelors");
         // constructor for the Issue Credential protocol
-        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "Degree", "0", true);
+        IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, credentialName, "0", true);
 
         AtomicBoolean offerSent = new AtomicBoolean(false); // spinlock bool
         AtomicBoolean credSent = new AtomicBoolean(false); // spinlock bool
@@ -525,7 +537,7 @@ public class App extends Helper {
 
     private void requestProof(String forDID) throws IOException, VerityException {
         // input parameters for request proof
-        String proofName = "Proof of Degree - "+UUID.randomUUID().toString().substring(0, 8);
+        String proofName = "Proof of Degree";
 
         Restriction restriction =  RestrictionBuilder
                 .blank()

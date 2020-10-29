@@ -36,16 +36,6 @@ def non_handled(error_msg: str, received_message=None):
     sys.exit(1)
 
 
-def load_context(file_path) -> str:
-    try:
-        with open(file_path, 'r') as f:
-            if console_yes_no(f"Reuse Verity Context (in {file_path})", True):
-                return f.read()
-    except FileNotFoundError:
-        pass
-    return ""
-
-
 def default_handler(message):
     non_handled(f'Message name is not handled', message)
 
