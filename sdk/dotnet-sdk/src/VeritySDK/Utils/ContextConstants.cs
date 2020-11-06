@@ -1,5 +1,8 @@
 ﻿namespace VeritySDK
 {
+    /// <summary>
+    /// Context constants
+    /// </summary>
     public static class ContextConstants
     {
         public static string ENDPOINT_URL = "endpointUrl";

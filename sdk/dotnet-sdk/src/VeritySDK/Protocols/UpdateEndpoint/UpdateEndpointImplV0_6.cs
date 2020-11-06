@@ -5,12 +5,9 @@ using System.Text;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of UpdateEndpointImplV0_6 but is not viable to user of Verity SDK. Created using the
-     * static UpdateEndpoint class
-     */
+    /// <summary>
+    /// This is an implementation of UpdateEndpointImplV0_6 but is not viable to user of Verity SDK. Created using the static UpdateEndpoint class
+    /// </summary>
     public class UpdateEndpointImplV0_6 : UpdateEndpointV0_6
     {
         public UpdateEndpointImplV0_6() : base() { }

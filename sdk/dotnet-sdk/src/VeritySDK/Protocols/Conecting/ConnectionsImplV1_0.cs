@@ -2,12 +2,11 @@
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of ConnectionsV1_0 but is not viable to user of Verity SDK. Created using the
-     * static Connecting class
-     */
+    /// <summary>
+    /// NON_VISIBLE
+    /// This is an implementation of ConnectionsV1_0 but is not viable to user of Verity SDK.
+    /// Created using the static Connecting class
+    /// </summary>
     public class ConnectionsImplV1_0 : ConnectionsV1_0
     {
         string forRelationship;

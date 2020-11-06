@@ -2,46 +2,47 @@
 
 namespace VeritySDK
 {
-    /**
-     * The config object for the local default wallet provided by the Indy SDK
-     */
+    /// <summary>
+    /// The config object for the local default wallet provided by the Indy SDK
+    /// </summary>
     public class DefaultWalletConfig : WalletConfig
     {
-        /**
-         * Constructs a DefaultWalletConfig with the given basic parameters
-         *
-         * @param id the given name or identifier for the wallet
-         * @param key the given key (encrypting) for the wallet
-         * @param path the given path location where the wallet on disk file is found
-         * @return a DefaultWalletConfig object
-         */
+        /// <summary>
+        /// Constructs a DefaultWalletConfig with the given basic parameters 
+        /// </summary>
+        /// <param name="id">the given name or identifier for the wallet</param>
+        /// <param name="key">the given key (encrypting) for the wallet</param>
+        /// <param name="path">the given path location where the wallet on disk file is found</param>
+        /// <returns>a DefaultWalletConfig object</returns>
         public static DefaultWalletConfig build(string id, string key, string path)
         {
             return new DefaultWalletConfig(id, key, path);
         }
 
-        /**
-         * Constructs a DefaultWalletConfig with the given basic parameters
-         * @param id the given name or identifier for the wallet
-         * @param key the given key (encrypting) for the wallet
-         * @return a DefaultWalletConfig object
-         */
+        /// <summary>
+        /// Constructs a DefaultWalletConfig with the given basic parameters 
+        /// </summary>
+        /// <param name="id">the given name or identifier for the wallet</param>
+        /// <param name="key">the given key (encrypting) for the wallet</param>
+        /// <returns>a DefaultWalletConfig object</returns>
         public static DefaultWalletConfig build(string id, string key)
         {
             return new DefaultWalletConfig(id, key);
         }
 
-        /**
-         * the name or identifier for the wallet
-         */
+        /// <summary>
+        /// the name or identifier for the wallet
+        /// </summary>
         public string id;
-        /**
-         * the key (encrypting) for the wallet
-         */
+
+        /// <summary>
+        /// the key (encrypting) for the wallet
+        /// </summary>
         public string key;
-        /**
-         * the path location where the wallet on disk file is found
-         */
+
+        /// <summary>
+        /// the path location where the wallet on disk file is found
+        /// </summary>
         public string path;
 
         private DefaultWalletConfig(string id, string key)
@@ -58,11 +59,10 @@ namespace VeritySDK
             this.path = path;
         }
 
-        /**
-         * Provides a default JSON config string
-         *
-         * @return a JSON wallet config string
-         */
+        /// <summary>
+        /// Provides a default JSON config string 
+        /// </summary>
+        /// <returns>a JSON wallet config string</returns>
         public string config()
         {
             JsonObject rtn = new JsonObject();
@@ -76,11 +76,10 @@ namespace VeritySDK
             return rtn.ToString();
         }
 
-        /**
-         * Provides a default JSON credential string
-         *
-         * @return a JSON wallet credential string
-         */
+        /// <summary>
+        /// Provides a default JSON credential string 
+        /// </summary>
+        /// <returns>a JSON wallet credential string</returns>
         public string credential()
         {
             JsonObject rtn = new JsonObject();
@@ -88,11 +87,10 @@ namespace VeritySDK
             return rtn.ToString();
         }
 
-        /**
-         * Injects the default wallet fields into a JSON Object
-         *
-         * @param json the JSON object that the fields are injected into
-         */
+        /// <summary>
+        /// Injects the default wallet fields into a JSON Object 
+        /// </summary>
+        /// <param name="json">the JSON object that the fields are injected into</param>
         public void addToJson(JsonObject json)
         {
             if (id != null) json.Add("walletName", id);

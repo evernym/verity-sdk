@@ -5,11 +5,9 @@ using System.Text.Json;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * Utilities for basic interactions with the verity-application
-     */
+    /// <summary>
+    /// Utilities for basic interactions with the verity-application
+    /// </summary>
     public class VerityUtil
     {
         class JData

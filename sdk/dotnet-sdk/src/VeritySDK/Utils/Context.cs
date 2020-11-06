@@ -111,7 +111,6 @@ namespace VeritySDK
 
         /// <summary>
         /// Closes the the open wallet handle stored inside the Context object.
-        /// throws WalletException when failing to close the wallet
         ///</summary>
         public void CloseWallet()
         {
@@ -136,7 +135,6 @@ namespace VeritySDK
 
         /// <summary>
         /// The WalletConfig expressed by this object
-        /// Throws UndefinedContextException when this field is not defined
         ///</summary>
         /// <returns>the WalletConfig held</returns>
         public WalletConfig WalletConfig()
@@ -145,8 +143,7 @@ namespace VeritySDK
         }
 
         /// <summary>
-        ///The url for the verity-application that this object is connected to
-        /// Throws UndefinedContextException when this field is not defined
+        /// The url for the verity-application that this object is connected to
         ///</summary>
         /// <returns>the url for the verity-application</returns>
         public string VerityUrl()
@@ -155,9 +152,8 @@ namespace VeritySDK
         }
 
         /// <summary>
-        ///The public identifier for the verity-application. This identifier is unique for each verity-application instance
-        ///but is common for all agents on that instance.
-        ///Throws UndefinedContextException when this field is not defined
+        /// The public identifier for the verity-application. This identifier is unique for each verity-application instance
+        /// but is common for all agents on that instance.
         ///</summary>
         /// <returns>the public identifier (DID) for a verity-application instance</returns>
         public string VerityPublicDID()
@@ -166,9 +162,8 @@ namespace VeritySDK
         }
 
         /// <summary>
-        ///The public verkey for the verity-application. This verkey is unique for each verity-application instance
-        ///but is common for all agents on that instance.
-        ///Throws UndefinedContextException when this field is not defined
+        /// The public verkey for the verity-application. This verkey is unique for each verity-application instance
+        /// but is common for all agents on that instance.
         ///</summary>
         /// <returns>the public verkey for a verity-application instance</returns>
         public string VerityPublicVerKey()
@@ -179,7 +174,6 @@ namespace VeritySDK
         /// <summary>
         ///The identifier for a identity domain. This identifier identifies a self-sovereign Identity. It will be common
         ///across all agents and controllers of that Identity.
-        ///Throws UndefinedContextException when this field is not defined
         ///</summary>
         /// <returns>the Domain identifier (DID)</returns>
         public string DomainDID()
@@ -189,7 +183,6 @@ namespace VeritySDK
 
         /// <summary>
         ///The verkey for the agent on the verity-application
-        ///Throws UndefinedContextException  when this field is not defined
         ///</summary>
         /// <returns>the verkey for the verity-application agent</returns>
         public string VerityAgentVerKey()
@@ -199,7 +192,6 @@ namespace VeritySDK
 
         /// <summary>
         ///An id for the locally held sdk verkey
-        ///Throws UndefinedContextException when this field is not defined
         ///</summary>
         /// <returns>the id for the sdk verkey</returns>
         public string SdkVerKeyId()
@@ -209,7 +201,6 @@ namespace VeritySDK
 
         /// <summary>
         ///The verkey for the locally held key-pair. A corresponding private key is held in the wallet for this verkey
-        ///Throws UndefinedContextException when this field is not defined
         ///</summary>
         /// <returns>the verkey for the sdk</returns>
         public string SdkVerKey()
@@ -220,7 +211,6 @@ namespace VeritySDK
         /// <summary>
         ///The endpoint for receiving messages from the agent on the verity-application. This endpoint must be registered
         ///using the UpdateEndpoint protocol to effectively change it.
-        ///Throws UndefinedContextException when this field is not defined
         ///</summary>
         /// <returns>the endpoint contained in this context</returns>
         public string EndpointUrl()
@@ -230,7 +220,6 @@ namespace VeritySDK
 
         /// <summary>
         ///The context version
-        ///Throws UndefinedContextException when this field is not defined
         ///</summary>
         /// <returns>the version</returns>
         public string Version()
@@ -240,8 +229,6 @@ namespace VeritySDK
 
         /// <summary>
         ///Converts the local keys held in the context to REST api token. This token can be used with the REST API for the verity-application
-        ///Throws VerityException when wallet operations fails
-        ///Throws IndyException when the signature fails
         ///</summary>
         /// <returns>a REST API token</returns>
         public string RestApiToken()
@@ -271,7 +258,6 @@ namespace VeritySDK
 
         /// <summary>
         ///The open wallet handle used by this object.
-        ///Throws WalletClosedException when the wallet is closed and there is not handle available
         ///</summary>
         /// <returns>a wallet handle</returns>
         public Wallet WalletHandle()

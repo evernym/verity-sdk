@@ -8,8 +8,6 @@
         /// <summary>
         /// Constructs a new exception.
         /// </summary>
-        /// <param name="message">message the given message for the cause of the exception.</param>
         public WalletClosedException() : base("A context wallet handle accessed after being closed") { }
     }
-
 }

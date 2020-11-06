@@ -2,95 +2,82 @@ using System.Json;
 
 namespace VeritySDK
 {
-
-    /**
-     * An interface for controlling a 0.6 IssuerSetup protocol.
-     */
+    /// <summary>
+    /// An class for controlling a 0.6 IssuerSetup protocol.
+    /// </summary>
     public abstract class IssuerSetupV0_6 : AbstractProtocol
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public IssuerSetupV0_6() { }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public IssuerSetupV0_6(string threadId) : base(threadId) { }
 
-        /**
-         * @see MessageFamily#qualifier()
-         */
+        /// <see cref="MessageFamily.qualifier"/>
         public override string qualifier() { return Util.EVERNYM_MSG_QUALIFIER; }
-        /**
-         * @see MessageFamily#family()
-         */
+
+        /// <see cref="MessageFamily.family"/>
         public override string family() { return "issuer-setup"; }
-        /**
-         * @see MessageFamily#version()
-         */
+
+        /// <see cref="MessageFamily.version"/>
         public override string version() { return "0.6"; }
 
-
-        /**
-        Name for 'create' control message
-         */
+        /// <summary>
+        /// Name for 'create' control message
+        /// </summary>
         public string CREATE = "create";
 
-        /**
-         Name for 'current-public-identifier' control message
-         */
+        /// <summary>
+        /// Name for 'current-public-identifier' control message
+        /// </summary>
         public string CURRENT_PUBLIC_IDENTIFIER = "current-public-identifier";
 
-        /**
-         * Directs verity-application to start and create an issuer identity and set it up
-         *
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @throws IOException when the HTTP library fails to post to the agency endpoint
-         * @throws VerityException when wallet operations fails or given invalid context
-         */
+        /// <summary>
+        /// Directs verity-application to start and create an issuer identity and set it up 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
         public abstract void create(Context context);
 
-        /**
-         * Creates the control message without packaging and sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the constructed message (JSON object)
-         * @throws VerityException when given invalid context
-         *
-         * @see #create
-         */
+        /// <summary>
+        /// Creates the control message without packaging and sending it. 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the constructed message (JSON object)</returns>
+        /// <see cref="create(Context)"/>
         public abstract JsonObject createMsg(Context context);
 
-        /**
-         * Creates and packages message without sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the byte array ready for transport
-         * @throws VerityException when wallet operations fails or given invalid context
-         *
-         * @see #create
-         */
+        /// <summary>
+        /// Creates and packages message without sending it.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the byte array ready for transport</returns>
+        /// <see cref="create(Context)"/>
         public abstract byte[] createMsgPacked(Context context);
 
-        /**
-         * Asks the verity-application for the current issuer identity that is setup.
-         *
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @throws IOException when the HTTP library fails to post to the agency endpoint
-         * @throws VerityException when wallet operations fails or given invalid context
-         */
+        /// <summary>
+        /// Asks the verity-application for the current issuer identity that is setup.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
         public abstract void currentPublicIdentifier(Context context);
 
-        /**
-         * Creates the control message without packaging and sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the constructed message (JSON object)
-         * @throws VerityException when given invalid context
-         *
-         * @see #currentPublicIdentifier
-         */
+        /// <summary>
+        /// Creates the control message without packaging and sending it.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the constructed message (JSON object)</returns>
+        /// <see cref="currentPublicIdentifier(Context)"/>
         public abstract JsonObject currentPublicIdentifierMsg(Context context);
 
-        /**
-         * Creates and packages message without sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the byte array ready for transport
-         * @throws VerityException when wallet operations fails or given invalid context
-         *
-         * @see #currentPublicIdentifier
-         */
+        /// <summary>
+        /// Creates and packages message without sending it. 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the byte array ready for transport</returns>
+        /// <see cref="currentPublicIdentifier(Context)"/>
         public abstract byte[] currentPublicIdentifierMsgPacked(Context context);
     }
 }

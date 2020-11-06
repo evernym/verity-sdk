@@ -2,6 +2,9 @@
 
 namespace VeritySDK
 {
+    /// <summary>
+    /// Interface for save object to JSON
+    /// </summary>
     public interface AsJsonObject
     {
         /// <summary>

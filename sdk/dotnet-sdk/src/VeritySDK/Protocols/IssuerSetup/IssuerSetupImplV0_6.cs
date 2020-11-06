@@ -2,12 +2,10 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of IssuerSetupImplV0_6 but is not viable to user of Verity SDK. Created using the
-     * static IssuerSetup class
-     */
+    /// <summary>
+    /// NON_VISIBLE
+    /// This is an implementation of IssuerSetupImplV0_6 but is not viable to user of Verity SDK.Created using the static IssuerSetup class
+    /// </summary>
     public class IssuerSetupImplV0_6 : IssuerSetupV0_6
     {
         public IssuerSetupImplV0_6() { }

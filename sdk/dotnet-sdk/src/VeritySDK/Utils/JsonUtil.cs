@@ -6,28 +6,28 @@ using System.Text;
 
 namespace VeritySDK
 {
-    /**
-     * Utilities for creating JSON objects
-     */
+    /// <summary>
+    /// Utilities for creating JSON objects
+    /// </summary>
     public class JsonUtil
     {
         private JsonUtil() { }
 
-        /**
-         * Builds a JSONArray from an array of object that implement AsJsonObject interface
-         * @param items an array of object that can be converted to an JSONObject
-         * @return a JSON array
-         */
+        /// <summary>
+        /// Builds a JsonArray from an array of object that implement AsJsonObject interface 
+        /// </summary>
+        /// <param name="items">items an array of object that can be converted to an JsonObject</param>
+        /// <returns>a JSON array</returns>
         public static JsonArray makeArray(AsJsonObject[] items)
         {
             return buildArray(items.AsEnumerable());
         }
 
-        /**
-         * Builds a JSONArray from a list of object that implement AsJsonObject interface
-         * @param items a List of object that can be converted to an JSONObject
-         * @return a JSON array
-         */
+        /// <summary>
+        /// Builds a JSONArray from a list of object that implement AsJsonObject interface 
+        /// </summary>
+        /// <param name="items">a List of object that can be converted to an JsonObject</param>
+        /// <returns>a JSON array</returns>
         public static JsonArray makeArrayFromList(List<AsJsonObject> items)
         {
             return buildArray(items);

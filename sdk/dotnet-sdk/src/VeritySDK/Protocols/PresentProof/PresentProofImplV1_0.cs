@@ -3,13 +3,10 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of PresentProofImplV1_0 but is not viable to user of Verity SDK. Created using the
-     * static PresentProof class
-     */
-
+    /// <summary>
+    /// NON_VISIBLE
+    /// This is an implementation of PresentProofImplV1_0 but is not viable to user of Verity SDK.Created using the static PresentProof class
+    /// </summary>
     public class PresentProofImplV1_0 : PresentProofV1_0
     {
 
@@ -110,7 +107,6 @@ namespace VeritySDK
         {
             return packMsg(context, rejectMsg(context, reason));
         }
-
 
         public override void status(Context context)
         {

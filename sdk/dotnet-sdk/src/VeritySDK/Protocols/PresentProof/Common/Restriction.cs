@@ -2,23 +2,26 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /**
-     * A holder for a restriction expression
-     */
+    /// <summary>
+    /// A holder for a restriction expression
+    /// </summary>
     public class Restriction : AsJsonObject
     {
         JsonObject data;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="data">Restrinction as SSON object</param>
         public Restriction(JsonObject data)
         {
             this.data = data;
         }
 
-        /**
-         * Convert this object to a JSON object
-         *
-         * @return this object as a JSON object
-         */
+        /// <summary>
+        /// Convert this object to a JSON object 
+        /// </summary>
+        /// <returns>this object as a JSON object</returns>
         public JsonObject toJson()
         {
             return this.data;

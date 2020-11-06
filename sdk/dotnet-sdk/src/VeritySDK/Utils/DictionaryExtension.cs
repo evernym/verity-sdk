@@ -6,6 +6,9 @@ using System.Text;
 
 namespace VeritySDK.Utils
 {
+    /// <summary>
+    /// Extension for safe get values from Dictionary
+    /// </summary>
     public static class DictionaryExtension
     {
         public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)

@@ -4,12 +4,9 @@ using System.Security.Policy;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of RelationshipImplV1_0 but is not viable to user of Verity SDK. Created using the
-     * static Relationship class
-     */
+    /// <summary>
+    /// This is an implementation of RelationshipImplV1_0 but is not viable to user of Verity SDK. Created using the static Relationship class
+    /// </summary>
     public class RelationshipImplV1_0 : RelationshipV1_0
     {
         static string CREATE = "create";

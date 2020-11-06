@@ -2,97 +2,99 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /**
-     * A build to help construct a Restriction object
-     */
+    /// <summary>
+    /// A build to help construct a Restriction object
+    /// </summary>
     public class RestrictionBuilder
     {
-        /**
-         * Constructs a blank builder
-         * @return a blank builder object
-         */
+        /// <summary>
+        /// Constructs a blank builder 
+        /// </summary>
+        /// <returns>a blank builder object</returns>
         public static RestrictionBuilder blank()
         {
             return new RestrictionBuilder();
         }
 
+        /// <summary>
+        /// Simple constructor
+        /// </summary>
         public  RestrictionBuilder()
         {
-
         }
 
         private JsonObject data = new JsonObject();
 
-        /**
-         * The schema id that the prevent attribute must be associated with
-         * @param val the schema id
-         * @return a partially built builder
-         */
+        /// <summary>
+        /// The schema id that the prevent attribute must be associated with
+        /// </summary>
+        /// <param name="val">the schema id</param>
+        /// <returns>a partially built builder</returns>
         public RestrictionBuilder schemaId(string val)
         {
             this.data.Add("schema_id", val);
             return this;
         }
 
-        /**
-         * The public DID of the writer of the schema on the public ledger that the attribute must be associated with
-         * @param val the DID of writer of the schema
-         * @return a partially built builder
-         */
+        /// <summary>
+        /// The public DID of the writer of the schema on the public ledger that the attribute must be associated with 
+        /// </summary>
+        /// <param name="val">the DID of writer of the schema</param>
+        /// <returns>a partially built builder</returns>
         public RestrictionBuilder schemaIssuerDid(string val)
         {
             this.data.Add("schema_issuer_did", val);
             return this;
         }
 
-        /**
-         * The name of the schema that the attribute must be associated with
-         * @param val the schema name
-         * @return a partially built builder
-         */
+        /// <summary>
+        /// The name of the schema that the attribute must be associated with 
+        /// </summary>
+        /// <param name="val">the schema name</param>
+        /// <returns>a partially built builder</returns>
         public RestrictionBuilder schemaName(string val)
         {
             this.data.Add("schema_name", val);
             return this;
         }
 
-        /**
-         * The version of the schema that the attribute must be associated with
-         * @param val the schema version
-         * @return a partially built builder
-         */
+        /// <summary>
+        /// The version of the schema that the attribute must be associated with 
+        /// </summary>
+        /// <param name="val">the schema version</param>
+        /// <returns>a partially built builder</returns>
         public RestrictionBuilder schemaVersion(string val)
         {
             this.data.Add("schema_version", val);
             return this;
         }
 
-        /**
-         * The public DID of the issuer that the attribute must be issued from
-         * @param val the issuer's public DID
-         * @return a partially built builder
-         */
+        /// <summary>
+        /// The public DID of the issuer that the attribute must be issued from 
+        /// </summary>
+        /// <param name="val">the issuer's public DID</param>
+        /// <returns>a partially built builder</returns>
         public RestrictionBuilder issuerDid(string val)
         {
             this.data.Add("issuer_did", val);
             return this;
         }
 
-        /**
-         * The credential definition that the attribute must be issued from
-         * @param val the credential definition identifier
-         * @return a partially built builder
-         */
+        /// <summary>
+        /// The credential definition that the attribute must be issued from 
+        /// </summary>
+        /// <param name="val">the credential definition identifier</param>
+        /// <returns>a partially built builder</returns>
         public RestrictionBuilder credDefId(string val)
         {
             this.data.Add("cred_def_id", val);
             return this;
         }
 
-        /**
-         * Build the restriction
-         * @return the built Restriction
-         */
+        /// <summary>
+        /// Build the restriction 
+        /// </summary>
+        /// <returns>the built Restriction</returns>
         public Restriction build()
         {
             return new Restriction(data);

@@ -6,39 +6,47 @@ using System.Runtime.CompilerServices;
 
 namespace VeritySDK
 {
-    /**
-     * An enumeration of possible goals (reasons) for a relationship.
-     *
-     * @see <a href="https://github.com/hyperledger/aries-rfcs/blob/master/features/0434-outofband/README.md" target="_blank" rel="noopener noreferrer">Aries 0434: Connection Protocol</a>
-     */
-
+    /// <summary>
+    /// An enumeration of possible goals (reasons) for a relationship. 
+    /// <see cref="https://github.com/hyperledger/aries-rfcs/blob/master/features/0434-outofband/README.md"/>
+    /// </summary>
     public enum GoalCode
     {
-        /**
-         * To issue a credential
-         */
+        /// <summary>
+        /// To issue a credential
+        /// </summary>
         [Display(Name = "issue-vc", Description = "To issue a credential")]
         ISSUE_VC,
-        /**
-         * To request a proof
-         */
+
+        /// <summary>
+        /// To request a proof
+        /// </summary>
         [Display(Name = "request-proof", Description = "To request a proof")]
         REQUEST_PROOF,
-        /**
-         * To create an account with a service
-         */
+
+        /// <summary>
+        /// To create an account with a service
+        /// </summary>
         [Display(Name = "create-account", Description = "To create an account with a service")]
         CREATE_ACCOUNT,
-        /**
-         * To establish a peer-to-peer messaging relationship
-         */
+
+        /// <summary>
+        /// To establish a peer-to-peer messaging relationship
+        /// </summary>
         [Display(Name = "p2p-messaging", Description = "To establish a peer-to-peer messaging relationship")]
         P2P_MESSAGING
     }
 
-
+    /// <summary>
+    /// Extension for GoalCode enum
+    /// </summary>
     public static class GoalCodeExtensions
     {
+        /// <summary>
+        /// Get Code for goal
+        /// </summary>
+        /// <param name="value">GoalCodeEnum</param>
+        /// <returns></returns>
         public static string code(this GoalCode value)
         {
             return value.GetType()?
@@ -47,6 +55,11 @@ namespace VeritySDK
                .Name;
         }
 
+        /// <summary>
+        /// Get Name for goal
+        /// </summary>
+        /// <param name="value">GoalCodeEnum</param>
+        /// <returns></returns>
         public static string goalName(this GoalCode value)
         {
             return value.GetType()?

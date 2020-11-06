@@ -3,12 +3,9 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of QuestionAnswerImplV1_0 but is not viable to user of Verity SDK. Created using the
-     * static QuestionAnswer class
-     */
+    /// <summary>
+    /// This is an implementation of QuestionAnswerImplV1_0 but is not viable to user of Verity SDK. Created using the static QuestionAnswer class
+    /// </summary>
     public class QuestionAnswerImplV1_0 : QuestionAnswerV1_0
     {
 

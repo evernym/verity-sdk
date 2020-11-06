@@ -3,12 +3,10 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of OutOfBandImplV1_0 but is not viable to user of Verity SDK. Created using the
-     * static PresentProof class
-     */
+    /// <summary>
+    /// NON_VISIBLE    
+    /// This is an implementation of OutOfBandImplV1_0 but is not viable to user of Verity SDK.Created using the static PresentProof class
+    /// </summary>
     public class OutOfBandImplV1_0 : OutOfBandV1_0
     {
         static string CONNECTION_INVITATION = "reuse";

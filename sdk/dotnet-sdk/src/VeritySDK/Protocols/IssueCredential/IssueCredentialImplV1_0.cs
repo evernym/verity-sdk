@@ -6,15 +6,13 @@ using System.Text;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of IssueCredentialV1_0 but is not viable to user of Verity SDK. Created using the
-     * static IssueCredential class
-     */
+    /// <summary>
+    /// NON_VISIBLE
+    /// 
+    /// This is an implementation of IssueCredentialV1_0 but is not viable to user of Verity SDK.Created using the static IssueCredential class
+    /// </summary>
     public class IssueCredentialImplV1_0 : IssueCredentialV1_0
     {
-
         // flag if this instance started the interaction
         bool created = false;
 
@@ -56,8 +54,6 @@ namespace VeritySDK
             this.forRelationship = forRelationship;
         }
 
-
-
         public override void proposeCredential(Context context)
         {
             //        send(context, proposeCredentialMsg(context));
@@ -68,7 +64,7 @@ namespace VeritySDK
         public override JsonObject proposeCredentialMsg(Context context)
         {
             //        if(!created) {
-            //            throw new IllegalArgumentException("Unable to propose credentials when NOT starting the interaction");
+            //            throw new Exception("Unable to propose credentials when NOT starting the interaction");
             //        }
             //
             //        JsonObject msg = new JsonObject();
@@ -85,20 +81,16 @@ namespace VeritySDK
             throw new NotImplementedException("This API has not been implemented");
         }
 
-
-
         public override byte[] proposeCredentialMsgPacked(Context context)
         {
-            //        return packMsg(context, proposeCredentialMsg(context));
+            // return packMsg(context, proposeCredentialMsg(context));
             throw new NotImplementedException("This API has not been implemented");
         }
-
 
         public override void offerCredential(Context context)
         {
             send(context, offerCredentialMsg(context));
         }
-
 
         public override JsonObject offerCredentialMsg(Context context)
         {
@@ -115,8 +107,8 @@ namespace VeritySDK
 
             msg.Add("cred_def_id", credDefId);
 
-            var val =  new JsonObject();
-            foreach(var v in this.values)
+            var val = new JsonObject();
+            foreach (var v in this.values)
             {
                 val.Add(v.Key, v.Value);
             }
@@ -129,12 +121,10 @@ namespace VeritySDK
             return msg;
         }
 
-
         public override byte[] offerCredentialMsgPacked(Context context)
         {
             return packMsg(context, offerCredentialMsg(context));
         }
-
 
         public override void requestCredential(Context context)
         {
@@ -142,11 +132,10 @@ namespace VeritySDK
             throw new NotImplementedException("This API has not been implemented");
         }
 
-
         public override JsonObject requestCredentialMsg(Context context)
         {
             //        if(!created) {
-            //            throw new IllegalArgumentException("Unable to request credential when NOT starting the interaction");
+            //            throw new Exception("Unable to request credential when NOT starting the interaction");
             //        }
             //
             //        JsonObject msg = new JsonObject();
@@ -162,23 +151,19 @@ namespace VeritySDK
             throw new NotImplementedException("This API has not been implemented");
         }
 
-
         public override byte[] requestCredentialMsgPacked(Context context)
         {
             //        return packMsg(context, requestCredentialMsg(context));
             throw new NotImplementedException("This API has not been implemented");
         }
 
-
         public override void issueCredential(Context context)
         {
             send(context, issueCredentialMsg(context));
         }
 
-
         public override JsonObject issueCredentialMsg(Context context)
         {
-
             JsonObject msg = new JsonObject();
             msg.Add("@type", messageType(ISSUE));
             msg.Add("@id", getNewId());
@@ -190,12 +175,10 @@ namespace VeritySDK
             return msg;
         }
 
-
         public override byte[] issueCredentialMsgPacked(Context context)
         {
             return packMsg(context, issueCredentialMsg(context));
         }
-
 
         public override void reject(Context context)
         {
@@ -206,7 +189,6 @@ namespace VeritySDK
 
             send(context, rejectMsg(context));
         }
-
 
         public override JsonObject rejectMsg(Context context)
         {
@@ -221,18 +203,15 @@ namespace VeritySDK
             return msg;
         }
 
-
         public override byte[] rejectMsgPacked(Context context)
         {
             return packMsg(context, rejectMsg(context));
         }
 
-
         public override void status(Context context)
         {
             send(context, statusMsg(context));
         }
-
 
         public override JsonObject statusMsg(Context context)
         {
@@ -244,7 +223,6 @@ namespace VeritySDK
             addThread(msg);
             return msg;
         }
-
 
         public override byte[] statusMsgPacked(Context context)
         {

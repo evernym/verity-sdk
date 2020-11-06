@@ -3,71 +3,61 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /**
-     * An interface for controlling a 0.7 Provision protocol.
-     */
+    /// <summary>
+    /// An abstract class for controlling a 0.7 Provision protocol.
+    /// </summary>
     public abstract class ProvisionV0_7 : AbstractProtocol
     {
-        /**
-         * The qualifier for the message family. Uses Evernym's qualifier.
-         */
+        /// <summary>
+        /// The qualifier for the message family. Uses Evernym's qualifier.
+        /// </summary>
         string QUALIFIER = Util.EVERNYM_MSG_QUALIFIER;
-        /**
-         * The name for the message family.
-         */
+
+        /// <summary>
+        /// The name for the message family.
+        /// </summary>
         string FAMILY = "agent-provisioning";
-        /**
-         * The version for the message family.
-         */
+
+        /// <summary>
+        /// The version for the message family.
+        /// </summary>
         string VERSION = "0.7";
 
-
-        /**
-         * @see MessageFamily#qualifier()
-         */
+        /// <see cref="MessageFamily.qualifier"/>
         public override string qualifier() { return QUALIFIER; }
-        /**
-         * @see MessageFamily#family()
-         */
+
+        /// <see cref="MessageFamily.family"/>
         public override string family() { return FAMILY; }
-        /**
-         * @see MessageFamily#version()
-         */
+
+        /// <see cref="MessageFamily.version"/>
         public override string version() { return VERSION; }
 
-        /**
-         Name for 'create-edge-agent' control message
-         */
+        /// <summary>
+        /// Name for 'create-edge-agent' control message
+        /// </summary>
         public string CREATE_EDGE_AGENT = "create-edge-agent";
 
-        /**
-         * Sends provisioning message that directs the creation of an agent to the to verity-application
-         *
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @throws IOException when the HTTP library fails to post to the agency endpoint
-         * @throws VerityException when wallet operations fails or given invalid context
-         * @return new Context with provisioned details
-         */
+        /// <summary>
+        /// Sends provisioning message that directs the creation of an agent to the to verity-application 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>new Context with provisioned details</returns>
         public abstract Context provision(Context context);
 
-        /**
-         * Creates the control message without packaging and sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the constructed message (JSON object)
-         * @throws VerityException when given invalid context
-         *
-         * @see #provision
-         */
+        /// <summary>
+        /// Creates the control message without packaging and sending it. 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the constructed message (JSON object)</returns>
+        /// <see cref="provision(Context)"/>
         public abstract JsonObject provisionMsg(Context context);
 
-        /**
-         * Creates and packages message without sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the byte array ready for transport
-         * @throws VerityException when wallet operations fails or given invalid context
-         *
-         * @see #provision
-         */
+        /// <summary>
+        /// Creates and packages message without sending it. 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the byte array ready for transport</returns>
+        /// <see cref="provision(Context)"/>
         public abstract byte[] provisionMsgPacked(Context context);
     }
 }

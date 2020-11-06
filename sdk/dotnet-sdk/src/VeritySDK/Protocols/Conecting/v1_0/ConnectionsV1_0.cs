@@ -2,96 +2,87 @@
 
 namespace VeritySDK
 {
-    /**
-     * An interface for controlling a 1.0 Connections protocol.
-     *
-     * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/9b0aaa39df7e8bd434126c4b33c097aae78d65bf/features/0160-connection-protocol" target="_blank" rel="noopener noreferrer">Aries 0160: Connection Protocol</a>
-     */
+    /// <summary>
+    /// An class for controlling a 1.0 Connections protocol.
+    /// </summary>
     public abstract class ConnectionsV1_0 : AbstractProtocol
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ConnectionsV1_0() { }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ConnectionsV1_0(string threadId) : base(threadId) { }
 
-        /**
-         * The qualifier for the message family. Uses the community qualifier.
-         */
+        /// <summary>
+        /// The qualifier for the message family. Uses the community qualifier.
+        /// </summary>
         public string QUALIFIER = Util.COMMUNITY_MSG_QUALIFIER;
-        /**
-         * The name for the message family.
-         */
+
+        /// <summary>
+        /// The name for the message family.
+        /// </summary>
         public string FAMILY = "connections";
-        /**
-         * The version for the message family.
-         */
+
+        /// <summary>
+        /// The version for the message family.
+        /// </summary>
         public string VERSION = "1.0";
 
-        /**
-         * @see MessageFamily#qualifier()
-         */
+        /// <see cref="MessageFamily.qualifier"/>
         public override string qualifier() { return QUALIFIER; }
-        /**
-         * @see MessageFamily#family()
-         */
+
+        /// <see cref="MessageFamily.family"/>
         public override string family() { return FAMILY; }
-        /**
-         * @see MessageFamily#version()
-         */
+
+        /// <see cref="MessageFamily.version"/>
         public override string version() { return VERSION; }
 
-        /**
-         * Sends the get status message to the connection
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @throws IOException when the HTTP library fails to post to the agency endpoint
-         * @throws VerityException when wallet operations fails or given invalid context
-         */
+        /// <summary>
+        /// Sends the get status message to the connection
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
         public abstract void status(Context context);
 
-        /**
-         * Creates the control message without packaging and sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the constructed message (JSON object)
-         * @throws VerityException when given invalid context
-         *
-         * @see #status
-         */
+        /// <summary>
+        /// Creates the control message without packaging and sending it. 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the constructed message (JSON object)</returns>
+        /// <see cref="status(Context)"/>
         public abstract JsonObject statusMsg(Context context);
 
-        /**
-         * Creates and packages message without sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the byte array ready for transport
-         * @throws VerityException when wallet operations fails or given invalid context
-         * 
-         * @see #status
-         */
+        /// <summary>
+        /// Creates and packages message without sending it. 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the byte array ready for transport</returns>
+        /// <see cref="status(Context)"/>
         public abstract byte[] statusMsgPacked(Context context);
 
-        /**
-         * Accepts connection defined by the given invitation
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @throws IOException when the HTTP library fails to post to the agency endpoint
-         * @throws VerityException when wallet operations fails or given invalid context
-         */
+        /// <summary>
+        /// Accepts connection defined by the given invitation 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
         public abstract void accept(Context context);
 
-        /**
-         * Creates the control message without packaging and sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the constructed message (JSON object)
-         * @throws VerityException when given invalid context
-         *
-         * @see #accept
-         */
+        /// <summary>
+        /// Creates the control message without packaging and sending it. 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the constructed message (JSON object)</returns>
+        /// <see cref="accept(Context)"/>
         public abstract JsonObject acceptMsg(Context context);
 
-        /**
-         * Creates and packages message without sending it.
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @return the byte array ready for transport
-         * @throws VerityException when wallet operations fails or given invalid context
-         *
-         * @see #accept
-         */
+        /// <summary>
+        /// Creates and packages message without sending it.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the byte array ready for transport</returns>
+        /// <see cref="accept(Context)"/>
         public abstract byte[] acceptMsgPacked(Context context);
     }
 }

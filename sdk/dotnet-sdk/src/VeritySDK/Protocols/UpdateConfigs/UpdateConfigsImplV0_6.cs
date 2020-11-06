@@ -2,15 +2,12 @@ using System;
 using System.Json;
 
 namespace VeritySDK
-{/*
- * NON_VISIBLE
- *
- * This is an implementation of UpdateConfigsImplV0_6 but is not viable to user of Verity SDK. Created using the
- * static UpdateConfigs class
- */
+{
+    /// <summary>
+    /// This is an implementation of UpdateConfigsImplV0_6 but is not viable to user of Verity SDK.
+    /// </summary>
     public class UpdateConfigsImplV0_6 : UpdateConfigsV0_6
     {
-
         string UPDATE_CONFIGS = "update";
         string GET_STATUS = "get-status";
 

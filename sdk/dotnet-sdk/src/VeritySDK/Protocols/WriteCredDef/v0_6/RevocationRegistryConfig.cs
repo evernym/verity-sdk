@@ -3,32 +3,29 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /**
-     * Holder of revocation registry configuration. This class holds a JSON object and is not intended to be created
-     * directly. The versioned WriteCredentialDefinition interface provides helper functions to create this holder
-     * class.
-     *
-     * @see WriteCredentialDefinitionV0_6#disabledRegistryConfig()
-     */
+    /// <summary>
+    /// Holder of revocation registry configuration. This class holds a JSON object and is not intended to be created
+    /// directly. The versioned WriteCredentialDefinition interface provides helper functions to create this holder
+    /// class.
+    /// </summary>
+    /// <see cref="WriteCredentialDefinitionV0_6.disabledRegistryConfig"/> 
     public class RevocationRegistryConfig : AsJsonObject
     {
         private JsonObject data;
 
-        /**
-         * Constructs the object with the given JSON object
-         *
-         * @param data the given configuration as expressed in JSON object
-         */
+        /// <summary>
+        /// Constructs the object with the given JSON object 
+        /// </summary>
+        /// <param name="data">the given configuration as expressed in JSON object</param>
         public RevocationRegistryConfig(JsonObject data)
         {
             this.data = data;
         }
 
-        /**
-         * Convert this object to a JSON object
-         *
-         * @return this object as a JSON object
-         */
+        /// <summary>
+        /// Convert this object to a JSON object
+        /// </summary>
+        /// <returns>this object as a JSON object</returns>
         public JsonObject toJson()
         {
             return data;

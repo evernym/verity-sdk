@@ -3,12 +3,9 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of WriteCredentialDefinitionImplV0_6 but is not viable to user of Verity SDK. Created using the
-     * static WriteCredentialDefinition class
-     */
+    /// <summary>
+    /// This is an implementation of WriteCredentialDefinitionImplV0_6 but is not viable to user of Verity SDK. 
+    /// </summary>
     public class WriteCredentialDefinitionImplV0_6 : WriteCredentialDefinitionV0_6
     {
 

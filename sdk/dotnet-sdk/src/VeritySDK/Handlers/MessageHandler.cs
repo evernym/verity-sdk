@@ -3,35 +3,26 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /**
-     * Defines how to handle a message of a certain type and optionally with a particular status
-     */
+    /// <summary>
+    /// Defines how to handle a message of a certain type and optionally with a particular status
+    /// </summary>
     public class MessageHandler
     {
+        /// <summary>
+        /// Handles the given JSON object message
+        /// </summary>
+        /// <param name="msgName">the name for the message to be handled</param>
+        /// <param name="message">the message to be handled</param>
         public delegate void Handler(string msgName, JsonObject message);
 
         private MessageFamily messageFamily;
         private Handler messageHandler;
 
-        ///**
-        // * A simple handler interface for JSON object messages
-        // */
-        //public interface Handler
-        //{
-        //    /**
-        //     * Handles the given JSON object message
-        //     *
-        //     * @param msgName the name for the message to be handled
-        //     * @param message the message to be handled
-        //     */
-        //    void handle(string msgName, JsonObject message);
-        //}
-
-        /**
-         * Associate a handler with a particular message type
-         * @param family the type of message to be handled
-         * @param messageHandler the handler function itself
-         */
+        /// <summary>
+        /// Associate a handler with a particular message type 
+        /// </summary>
+        /// <param name="family">the type of message to be handled</param>
+        /// <param name="messageHandler">the handler function itself</param>
         public MessageHandler(MessageFamily family, Handler messageHandler)
         {
             DbcUtil.requireNotNull(family, "family");
@@ -41,11 +32,11 @@ namespace VeritySDK
             this.messageHandler = messageHandler;
         }
 
-        /**
-         * Checks to see if this MessageHandler handles a particular agent message
-         * @param message the JSON structure of the agent message
-         * @return whether or not this MessageHandler handles the given message
-         */
+        /// <summary>
+        /// Checks to see if this MessageHandler handles a particular agent message 
+        /// </summary>
+        /// <param name="message">the JSON structure of the agent message</param>
+        /// <returns>whether or not this MessageHandler handles the given message</returns>
         public bool handles(JsonObject message)
         {
             if (this.messageFamily == null) return false;
@@ -53,10 +44,11 @@ namespace VeritySDK
             return this.messageFamily.matches(message["@type"]);
         }
 
-        /**
-         * Calls the handler function on the agent message
-         * @param message the JSON structure of the agent message
-         */
+
+        /// <summary>
+        /// Calls the handler function on the agent message 
+        /// </summary>
+        /// <param name="message">the JSON structure of the agent message</param>
         public void handle(JsonObject message)
         {
             String msgType = message["@type"];

@@ -3,22 +3,19 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /**
-     * The base class for all protocols
-     */
+    /// <summary>
+    /// The base class for all protocols
+    /// </summary>
     public abstract class AbstractProtocol : MessageFamily
     {
-        /**
-         * Constructs a Protocol with a given threadId. A threadId is NOT generated with this constructor.
-         *
-         * @param threadId given ID used for the thread. MUST not be null.
-         */
+        /// <summary>
+        /// Constructs a Protocol with a given threadId. A threadId is NOT generated with this constructor. 
+        /// </summary>
+        /// <param name="threadId">given ID used for the thread. MUST not be null.</param>
         public AbstractProtocol(string threadId)
         {
             if (!String.IsNullOrWhiteSpace(threadId))
             {
-                //DbcUtil.requireNotNull(threadId);
-
                 this.threadId = threadId;
             }
             else
@@ -27,27 +24,27 @@ namespace VeritySDK
             }
         }
 
-        /**
-         * Constructs a Protocol. The threadId is generated (randomly).
-         */
+        /// <summary>
+        /// Constructs a Protocol. The threadId is generated (randomly)
+        /// </summary>
         public AbstractProtocol() : this(Guid.NewGuid().ToString()) { }
 
-        /**
-         * The thread identifier
-         * @return the threadId
-         */
+
+        private string threadId;
+
+        /// <summary>
+        /// The thread identifier 
+        /// </summary>
+        /// <returns>the threadId</returns>
         public string getThreadId()
         {
             return threadId;
         }
 
-        private string threadId;
-
-        /**
-         * Attaches the thread block (including the thid) for a protocol to the given message object (JSON)
-         *
-         * @param msg with the thread block attached
-         */
+        /// <summary>
+        /// Attaches the thread block (including the thid) for a protocol to the given message object (JSON) 
+        /// </summary>
+        /// <param name="msg">with the thread block attached</param>
         protected void addThread(JsonObject msg)
         {
             JsonObject threadBlock = new JsonObject();
@@ -55,14 +52,11 @@ namespace VeritySDK
             msg.Add("~thread", threadBlock);
         }
 
-        /**
-         * Encrypts and sends a specified message to Verity
-         * @param context an instance of the Context object initialized to a verity-application agent
-         * @param message the message to send to Verity
-         * @throws IOException when the HTTP library fails to post to the agency endpoint
-         * @throws WalletException when there are issues with encryption and decryption
-         * @throws UndefinedContextException when the context don't have enough information for this operation
-         */
+        /// <summary>
+        /// Encrypts and sends a specified message to Verity 
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="message">the message to send to Verity</param>
         protected void send(Context context, JsonObject message)
         {
             if (context == null)
@@ -77,23 +71,21 @@ namespace VeritySDK
             transport.sendMessage(context.VerityUrl(), messageToSend);
         }
 
-        /**
-         * Packs the connection message for the verity-application
-         * @param context an instance of Context that has been initialized with your wallet and key details
-         * @param message the message to be packed for the verity-application
-         * @return Encrypted connection message ready to be sent to the verity
-         * @throws WalletException when there are issues with encryption and decryption
-         * @throws UndefinedContextException when the context don't have enough information for this operation
-         */
+        /// <summary>
+        /// Packs the connection message for the verity-application 
+        /// </summary>
+        /// <param name="context">an instance of Context that has been initialized with your wallet and key details</param>
+        /// <param name="message">the message to be packed for the verity-application</param>
+        /// <returns>Encrypted connection message ready to be sent to the verity</returns>
         protected static byte[] packMsg(Context context, JsonObject message)
         {
             return Util.packMessageForVerity(context, message);
         }
 
-        /**
-         * Generates a new and unique id for a message.
-         * @return new message id
-         */
+        /// <summary>
+        /// Generates a new and unique id for a message. 
+        /// </summary>
+        /// <returns>new message id</returns>
         public static string getNewId()
         {
             return Guid.NewGuid().ToString();

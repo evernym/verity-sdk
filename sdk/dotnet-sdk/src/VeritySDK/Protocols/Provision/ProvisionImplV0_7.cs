@@ -6,12 +6,9 @@ using System.Text;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of ProvisionImplV0_7 but is not viable to user of Verity SDK. Created using the
-     * static Provision class
-     */
+    /// <summary>
+    /// This is an implementation of ProvisionImplV0_7 but is not viable to user of Verity SDK.Created using the static Provision class
+    /// </summary>
     public class ProvisionImplV0_7 : ProvisionV0_7
     {
 

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace VeritySDK
 {
-    /**
-     * Support for sending messages using the HTTP transport
-     */
+    /// <summary>
+    /// Support for sending messages using the HTTP transport
+    /// </summary>
     public class Transport
     {
         private HttpClient client { get; set; } = new HttpClient();
@@ -43,18 +43,24 @@ namespace VeritySDK
             }
         }
 
-        /**
-         * Send an encrypted agent message to a specified endpoint
-         * @param verityUrl the url where the message will be POSTed to
-         * @param message the encrypted agent message
-         * @throws IOException when the HTTP library fails to post to the url
-         */
+        /// <summary>
+        /// Send an encrypted agent message to a specified endpoint
+        /// </summary>
+        /// <param name="url">verityUrl the url where the message will be POSTed to</param>
+        /// <param name="message">the encrypted agent message</param>
+
         public void sendMessage(string url, byte[] message)
         {
             var request = buildRequest(url, message);
             transportMessage(request);
         }
 
+        /// <summary>
+        /// Send an encrypted agent message to a specified endpoint
+        /// </summary>
+        /// <param name="url">verityUrl the url where the message will be POSTed to</param>
+        /// <param name="message">the encrypted agent message</param>
+        /// <returns>the byte array for answer</returns>
         public byte[] sendSyncMessage(string url, byte[] message)
         {
             var request = buildRequest(url, message);

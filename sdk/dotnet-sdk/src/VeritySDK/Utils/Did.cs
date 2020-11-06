@@ -6,57 +6,53 @@ using System.Json;
 
 namespace VeritySDK
 {
-    /**
-     * Simple holder object for a DID
-     */
+    /// <summary>
+    /// Simple holder object for a DID
+    /// </summary>
     public class Did
     {
         public string did;
 
         public string verkey;
 
-        /**
-         * Constructs object with given DID and verkey
-         * @param did given DID
-         * @param verkey given verkey
-         */
+        /// <summary>
+        /// Constructs object with given DID and verkey 
+        /// </summary>
+        /// <param name="did">did given DID</param>
+        /// <param name="verkey">verkey given verkey</param>
         public Did(string did, string verkey)
         {
             this.did = did;
             this.verkey = verkey;
         }
 
-        /**
-         * Constructs object from the Indy SDK wrapper object CreateAndStoreMyDidResult
-         *
-         * @param didSource source of information for Did object
-         */
-
+        /// <summary>
+        /// Constructs object from the Indy SDK wrapper object CreateAndStoreMyDidResult 
+        /// </summary>
+        /// <param name="didSource">source of information for Did object</param>
         public Did(CreateAndStoreMyDidResult didSource)
         {
             this.did = didSource.Did;
             this.verkey = didSource.VerKey;
         }
 
-        /**
-         * Creates a new generic DID in the given wallet
-         * @param handle handle to an created and opened indy wallet
-         * @return a DID object based on the DID created in the wallet
-         * @throws WalletException when wallet operations fails
-         */
-        public static Did createNewDid(Wallet handle) //throws WalletException
+        /// <summary>
+        /// Creates a new generic DID in the given wallet 
+        /// </summary>
+        /// <param name="handle">handle handle to an created and opened indy wallet</param>
+        /// <returns>a DID object based on the DID created in the wallet</returns>
+        public static Did createNewDid(Wallet handle) 
         {
             return createNewDid(handle, null);
         }
 
-        /**
-         * Creates a new generic DID in the given wallet based on a given seed
-         * @param handle handle to an created and opened indy wallet
-         * @param seed a 32 character seed string used to deterministically create a key for the DID
-         * @return a DID object based on the DID created in the wallet
-         * @throws WalletException when wallet operations fails
-         */
-        public static Did createNewDid(Wallet handle, string seed) //throws WalletException
+        /// <summary>
+        /// Creates a new generic DID in the given wallet based on a given seed 
+        /// </summary>
+        /// <param name="handle">handle handle to an created and opened indy wallet</param>
+        /// <param name="seed">a 32 character seed string used to deterministically create a key for the DID</param>
+        /// <returns>a DID object based on the DID created in the wallet</returns>
+        public static Did createNewDid(Wallet handle, string seed)
         {
             try
             {
@@ -70,14 +66,14 @@ namespace VeritySDK
 
                 return new Did(result);
             }
-            catch (IndyException e /* | InterruptedException | ExecutionException */)
+            catch (Exception e)
             {
                 throw new WalletException("Unable to create DID with wallet", e);
             }
         }
 
 
-        private static string CreateAndStoreMyDidJSONParameter(String did, String seed, String cryptoType, Boolean? cid)
+        private static string CreateAndStoreMyDidJSONParameter(string did, string seed, string cryptoType, bool? cid)
         {
             JsonObject rtn = new JsonObject();
 

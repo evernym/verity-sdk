@@ -4,12 +4,10 @@ using System.Linq;
 
 namespace VeritySDK
 {
-    /*
-     * NON_VISIBLE
-     *
-     * This is an implementation of IssuerSetupImplV0_6 but is not viable to user of Verity SDK. Created using the
-     * static IssuerSetup class
-     */
+    /// <summary>
+    /// This is an implementation of IssuerSetupImplV0_6 but is not viable to user of Verity SDK. Created using the
+    /// static IssuerSetup class
+    /// </summary>
     public class WriteSchemaImplV0_6 : WriteSchemaV0_6
     {
 

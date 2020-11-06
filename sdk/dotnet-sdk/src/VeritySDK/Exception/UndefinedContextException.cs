@@ -10,7 +10,7 @@ namespace VeritySDK
         /// <summary>
         /// Constructs a new exception with the given message.
         /// </summary>
-        /// <param name="message">message the given message for the cause of the exception.</param>
+        /// <param name="message">the given message for the cause of the exception.</param>
         public UndefinedContextException(String message) : base(message) { }
     }
 }
