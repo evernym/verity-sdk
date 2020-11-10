@@ -24,6 +24,7 @@ public class IssueCredentialTest extends TestBase {
     private final String comment = "some comment";
     private final String price = "0";
     private final Boolean autoIssue = true;
+    private final Boolean byInvitation = true;
     private final String threadId = "some thread id";
 
     public IssueCredentialTest() {
@@ -79,7 +80,7 @@ public class IssueCredentialTest extends TestBase {
     @Test
     public void testSendOffer() throws Exception {
         withContext ( context -> {
-            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, price, autoIssue);
+            IssueCredentialV1_0 testProtocol = IssueCredential.v1_0(forRelationship, credDefId, values, comment, price, autoIssue, byInvitation);
             byte [] msg = testProtocol.offerCredentialMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, msg);
             testOfferMessage(unpackedMessage);
@@ -138,6 +139,7 @@ public class IssueCredentialTest extends TestBase {
         assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/offer", msg.getString("@type"));
         assertEquals(msg.getString("price"), price);
         assertEquals(msg.getBoolean("auto_issue"), autoIssue);
+        assertEquals(msg.getBoolean("by_invitation"), byInvitation);
     }
 
     private void testIssueCredMessage(JSONObject msg) {

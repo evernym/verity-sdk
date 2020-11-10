@@ -31,6 +31,7 @@ class IssueCredentialImplV1_0 extends AbstractProtocol implements IssueCredentia
     final String ISSUE = "issue";
     final String REJECT = "reject";
     final String STATUS = "status";
+    final String PROTOCOL_INVITATION = "protocol-invitation";
 
     final String forRelationship;
     String credDefId;
@@ -38,6 +39,28 @@ class IssueCredentialImplV1_0 extends AbstractProtocol implements IssueCredentia
     String comment;
     String price;
     Boolean autoIssue;
+    Boolean byInvitation;
+
+    IssueCredentialImplV1_0(String forRelationship,
+                            String credDefId,
+                            Map<String, String> values,
+                            String comment,
+                            String price,
+                            Boolean autoIssue,
+                            Boolean byInvitation) {
+        super();
+        DbcUtil.requireNotNull(forRelationship, "forRelationship");
+        DbcUtil.requireNotNull(credDefId, "credDefId");
+
+        this.forRelationship = forRelationship;
+        this.credDefId = credDefId;
+        this.values = values;
+        this.comment = comment;
+        this.price = price;
+        this.autoIssue = autoIssue;
+        this.byInvitation = byInvitation;
+        this.created = true;
+    }
 
     IssueCredentialImplV1_0(String forRelationship,
                             String credDefId,
@@ -55,6 +78,7 @@ class IssueCredentialImplV1_0 extends AbstractProtocol implements IssueCredentia
         this.comment = comment;
         this.price = price;
         this.autoIssue = autoIssue;
+        this.byInvitation = false;
         this.created = true;
     }
 
@@ -119,6 +143,7 @@ class IssueCredentialImplV1_0 extends AbstractProtocol implements IssueCredentia
         msg.put("comment", comment);
         msg.put("price", price);
         msg.put("auto_issue", autoIssue);
+        msg.put("by_invitation", byInvitation);
 
         return msg;
 

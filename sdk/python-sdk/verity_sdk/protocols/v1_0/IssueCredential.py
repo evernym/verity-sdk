@@ -34,7 +34,10 @@ class IssueCredential(Protocol):
     """Name for 'sent' signal message"""
     ACCEPT_REQUEST = 'accept-request'
     """Name for 'accept-request' signal message"""
+    PROTOCOL_INVITATION = 'protocol-invitation'
+    """Name for 'protocol-invitation' signal message"""
 
+    #pylint: disable=too-many-arguments
     def __init__(self,
                  for_relationship: str,
                  thread_id: str = None,
@@ -42,7 +45,8 @@ class IssueCredential(Protocol):
                  values: Dict[str, str] = None,
                  comment: str = None,
                  price: str = '0',
-                 auto_issue: bool = False):
+                 auto_issue: bool = False,
+                 by_invitation: bool = False):
         """
         Args:
             for_relationship (str): the relationship identifier (DID) for the pairwise relationship that will be used
@@ -51,8 +55,10 @@ class IssueCredential(Protocol):
             values (Dict[str, str]): a map of key-value pairs that make up the attributes in the credential
             comment (str): a human readable comment that is presented before issuing the credential
             price (str): (possible future feature) can and should be left un-set
-            auto_issue (bool): flag for automatically issuing credential after receiving response for receiver
-                (skip getting signal for credential request and waiting for issue control message)
+            auto_issue (bool): flag to automatically issue the credential after receiving response from the receiver (skip getting
+                signal for the credential request and waiting for the issue control message)
+            by_invitation (bool): flag to create out-of-band invitation as a part of the IssueCredential protocol
+
         """
         super().__init__(
             self.MSG_FAMILY,
@@ -68,6 +74,7 @@ class IssueCredential(Protocol):
         self.comment = comment
         self.price = '0'  # price should be 0 regardless of what is set (until we support price)
         self.auto_issue = auto_issue
+        self.by_invitation = by_invitation
 
     async def propose_credential(self, context):
         """
@@ -141,6 +148,7 @@ class IssueCredential(Protocol):
         msg['comment'] = self.comment
         msg['price'] = self.price
         msg['auto_issue'] = self.auto_issue
+        msg['by_invitation'] = self.by_invitation
         return msg
 
     async def offer_credential_msg_packed(self, context):

@@ -14,8 +14,9 @@ class IssueCredentialV10 extends Protocol {
    * @param values a map of key-value pairs that make up the attributes in the credential
    * @param comment a human readable comment that is presented before issuing the credential
    * @param price token price (NOT CURRENTLY USED)
-   * @param autoIssue flag for automatically issuing credential after receiving response for receiver (skip getting
-   *                  signal for credential request and waiting for issue control message)
+   * @param autoIssue flag to automatically issue the credential after receiving response from the receiver (skip getting
+   *                  signal for the credential request and waiting for the issue control message)
+   * @param byInvitation flag to create out-of-band invitation as a part of the IssueCredential protocol
    * @return 1.0 IssueCredential object
    *
    * @property {String} msgFamily - 'issue-credential'
@@ -29,6 +30,7 @@ class IssueCredentialV10 extends Protocol {
    * @property {String} this.msgNames.CREDENTIAL_STATUS - 'status'
    * @property {String} this.msgNames.SENT - 'sent'
    * @property {String} this.msgNames.ACCEPT_REQUEST - 'accept-request'
+   * @property {String} this.msgNames.PROTOCOL_INVITATION - 'protocol-invitation'
    */
   constructor (forRelationship,
     threadId = null,
@@ -36,7 +38,8 @@ class IssueCredentialV10 extends Protocol {
     values = {},
     comment = '',
     price = 0,
-    autoIssue = false) {
+    autoIssue = false,
+    byInvitation = false) {
     const msgFamily = 'issue-credential'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.COMMUNITY_MSG_QUALIFIER
@@ -48,6 +51,7 @@ class IssueCredentialV10 extends Protocol {
     this.comment = comment
     this.price = price
     this.autoIssue = autoIssue
+    this.byInvitation = byInvitation
     this.created = threadId === null
 
     this.msgNames.OFFER_CREDENTIAL = 'offer'
@@ -58,6 +62,7 @@ class IssueCredentialV10 extends Protocol {
     this.msgNames.CREDENTIAL_STATUS = 'status'
     this.msgNames.SENT = 'sent'
     this.msgNames.ACCEPT_REQUEST = 'accept-request'
+    this.msgNames.PROTOCOL_INVITATION = 'protocol-invitation'
   }
 
   /**
@@ -99,6 +104,7 @@ class IssueCredentialV10 extends Protocol {
     msg.price = this.price
     msg.credential_values = this.values
     msg.auto_issue = this.autoIssue
+    msg.by_invitation = this.byInvitation
     msg = this._addThread(msg)
 
     return msg

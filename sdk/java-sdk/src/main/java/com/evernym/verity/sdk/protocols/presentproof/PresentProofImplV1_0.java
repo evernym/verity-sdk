@@ -25,6 +25,7 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     final String PROOF_REQUEST = "request";
     final String STATUS = "status";
     final String REJECT = "reject";
+    final String PROTOCOL_INVITATION = "protocol-invitation";
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -33,6 +34,7 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     String name;
     Attribute[] proofAttrs;
     Predicate[] proofPredicates;
+    Boolean byInvitation;
 
 
     PresentProofImplV1_0(String forRelationship, String threadId) {
@@ -56,6 +58,17 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
         this.name = name;
         this.proofAttrs = proofAttrs;
         this.proofPredicates = proofPredicates;
+        this.byInvitation = false;
+        this.created = true;
+    }
+
+    PresentProofImplV1_0(String forRelationship, String name, Attribute[] proofAttrs, Predicate[] proofPredicates, Boolean byInvitation) {
+        super();
+        this.forRelationship = forRelationship;
+        this.name = name;
+        this.proofAttrs = proofAttrs;
+        this.proofPredicates = proofPredicates;
+        this.byInvitation = byInvitation;
         this.created = true;
     }
 
@@ -78,6 +91,8 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
         msg.put("proof_attrs", makeArray(proofAttrs));
         if (this.proofPredicates != null)
             msg.put("proof_predicates", makeArray(proofPredicates));
+        msg.put("by_invitation", this.byInvitation);
+        
         return msg;
     }
 
