@@ -18,6 +18,7 @@ const credentialValues = {
 const comment = 'degree'
 const price = '5'
 const autoIssue = true
+const byInvitation = true
 
 describe('IssueCredential', () => {
   it('should init correctly', async () => {
@@ -28,7 +29,8 @@ describe('IssueCredential', () => {
       credentialValues,
       comment,
       price,
-      autoIssue
+      autoIssue,
+      byInvitation
     )
     expect(issueCred.forRelationship).to.equal(forRelationship)
     expect(issueCred.threadId).to.equal(threadId)
@@ -37,6 +39,7 @@ describe('IssueCredential', () => {
     expect(issueCred.comment).to.equal(comment)
     expect(issueCred.price).to.equal(price)
     expect(issueCred.autoIssue).to.equal(autoIssue)
+    expect(issueCred.byInvitation).to.equal(byInvitation)
   })
 
   it('should build propose msg correctly', async () => {
@@ -66,7 +69,8 @@ describe('IssueCredential', () => {
       credentialValues,
       comment,
       price,
-      autoIssue
+      autoIssue,
+      byInvitation
     )
     const msg = await issueCred.offerCredentialMsg()
     expect(msg['@type']).to.equal(
@@ -79,6 +83,7 @@ describe('IssueCredential', () => {
     expect(msg.comment).to.equal(comment)
     expect(msg.price).to.equal(price)
     expect(msg.auto_issue).to.equal(autoIssue)
+    expect(msg.by_invitation).to.equal(byInvitation)
   })
 
   it('should build request msg correctly', async () => {

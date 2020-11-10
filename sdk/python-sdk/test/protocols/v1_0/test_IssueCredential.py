@@ -17,12 +17,13 @@ credential_values = {
 }
 price = '0'
 auto_issue = True
+by_invitation = True
 thread_id = 'some thread id'
 
 
 def test_init():
     issue_credential = IssueCredential(
-        for_relationship, thread_id, cred_def_id, credential_values, comment, price, auto_issue
+        for_relationship, thread_id, cred_def_id, credential_values, comment, price, auto_issue, by_invitation
     )
 
     assert issue_credential.for_relationship == for_relationship
@@ -32,6 +33,7 @@ def test_init():
     assert issue_credential.comment == comment
     assert issue_credential.price == price
     assert issue_credential.auto_issue == auto_issue
+    assert issue_credential.by_invitation == by_invitation
 
 
 @pytest.mark.asyncio
@@ -65,7 +67,7 @@ async def test_propose_credential():
 async def test_offer_credential():
     context = await Context.create_with_config(await get_test_config())
     issue_credential = IssueCredential(
-        for_relationship, None, cred_def_id, credential_values, comment, price, auto_issue
+        for_relationship, None, cred_def_id, credential_values, comment, price, auto_issue, by_invitation
     )
     msg = issue_credential.offer_credential_msg()
 
@@ -86,6 +88,7 @@ async def test_offer_credential():
     assert msg['comment'] == comment
     assert msg['price'] == price
     assert msg['auto_issue'] == auto_issue
+    assert msg['by_invitation'] == by_invitation
 
     await cleanup(context)
 

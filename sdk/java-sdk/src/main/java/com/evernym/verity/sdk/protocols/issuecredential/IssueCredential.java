@@ -27,8 +27,41 @@ public class IssueCredential {
      * @param values a map of key-value pairs that make up the attributes in the credential
      * @param comment a human readable comment that is presented before issuing the credential
      * @param price token price (NOT CURRENTLY USED)
-     * @param autoIssue flag for automatically issuing credential after receiving response for receiver (skip getting
-     *                  signal for credential request and waiting for issue control message)
+     * @param autoIssue flag to automatically issue the credential after receiving response from the receiver (skip getting
+     *                  signal for the credential request and waiting for the issue control message)
+     * @param byInvitation flag to create out-of-band invitation as a part of the IssueCredential protocol
+     * @return 1.0 IssueCredential object
+     */
+    public static IssueCredentialV1_0 v1_0(
+            String forRelationship,
+            String credDefId,
+            Map<String, String> values,
+            String comment,
+            String price,
+            Boolean autoIssue,
+            Boolean byInvitation) {
+
+        return new IssueCredentialImplV1_0(
+                forRelationship,
+                credDefId,
+                values,
+                comment,
+                price,
+                autoIssue,
+                byInvitation);
+    }
+
+    /**
+     * Constructor for the 1.0 IssueCredential object. This constructor creates an object that is ready to start
+     * process of issuing a credential.
+     *
+     * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
+     * @param credDefId the Credential Definition that will be used to issue the credential
+     * @param values a map of key-value pairs that make up the attributes in the credential
+     * @param comment a human readable comment that is presented before issuing the credential
+     * @param price token price (NOT CURRENTLY USED)
+     * @param autoIssue flag to automatically issue the credential after receiving response from the receiver (skip getting
+     *                  signal for the credential request and waiting for the issue control message)
      * @return 1.0 IssueCredential object
      */
     public static IssueCredentialV1_0 v1_0(
