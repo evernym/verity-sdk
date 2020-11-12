@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 WORKDIR /root
 
 ENV LIBINDY_VERSION 1.15.0-bionic
-ENV VERITY_APPLICATION_VERSION 0.4.103141332.ef1e3e6
+ENV VERITY_APPLICATION_VERSION 0.4.105130810.117874d
 
 RUN apt-get update && apt-get install -y \
     software-properties-common \
