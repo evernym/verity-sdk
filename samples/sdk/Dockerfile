@@ -52,6 +52,9 @@ RUN mvn exec:help # pre-download plug-in dependencies
 WORKDIR /samples/sdk/nodejs-example-app
 RUN npm install 2>/dev/null
 RUN npm rebuild 2>/dev/null
+WORKDIR /samples/sdk/nodejs-outofband-app
+RUN npm install 2>/dev/null
+RUN npm rebuild 2>/dev/null
 
 # Install static HTTP server to serve generated QR code
 RUN npm install -g http-server
@@ -61,4 +64,3 @@ EXPOSE 4000
 
 # Start Ngrok tunnel for webhook URL in docker entrypoint
 ENTRYPOINT ["/samples/sdk/entrypoint.sh"]
-
