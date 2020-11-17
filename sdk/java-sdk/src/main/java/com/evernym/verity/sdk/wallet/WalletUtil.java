@@ -6,6 +6,7 @@ import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.LibIndy;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.hyperledger.indy.sdk.wallet.WalletExistsException;
+import org.hyperledger.indy.sdk.wallet.WalletNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -107,7 +108,7 @@ public class WalletUtil {
             Wallet.deleteWallet(walletConfig, walletCredentials).get();
         }
         catch (IndyException | InterruptedException | ExecutionException e) {
-            if( !(e.getCause() != null && e.getCause() instanceof WalletExistsException)) {
+            if( !(e.getCause() != null && e.getCause() instanceof WalletNotFoundException)) {
                 throw new WalletException("Unable to delete wallet", e);
             }
         }
