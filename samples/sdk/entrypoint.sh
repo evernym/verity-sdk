@@ -33,6 +33,7 @@ HTTP_SERVER_PORT=8000
 JAVA_SAMPLE='/samples/sdk/java-example-app'
 PYTHON_SAMPLE='/samples/sdk/python-example-app'
 NODE_SAMPLE='/samples/sdk/nodejs-example-app'
+DN_SAMPLE='/samples/sdk/dotnet-example-app-tmp'
 
 #kill ngrok process if the exist
 kill_complete 'ngrok'
@@ -68,6 +69,7 @@ echo '<div style="text-align:center;"><p>Scan this QR code with your ConnectMe a
    $NODE_SAMPLE/qrcode.html \
    $PYTHON_SAMPLE/qrcode.html \
    $JAVA_SAMPLE/qrcode.html \
+   $DN_SAMPLE/qrcode.html \
  >/dev/null
 
 #kill static HTTP server if exists
