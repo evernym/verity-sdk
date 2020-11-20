@@ -24,7 +24,7 @@ The `docker` path simplifies the set up process but the local environment walkth
 
 4. Select **Use Staging Net**, as shown in the screenshot below.
    
-   ![Connect.Me Developer Mode Switch](https://i.postimg.cc/rsQ7QnGh/use-staging-net.jpg)
+   ![Connect.Me Developer Mode Switch](https://i.postimg.cc/sDj0SzyG/use-staging-net-CM1-4.jpg)
 
 5. Choose an authentication method.
 
@@ -66,6 +66,13 @@ The included `Dockerfile` will setup a complete environment for running the exam
         cd java-example-app
         mvn exec:java
         ```
+    * For .Net (**experimental**):
+        ```sh
+        cd dotnet-example-app-tmp
+        dotnet build --configuration release
+        dotnet run -p VeritySDK.Sample
+        ```
+
     The example application should start and present the following question:
     ```
     Listening on port 4000
@@ -92,7 +99,7 @@ cd /samples/sdk/java-example-app
 mvn compile
 ```
 
-* Build Python example app:
+* Build NodeJS example app:
 ```sh
 cd /samples/sdk/nodejs-example-app
 npm install
@@ -102,6 +109,13 @@ npm install
 ```sh
 cd /samples/sdk/python-example-app
 pip3 install -r requirements.txt
+``` 
+
+* Build .NET example app (**experimental**):
+```sh
+cd dotnet-example-app-tmp
+dotnet build --configuration release
+dotnet run -p VeritySDK.Sample
 ``` 
 
 ### Launch Example Application
