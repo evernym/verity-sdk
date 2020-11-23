@@ -53,22 +53,22 @@ The included `Dockerfile` will setup a complete environment for running the exam
 1. Launch example application. Run the following commands in the shell started inside the docker container that was just started:
     * For NodeJs:
         ```sh
-        cd nodejs-example-app
+        cd /samples/sdk/nodejs-example-app
         node example.js
         ```
     * For Python:
         ```sh
-        cd python-example-app
+        cd /samples/sdk/python-example-app
         python3 app.py
         ```
     * For Java:
         ```sh
-        cd java-example-app
+        cd /samples/sdk/java-example-app
         mvn exec:java
         ```
     * For .Net (**experimental**):
         ```sh
-        cd dotnet-example-app-tmp
+        cd /samples/sdk/dotnet-example-app-tmp
         dotnet build --configuration release
         dotnet run -p VeritySDK.Sample
         ```
@@ -113,9 +113,8 @@ pip3 install -r requirements.txt
 
 * Build .NET example app (**experimental**):
 ```sh
-cd dotnet-example-app-tmp
+cd /samples/sdk/dotnet-example-app-tmp
 dotnet build --configuration release
-dotnet run -p VeritySDK.Sample
 ``` 
 
 ### Launch Example Application
@@ -166,6 +165,11 @@ dotnet run -p VeritySDK.Sample
         cd /samples/sdk/java-example-app
         mvn exec:java
         ```
+    * For .NET
+        ```sh
+        cd /samples/sdk/dotnet-example-app-tmp
+        dotnet run -p VeritySDK.Sample
+        ``` 
     The example application should start and present the following question:
     ```
     Listening on port 4000
