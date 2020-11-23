@@ -1,17 +1,27 @@
-# Sample Out-of-Band app
+# Sample Out-of-Band request-attach app 
 
-This application demonstrates how the Out-of-Band protocol can be used to simplify credential issuance or proof exchange interactions.
+This application demonstrates request-attach functionality in the Out-of-Band (OOB) protocol.
+For more information on the Out-of-Band protocol check [Aries RFC 0434](https://github.com/hyperledger/aries-rfcs/blob/master/features/0434-outofband/README.md)
 
-When issuing a credential the credential offer can be attached to the Out-of-Band invitation.
-When requesting a proof the proof request can be attached to the Out-of-Band invitation.
-This allows to eliminate some interactions required from the Holder.
+This application is using Verity NodeJS SDK.
 
-> NOTE: When there is a credential offer or a proof request attached to the invitation, the ConnectMe app will implicitly accept the connection (connection acceptance screen will not be shown in the UI) and will then present the credential offer or proof request from the attachment.
+When issuing credential a credential offer can be attached to the OOB invitation.
+When requesting proof a proof request can be attached to the OOB invitation.
+This allows for supression of connection establishment interactions required from the Holder and a smoother UX experience.
 
-> NOTE: Improved UX comes at the expense of privacy. In the case of credential offer, the inviteURL encoded in the QR code will contain base58 encoded values of credential attributes (PII data). In the case of proof request, the inviteURL will contain requested attributes names in the QR code (no PII is present in the QR code in this case)
+> NOTE: When there is a credential offer or a proof request attached to the invitation, the ConnectMe app will implicitly accept the connection (connection acceptance screen will not be shown in the UI) and will present credential offer or proof request from the OOB invitation attachment.
 
+A new argument `byInvitation` has been introduced in the  **PresentProof** and **IssueCredential** protocol constructors.
+Default value for this argument is **false**, which requires that connection has already been established prior to issuing credential or requesting proof.
 
-## Launching Out-of-Band app using Docker
+However, when this argument is set to **true**, then connection with the Issuer/Verifier can be established during **IssueCredential** or **PresentProof** protocol.
+
+After sending a credential offer (or requesting a proof) with the `byInvitation` flag set to **true**, Verity Application Service will respond with the `protocol-invitation` signal message, in which `inviteURL` field will contain OOB invitation with credential offer or proof request attached.
+Since `inviteURL` with attachments can get very long, the `protocol-invitation` message will also contain the `shortInviteURL` field with a shortened URL which redirects to the `inviteURL` and which is more friendly for encoding into QR code.
+
+> NOTE: Improved UX comes at the expense of privacy. In the case of credential offer, the **inviteURL** will contain base58 encoded values of credential attributes (PII data). In the case of proof request, the **inviteURL** will contain requested attributes names in the QR code (no PII is present in the QR code in this case)
+
+## Launching application using Docker
 
 Prepared `Dockerfile` will setup a complete environment for running this sample application. This is the quickest way to try the application and avoid some complexity around `ngrok` and `libindy` when working on Windows/MacOS.
 
@@ -22,26 +32,27 @@ Prepared `Dockerfile` will setup a complete environment for running this sample 
 1. Build docker image. Run the following command from the root of verity-sdk repo:
 
    ```sh
-   docker build -f samples/sdk/Dockerfile -t out-of-band-app .
+   docker build -f samples/sdk/Dockerfile -t oob-with-request-attach .
    ```
 2. Start built docker image. Run the following command:
    ```sh
-   docker run -p 4000:4000 -it out-of-band-app
+   docker run -p 4000:4000 -it oob-with-request-attach
    ```
 
    > **NOTE:** The container will start the Ngrok process in the docker entrypoint. The ngrok processes allows for a public addressable endpoint for the webhook that receives messages from Verity Application. While this is very useful, ngrok does times out after **8 hours**. To reset ngrok, simple re-run the `entrypoint.sh` script that was run when entering the docker container. It is located at `/scripts/entrypoint.sh`. It will kill the existing (and timed out) ngrok processes and start new ones. At which point you are go for another 8 hours.
  
-    Launch the Out-of-band sample application. Run the following commands in the started docker container:
+    Launch the application. Run following commands in the started docker container:
     ```sh
-    cd /samples/sdk/nodejs-outofband-app
-    node out-of-band.js
+    cd /samples/sdk/oob-with-request-attach
+    npm install
+    node oob-with-request-attach.js
     ```
 
     When the application is started for the first time it will provision one Issuer agent and one Verifier agent and will update their webhook endpoints to use the created Ngrok tunnel. It will also perform all necessary steps required for credential issuance (setup Issuer keys, register Issuer DID/Verkey on the ledger, create schema and credential definition). 
     During first-time setup, the application will prompt user for some inputs (e.g. provide provisioning token, answer y/n to some questions)
     The application will persist issuer context, verifier context and credential definition in the files inside the application folder.
 
-    If the application is re-run it will use contexts persisted in the local files instead of provisioning from scratch.
+    If the application is re-run it will reuse contexts persisted in the local files instead of provisioning from scratch.
 
     The application will print all messages received from VAS on the console output of the docker container.
 
@@ -54,9 +65,9 @@ Prepared `Dockerfile` will setup a complete environment for running this sample 
     Visit the address http://localhost:4000 from the browser of your host machine to try out the app.
    
 
-## Launching the Out-of-Band application locally
+## Launching the application locally
 
-The Out-of-Band application can be launched from a local development environment. Using this local environment, one can try the verity-sdk in a similar environment that a developer developing with verity-sdk would use. This path requires a few more steps, but these steps would be required to build an application with verity-sdk.
+The application can be launched from a local development environment. Using this local environment, one can try the verity-sdk in a similar environment that a developer developing with verity-sdk would use. This path requires a few more steps, but these steps would be required to build an application with verity-sdk.
 
 ### Prerequisites
 * `libindy` -- Install a stable version. Follow the instructions on the 
@@ -66,13 +77,13 @@ Follow the instructions on the [Ngrok website](https://ngrok.com/download).
 
 ### Build
 
-Build the Out-of-band app with:
+Build the app with:
 ```sh
-cd /samples/sdk/nodejs-outofband-app
+cd /samples/sdk/oob-with-request-attach
 npm install
 ``` 
 
-### Launch the Out-of-band Application
+### Launch the application
 1. **Start `ngrok`**
 
    The Verity server instance is not running in the same local environment as the example application. The Verity server instance communicates with the SDK via a webhook. This webhook must be accessible by the Verity server instance, but the example application can only start a local webhook endpoint. `ngrok` is used to provide a publicly available endpoint that tunnels to the local webhook endpoint that is started by the Example App. 
@@ -99,7 +110,7 @@ npm install
    Forwarding                    https://a74616ad.ngrok.io -> http://localhost:9003 
    ```
    
-   The `Forwarding` URL is what must be given to the Out-of-band application during the initial provisioning. For the above output, it would be `https://a74616ad.ngrok.io` but every time `ngrok` is started a new URL will be generated, but it will have the following format:
+   The `Forwarding` URL is what must be given to the application during the initial provisioning. For the above output, it would be `https://a74616ad.ngrok.io` but every time `ngrok` is started a new URL will be generated, but it will have the following format:
    
    `https://<id>.ngrok.io`
    
@@ -107,8 +118,8 @@ npm install
 1. **Start application**
     Start the application with
     ```sh
-    cd /samples/sdk/nodejs-outofband-app
-    node out-of-band.js
+    cd /samples/sdk/oob-with-request-attach
+    node oob-with-request-attach.js
     ```
 
     The example application should start and perform several provisioning steps.
