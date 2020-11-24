@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <StartupObject>VeritySDK.Sample.Program</StartupObject>
+    <Company>Evernym</Company>
+    <Product>VeritySDK for Net - Sample application</Product>
+    <Authors>Evernym</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.3.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VeritySDK\VeritySDK.csproj" />
+  </ItemGroup>
+
+</Project>

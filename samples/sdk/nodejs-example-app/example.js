@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const readline = require('readline')
 const fs = require('fs')
 const sdk = require('verity-sdk')
+const indy = require('indy-sdk')
 const Spinner = require('cli-spinner').Spinner
 const QRCode = require('qrcode')
 const request = require('request-promise-native')
@@ -15,6 +16,8 @@ const LISTENING_PORT = 4000
 const CONFIG_PATH = 'verity-context.json'
 const INSTITUTION_NAME = 'Faber College'
 const LOGO_URL = 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
+const WALLET_NAME = 'examplewallet1'
+const WALLET_KEY = 'examplewallet1'
 const ANSII_GREEN = '\u001b[32m'
 const ANSII_RESET = '\x1b[0m'
 const rl = readline.createInterface({
@@ -56,21 +59,21 @@ async function createRelationship () {
   // Step 1
 
   // Constructor for the Connecting API
-  const relProvisioning = new sdk.protocols.v1_0.Relationship(null, null, INSTITUTION_NAME)
-  var spinner = new Spinner('Waiting to create relationship ... %s').setSpinnerDelay(450) // Console spinner
+  const relProvisioning = new sdk.protocols.v1_0.Relationship()
+  let spinner = new Spinner('Waiting to create relationship ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for the response to the request to start the Relationship protocol.
-  var firstStep = new Promise((resolve) => {
+  const firstStep = new Promise((resolve) => {
     handlers.addHandler(relProvisioning.msgFamily, relProvisioning.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case relProvisioning.msgNames.CREATED:
+        case relProvisioning.msgNames.CREATED: {
           spinner.stop()
           printMessage(msgName, message)
-          var threadId = message['~thread'].thid
-          var relDID = message.did
-
+          const threadId = message['~thread'].thid
+          const relDID = message.did
           resolve([relDID, threadId])
           break
+        }
         default:
           printMessage(msgName, message)
           nonHandle('Message Name is not handled - ' + msgName)
@@ -89,13 +92,13 @@ async function createRelationship () {
 
   spinner = new Spinner('Waiting to create invitation ... %s').setSpinnerDelay(450) // Console spinner
   // handler for the accept message sent when relationship is accepted
-  var secondStep = new Promise((resolve) => {
+  const secondStep = new Promise((resolve) => {
     handlers.addHandler(relProvisioning.msgFamily, relProvisioning.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case relationship.msgNames.INVITATION:
+        case relationship.msgNames.INVITATION: {
           spinner.stop()
           printMessage(msgName, message)
-          var inviteURL = message.inviteURL
+          const inviteURL = message.inviteURL
 
           await QRCode.toFile('qrcode.png', inviteURL)
 
@@ -109,6 +112,7 @@ async function createRelationship () {
           }
           resolve(null)
           break
+        }
         default:
           printMessage(msgName, message)
           nonHandle('Message Name is not handled - ' + msgName)
@@ -128,43 +132,22 @@ async function createRelationship () {
 //       CONNECTION
 //* ***********************
 async function createConnection () {
-  // Connecting protocol has to steps
-  // 1. Start the protocol and receive the invite
-  // 2. Wait for the other participant to accept the invite
-
-  // Step 1
+  // Connecting protocol is started from the Holder's side (ConnectMe)
+  // by scanning the QR code containing connection invitation
+  // Connection is established when the Holder accepts the connection on the device
+  // i.e. when the RESPONSE_SENT control message is received
 
   // Constructor for the Connecting API
-  const connecting = new sdk.protocols.v1_0.Connecting(null, null, uuidv4(), null, true)
-  var spinner = new Spinner('Waiting to start connection ... %s').setSpinnerDelay(450) // Console spinner
+  const connecting = new sdk.protocols.v1_0.Connecting()
+  const spinner = new Spinner('Waiting to respond to connection ... %s').setSpinnerDelay(450) // Console spinner
 
-  // handler for the response to the request to start the Connecting protocol.
-  var firstStep = new Promise((resolve) => {
+  // handler for messages in Connecting protocol
+  const connection = new Promise((resolve) => {
     handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case connecting.msgNames.REQUEST_RECEIVED:
-          spinner.stop()
           printMessage(msgName, message)
-          resolve(null)
           break
-        default:
-          printMessage(msgName, message)
-          nonHandle('Message Name is not handled - ' + msgName)
-      }
-    })
-  })
-
-  spinner.start()
-  // starts the connecting protocol
-  await firstStep // wait for response from verity application
-
-  // Step 2
-
-  spinner = new Spinner('Waiting to respond to connection ... %s').setSpinnerDelay(450) // Console spinner
-  // handler for the accept message sent when connection is accepted
-  var secondStep = new Promise((resolve) => {
-    handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (msgName, message) => {
-      switch (msgName) {
         case connecting.msgNames.RESPONSE_SENT:
           spinner.stop()
           printMessage(msgName, message)
@@ -178,7 +161,8 @@ async function createConnection () {
   })
 
   spinner.start()
-  await secondStep // wait for acceptance from connect.me user
+  // starts the connecting protocol
+  await connection // wait for response from verity application
 }
 
 //* ***********************
@@ -190,9 +174,9 @@ async function askQuestion (forDID) {
   const validAnswers = ['Great!', 'Not so good.']
 
   const committedAnswer = new sdk.protocols.CommittedAnswer(forDID, null, questionText, null, questionDetail, validAnswers, true)
-  var spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450) // Console spinner
+  const spinner = new Spinner('Waiting for Connect.Me to answer the question ... %s').setSpinnerDelay(450) // Console spinner
 
-  var firstStep = new Promise((resolve) => {
+  const firstStep = new Promise((resolve) => {
     handlers.addHandler(committedAnswer.msgFamily, committedAnswer.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case committedAnswer.msgNames.ANSWER_GIVEN:
@@ -223,10 +207,10 @@ async function writeLedgerSchema () {
 
   // constructor for the Write Schema protocol
   const schema = new sdk.protocols.WriteSchema(schemaName, schemaVersion, schemaAttrs)
-  var spinner = new Spinner('Waiting to write schema to ledger ... %s').setSpinnerDelay(450) // Console spinner
+  const spinner = new Spinner('Waiting to write schema to ledger ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for message received when schema is written
-  var firstStep = new Promise((resolve) => {
+  const firstStep = new Promise((resolve) => {
     handlers.addHandler(schema.msgFamily, schema.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case schema.msgNames.STATUS:
@@ -258,10 +242,10 @@ async function writeLedgerCredDef (schemaId) {
 
   // constructor for the Write Credential Definition protocol
   const def = new sdk.protocols.WriteCredentialDefinition(credDefName, schemaId, credDefTag)
-  var spinner = new Spinner('Waiting to write cred def to ledger ... %s').setSpinnerDelay(450) // Console spinner
+  const spinner = new Spinner('Waiting to write cred def to ledger ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for message received when schema is written
-  var firstStep = new Promise((resolve) => {
+  const firstStep = new Promise((resolve) => {
     handlers.addHandler(def.msgFamily, def.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case def.msgNames.STATUS:
@@ -288,17 +272,18 @@ async function writeLedgerCredDef (schemaId) {
 //* ***********************
 async function issueCredential (relDID, defId) {
   // input parameters for issue credential
+  const credentialName = 'Degree'
   const credentialData = {
     name: 'Alice Smith',
     degree: 'Bachelors'
   }
 
   // constructor for the Issue Credential protocol
-  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, 'Degree', 0, true)
-  var spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450) // Console spinner
+  const issue = new sdk.protocols.v1_0.IssueCredential(relDID, null, defId, credentialData, credentialName, 0, true)
+  const spinner = new Spinner('Wait for Connect.me to accept the Credential Offer ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for 'sent` message when the offer is sent
-  var offerSent = new Promise((resolve) => {
+  const offerSent = new Promise((resolve) => {
     handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case issue.msgNames.SENT:
@@ -320,7 +305,7 @@ async function issueCredential (relDID, defId) {
   await offerSent // wait for offer to be sent
 
   // handler for 'sent` message when the offer for credential is accepted and credential sent
-  var credIssued = new Promise((resolve) => {
+  const credIssued = new Promise((resolve) => {
     handlers.addHandler(issue.msgFamily, issue.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case issue.msgNames.SENT:
@@ -346,7 +331,7 @@ async function issueCredential (relDID, defId) {
 //* ***********************
 async function requestProof (relDID) {
   // input parameters for request proof
-  const proofName = 'Proof of Degree' + uuidv4().substring(0, 8)
+  const proofName = 'Proof of Degree'
   const proofAttrs = [
     {
       name: 'name',
@@ -360,10 +345,10 @@ async function requestProof (relDID) {
 
   // constructor for the Present Proof protocol
   const proof = new sdk.protocols.v1_0.PresentProof(relDID, null, proofName, proofAttrs)
-  var spinner = new Spinner('Waiting for proof presentation from Connect.me ... %s').setSpinnerDelay(450) // Console spinner
+  const spinner = new Spinner('Waiting for proof presentation from Connect.me ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for the result of the proof presentation
-  var firstStep = new Promise((resolve) => {
+  const firstStep = new Promise((resolve) => {
     handlers.addHandler(proof.msgFamily, proof.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
         case proof.msgNames.PRESENTATION_RESULT:
@@ -389,12 +374,23 @@ async function requestProof (relDID) {
 //         SETUP
 //* ***********************
 async function setup () {
+  let config = ''
   if (fs.existsSync(CONFIG_PATH)) {
     if (await readlineYesNo('Reuse Verity Context (in ' + CONFIG_PATH + ')', true)) {
-      context = await loadContext(CONFIG_PATH)
+      config = fs.readFileSync(CONFIG_PATH)
     } else {
-      context = await provisionAgent()
+      try {
+        await indy.deleteWallet({ id: WALLET_NAME }, { key: WALLET_KEY })
+      } catch (e) {
+        if (e.message !== 'WalletNotFoundError') {
+          throw (e)
+        }
+      }
     }
+  }
+
+  if (config) {
+    context = await sdk.Context.createWithConfig(config)
   } else {
     context = await provisionAgent()
   }
@@ -411,26 +407,24 @@ async function setup () {
 
   await issuerIdentifier()
 
-  console.log(issuerDID)
-
   if (issuerDID == null) {
+    console.log('\nIssuer DID is not created. Performing Issuer setup now...')
     await setupIssuer()
+  } else {
+    console.log(`Issuer DID:  ${ANSII_GREEN}${issuerDID}${ANSII_RESET}`)
+    console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
   }
 }
 
-async function loadContext (contextFile) {
-  return sdk.Context.createWithConfig(fs.readFileSync(CONFIG_PATH))
-}
-
 async function provisionAgent () {
-  var token = null
+  let token = null
   if (await readlineYesNo('Provide Provision Token', true)) {
     token = await readlineInput('Token', process.env.TOKEN)
     token.trim()
     console.log(`Using provision token: ${ANSII_GREEN}${token}${ANSII_RESET}`)
   }
 
-  var verityUrl = await readlineInput('Verity Application Endpoint', process.env.VERITY_SERVER)
+  let verityUrl = await readlineInput('Verity Application Endpoint', process.env.VERITY_SERVER)
   verityUrl = verityUrl.trim()
   if (verityUrl === '') {
     verityUrl = 'http://localhost:9000'
@@ -439,7 +433,7 @@ async function provisionAgent () {
   console.log(`Using Verity Application Endpoint Url: ${ANSII_GREEN}${verityUrl}${ANSII_RESET}`)
 
   // create initial Context
-  var ctx = await sdk.Context.create('examplewallet1', 'examplewallet1', verityUrl, '')
+  const ctx = await sdk.Context.create(WALLET_NAME, WALLET_KEY, verityUrl)
   console.log('wallet created')
   const provision = new sdk.protocols.v0_7.Provision(null, token)
   // console.log(`provision object ${JSON.stringify(provision)}`)
@@ -458,9 +452,9 @@ async function provisionAgent () {
 }
 
 async function updateWebhookEndpoint () {
-  var webhookFromCtx = context.endpointUrl
+  const webhookFromCtx = context.endpointUrl
 
-  var webhook = await readlineInput(`Ngrok endpoint for port(${LISTENING_PORT})[${webhookFromCtx}]`, process.env.WEBHOOK_URL)
+  let webhook = await readlineInput(`Ngrok endpoint for port(${LISTENING_PORT})[${webhookFromCtx}]`, process.env.WEBHOOK_URL)
   if (webhook === '') {
     webhook = webhookFromCtx
   }
@@ -480,21 +474,23 @@ async function updateConfigs () {
 async function setupIssuer () {
   // constructor for the Issuer Setup protocol
   const issuerSetup = new sdk.protocols.IssuerSetup()
-  var spinner = new Spinner('Waiting for setup to complete ... %s').setSpinnerDelay(450) // Console spinner
+  const spinner = new Spinner('Waiting for setup to complete ... %s').setSpinnerDelay(450) // Console spinner
 
   // handler for created issuer identifier message
-  var step = new Promise((resolve) => {
+  const step = new Promise((resolve) => {
     handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case issuerSetup.msgNames.PUBLIC_IDENTIFIER_CREATED:
+        case issuerSetup.msgNames.PUBLIC_IDENTIFIER_CREATED: {
           spinner.stop()
           printMessage(msgName, message)
           issuerDID = message.identifier.did
           issuerVerkey = message.identifier.verKey
+          console.log(`Issuer DID:  ${ANSII_GREEN}${issuerDID}${ANSII_RESET}`)
+          console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
           console.log('The issuer DID and Verkey must be registered on the ledger.')
-          var automatedRegistration = await readlineYesNo('Attempt automated registration via https://selfserve.sovrin.org', true)
+          const automatedRegistration = await readlineYesNo(`Attempt automated registration via ${ANSII_GREEN}https://selfserve.sovrin.org${ANSII_RESET}`, true)
           if (automatedRegistration) {
-            var res = await request.post({
+            const res = await request.post({
               uri: 'https://selfserve.sovrin.org/nym',
               json: {
                 network: 'stagingnet',
@@ -505,17 +501,18 @@ async function setupIssuer () {
             })
             if (res.statusCode !== 200) {
               console.log('Something went wrong with contactig Sovrin portal')
-              console.log(`Please add DID (${issuerDID}) and Verkey (${issuerVerkey}) to ledger manually`)
+              console.log('Please add Issuer DID and Verkey to the ledger manually')
               await readlineInput('Press ENTER when DID is on ledger')
             } else {
               console.log(`Got response from Sovrin portal: ${ANSII_GREEN}${res.body}${ANSII_RESET}`)
             }
           } else {
-            console.log(`Please add DID (${issuerDID}) and Verkey (${issuerVerkey}) to ledger manually`)
+            console.log('Please add Issuer DID and Verkey to the ledger manually')
             await readlineInput('Press ENTER when DID is on ledger')
           }
           resolve(null)
           break
+        }
         default:
           printMessage(msgName, message)
           nonHandle('Message Name is not handled - ' + msgName)
@@ -532,10 +529,10 @@ async function setupIssuer () {
 async function issuerIdentifier () {
   // constructor for the Issuer Setup protocol
   const issuerSetup = new sdk.protocols.IssuerSetup()
-  var spinner = new Spinner('Waiting for current issuer DID ... %s').setSpinnerDelay(450)
+  const spinner = new Spinner('Waiting for current issuer DID ... %s').setSpinnerDelay(450)
 
   // handler for current issuer identifier message
-  var step = new Promise((resolve) => {
+  const step = new Promise((resolve) => {
     handlers.addHandler(issuerSetup.msgFamily, issuerSetup.msgFamilyVersion, async (msgName, message) => {
       spinner.stop()
       switch (msgName) {
@@ -610,12 +607,12 @@ async function readlineInput (request, defaultValue) {
 }
 
 async function readlineYesNo (request, defaultYes) {
-  var yesNo = defaultYes ? '[y]/n' : 'y/n'
-  var modifiedRequest = request + '? ' + yesNo + ': '
+  const yesNo = defaultYes ? '[y]/n' : 'y/n'
+  const modifiedRequest = request + '? ' + yesNo + ': '
 
   return new Promise((resolve) => {
     rl.question(modifiedRequest, (response) => {
-      var normalized = response.trim().toLocaleLowerCase()
+      const normalized = response.trim().toLocaleLowerCase()
       if (defaultYes && normalized === '') {
         resolve(true)
       } else if (normalized === 'y') {
@@ -637,7 +634,7 @@ function printMessage (msgName, msg) {
 function printObject (obj, prefix, preamble) {
   console.log()
   console.log(prefix + '  ' + preamble)
-  var lines = JSON.stringify(obj, null, 2).split('\n')
+  const lines = JSON.stringify(obj, null, 2).split('\n')
   lines.forEach(line => {
     console.log(prefix + '  ' + line)
   })

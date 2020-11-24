@@ -15,6 +15,7 @@ class PresentProofV1x0 extends Protocol {
   * @param name A human readable name for the given request
   * @param attributes An array of attribute based restrictions
   * @param predicates An array of predicates based restrictions
+  * @param byInvitation flag to create out-of-band invitation as a part of the PresentProof protocol
   * @return 1.0 PresentProof object
   *
   * @property {String} msgFamily - 'present-proof'
@@ -24,12 +25,14 @@ class PresentProofV1x0 extends Protocol {
   * @property {String} this.msgNames.PRESENTATION_RESULT - 'presentation-result'
   * @property {String} this.msgNames.STATUS - 'status'
   * @property {String} this.msgNames.REJECT - 'reject'
+  * @property {String} this.msgNames.PROTOCOL_INVITATION - 'protocol-invitation'
   */
   constructor (forRelationship,
     threadId = null,
     name = '',
     attributes = [],
-    predicates = []
+    predicates = [],
+    byInvitation = false
   ) {
     const msgFamily = 'present-proof'
     const msgFamilyVersion = '1.0'
@@ -40,6 +43,7 @@ class PresentProofV1x0 extends Protocol {
     this.name = name
     this.attributes = attributes
     this.predicates = predicates
+    this.byInvitation = byInvitation
     this.created = threadId == null
 
     this.msgNames.PROOF_REQUEST = 'request'
@@ -47,6 +51,7 @@ class PresentProofV1x0 extends Protocol {
     this.msgNames.STATUS = 'status'
     this.msgNames.REJECT = 'reject'
     this.msgNames.ACCEPT_PROPOSAL = 'accept-proposal'
+    this.msgNames.PROTOCOL_INVITATION = 'protocol-invitation'
   }
 
   /**
@@ -89,6 +94,7 @@ class PresentProofV1x0 extends Protocol {
     if (this.predicates && this.predicates.length > 0) {
       msg.proof_predicates = this.predicates
     }
+    msg.by_invitation = this.byInvitation
     msg = this._addThread(msg)
     return msg
   }

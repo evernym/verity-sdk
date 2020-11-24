@@ -30,6 +30,7 @@ public class PresentProofTest {
             .build();
     private final Attribute attr1 = PresentProofV1_0.attribute("age", r1);
     private final Predicate pred1 = new Predicate("age", 18, r1);
+    private final Boolean byInvitation = true;
 
     @Test
     public void testGetMessageType() {
@@ -61,7 +62,8 @@ public class PresentProofTest {
                 forRelationship,
                 proofRequestName,
                 new Attribute[]{attr1},
-                new Predicate[]{pred1}
+                new Predicate[]{pred1},
+                byInvitation
         );
 
         JSONObject msg = testProtocol.requestMsg(context);
@@ -80,6 +82,7 @@ public class PresentProofTest {
         assertEquals(forRelationship, requestMsg.getString("~for_relationship"));
         assertEquals(proofRequestName, requestMsg.getString("name"));
         assertEquals(attr1.toJson().toString(), requestMsg.getJSONArray("proof_attrs").get(0).toString());
+        assertEquals(byInvitation, requestMsg.getBoolean("by_invitation"));
     }
 
     private void testStatusMsg(JSONObject statusMsg) {

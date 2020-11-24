@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OOB issuance/verification app</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css"/>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous">
+    </script>
+  </head>
+  <body>
+    <div class="w3-container w3-light-blue w3-center">
+      <h2>Use case: Request proof using Out-of-Band protocol</h2>
+      <h5>QR code will contain proof request attached to the connection invitation</h5>
+    </div>
+    <br>
+    <div class="w3-row-padding w3-padding-64">
+    <div class="w3-center">
+      <button id="Start" class="w3-btn w3-blue w3-large">Start</button>
+    </div>
+    <div class="w3-row-padding w3-padding-64"></div>
+    <div id="Spinner" class="w3-center" style="display:none">
+      <i class="fa fa-spinner fa-2x" aria-hidden="true"></i><br>
+      <p>Generating QR code...</p>
+      <br>
+     </div>
+     <div id="qrcodeDiv" class="w3-center" style="display:none">
+       <img id="qrcode" style="height:300px; width:300px"></img><br><br>
+       <p>Scan this QR code with ConnectMe app to verify</p>
+       <br>
+       <a href="index.html" class="w3-btn w3-blue w3-large">Back</a>
+     </div>
+
+    
+  </div>
+  </body>
+
+  <script>
+    $(document).ready(async function () {
+
+      $('#Start').click(function (e) {
+        $('#Spinner').show()
+        $.ajax({
+          url: '/requestProof',
+          type: 'post',
+          data: {},
+          success: function (result, textStatus, xhr) {
+            $('#Start').hide()
+            $('#Spinner').hide()
+            $('#qrcode').attr('src', result)
+            $('#qrcodeDiv').show()
+          },
+          error: function (xhr, status, err) {
+            const message = xhr.status + ' ' + xhr.statusText + '\n' + xhr.responseText
+            alert(message)
+            window.location.reload()
+          }
+        })
+      })
+
+    })
+  </script>
+</html>

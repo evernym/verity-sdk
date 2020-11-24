@@ -1,24 +1,21 @@
 # Verity in Docker
 
-To use the Verity SDK, you need an instance of the Verity application to interact with. When you specify Verity application endpoint for your Verity SDK there are two options:
-* Use Verity Application endpoint provided to you by Evernym
-* Start a docker container with the Test/Evaluation Verity Application (described in this document) and use Verity Application endpoint of the started container
+To use the Verity SDK, you need an instance of the Verity Application Service (VAS) to interact with. When you specify the Verity application endpoint for your Verity SDK there are two options:
+* Use Verity application endpoint provided to you by Evernym
+* Start a local Verity Application Service in a docker container (described in this document) and use Verity application endpoint of the started container
  
 
-## Standing Up Test/Evaluation Verity Application docker container
+## Standing up Verity Application Service in a docker container
 
-**NOTE**: This Docker container for Verity Application is intended for test/evaluation purposes only. It is not intended for production use and it's usage is not supported by Evernym.
+> **NOTE**: Verity application is available under the Business Source License (https://github.com/evernym/verity/blob/master/LICENSE.txt). Please contact Evernym if you have any questions regarding Verity licensing.
 
-Test/Evaluation Verity Application is released under the following licence:
-<TBD link to Evernym BSL licence.md file from public Verity repo>
-
-Test/Evaluation Verity Application has several limitations, e.g.:
-* Local port of the Verity application is assigned a publicly accessible URL (Verity Application endpoint) via Ngrok tunnel. Ngrok tunnel expires in 8 hours and Verity container needs to be restarted
+Local Verity application service started in a docker container has several limitations compared to the cloud offering e.g.:
+* Local port of the Verity application is assigned a publicly accessible URL (Verity Application endpoint) via the Ngrok tunnel. The Ngrok tunnel expires in 8 hours and Verity container needs to be restarted
 * Image uses LevelDB for persistent storage for actor events and is not suitable for clustering
 
 ## Starting Verity application in a Docker container
 
-Pull the docker image of Verity application from Docker hub
+Pull the docker image of the Verity application from Docker hub
 
 ```sh
 docker pull evernymdev/verity-server-dev:stable
@@ -53,11 +50,11 @@ The Docker is NOT meant to be run in detached mode (-d option), since it require
 
 **Restarting container**
 
-If you exit Verity container (by pressing CTRL+C) you can start it again with
+If you exit the Verity container (by pressing CTRL+C) you can start it again with
 ```sh
 docker start -ai verity
 ```
-Container will preserve it's state across restarts.
+The container will preserve it's state across restarts.
 Restart might be needed if Ngrok is being used (i.e. HOST_ADDRESS env variable was not specified in `docker run` command) since the Ngrok tunnel will expire in 8 hours. When the stopped Verity container is started again new Ngrok tunnel will be created and new Verity Application Endpoint will be printed on the screen.
 
 

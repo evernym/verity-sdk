@@ -24,14 +24,17 @@ class PresentProof(Protocol):
     """Name for 'accept-proposal' control message"""
     PRESENTATION_RESULT = 'presentation-result'
     """Name for 'presentation-result' signal message"""
+    PROTOCOL_INVITATION = 'protocol-invitation'
+    """Name for 'protocol-invitation' signal message"""
+
 
     def __init__(self,
                  for_relationship: str,
                  thread_id: str = None,
                  name: str = None,
                  proof_attrs=None,
-                 proof_predicates=None
-                 ):
+                 proof_predicates=None,
+                 by_invitation: bool = False):
         """
         Args:
             for_relationship (str): the relationship identifier (DID) for the pairwise relationship that will be used
@@ -39,6 +42,7 @@ class PresentProof(Protocol):
             name (str): a human readable name for the given request
             proof_attrs (List[Dict]): an array of attribute based restrictions
             proof_predicates (List[Dict]): an array of predicate based restrictions
+            by_invitation (bool): flag to create out-of-band invitation as a part of the PresentProof protocol
         """
         super().__init__(
             self.MSG_FAMILY,
@@ -50,6 +54,7 @@ class PresentProof(Protocol):
         self.name = name
         self.proof_attrs = proof_attrs
         self.proof_predicates = proof_predicates
+        self.by_invitation = by_invitation
         self.created = thread_id is None
 
     async def request(self, context):
@@ -80,6 +85,7 @@ class PresentProof(Protocol):
         msg['proof_attrs'] = self.proof_attrs
         if self.proof_predicates:
             msg['proof_predicates'] = self.proof_predicates
+        msg['by_invitation'] = self.by_invitation
         return msg
 
     async def request_msg_packed(self, context):

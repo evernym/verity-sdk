@@ -127,7 +127,20 @@ print_config() {
   echo
 }
 
+print_license() {
+  echo
+  echo "***********************        LICENSE         ***********************"
+  echo "Verity application is available under the Business Source License"
+  printf "${ANSII_GREEN}https://github.com/evernym/verity/blob/master/LICENSE.txt${ANSII_RESET}\n"
+  echo "Please contact Evernym if you have any questions regarding Verity licensing"
+  echo "**********************************************************************"
+  echo
+}
+
 start_verity() {
+
+  print_license
+
   if [ -f provisioned.conf ]; then
     # Provisioning file exists. This is start of the stopped Verity container
     # Source environment variables from the previous run
