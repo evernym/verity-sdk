@@ -4,6 +4,8 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
+import com.evernym.verity.sdk.protocols.presentproof.common.ProposedAttribute;
+import com.evernym.verity.sdk.protocols.presentproof.common.ProposedPredicate;
 import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
@@ -25,6 +27,7 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     final String PROOF_REQUEST = "request";
     final String STATUS = "status";
     final String REJECT = "reject";
+    final String ACCEPT_PROPOSAL = "accept-proposal";
     final String PROTOCOL_INVITATION = "protocol-invitation";
 
     // flag if this instance started the interaction
@@ -34,6 +37,8 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     String name;
     Attribute[] proofAttrs;
     Predicate[] proofPredicates;
+    ProposedAttribute[] proposedAttributes;
+    ProposedPredicate[] proposedPredicates;
     Boolean byInvitation;
 
 
@@ -72,6 +77,14 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
         this.created = true;
     }
 
+    PresentProofImplV1_0(String forRelationship, String threadId, ProposedAttribute[] attrs, ProposedPredicate[] predicates) {
+        super(threadId);
+        this.forRelationship = forRelationship;
+        this.proposedAttributes = attrs;
+        this.proposedPredicates = predicates;
+        this.created = true;
+    }
+
     public void request(Context context) throws IOException, VerityException {
         send(context, requestMsg(context));
     }
@@ -102,18 +115,53 @@ class PresentProofImplV1_0 extends AbstractProtocol implements PresentProofV1_0 
     }
 
     @Override
-    public void accept(Context context) {
+    public void propose(Context context) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public JSONObject acceptMsg(Context context) {
+    public JSONObject proposeMsg(Context context) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public byte[] acceptMsgPacked(Context context) {
+    public byte[] proposeMsgPacked(Context context) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void acceptRequest(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public JSONObject acceptRequestMsg(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public byte[] acceptRequestMsgPacked(Context context) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void acceptProposal(Context context) throws IOException, VerityException {
+        send(context, acceptProposalMsg(context));
+    }
+
+    @Override
+    public JSONObject acceptProposalMsg(Context context) {
+        JSONObject msg = new JSONObject();
+        msg.put("@type", messageType(ACCEPT_PROPOSAL));
+        msg.put("@id", getNewId());
+        addThread(msg);
+        msg.put("~for_relationship", this.forRelationship);
+        return msg;
+    }
+
+    @Override
+    public byte[] acceptProposalMsgPacked(Context context) throws VerityException {
+        return packMsg(context, acceptProposalMsg(context));
     }
 
     @Override

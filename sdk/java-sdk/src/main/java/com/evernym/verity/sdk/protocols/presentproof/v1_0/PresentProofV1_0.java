@@ -5,6 +5,8 @@ import com.evernym.verity.sdk.protocols.MessageFamily;
 import com.evernym.verity.sdk.protocols.Protocol;
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
+import com.evernym.verity.sdk.protocols.presentproof.common.ProposedAttribute;
+import com.evernym.verity.sdk.protocols.presentproof.common.ProposedPredicate;
 import com.evernym.verity.sdk.protocols.presentproof.common.Restriction;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
@@ -69,6 +71,30 @@ public interface PresentProofV1_0 extends Protocol {
         return new Predicate(name, value, restrictions);
     }
 
+    /**
+     * Creates a proposed attribute value for a presentation of proof.
+     *
+     * @param name the attribute name
+     * @param credDefId cred def id of credential being used for this attribute. If null, than self attested.
+     * @param value the value of the attribute. If null, then value want be revealed.
+     * @return A ProposedAttribute with the given name, credDefId and value
+     */
+    static ProposedAttribute proposedAttribute(String name, String credDefId, String value) {
+        return new ProposedAttribute(name, credDefId, value);
+    }
+
+    /**
+     * Creates a proposed predicate for a presentation of proof. Indy Anoncreds only supports, so the
+     * value should be expressed as a greater than predicate.
+     *
+     * @param name the predicate name
+     * @param credDefId cred def id of credential being used for proposed predicate.
+     * @param treshold the value the predicate must be greater than
+     * @return A ProposedPredicate with the given name, credDefId, predicate type and treshold
+     */
+    static ProposedPredicate proposedPredicate(String name, String credDefId, int treshold) {
+        return new ProposedPredicate(name, credDefId, treshold);
+    }
 
     /**
      * Directs verity-application to request a presentation of proof.
@@ -100,13 +126,13 @@ public interface PresentProofV1_0 extends Protocol {
     byte[] requestMsgPacked(Context context) throws VerityException;
 
     /**
-     * Directs verity-application to accept the request to present proof.
+     * Directs verity-application to propose a presentation of proof.
      *
      * @param context an instance of the Context object initialized to a verity-application agent
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws VerityException when wallet operations fails or given invalid context
      */
-    void accept(Context context) throws IOException, VerityException;
+    void propose(Context context) throws IOException, VerityException;
 
     /**
      * Creates the control message without packaging and sending it.
@@ -114,9 +140,9 @@ public interface PresentProofV1_0 extends Protocol {
      * @return the constructed message (JSON object)
      * @throws VerityException when given invalid context
      *
-     * @see #accept
+     * @see #propose
      */
-    JSONObject acceptMsg(Context context) throws VerityException;
+    JSONObject proposeMsg(Context context) throws VerityException;
 
     /**
      * Creates and packages message without sending it.
@@ -124,9 +150,68 @@ public interface PresentProofV1_0 extends Protocol {
      * @return the byte array ready for transport
      * @throws VerityException when wallet operations fails or given invalid context
      *
-     * @see #accept
+     * @see #propose
      */
-    byte[] acceptMsgPacked(Context context) throws VerityException;
+    byte[] proposeMsgPacked(Context context) throws VerityException;
+
+    /**
+     * Directs verity-application to accept the request to present proof.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void acceptRequest(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #acceptRequest
+     */
+    JSONObject acceptRequestMsg(Context context) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #acceptRequest
+     */
+    byte[] acceptRequestMsgPacked(Context context) throws VerityException;
+
+    /**
+     * Directs verity-application to accept the proposal for present proof.
+     * verity-application will send presentation request based on the proposal.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void acceptProposal(Context context) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #acceptProposal
+     */
+    JSONObject acceptProposalMsg(Context context) throws VerityException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #acceptProposal
+     */
+    byte[] acceptProposalMsgPacked(Context context) throws VerityException;
 
 
     /**

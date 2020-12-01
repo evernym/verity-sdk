@@ -2,6 +2,8 @@ package com.evernym.verity.sdk.protocols.presentproof;
 
 import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.common.Predicate;
+import com.evernym.verity.sdk.protocols.presentproof.common.ProposedAttribute;
+import com.evernym.verity.sdk.protocols.presentproof.common.ProposedPredicate;
 import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
 
 /**
@@ -81,9 +83,44 @@ public class PresentProof {
         return new PresentProofImplV1_0(forRelationship, name, proofAttrs, proofPredicate, byInvitation);
     }
 
+
+    /**
+     * Constructor for the 1.0 PresentProof object. This constructor creates an object that is ready to start
+     * process of proposing a presentation of proof
+     *
+     * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
+     * @param attributes An array of attribute based values
+     * @param predicates An array of predicate based values
+     * @return 1.0 PresentProof object
+     */
+    public static PresentProofV1_0 v1_0(String forRelationship,
+                                        ProposedAttribute[] attributes,
+                                        ProposedPredicate[] predicates) {
+        return new PresentProofImplV1_0(forRelationship, null, attributes, predicates);
+    }
+
+    /**
+     * Constructor for the 1.0 PresentProof object. This constructor creates an object that is ready to start
+     * process of proposing a presentation of proof as an answer to a presentation request.
+     * This constructor re-creates an object from a known relationship and threadId.
+     * It can be used only if protocol is already started.
+     *
+     * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
+     * @param attributes An array of attribute based values
+     * @param predicates An array of predicate based values
+     * @return 1.0 PresentProof object
+     */
+    public static PresentProofV1_0 v1_0(String forRelationship,
+                                        String threadId,
+                                        ProposedAttribute[] attributes,
+                                        ProposedPredicate[] predicates) {
+        return new PresentProofImplV1_0(forRelationship, threadId, attributes, predicates);
+    }
+
     /**
      * Constructor for the 1.0 PresentProof object. This constructor re-creates an object from a known relationship and
-     * threadId. This object can only check status of the protocol.
+     * threadId.
+     * This object can be used only if protocol is already started.
      *
      * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
      * @param threadId the thread id of the already started protocol

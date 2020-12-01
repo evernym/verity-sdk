@@ -50,6 +50,7 @@ class PresentProofV1x0 extends Protocol {
     this.msgNames.PRESENTATION_RESULT = 'presentation-result'
     this.msgNames.STATUS = 'status'
     this.msgNames.REJECT = 'reject'
+    this.msgNames.ACCEPT_PROPOSAL = 'accept-proposal'
     this.msgNames.PROTOCOL_INVITATION = 'protocol-invitation'
   }
 
@@ -133,6 +134,42 @@ class PresentProofV1x0 extends Protocol {
   }
 
   /**
+     * Directs verity-application to accept the proposal for presenting the proof.
+     * verity-application will send presentation request based on the proposal.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param reason an human readable reason for the rejection
+     */
+  async acceptProposal (context) {
+    await this.sendMessage(context, await this.acceptProposalMsgPacked(context))
+  }
+
+  /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the byte array ready for transport
+     *
+     * @see #acceptProposal
+     */
+  async acceptProposalMsgPacked (context) {
+    return this.getMessageBytes(context, this.acceptProposalMsg())
+  }
+
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @return the constructed message (JSON object)
+     *
+     * @see #reject
+     */
+  acceptProposalMsg () {
+    var msg = this._getBaseMessage(this.msgNames.ACCEPT_PROPOSAL)
+    msg['~for_relationship'] = this.forRelationship
+    msg = this._addThread(msg)
+    return msg
+  }
+
+  /**
      * Directs verity-application to reject this presentation proof protocol
      *
      * @param context an instance of the Context object initialized to a verity-application agent
@@ -150,7 +187,7 @@ class PresentProofV1x0 extends Protocol {
      * @see #reject
      */
   async rejectMsgPacked (context, reason) {
-    return this.getMessageBytes(context, this.rejectMsgPacked(reason))
+    return this.getMessageBytes(context, this.rejectMsg(reason))
   }
 
   /**
