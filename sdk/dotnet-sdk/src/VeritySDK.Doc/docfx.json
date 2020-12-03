@@ -6,7 +6,7 @@
           "files": [
             "**.csproj"
           ],
-          "src": "..\\VeritySDK"
+          "src": "../VeritySDK"
         }
       ],
       "dest": "api"
@@ -52,7 +52,7 @@
     },
     "fileMetadataFiles": [],
     "template": [
-      "statictoc"
+      "default"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",

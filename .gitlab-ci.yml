@@ -1,4 +1,4 @@
-image: gitlab.corp.evernym.com:4567/dev/containers/build-sdk:5de0ac04
+image: gitlab.corp.evernym.com:4567/dev/containers/build-sdk:134b350a
 
 stages:
   - docker-images
@@ -226,6 +226,95 @@ nodejs-release:
   only:
     refs:
       - tags@dev/verity/verity-sdk
+
+.dotnet-common:
+  before_script:
+    - cd sdk/dotnet-sdk/src/
+
+
+dotnet-test:
+  stage: test
+  tags:
+    - docker-machine
+    - large
+  extends:
+    - .dotnet-common
+  script:
+    - cd VeritySDK.Test
+    - dotnet restore -p:Configuration=Release
+    - dotnet build -c Release /warnaserror      # DotNet SDK build with warning as error
+    - dotnet test                               # DotNet SDK tests
+
+dotnet-package:
+  stage: package
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .dotnet-common
+  script:
+    - cd VeritySDK
+    - dotnet restore -p:Configuration=Release
+    - dotnet build -c Release
+    - dotnet pack -c Release -p:PackageVersion=$DEV_VERSION
+
+dotnet-doc:
+  stage: doc
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .dotnet-common
+  script:
+    - cd VeritySDK.Doc
+    - dotnet restore -p:Configuration=Release
+    - dotnet build -c Release -p:BuildDocToolPath=/usr/bin/docfx
+
+dotnet-publish:
+  stage: publish
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .dotnet-common
+  script:
+    - cd VeritySDK
+    - dotnet restore -p:Configuration=Release
+    - dotnet build -c Release
+    - dotnet pack -c Release -p:PackageVersion=$DEV_VERSION
+    - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
+    - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
+  when: on_success
+  only:
+    refs:
+      - master@dev/verity/verity-sdk
+    changes:
+      - sdk/dotnet-sdk/**/*
+      - .gitlab-ci.yml
+
+dotnet-release:
+  stage: publish
+  tags:
+    - s3docs
+    - docker-machine
+  extends:
+    - .dotnet-common
+  script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`                        # pull version from tag name
+    - cd VeritySDK.Doc
+    - dotnet restore -p:Configuration=Release
+    - dotnet build -c Release -p:BuildDocToolPath=/usr/bin/docfx
+    - aws s3 sync ../../doc s3://developer.evernym.com/doc/dotnet/$RELEASE_VERSION      # upload dotnet-doc to s3
+    - cd ../VeritySDK
+    - dotnet restore -p:Configuration=Release
+    - dotnet build -c Release
+    - dotnet pack -c Release -p:PackageVersion=$DEV_BASE_VERSION
+    - dotnet nuget push "bin/Release/*.nupkg" --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+  allow_failure: true
+  only:
+    refs:
+      - tags@dev/verity/verity-sdk
+
 
 build-docker-image:
   stage: publish 
