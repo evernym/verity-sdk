@@ -3,12 +3,16 @@ package com.evernym.verity.sdk.protocols.presentproof.common;
 import org.json.JSONArray;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 public class AttributeTest {
     @Test
     public void nullTest() {
         Attribute r = new Attribute("test", (Restriction) null);
+        assertEquals("test", r.data.getString("name"));
         assertEquals(0, r.data.getJSONArray("restrictions").length());
     }
 
@@ -23,6 +27,27 @@ public class AttributeTest {
                 .credDefId("SDFSDF")
                 .build();
         Attribute a = new Attribute("test", r);
+        JSONArray restrictions = a.data.getJSONArray("restrictions");
+        assertEquals(1, restrictions.length());
+        assertEquals(restrictions.toString(), "[{\"cred_def_id\":\"SDFSDF\"}]");
+    }
+
+    @Test
+    public void namesTest() {
+        List<String> names = Arrays.asList("A", "B", "C");
+        Attribute a = new Attribute((String[]) names.toArray(), (Restriction) null);
+        assertEquals(names, a.data.getJSONArray("names").toList());
+        assertEquals(0, a.data.getJSONArray("restrictions").length());
+    }
+
+    @Test
+    public void namesOneRestrictionTest() {
+        List<String> names = Arrays.asList("A", "B", "C");
+        Restriction r = RestrictionBuilder.blank()
+                .credDefId("SDFSDF")
+                .build();
+        Attribute a = new Attribute((String[]) names.toArray(), r);
+        assertEquals(names, a.data.getJSONArray("names").toList());
         JSONArray restrictions = a.data.getJSONArray("restrictions");
         assertEquals(1, restrictions.length());
         assertEquals(restrictions.toString(), "[{\"cred_def_id\":\"SDFSDF\"}]");

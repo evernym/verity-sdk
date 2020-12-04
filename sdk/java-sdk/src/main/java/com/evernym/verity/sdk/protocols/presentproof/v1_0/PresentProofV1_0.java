@@ -59,6 +59,16 @@ public interface PresentProofV1_0 extends Protocol {
     }
 
     /**
+     * Creates an attribute restriction for a presentation of proof
+     * @param names list of names of attributes which must belong to the same credential
+     * @param restrictions an array restrictions to be used
+     * @return An Attribute with the given names and restrictions
+     */
+    static Attribute attribute(String[] names, Restriction... restrictions) {
+        return new Attribute(names, restrictions);
+    }
+
+    /**
      * Creates a predicate restriction for a presentation of proof. Indy Anoncreds only supports, so the
      * value should be expressed as a greater than predicate.
      *

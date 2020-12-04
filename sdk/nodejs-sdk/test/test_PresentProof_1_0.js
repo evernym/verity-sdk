@@ -19,6 +19,10 @@ const attributes = [
   {
     name: 'degree',
     restrictions: [{ issuer_did: issuerDID }]
+  },
+  {
+    names: ['first_name', 'last_name'],
+    restrictions: [{ issuer_did: issuerDID }]
   }
 ]
 const predicates = [
