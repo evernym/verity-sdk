@@ -8,7 +8,8 @@ thread_id = 'some thread id'
 name = 'Degree Verification'
 proof_attrs = [
     {'name': 'name', 'restrictions': [{'issuer_did': 'did:sov:12345'}]},
-    {'name': 'degree', 'restrictions': [{'issuer_did': 'did:sov:12345'}]}
+    {'name': 'degree', 'restrictions': [{'issuer_did': 'did:sov:12345'}]},
+    {'names': ['first_name', 'last_name'], 'restrictions': [{'issuer_did': 'did:sov:12345'}]}
 ]
 proof_predicates = [
     {'name': 'age', 'p_type': 'GT', 'p_value': 18, 'restrictions': [{'issuer_did': 'did:sov:12345'}]}
