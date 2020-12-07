@@ -37,14 +37,16 @@ The included `Dockerfile` will setup a complete environment for running the exam
 * `docker` is required for this path and installation instructions can be found at [Get Docker Page](https://www.docker.com/get-docker/). 
 
 ### Steps:
-1. Build docker image. Run the following command from the root directory of the `verity-sdk` project:
+1. Pull the Verity SDK sample app docker image from the Docker Hub:
 
    ```sh
-   docker build -f samples/sdk/Dockerfile -t verity-sdk .
+   docker pull evernymdev/sdk-sample-app:stable
    ```
-1. Run built docker image. Run the following command:
+   > **NOTE:** Alternatively you can build the `sdk-sample-app` docker image instead of pulling it from the Docker Hub. To build the image run `docker build -f samples/sdk/Dockerfile -t sdk-sample-app .` from the root directory of the `verity-sdk` project.
+
+1. Start a container based on the **sdk-sample-app** docker image. Run the following command:
    ```sh
-   docker run -it verity-sdk
+   docker run -it evernymdev/sdk-sample-app:stable
    ```
    > **NOTE:** The example application will provision an agent, create a key-pair in a local wallet and generate a context json. All of this will happen inside of the docker container. If this docker container is lost, **YOU WILL NOT** be able to continue to use that provisioned agent on the Verity Application.
 
@@ -66,11 +68,10 @@ The included `Dockerfile` will setup a complete environment for running the exam
         cd /samples/sdk/java-example-app
         mvn exec:java
         ```
-    * For .Net (**experimental**):
+    * For .Net:
         ```sh
-        cd /samples/sdk/dotnet-example-app-tmp
-        dotnet build --configuration release
-        dotnet run -p VeritySDK.Sample
+        cd /samples/sdk/dotnet-example-app
+        dotnet run
         ```
 
     The example application should start and present the following question:
@@ -111,10 +112,10 @@ cd /samples/sdk/python-example-app
 pip3 install -r requirements.txt
 ``` 
 
-* Build .NET example app (**experimental**):
+* Build .NET example app:
 ```sh
-cd /samples/sdk/dotnet-example-app-tmp
-dotnet build --configuration release
+cd /samples/sdk/dotnet-example-app
+dotnet build --configuration Release
 ``` 
 
 ### Launch Example Application
@@ -167,8 +168,8 @@ dotnet build --configuration release
         ```
     * For .NET
         ```sh
-        cd /samples/sdk/dotnet-example-app-tmp
-        dotnet run -p VeritySDK.Sample
+        cd /samples/sdk/dotnet-example-app
+        dotnet run
         ``` 
     The example application should start and present the following question:
     ```
