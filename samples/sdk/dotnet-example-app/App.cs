@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using VeritySDK.Exceptions;
@@ -60,6 +60,16 @@ namespace VeritySDK.Sample
             Console.WriteLine(Text);
             if (WithMargin)
                 Console.WriteLine();
+        }
+
+        public static void coloredConsoleOutput(string coloredText, string preText = "", string postText = "")
+        {
+            Console.Write(preText);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(coloredText);
+            Console.ResetColor();
+            Console.Write(postText);
+            Console.WriteLine();
         }
 
         public static bool consoleYesNo(string request, bool defaultYes)
@@ -116,8 +126,14 @@ namespace VeritySDK.Sample
         public static void consolePrintObject(JsonObject obj, string prefix, string preamble)
         {
             consoleOutput(prefix + "  " + preamble);
+            String rawJson = obj.ToString();
+            var options = new JsonSerializerOptions() {
+              WriteIndented = true
+            };
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(rawJson);
+            String prettyJson = JsonSerializer.Serialize(jsonElement, options);
 
-            var obj_lines = obj.ToString().Split("\r\n");
+            var obj_lines = prettyJson.ToString().Split(new [] { '\r', '\n' });
             foreach (var line in obj_lines)
             {
                 consoleOutput(prefix + "  " + line);
@@ -267,6 +283,7 @@ namespace VeritySDK.Sample
 
         void DoSetup()
         {
+	     
             if (File.Exists(VERITY_CONTEXT_STORAGE))
             {
                 if (consoleYesNo("Reuse Verity Context (in verity-context.json)", true))
@@ -300,8 +317,8 @@ namespace VeritySDK.Sample
             }
             else
             {
-                App.consoleOutput("Issuer DID: " + _issuerDID);
-                App.consoleOutput("Issuer Verkey: " + _issuerVerkey);
+                App.coloredConsoleOutput(_issuerDID, "Issuer DID: ");
+                App.coloredConsoleOutput(_issuerVerkey, "Issuer Verkey: ");
             }
         }
 
@@ -321,7 +338,7 @@ namespace VeritySDK.Sample
             if (consoleYesNo("Provide Provision Token", true))
             {
                 string token = consoleInput("Token", Environment.GetEnvironmentVariable("TOKEN")).Trim();
-                App.consoleOutput($"Using provision token: {token}");
+                App.coloredConsoleOutput(token, "Using provision token: ");
                 provisioner = Provision.v0_7(token);
             }
             else
@@ -336,7 +353,7 @@ namespace VeritySDK.Sample
                 verityUrl = "http://localhost:9000";
             }
 
-            App.consoleOutput($"Using Url: {verityUrl}");
+            App.coloredConsoleOutput(verityUrl, "Using Verity Application Endpoint Url: ");
 
             // create initial Context
             Context ctx = ContextBuilder.fromScratch("examplewallet1", "examplewallet1", verityUrl);
@@ -380,7 +397,7 @@ namespace VeritySDK.Sample
                 webhook = webhookFromCtx;
             }
 
-            App.consoleOutput($"Using Webhook: {webhook}");
+            App.coloredConsoleOutput(webhook, "Using Webhook: ");
             context = context.ToContextBuilder().endpointUrl(webhook).build();
 
             // request that verity-application use specified webhook endpoint
@@ -455,9 +472,8 @@ namespace VeritySDK.Sample
             // wait for request to complete
             WaitFor(ref setup_complete, "Waiting for setup to complete");
 
-            App.consoleOutput("The issuer DID and Verkey must be on the ledger.");
-            App.consoleOutput("Issuer DID: " + _issuerDID);
-            App.consoleOutput("Issuer Verkey: " + _issuerVerkey);
+            App.coloredConsoleOutput(_issuerDID, "Issuer DID: ");
+            App.coloredConsoleOutput(_issuerVerkey, "Issuer Verkey: ");
             App.consoleOutput("The issuer DID and Verkey must be on the ledger.");
 
             bool automatedRegistration = consoleYesNo("Attempt automated registration via https://selfserve.sovrin.org", true);
@@ -482,7 +498,7 @@ namespace VeritySDK.Sample
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var data = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    App.consoleOutput($"Got response from Sovrin portal: {data}");
+                    App.coloredConsoleOutput(data, "Got response from Sovrin portal: ");
                 }
                 else
                 {
@@ -589,7 +605,7 @@ namespace VeritySDK.Sample
                             if (!(Environment.GetEnvironmentVariable("HTTP_SERVER_URL") == null))
                             {
                                 App.consoleOutput("Open the following URL in your browser and scan presented QR code");
-                                App.consoleOutput(Environment.GetEnvironmentVariable("HTTP_SERVER_URL") + "/dotnet-example-app/qrcode.html");
+                                App.coloredConsoleOutput(Environment.GetEnvironmentVariable("HTTP_SERVER_URL") + "/dotnet-example-app/qrcode.html");
                             }
                             else
                             {
