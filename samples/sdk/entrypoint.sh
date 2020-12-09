@@ -33,7 +33,7 @@ HTTP_SERVER_PORT=8000
 JAVA_SAMPLE='/samples/sdk/java-example-app'
 PYTHON_SAMPLE='/samples/sdk/python-example-app'
 NODE_SAMPLE='/samples/sdk/nodejs-example-app'
-DN_SAMPLE='/samples/sdk/dotnet-example-app-tmp'
+DN_SAMPLE='/samples/sdk/dotnet-example-app'
 
 #kill ngrok process if the exist
 kill_complete 'ngrok'

@@ -76,6 +76,11 @@ RUN npm install 2>/dev/null
 RUN npm rebuild 2>/dev/null
 
 
+# Install .NET packages
+WORKDIR /samples/sdk/dotnet-example-app
+RUN dotnet build -c Release
+
+
 # Install static HTTP server to serve generated QR code
 RUN npm install -g http-server
 WORKDIR /samples/sdk
