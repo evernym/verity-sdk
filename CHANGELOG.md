@@ -1,3 +1,27 @@
+# Release notes - Verity 2.7.0 (0.4.107364822.a2523bb) - Dec 9 2020
+
+## Bugs
+    * [VE-2133] - Verity does not return attribute values in presentation-result if names syntax is used
+
+## Tasks
+    * [VE-2010] - Add integration test for proposed presentation to verity
+    * [VE-2220] - Create public Dockerhub image for Verity sample app
+    * [VE-2244] - Provision Token delivered via push notification and HTTP response
+
+# Release notes - Verity 2.6.0 (0.4.105917705.a19f4a0) - Nov 25 2020
+
+## Tasks
+    * [VE-2008] - Add protocol messages for proposed presentation to verity
+    * [VE-2009] - Add protocol logic for proposed presentation to verity
+    * [VE-2011] - Add required APIs to verity-sdk
+    * [VE-2093] - Added OOB with request-attach to Integration Tests
+    * [VE-2096] - Document new API - OOB with request attach
+    * [VE-2116] - Update getting started guides for .NET SDK
+    * [VE-2117] - Making environment for build and publication on the NuGet
+    * [VE-2120] - Update Verity SDK CI/CD pipelines for .NET 
+    * [VE-2124] - Remove 0.6 Provisioning Protocol 
+    * [VE-2125] - Return provision token in http response if NOT push notification format
+
 # Release notes - Verity 2.5.0 (0.4.103141332.ef1e3e6) - Oct 21 2020
 
 ## Bugs
