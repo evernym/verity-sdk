@@ -33,5 +33,29 @@ namespace VeritySDK.Test
             Assert.AreEqual(1, restrictions.Count);
             Assert.AreEqual(restrictions.ToString(), "[{\"cred_def_id\": \"SDFSDF\"}]");
         }
+
+        [TestMethod]
+        public void namesTest()
+        {
+            string[] names = {"A", "B", "C"};
+            Attribute a = new Attribute(names, (Restriction)null);
+            Assert.AreEqual(a.data.getAsJsonArray("names").ToString(), "[\"A\", \"B\", \"C\"]");
+            Assert.AreEqual(0, a.data.getAsJsonArray("restrictions").Count);
+        }
+
+        [TestMethod]
+        public void namesOneRestrictionTest()
+        {
+            string[] names = {"A", "B", "C"};
+            Restriction r = RestrictionBuilder.blank()
+                .credDefId("SDFSDF")
+                .build();
+            Attribute a = new Attribute(names, r);
+            Assert.AreEqual(a.data.getAsJsonArray("names").ToString(), "[\"A\", \"B\", \"C\"]");
+            JsonArray restrictions = a.data.getAsJsonArray("restrictions");
+            Assert.AreEqual(1, restrictions.Count);
+            Assert.AreEqual(restrictions.ToString(), "[{\"cred_def_id\": \"SDFSDF\"}]");
+        }
+
     }
 }

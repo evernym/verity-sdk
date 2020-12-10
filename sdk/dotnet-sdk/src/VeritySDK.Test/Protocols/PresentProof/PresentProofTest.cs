@@ -117,6 +117,22 @@ namespace VeritySDK.Test
                 );
             });
         }
+        
+        [TestMethod]
+        public void testAcceptProposal()
+        {
+            withContext(context =>
+            {
+                PresentProofV1_0 testProtocol = PresentProof.v1_0(forRelationship, Guid.NewGuid().ToString());
+                byte [] message = testProtocol.acceptProposalMsgPacked(context);
+                JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
+                testBaseMessage(unpackedMessage);
+                Assert.AreEqual(
+                        "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/accept-proposal",
+                        unpackedMessage.getAsString("@type")
+                );
+            });
+        }
 
         [TestMethod]
         public void testReject()

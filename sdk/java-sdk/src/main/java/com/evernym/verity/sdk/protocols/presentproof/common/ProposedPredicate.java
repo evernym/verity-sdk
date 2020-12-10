@@ -8,10 +8,10 @@ public class ProposedPredicate implements AsJsonObject {
 
 
     /**
-     * Constructs the Attribute object with the given attribute name and given restrictions
-     * @param name the attribute name
-     * @param credDefId the credential used for this predicate.
-     * @param threshold threshold value of predicate.
+     * Constructs the ProposedPredicate object
+     * @param name the predicate name
+     * @param credDefId the credential definition used for this predicate.
+     * @param threshold threshold value of the predicate.
      */
     public ProposedPredicate(String name, String credDefId, int threshold){
         this.data = new JSONObject()
