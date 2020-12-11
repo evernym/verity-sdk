@@ -8,7 +8,7 @@ public class ProposedAttribute implements AsJsonObject {
 
 
     /**
-     * Constructs the Attribute object with the given attribute name and given restrictions
+     * Constructs the ProposedAttribute object
      * @param name the attribute name
      * @param credDefId credential from which attribute is obtained.
      * @param value value of the attribute.

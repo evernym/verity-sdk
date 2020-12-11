@@ -1,6 +1,6 @@
-# .NET Verity SDK (Experimental)
+# .NET Verity SDK
 
-This is the .Net SDK for Evernym's Verity application. **This SDK is experimental.**
+This is the .Net SDK for Evernym's Verity application.
 
 Instructions for setting up your .NET development environment to use the Verity SDK.
 
@@ -14,7 +14,7 @@ Install the following items:
 * `libindy` -- Install a stable version. Follow the instructions on the
 [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
 
-* `Mono` -- Install the MONO for build API-documentation (for Ubuntu or Mac). Follow the instructions on the
+* `Mono` -- Install Mono (if you are using Ubuntu or Mac). Follow the instructions on the
 [Mono website](https://www.mono-project.com/download/stable/).
 
 
@@ -22,7 +22,7 @@ Install the following items:
 
 ### Ubuntu based distributions (Ubuntu 18.04)
 
-Open termnal for "\verity-sdk\sdk\dotnet-sdk"
+Open terminal at location "\verity-sdk\sdk\dotnet-sdk"
 
 #Restore nuget-packages for project:
 
@@ -63,15 +63,7 @@ The unit-tests can be run using the 'dotnet test' command or by using Test Explo
 The project also includes a NuGet package definition which can be built using the 'dotnet pack' command or by choosing publish on the project in Visual Studio.
 
 
-### Publish on NuGet
+### Using the SDK 
 
-```sh
-dotnet nuget push 'bin\release\Evernym.Verity.SDK.{version}.nupkg'
-```
-More publication options on the [Microsoft nuget push](https://docs.microsoft.com/ru-ru/dotnet/core/tools/dotnet-nuget-push).
-
-
-### Using the Wrapper
-
-The .NET wrapper can be used in any .NET project by referencing the NuGet package which can be built using the instructions above or obtained from the
+The .NET SDK can be used in any .NET project by referencing the NuGet package which can be built using the instructions above or obtained from the
 [nuget.org](https://www.nuget.org/packages/Evernym.Verity.SDK) package repository.

@@ -77,12 +77,23 @@ namespace VeritySDK.Protocols.PresentProof
             this.created = true;
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public PresentProofV1_0(string forRelationship, string threadId, ProposedAttribute[] attrs, ProposedPredicate[] predicates) : base(threadId) {
+            this.forRelationship = forRelationship;
+            this.proposedAttributes = attrs;
+            this.proposedPredicates = predicates;
+            this.created = true;
+        }
+
         #endregion 
 
         string PROOF_REQUEST = "request";
         string STATUS = "status";
         string REJECT = "reject";
-        //string PROTOCOL_INVITATION = "protocol-invitation";
+        string ACCEPT_PROPOSAL = "accept-proposal";
+        // string PROTOCOL_INVITATION = "protocol-invitation";
 
         // flag if this instance started the interaction
         bool created = false;
@@ -91,6 +102,8 @@ namespace VeritySDK.Protocols.PresentProof
         string name;
         Attribute[] proofAttrs;
         Predicate[] proofPredicates;
+        ProposedAttribute[] proposedAttributes;
+        ProposedPredicate[] proposedPredicates;
         bool byInvitation;
 
         /// <summary>
@@ -187,6 +200,41 @@ namespace VeritySDK.Protocols.PresentProof
         public byte[] acceptMsgPacked(Context context)
         {
             throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Directs verity-application to accept the proposal for present proof.
+        /// Verity-application will send presentation request based on the proposal.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        public void acceptProposal(Context context)
+        {
+            send(context, acceptProposalMsg(context));
+        }
+
+        /// <summary>
+        /// Creates the control message without packaging and sending it.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the constructed message (JSON object)</returns>
+        public JsonObject acceptProposalMsg(Context context)
+        {
+            JsonObject msg = new JsonObject();
+            msg.Add("@type", messageType(ACCEPT_PROPOSAL));
+            msg.Add("@id", getNewId());
+            addThread(msg);
+            msg.Add("~for_relationship", this.forRelationship);
+            return msg;
+        }
+
+        /// <summary>
+        /// Creates and packages message without sending it.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <returns>the byte array ready for transport</returns>
+        public byte[] acceptProposalMsgPacked(Context context)
+        {
+            return packMsg(context, acceptProposalMsg(context));
         }
 
         /// <summary>

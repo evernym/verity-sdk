@@ -107,6 +107,7 @@ public class PresentProof {
      *
      * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
      * @param attributes An array of attribute based values
+     * @param threadId the thread id of the already started protocol
      * @param predicates An array of predicate based values
      * @return 1.0 PresentProof object
      */
