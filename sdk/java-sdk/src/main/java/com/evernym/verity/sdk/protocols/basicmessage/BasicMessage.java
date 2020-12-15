@@ -19,7 +19,7 @@ public class BasicMessage {
      * @param forRelationship the relationship identifier (DID) for the pairwise relationship that will be used
      * @param content The main text of the message
      * @param sent_time The time the message was sent
-     * @param localization Locale data for localization vector
+     * @param localization Language localization code
      * @return 1.0 BasicMessage object
      */
     public static BasicMessageV1_0 v1_0(String forRelationship,
