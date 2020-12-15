@@ -49,7 +49,7 @@ class BasicMessage(Protocol):
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
         """
-        await self.send_message(context, await self.ask_msg_packed(context))
+        await self.send_message(context, await self.message_msg_packed(context))
 
     def message_msg(self, context):
         """
@@ -79,4 +79,4 @@ class BasicMessage(Protocol):
         Return:
             the bytes ready for transport
         """
-        return await self.get_message_bytes(context, self.ask_msg(context))
+        return await self.get_message_bytes(context, self.message_msg(context))
