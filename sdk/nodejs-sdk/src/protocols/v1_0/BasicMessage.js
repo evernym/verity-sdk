@@ -15,7 +15,7 @@ class BasicMessage extends Protocol {
    * @param threadId the thread id of the already started protocol
    * @param content The main text of the message
    * @param sentTime The time the message was sent
-   * @param localization The given localization
+   * @param localization Language localization code
    * @return 1.0 BasicMessage object
    *
    * @property {String} msgFamily - 'basicmessage'

@@ -15,7 +15,7 @@ class BasicMessage(Protocol):
 
     # Messages
     BASIC_MESSAGE = 'send-message'
-    """Name for 'ask-question' control message"""
+    """Name for 'send-message' control message"""
 
     # pylint:disable=too-many-arguments
     def __init__(self,
@@ -30,7 +30,7 @@ class BasicMessage(Protocol):
             thread_id (str): the thread id of the already started protocol
             content (str): The main text of the message
             sent_time (str): The time the message was sent
-            localization (str): The given localization
+            localization (str): Language localization code
         """
         super().__init__(self.MSG_FAMILY,
                          self.MSG_FAMILY_VERSION,
