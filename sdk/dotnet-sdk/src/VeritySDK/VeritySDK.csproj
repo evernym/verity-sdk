@@ -30,6 +30,7 @@
     <Compile Remove="Protocols\Provision\v0_7\ProvisionImplV0_7.cs" />
     <Compile Remove="Protocols\QuestionAnswer\CommittedAnswerImplV1_0.cs" />
     <Compile Remove="Protocols\QuestionAnswer\QuestionAnswerImplV1_0.cs" />
+    <Compile Remove="Protocols\BasicMessage\v1_0\BasicMessageImplV1_0.cs" />
     <Compile Remove="Protocols\Relationship\v1_0\RelationshipImplV1_0.cs" />
     <Compile Remove="Protocols\UpdateConfigs\v0_6\UpdateConfigsImplV0_6.cs" />
     <Compile Remove="Protocols\UpdateEndpoint\UpdateEndpointImplV0_6.cs" />

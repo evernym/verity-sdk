@@ -11,6 +11,7 @@ module.exports = {
     WriteSchema: require('./protocols/WriteSchema'),
     WriteCredentialDefinition: require('./protocols/WriteCredentialDefinition'),
     CommittedAnswer: require('./protocols/CommittedAnswer'),
+    BasicMessage: require('./protocols/BasicMessage'),
     v0_6: {
       IssuerSetup: require('./protocols/v0_6/IssuerSetup'),
       UpdateConfigs: require('./protocols/v0_6/UpdateConfigs'),
