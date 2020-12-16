@@ -40,27 +40,7 @@ namespace VeritySDK.Protocols.BasicMessage
         public static string SEND_MESSAGE = "send-message";
 
         #region Constructors
-        
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public BasicMessageV1_0() { }
-        
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public BasicMessageV1_0(string threadId) : base(threadId) { }
 
-        /// <summary>
-        /// Constructor for the 1.0 BasicMessageV1_0 object
-        /// </summary>
-        /// <param name="forRelationship">the relationship identifier (DID) for the pairwise relationship that will be used</param>
-        /// <param name="threadId">the thread id of the already started protocol</param>
-        public BasicMessageV1_0(string forRelationship, string threadId) : base(threadId)
-        {
-            this.forRelationship = forRelationship;
-        }
-        
         /// <summary>
         /// Constructor for the 1.0 BasicMessageV1_0 object
         /// </summary>
