@@ -6,7 +6,7 @@ using VeritySDK.Utils;
 namespace VeritySDK.Protocols.QuestionAnswer
 {
     /// <summary>
-    /// A class for controlling a 1.0 FCommittedAnswer protocol.
+    /// A class for controlling a 1.0 CommittedAnswer protocol.
     /// </summary>
     public class CommittedAnswerV1_0 : AskCommonImpl
     {
