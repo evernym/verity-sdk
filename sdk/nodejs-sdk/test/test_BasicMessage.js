@@ -16,19 +16,21 @@ describe('BasicMessage', () => {
   it('should init correctly', async () => {
     const basicMessage = new BasicMessage(
       forRelationship,
+      null,
       content,
       sentTime,
       localization
     )
     expect(basicMessage.forRelationship).to.equal(forRelationship)
-    expect(basicMessage.content).to.equal(content)
     expect(basicMessage.sentTime).to.equal(sentTime)
+    expect(basicMessage.content).to.equal(content)
     expect(basicMessage.localization).to.equal(localization)
   })
 
   it('should build propose msg correctly', async () => {
     const basicMessage = new BasicMessage(
       forRelationship,
+      null,
       content,
       sentTime,
       localization

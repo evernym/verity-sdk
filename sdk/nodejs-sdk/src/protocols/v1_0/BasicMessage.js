@@ -23,11 +23,11 @@ class BasicMessage extends Protocol {
    * @property {String} msgQualifier - 'Community Qualifier'
    * @property {String} this.msgNames.BASIC_MESSAGE - 'send-message'
    */
-  constructor (forRelationship, content = null, sentTime = null, localization = null) {
+  constructor (forRelationship, threadId = null, content = null, sentTime = null, localization = null) {
     const msgFamily = 'basicmessage'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.COMMUNITY_MSG_QUALIFIER
-    super(msgFamily, msgFamilyVersion, msgQualifier)
+    super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
     this.forRelationship = forRelationship
     this.content = content
     this.sentTime = sentTime
