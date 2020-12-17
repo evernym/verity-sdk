@@ -41,7 +41,7 @@ describe('BasicMessage', () => {
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg.content).to.equal(content)
-    expect(msg.sentTime).to.equal(sentTime)
+    expect(msg.sent_time).to.equal(sentTime)
     expect(msg['~l10n'].locale).to.equal(localization)
   })
 })
