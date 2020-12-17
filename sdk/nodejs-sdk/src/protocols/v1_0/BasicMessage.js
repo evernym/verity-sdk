@@ -50,7 +50,7 @@ class BasicMessage extends Protocol {
     msg = this._addThread(msg)
 
     msg.content = this.content
-    msg.sentTime = this.sentTime
+    msg.sent_time = this.sentTime
     msg['~l10n'] = { locale: this.localization }
     return msg
   }
