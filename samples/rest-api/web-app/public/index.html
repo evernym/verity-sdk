@@ -1760,7 +1760,7 @@
               const message = {
                 name: this.schema.name,
                 version: this.schema.version,
-                attrNames: this.schema.attrs.split(/[ ,]+/).map(s => s.replace(/^"(.*)"$/, '$1')),
+                attrNames: this.schema.attrs.split(/[,]+/).map(s => s.trim().replace(/^"(.*)"$/, '$1')),
               };
               await this.sendMessage("write-schema", "0.6", "write", message);
             } catch (err) {
