@@ -106,7 +106,7 @@ namespace VeritySDK.Protocols.Provision
 
             JsonObject resp = sendToVerity(context, provisionMsgPacked(context));
 
-            if ((resp.GetValue("@type") ?? "").Equals(messageType("problem-report")))
+            if ( ((string) resp.GetValue("@type") ?? "").Equals(messageType("problem-report")) )
             {
                 throw new ProvisionTokenException(resp["msg"]);
             }
@@ -139,10 +139,8 @@ namespace VeritySDK.Protocols.Provision
 
             if (token != null)
             {
-                //JObject tokenObj = JObject.Parse(token);
-
-                //JsonObject tokenObj = new JsonObject(token);
-                rtn.Add("provisionToken", token);
+                var tokenObj = JsonObject.Parse(token) as JsonObject;
+                rtn.Add("provisionToken", tokenObj);
             }
 
             return rtn;
