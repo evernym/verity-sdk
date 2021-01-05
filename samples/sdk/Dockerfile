@@ -71,7 +71,7 @@ RUN mvn exec:help # pre-download plug-in dependencies
 WORKDIR /samples/sdk/nodejs-example-app
 RUN npm install 2>/dev/null
 RUN npm rebuild 2>/dev/null
-WORKDIR /samples/sdk/nodejs-outofband-app
+WORKDIR /samples/sdk/oob-with-request-attach
 RUN npm install 2>/dev/null
 RUN npm rebuild 2>/dev/null
 
