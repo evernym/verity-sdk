@@ -29,22 +29,21 @@ Prepared `Dockerfile` will setup a complete environment for running this sample 
 * `docker` is required for this path and installation instructions can be found at [Get Docker Page](https://www.docker.com/get-docker/). 
 
 ### Steps:
-1. Build docker image. Run the following command from the root of verity-sdk repo:
+1. Pull the Verity SDK sample app docker image from the Docker Hub:
 
    ```sh
-   docker build -f samples/sdk/Dockerfile -t oob-with-request-attach .
+   docker pull evernymdev/sdk-sample-app:stable
    ```
-2. Start built docker image. Run the following command:
+   > **NOTE:** Alternatively you can build the `sdk-sample-app` docker image instead of pulling it from the Docker Hub. To build the image run `docker build -f samples/sdk/Dockerfile -t sdk-sample-app .` from the root directory of the `verity-sdk` project.
+2. Start a container based on the **sdk-sample-app** docker image. Run the following command:
    ```sh
-   docker run -p 4000:4000 -it oob-with-request-attach
+   docker run -p 4000:4000 -it evernymdev/sdk-sample-app:stable
    ```
-
    > **NOTE:** The container will start the Ngrok process in the docker entrypoint. The ngrok processes allows for a public addressable endpoint for the webhook that receives messages from Verity Application. While this is very useful, ngrok does times out after **8 hours**. To reset ngrok, simple re-run the `entrypoint.sh` script that was run when entering the docker container. It is located at `/scripts/entrypoint.sh`. It will kill the existing (and timed out) ngrok processes and start new ones. At which point you are go for another 8 hours.
  
     Launch the application. Run following commands in the started docker container:
     ```sh
     cd /samples/sdk/oob-with-request-attach
-    npm install
     node oob-with-request-attach.js
     ```
 
