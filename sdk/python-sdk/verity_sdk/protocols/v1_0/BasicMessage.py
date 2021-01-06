@@ -4,7 +4,10 @@ from verity_sdk.utils import COMMUNITY_MSG_QUALIFIER
 
 class BasicMessage(Protocol):
     """
-    The BasicMessage protocol allows one self-sovereign party send another self-sovereign a message.
+    The BasicMessage protocol allows one self-sovereign party send another self-sovereign party a message.
+    Support for this protocol is EXPERIMENTAL.
+    This protocol is not implemented in the Connect.Me app and the only way it can be used is by building the mobile app using mSDK
+    or using some other Aries compatible wallet that supports BasicMessage
     """
 
     MSG_FAMILY = 'basicmessage'

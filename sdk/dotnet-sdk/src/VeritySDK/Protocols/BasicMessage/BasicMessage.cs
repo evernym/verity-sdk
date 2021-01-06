@@ -7,8 +7,9 @@ namespace VeritySDK.Protocols.BasicMessage
     /// <summary>
     /// Factory for BasicMessage protocol objects.
     ///
-    /// The IssueCredential protocol allows one self-sovereign party to send text messages to another
-    /// self-sovereign party.
+    /// The BasicMessage protocol allows one self-sovereign party send another self-sovereign party a message.
+    /// Support for this protocol is EXPERIMENTAL.
+    /// This protocol is not implemented in the Connect.Me app and the only way it can be used is by building the mobile app using mSDK or using some other Aries compatible wallet that supports BasicMessage
     /// </summary>
     public class BasicMessage
     {
