@@ -1,7 +1,5 @@
 # Getting Started with the Verity SDK
 
-The Getting Started Guide is intended to demonstrate the main functionalities of Verity and to walk you through setting up and using Verity SDK. Besides using Verity SDK, you also have a possibility to use Verity REST API to integrate with Verity. See the Open API specification for the Verity REST API at https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0
-
 This guided walkthrough has three main high-level steps:
 1. Getting Connect.Me
 2. Launching the Example Application
@@ -310,4 +308,3 @@ After the proof is exchanged with the Verity server instance, the simulated inte
 
 > **NOTE:** A Verity-SDK Context can also be used with the Verity REST API. Use the `restApiToken` method on the Context object to get the required API key. 
 
-© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
