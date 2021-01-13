@@ -1,3 +1,20 @@
+# Release notes - Verity 2.8.0 (0.4.110434998.b502641) - Jan 13 2021
+
+## Bugs
+    * [VE-2281] - Not possible to provision a token in .NET SDK
+
+## Tasks
+    * [VE-2017] - Define Messages for BasicMesasge (Control, Signal, Protocol)
+    * [VE-2018] - Implement Protocol Logic for BasicMessage
+    * [VE-2019] - Implement Integration tests for BasicMessage
+    * [VE-2020] - Wire new Protocol for BasicMessage
+    * [VE-2021] - Implement BasicMessage protocol in Verity-SDK (java, python, node, .NET)
+    * [VE-2022] - Add required documentation for Basic Message
+    * [VE-2046] - Expose LibIndy instrumentation as custom metrics in Verity
+    * [VE-2138] - Add connection-reuse flow for OOB with request attach 
+    * [VE-2249] - Catch up .NET SDK with the other SDKs (add Propose proof and names restriction changes)
+    * [VE-2287] - Write Schema and Write CredDef should support "endorsing flow"
+
 # Release notes - Verity 2.7.0 (0.4.107364822.a2523bb) - Dec 9 2020
 
 ## Bugs

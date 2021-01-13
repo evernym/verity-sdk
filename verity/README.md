@@ -58,5 +58,3 @@ The container will preserve it's state across restarts.
 Restart might be needed if Ngrok is being used (i.e. HOST_ADDRESS env variable was not specified in `docker run` command) since the Ngrok tunnel will expire in 8 hours. When the stopped Verity container is started again new Ngrok tunnel will be created and new Verity Application Endpoint will be printed on the screen.
 
 
-© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
-

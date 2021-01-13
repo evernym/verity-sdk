@@ -8,5 +8,3 @@ For instructions on using the SDKs start with the [Overview document](../README.
 * Node.js ([README](nodejs-sdk/README.md))
 * Python ([README](python-sdk/README.md))
 * .NET (Experimental) ([README](dotnet-sdk/README.md))
-
-© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.

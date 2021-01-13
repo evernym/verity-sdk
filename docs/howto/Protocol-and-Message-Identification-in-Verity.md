@@ -29,4 +29,3 @@ For the Verity REST API:
 - You MUST specify the `@id` field in the body of your REST API call. This field must be unique for each message.
 - You MUST specify a unique `Thread ID` in the URL when starting a new protocol interaction. This `Thread ID` should be persisted for future API calls.
 
-© 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.
