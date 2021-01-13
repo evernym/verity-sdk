@@ -18,6 +18,19 @@ def test_init():
     assert len(write_schema.attrs) == 3
     assert write_schema.attrs == list(attrs)
 
+    with pytest.raises(ValueError):
+        WriteSchema(None, schema_version, attrs)
+    with pytest.raises(ValueError):
+        WriteSchema('', schema_version, attrs)
+    with pytest.raises(ValueError):
+        WriteSchema(schema_name, None, attrs)
+    with pytest.raises(ValueError):
+        WriteSchema(schema_name, '', attrs)
+    with pytest.raises(ValueError):
+        WriteSchema(schema_name, schema_version, None)
+    with pytest.raises(ValueError):
+        WriteSchema(schema_name, schema_version, ['name', None])
+
 
 @pytest.mark.asyncio
 async def test_write():

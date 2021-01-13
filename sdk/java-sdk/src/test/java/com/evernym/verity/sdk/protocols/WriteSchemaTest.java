@@ -45,6 +45,25 @@ public class WriteSchemaTest {
         assertEquals(schemaName, msg.get("name"));
         assertEquals(schemaVersion, msg.get("version"));
         assertArrayEquals(new String[]{attr1, attr2}, msg.getJSONArray("attrNames").toList().toArray());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            WriteSchema.v0_6(null, schemaVersion, attr1, attr2);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            WriteSchema.v0_6("", schemaVersion, attr1, attr2);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            WriteSchema.v0_6(schemaName, null, attr1, attr2);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            WriteSchema.v0_6(schemaName, "", attr1, attr2);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            WriteSchema.v0_6(schemaName, schemaVersion, null);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            WriteSchema.v0_6(schemaName, schemaVersion, attr1, null);
+        });
     }
 
 //    private void testMessages(WriteSchema writeSchema) {

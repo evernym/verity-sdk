@@ -4,6 +4,7 @@ import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.AbstractProtocol;
 import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
+import com.evernym.verity.sdk.utils.DbcUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,6 +25,11 @@ class WriteSchemaImplV0_6 extends AbstractProtocol implements WriteSchemaV0_6 {
 
     public WriteSchemaImplV0_6(String name, String version, String ...attrs) {
         super();
+
+        DbcUtil.requireStringNotNullOrEmpty(name, "name");
+        DbcUtil.requireStringNotNullOrEmpty(version, "version");
+        DbcUtil.requireArrayNotContainNull(attrs, "attrs");
+
         this.name = name;
         this.version = version;
         this.attrs = attrs;

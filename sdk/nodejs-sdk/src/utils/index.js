@@ -4,6 +4,7 @@ const URL = require('url').URL
 const indy = require('./indy')
 const request = require('request-promise-native')
 const WrongSetupError = require('./WrongSetupError')
+const DbcUtil = require('./DbcUtil')
 
 exports.constants = {
   EVERNYM_MSG_QUALIFIER: 'did:sov:123456789abcdefghi1234',
@@ -147,3 +148,5 @@ exports.httpPost = async function (uri, message, contentType) {
 exports.randInt = function (max) {
   return Math.floor(Math.random() * Math.floor(max))
 }
+
+exports.DbcUtil = DbcUtil

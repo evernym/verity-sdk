@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Json;
 using System.Linq;
@@ -47,6 +48,26 @@ namespace VeritySDK.Test
             var msg_attrs = msg.getAsJsonArray("attrNames").Select(s => s.ToString().Trim('"')).ToList();
 
             Assert.IsTrue(attrs.EquivalentTo(msg_attrs));
+
+            // assert invalid arguments throw an exception
+            Assert.ThrowsException<ArgumentException>(() =>
+                WriteSchema.v0_6(null, schemaVersion, attr1, attr2)
+            );
+            Assert.ThrowsException<ArgumentException>(() =>
+                WriteSchema.v0_6("", schemaVersion, attr1, attr2)
+            );
+            Assert.ThrowsException<ArgumentException>(() =>
+                WriteSchema.v0_6(schemaName, null, attr1, attr2)
+            );
+            Assert.ThrowsException<ArgumentException>(() =>
+                WriteSchema.v0_6(schemaName, "", attr1, attr2)
+            );
+            Assert.ThrowsException<ArgumentException>(() =>
+                WriteSchema.v0_6(schemaName, schemaVersion, null)
+            );
+            Assert.ThrowsException<ArgumentException>(() =>
+                WriteSchema.v0_6(schemaName, schemaVersion, attr1, null)
+            );
         }
 
         [TestMethod]

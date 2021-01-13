@@ -47,6 +47,10 @@ namespace VeritySDK.Protocols.WriteSchema
         /// </summary>
         public WriteSchemaV0_6(string name, string version, params string[] attrs)
         {
+            Utils.DbcUtil.requireStringNotNullOrEmpty(name, "name");
+            Utils.DbcUtil.requireStringNotNullOrEmpty(version, "version");
+            Utils.DbcUtil.requireArrayNotContainNull(attrs, "attrs");
+
             this.name = name;
             this.ver = version;
             this.attrs = attrs;
