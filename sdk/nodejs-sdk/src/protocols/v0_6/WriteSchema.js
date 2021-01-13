@@ -27,6 +27,11 @@ class WriteSchema extends Protocol {
     const msgFamilyVersion = '0.6'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
     super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
+
+    utils.DbcUtil.requireStringNotNullOrEmpty(name, 'name')
+    utils.DbcUtil.requireStringNotNullOrEmpty(version, 'version')
+    utils.DbcUtil.requireArrayNotContainNull(attrs, 'attrs')
+
     this.name = name
     this.version = version
     this.attrs = attrs

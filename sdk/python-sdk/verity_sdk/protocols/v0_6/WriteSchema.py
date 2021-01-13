@@ -1,5 +1,6 @@
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
+from verity_sdk.utils.DbcUtil import DbcUtil
 
 
 class WriteSchema(Protocol):
@@ -32,6 +33,11 @@ class WriteSchema(Protocol):
             self.MSG_FAMILY_VERSION,
             msg_qualifier=EVERNYM_MSG_QUALIFIER,
         )
+
+        DbcUtil.require_string_not_null_or_empty(name, 'name')
+        DbcUtil.require_string_not_null_or_empty(version, 'version')
+        DbcUtil.require_array_not_contain_null(attrs, 'attrs')
+
         self.name = name
         self.version = version
         self.attrs = attrs

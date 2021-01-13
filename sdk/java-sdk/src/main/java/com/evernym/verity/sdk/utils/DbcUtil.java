@@ -41,4 +41,24 @@ public class DbcUtil {
             throw new IllegalArgumentException("requirement failed: "+ msg);
         }
     }
+
+    /**
+     * Checks and throws an IllegalArgumentException if the given string is null or empty
+     * @param arg String argument which needs to be checked.
+     * @param argName name of the argument being checked, used in exception message if null or empty
+     */
+    public static void requireStringNotNullOrEmpty(String arg, String argName) {
+        require(arg != null && !arg.isEmpty(), "required that "+ argName +" must NOT be null or empty");
+    }
+
+    /**
+     * Checks and throws an IllegalArgumentException if the given array is null or contains null element
+     * @param array Array argument which needs to be checked.
+     * @param argName name of the argument being checked, used in exception message
+     */
+    public static void requireArrayNotContainNull(Object[] array, String argName) {
+        requireNotNull(array, argName);
+        for (Object x: array)
+            require(x != null, "required that elements of "+ argName +" must NOT be null");
+    }
 }
