@@ -62,7 +62,7 @@ namespace VeritySDK.Test
             Assert.AreEqual(forRelationship, msg.getAsString("~for_relationship"));
             Assert.AreEqual(content, msg.getAsString("content"));
             Assert.AreEqual(sentTime, msg.getAsString("sent_time"));
-            Assert.AreEqual(localization, msg.getAsString("~l10n"));
+            Assert.AreEqual(localization, msg.getAsJsonObject("~l10n").getAsString("locale"));
         }
 
         [TestMethod]

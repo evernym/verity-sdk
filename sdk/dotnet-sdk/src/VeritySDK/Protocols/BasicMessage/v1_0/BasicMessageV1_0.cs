@@ -85,7 +85,10 @@ namespace VeritySDK.Protocols.BasicMessage
             msg.Add("~for_relationship", this.forRelationship);
             msg.Add("content", this.content);
             msg.Add("sent_time", this.sentTime);
-            msg.Add("~l10n", this.localization);
+
+            JsonObject localeBlock = new JsonObject();
+            localeBlock.Add("locale", this.localization);
+            msg.Add("~l10n", localeBlock);
 
             return msg;
         }
