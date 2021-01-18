@@ -90,6 +90,7 @@ namespace VeritySDK.Protocols.BasicMessage
             localeBlock.Add("locale", this.localization);
             msg.Add("~l10n", localeBlock);
 
+
             return msg;
         }
 
