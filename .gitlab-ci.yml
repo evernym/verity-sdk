@@ -1,11 +1,11 @@
 image: gitlab.corp.evernym.com:4567/dev/containers/build-sdk:134b350a
 
 stages:
-  - docker-images
   - test
   - package
   - doc
   - publish
+  - publish-docker
 
 variables:
   DEV_BASE_VERSION: "0.4.7"
@@ -317,7 +317,7 @@ dotnet-release:
 
 
 verity-image:
-  stage: publish 
+  stage: publish-docker
   tags:
     - docker-machine
     - large 
@@ -335,7 +335,7 @@ verity-image:
     - tags@dev/verity/verity-sdk
 
 sdk-sample-app-image:
-  stage: publish 
+  stage: publish-docker
   tags:
     - docker-machine
     - large 
