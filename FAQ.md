@@ -13,3 +13,9 @@ Types of agents:
 ### What is the purpose of CAS - Consumer Agency Service in Evernym's architecture?
 Edge agents are usually built as mobile applications on end user's devices. Since end users are on the move and are switching networks often from mobile data to home WiFi and work WiFi, the IP address is changing as well. The nature of DIDComm communications is that it relies on keys and endpoints that are exchanged between the two parties when the DID connection has been established. Since edge agents are changing IP addresses constantly, the Consumer Agency Service does provide this constant endpoint for the edge agents. Therefore all DIDComm messages intended for edge agents are routed through CAS and CAS has a way to reach the edge agent, usually by sending push notifications so those DIDComm messages can be delivered. What is also important to note is that CAS doesn't have a way to "see" the content of messages. It only knows the minimal information needed in order to route and deliver the message to the right edge agent.
 
+### Re-running example application
+When you run the example application for the first time, you will be asked to provide a provisioning sandbox token. This will provision an Agent on Verity for you and will result in creation of the local libindy wallet for your SDK and the Verity context. That libindy wallet stores the key which is used to encrypt messages from Verity SDK to Verity Application Service.
+
+In order to be able to re-run your application without provisioning you would need to persist both the context and the libindy wallet (by default libindy wallet is stored in the $HOME/.indy_client/wallet folder). Provisioning is usually done only once in the application lifetime.
+
+
