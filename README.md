@@ -51,6 +51,8 @@ These are the general steps for getting going with the Verity SDK:
 ##### 1. Provisioning an Agent on Evernym's Verity Application
 Verity SDK requires access to an agent running on Evernym's Verity Application. Contact Evernym to get a provisioning token that you'll need to provision an Agent on Verity Application Service.
 
+Provisioning token for Sandbox plan is valid for the Sovrin Staging Net. Token can only be used once and it expires after 30 days. If you require additional token, please contact Evernym support. 
+
 ##### 2. Integrate the language-specific Verity SDK library
 The Verity SDK comes is several language-specific libraries. See the respective README documents to get the latest version, read the API documentation and other information:
 

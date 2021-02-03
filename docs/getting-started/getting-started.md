@@ -86,7 +86,7 @@ The example application can be launched from a local development environment. Us
 ### Prerequisites
 * `libindy` -- Install a stable version. Follow the instructions on the 
 [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
-* `Ngrok` -- This is a temporary installation to facilitate early experimentation. 
+* `Ngrok` -- This is a temporary installation to facilitate early experimentation. Ngrok is used only to serve as a public endpoint for receiving async responses from Verity Application Service. You shouldn't use ngrok for you pilot and production deployments. 
 Follow the instructions on the [Ngrok website](https://ngrok.com/download).
 
 ### Build
@@ -195,7 +195,7 @@ After you have launched the example application in the previous step and have Co
       
       During the provisioning interaction, the example application will ask if the user wants to provide a provisioning token. These tokens are required to provision an agent on Evernym's public multi-tenant (SAAS) Verity Application Instances. Evernym will provide these tokens. They are a self-verifying JSON string. If a token is needed, the example will prompt the user for this token JSON string. When passing the token to the example application, it must be a single line string. If needed, the JSON should be minified before being passed to the example application.
 
-       > **NOTE:** Provisioning is a one time action. Once provisioning is successfully completed, the Context object should be saved and used for future interactions and provisioning should not be run again. The example application will write this context file and read it if it exists. If this context data is lost, please contact Evernym for the next steps.
+       > **NOTE:** Provisioning is a one time action. Once provisioning is successfully completed, the Context object will be created so it can be used for future interactions. The example application will write this context file and read it if it exists. You should backup your context (in the example app it is stored in the file **verity-context.json**) and your libindy wallet (the default wallet location is **$HOME/.indy_client/wallet**) so that you can regain access to your agent on Verity Application instance
 
    2. Registering a webhook:
    
@@ -303,8 +303,6 @@ After the proof is exchanged with the Verity server instance, the simulated inte
 
 ## Additional Notes:
 > **NOTE:** The Verity-SDK holds and manages one key-pair in the libindy wallet which is used to communicate with the Verity Application Service. The public verification key of the key-pair is part of the Context object. It can be viewed using the `sdkVerKey` method on the Context object or the `sdkVerKey` field when the Context object is converted to JSON.
-
-> **NOTE:** You should backup your context (in the example app it is stored in the file **verity-context.json**) and your libindy wallet (the default wallet location is **$HOME/.indy_client/wallet**) so that you can regain access to your Identity owner
 
 > **NOTE:** A Verity-SDK Context can also be used with the Verity REST API. Use the `restApiToken` method on the Context object to get the required API key. 
 
