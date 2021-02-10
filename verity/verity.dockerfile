@@ -1,8 +1,9 @@
 FROM ubuntu:18.04
 WORKDIR /root
 
-ENV LIBINDY_VERSION 1.15.0-bionic
-ENV VERITY_APPLICATION_VERSION 0.4.110434998.b502641
+ENV LIBINDY_VERSION 1.15.0~1618-bionic
+ENV LIBMYSQLSTORAGE_VERSION 0.1.11
+ENV VERITY_APPLICATION_VERSION 0.4.112853588.bf9f776
 
 RUN apt-get update && apt-get install -y \
     software-properties-common \
@@ -34,7 +35,7 @@ RUN update-ca-certificates
 
 # Setup apt for Sovrin repository
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
-    add-apt-repository "deb https://repo.sovrin.org/sdk/deb bionic stable"
+    add-apt-repository "deb https://repo.sovrin.org/sdk/deb bionic master"
 
 # Setup apt for evernym repositories
 RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
@@ -44,6 +45,7 @@ RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-dev
 RUN apt-get update && apt-get install -y \
     libindy=${LIBINDY_VERSION} \
     libnullpay=${LIBINDY_VERSION} \
+    libmysqlstorage=${LIBMYSQLSTORAGE_VERSION} \
     indy-cli=${LIBINDY_VERSION}
 RUN apt-get update && apt-get install -y \
     verity-application=${VERITY_APPLICATION_VERSION} \
