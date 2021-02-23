@@ -5,25 +5,39 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const QR = require('qrcode')
 const uuid4 = require('uuid4')
+const urljoin = require('url-join')
 
+const ANSII_GREEN = '\u001b[32m'
+const ANSII_RESET = '\x1b[0m'
 const PORT = 4000
-const verityUrl = '<< PUT VERITY APPLICATION SERVER URL HERE >>' // address of Verity Application Server
-const domainDid = '<< PUT DOMAIN DID HERE >>' // your Domain DID on the multi-tenant Verity Application Server
+
+const verityUrl = '<< PUT VERITY APPLICATION SERVICE URL HERE >>' // address of Verity Application Service
+const domainDid = '<< PUT DOMAIN DID HERE >>' // your Domain DID on the multi-tenant Verity Application Service
 const xApiKey = '<< PUT X-API-KEY HERE >>' // REST API key associated with your Domain DID
 const webhookUrl = '<< PUT WEBHOOK URL HERE >>' // public URL for the webhook endpoint
 
-// Sends Verity REST API call to Verity Application server
+// Sends a message to the Verity Application Service via the Verity REST API
 async function sendVerityRESTMessage (qualifier, msgFamily, msgFamilyVersion, msgName, message, threadId) {
-  // Add @type and @id fields to the message
-  // Field @type is dinamycially constructed based on the function arguments and added into the message payload
+  // qualifier - either 'BzCbsNYhMrjHiqZDTUASHg' for Aries community protocols or '123456789abcdefghi1234' for Evernym-specific protocols
+  // msgFamily - message family (e.g. 'present-proof')
+  // msgFamilyVersion - version of the message family (e.g. '1.0')
+  // msgName - name of the protocol message to perform (e.g. 'request')
+  // message - message to be sent in the body payload
+  // threadId - unique identifier of the protocol interaction. The threadId is used to distinguish between simultaenous interactions
+
+  // Add @type and @id fields to the message in the body payload
+  // Field @type is dinamycially constructed from the function arguments and added into the message payload
   message['@type'] = `did:sov:${qualifier};spec/${msgFamily}/${msgFamilyVersion}/${msgName}`
   message['@id'] = uuid4()
+
   if (!threadId) {
     threadId = uuid4()
   }
-  const url = `${verityUrl}/api/${domainDid}/${msgFamily}/${msgFamilyVersion}/${threadId}`
-  console.log(`Posting message to ${url}`)
-  console.log(message)
+
+  // send prepared message to Verity and return Axios request promise
+  const url = urljoin(verityUrl, 'api', domainDid, msgFamily, msgFamilyVersion, threadId)
+  console.log(`Posting message to ${ANSII_GREEN}${url}${ANSII_RESET}`)
+  console.log(`${ANSII_GREEN}${JSON.stringify(message, null, 4)}${ANSII_RESET}`)
   return axios({
     method: 'POST',
     url: url,
@@ -37,15 +51,15 @@ async function sendVerityRESTMessage (qualifier, msgFamily, msgFamilyVersion, ms
 async function createConnection () {
   // create relationship
   const relationshipCreateMessage = {
-    label: 'Trinity College',
-    profileUrl: 'https://robohash.org/65G.png'
+    label: 'Faber',
+    profileUrl: 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
   }
   const relThreadId = uuid4()
   const relationshipCreate =
     new Promise(function (resolve, reject) {
       relCreateResolveMap.set(relThreadId, resolve)
-      sendVerityRESTMessage('123456789abcdefghi1234', 'relationship', '1.0', 'create', relationshipCreateMessage, relThreadId)
     })
+  await sendVerityRESTMessage('123456789abcdefghi1234', 'relationship', '1.0', 'create', relationshipCreateMessage, relThreadId)
   const relationshipDid = await relationshipCreate
 
   // create relationship invitation using the Out-of-Band protocol
@@ -55,15 +69,15 @@ async function createConnection () {
   const relationshipInvitation =
     new Promise(function (resolve, reject) {
       relInvitationResolveMap.set(relThreadId, resolve)
-      sendVerityRESTMessage('123456789abcdefghi1234', 'relationship', '1.0', 'out-of-band-invitation', relationshipInvitationMessage, relThreadId)
     })
+  await sendVerityRESTMessage('123456789abcdefghi1234', 'relationship', '1.0', 'out-of-band-invitation', relationshipInvitationMessage, relThreadId)
   const [inviteUrl, invitationId] = await relationshipInvitation
   InviteToDidMap.set(invitationId, relationshipDid)
-  console.log(`Invite URL is:\n${inviteUrl}`)
+  console.log(`Invite URL is:\n${ANSII_GREEN}${inviteUrl}${ANSII_RESET}`)
   await QR.toFile('qrcode.png', inviteUrl)
 
   // Present QR code and wait for the Holder to scan the QR code and initiate Connection protocol
-  console.log('Open file qrcode.png and scan it with ConnectMe app')
+  console.log('Open the file "qrcode.png" and scan it with the ConnectMe app')
 
   // Wait for connection to resolve (either as 'accepted' or 'redirected')
   const ConnectionPromise =
@@ -72,9 +86,9 @@ async function createConnection () {
     })
 
   const [status, redirectDID] = await ConnectionPromise
-  console.log(`Relationship with the DID ${relationshipDid} has been ${status}!`)
+  console.log(`Relationship with the DID ${ANSII_GREEN}${relationshipDid}${ANSII_RESET} has been ${ANSII_GREEN}${status}${ANSII_RESET}!`)
   if (redirectDID) {
-    console.log(`Please use the DID ${redirectDID} instead of ${relationshipDid} for future communication`)
+    console.log(`Please use the DID ${ANSII_GREEN}${redirectDID}${ANSII_RESET} instead of ${ANSII_GREEN}${relationshipDid}${ANSII_RESET} for future communication`)
   }
 }
 
@@ -83,7 +97,6 @@ function sleep (ms) {
 }
 
 let webhookResolve
-let threadId
 let pthid
 
 // Stores relationship create promises. ThreadId is used as a key
@@ -112,9 +125,8 @@ async function oob () {
   const updateWebhook =
     new Promise(function (resolve, reject) {
       webhookResolve = resolve
-      sendVerityRESTMessage('123456789abcdefghi1234', 'configs', '0.6', 'UPDATE_COM_METHOD', webhookMessage)
     })
-
+  await sendVerityRESTMessage('123456789abcdefghi1234', 'configs', '0.6', 'UPDATE_COM_METHOD', webhookMessage)
   await updateWebhook
 
   // Create the first connection based on the Out-of-Band invitation
@@ -136,15 +148,13 @@ const app = express()
 
 app.use(bodyParser.json())
 
-// Verity Application Server will send REST API callbacks to this endpoint
+// Verity Application Service will send REST API callbacks to this endpoint
 app.post('/webhook', async (req, res) => {
   const message = req.body
+  const threadId = message['~thread'] ? message['~thread'].thid : null
   console.log('Got message on the webhook')
-  console.log(JSON.stringify(message, null, 4))
+  console.log(`${ANSII_GREEN}${JSON.stringify(message, null, 4)}${ANSII_RESET}`)
   res.status(202).send('Accepted')
-  if (message['~thread']) {
-    threadId = message['~thread'].thid
-  }
   // Handle received message differently based on the message type
   switch (message['@type']) {
     case 'did:sov:123456789abcdefghi1234;spec/configs/0.6/COM_METHOD_UPDATED':
@@ -173,7 +183,6 @@ app.post('/webhook', async (req, res) => {
       break
     default:
       console.log(`Unexpected message type ${message['@type']}`)
-      console.log(`Message was: ${JSON.stringify(message)}`)
       process.exit(1)
   }
 })
