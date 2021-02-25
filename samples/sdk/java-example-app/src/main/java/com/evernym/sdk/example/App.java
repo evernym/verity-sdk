@@ -13,6 +13,8 @@ import com.evernym.verity.sdk.protocols.relationship.Relationship;
 import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
 import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
+import com.evernym.verity.sdk.protocols.outofband.OutOfBand;
+import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
@@ -313,7 +315,7 @@ public class App extends Helper {
         waitFor(startRelationshipComplete, "Waiting to start relationship");
 
         RelationshipV1_0 relationship = Relationship.v1_0(relDID.get(), threadId.get());
-        relationship.connectionInvitation(context);
+        relationship.outOfBandInvitation(context);
         waitFor(invitationComplete, "Waiting for invite");
 
         // return owning DID for the connection
@@ -368,7 +370,7 @@ public class App extends Helper {
         // Connection is established when the Holder accepts the connection on the device
         // i.e. when the RESPONSE_SENT control message is received
 
-        // Constructor for the Connecting API
+        // handler for messages in Connecting protocol
         ConnectionsV1_0 listener = Connecting.v1_0("", "");
         AtomicBoolean connection = new AtomicBoolean(false);
 
@@ -383,7 +385,21 @@ public class App extends Helper {
             }
         });
 
-        waitFor(connection, "Responding to connection request");
+        // handler for relationship-reused message which is sent by the ConnectMe app if it is already connected with this example app agent
+        OutOfBandV1_0 oob = OutOfBand.v1_0("","");
+        handle(oob, (String msgName, JSONObject message) -> {
+            if("relationship-reused".equals(msgName)) {
+                String msg = "\nThe mobile wallet app signalled that it already has the connection with this example app agent\n"
+                           + "This example app does not support relationship-reuse since it does not store the data about previous relationships\n"
+                           + "Please delete existing connection in your mobile wallet and re-run this application\n"
+                           + "To learn how relationship-reuse can be used check out \"ssi-auth\" or \"out-of-band\" sample apps\n";
+                nonHandled(msg);
+            } else {
+                nonHandled("Message Name is not handled - "+msgName);
+            }
+        });
+
+        waitFor(connection, "Responding to connection request");    
         return relDID;
     }
 

@@ -123,7 +123,7 @@ async function createRelationship () {
   spinner.start()
   const relationship = new sdk.protocols.v1_0.Relationship(relDID, threadId)
 
-  await relationship.connectionInvitation(context)
+  await relationship.outOfBandInvitation(context)
   await secondStep // wait for acceptance from connect.me user
   return relDID // return owning DID for the connection
 }
@@ -153,6 +153,21 @@ async function createConnection () {
           printMessage(msgName, message)
           resolve(null)
           break
+        default:
+          printMessage(msgName, message)
+          nonHandle('Message Name is not handled - ' + msgName)
+      }
+    })
+    // handler for relationship-reused message which is sent by the ConnectMe app if it is already connected with this example app agent
+    handlers.addHandler('out-of-band', '1.0', async (msgName, message) => {
+      switch (msgName) {
+        case 'relationship-reused':
+          printMessage(msgName, message)
+          console.log('The mobile wallet app signalled that it already has the connection with this example app agent')
+          console.log('This example app does not support relationship-reuse since it does not store the data about previous relationships')
+          console.log('Please delete existing connection in your mobile wallet and re-run this application')
+          console.log('To learn how relationship-reuse can be used check out "ssi-auth" or "out-of-band" sample apps')
+          process.exit(1)
         default:
           printMessage(msgName, message)
           nonHandle('Message Name is not handled - ' + msgName)

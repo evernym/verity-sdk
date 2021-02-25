@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using VeritySDK.Exceptions;
 using VeritySDK.Handler;
 using VeritySDK.Protocols.Conecting;
+using VeritySDK.Protocols.OutOfBand;
 using VeritySDK.Protocols.IssueCredential;
 using VeritySDK.Protocols.IssuerSetup;
 using VeritySDK.Protocols.PresentProof;
@@ -561,7 +562,7 @@ namespace VeritySDK.Sample
             WaitFor(ref startRelationshipComplete, "Waiting to start relationship");
 
             RelationshipV1_0 relationship = Relationship.v1_0(_relDID, _threadId);
-            relationship.connectionInvitation(context);
+            relationship.outOfBandInvitation(context);
             WaitFor(ref invitationComplete, "Waiting for invite");
         }
 
@@ -633,11 +634,11 @@ namespace VeritySDK.Sample
 
         void DoCreateConnection()
         {
-            // Constructor for the Connecting API
-            ConnectionsV1_0 handler = Connecting.v1_0("", "");
+            // handler for messages in Connecting protocol
+            ConnectionsV1_0 connecting = Connecting.v1_0("", "");
 
             handlers.addHandler(
-                               handler,
+                               connecting,
                                (msgName, message) =>
                                {
                                    if ("request-received".Equals(msgName))
@@ -647,6 +648,30 @@ namespace VeritySDK.Sample
                                    else if ("response-sent".Equals(msgName))
                                    {
                                        startResponse = true;
+                                   }
+                                   else
+                                   {
+                                       nonHandled(msgName, message);
+                                   }
+                               }
+                       );
+
+            // handler for relationship-reused message which is sent by the ConnectMe app if it is already connected with this example app agent
+            OutOfBandV1_0 oob = OutOfBand.v1_0("", "");
+            handlers.addHandler(
+                               oob,
+                               (msgName, message) =>
+                               {
+                                   if ("relationship-reused".Equals(msgName))
+                                   {
+                                        Console.SetOut(App.console);
+                                        Console.WriteLine();
+                                        consolePrintMessage(msgName, message);
+                                        Console.WriteLine("The mobile wallet app signalled that it already has the connection with this example app agent");
+                                        Console.WriteLine("This example app does not support relationship-reuse since it does not store the data about previous relationships");
+                                        Console.WriteLine("Please delete existing connection in your mobile wallet and re-run this application");
+                                        Console.WriteLine("To learn how relationship-reuse can be used check out \"ssi-auth\" or \"out-of-band\" sample apps");
+                                        Environment.Exit(-1);
                                    }
                                    else
                                    {
