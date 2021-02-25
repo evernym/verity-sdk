@@ -1281,7 +1281,7 @@
           issuerDID: "",
           issuerVerKey: "",
           institutionName: "Verity Example App",
-          institutionLogoURL: "https://i.ibb.co/b5XYr6n/logo-evernym.png",
+          institutionLogoURL: "https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png",
           accentColor: "#86B93B",
           inviteDetailQRCode: "",
           schemas: [],
@@ -1506,7 +1506,7 @@
                   await this.sendMessage(
                     "relationship",
                     "1.0",
-                    "connection-invitation",
+                    "out-of-band-invitation",
                     msg,
                     message["~thread"].thid
                   );
@@ -1555,6 +1555,15 @@
                   this.connection.did = "";
                   this.spinners.connections = false;
                   break;
+                case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/out-of-band/1.0/relationship-reused":
+                document.getElementById("invite-detail-modal").style.display =
+                    "none";
+                  this.connection.name = "";
+                  this.connection.did = "";
+                  this.spinners.connections = false;
+                  alert(
+                    "The mobile wallet app signalled that it already has the connection with this issuer DID. Delete the existing connection in the mobile app if you want to establish a new connection"
+                  );
                 case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/answer-given":
                   this.structMsgs.push({
                     did: this.structuredMessage.relationshipDID,

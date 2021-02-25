@@ -8,6 +8,7 @@ const axios = require('axios')
 const bodyParser = require('body-parser')
 const express = require('express')
 const http = require('http')
+const urljoin = require('url-join')
 const QR = require('qrcode')
 const socketIO = require('socket.io')
 const uuid4 = require('uuid4')
@@ -89,9 +90,9 @@ async function sendVerityRESTMessage (data) {
   // If Message Family Qualifier is not specified in parameters sent from F/E, assume Evernym one
   const qualifier = data.qualifier ? data.qualifier : '123456789abcdefghi1234'
   data.message['@type'] = `did:sov:${qualifier};spec/${data.msgFamily}/${data.msgFamilyVersion}/${data.msgName}`
-  const url = verityUrl + '/api/' + domainDid + '/' + data.msgFamily + '/' + data.msgFamilyVersion + '/' + data.threadId
-  console.log(`Posting message to ${url}`)
-  console.log(data.message)
+  const url = urljoin(verityUrl, 'api', domainDid, data.msgFamily, data.msgFamilyVersion, data.threadId)
+  console.log(`Posting message to ${ANSII_GREEN}${url}${ANSII_RESET}`)
+  console.log(`${ANSII_GREEN}${JSON.stringify(data.message, null, 4)}${ANSII_RESET}`)
   return axios({
     method: 'POST',
     url: url,
@@ -153,8 +154,9 @@ async function main () {
   // F/E will show recieved webhook URL message in the designated area on F/E
   app.post('/webhook/:sessionId', async (req, res) => {
     const sessionId = req.params.sessionId
+    const message = req.body
     console.log(`Got message for session ${sessionId}`)
-    console.log(req.body)
+    console.log(`${ANSII_GREEN}${JSON.stringify(message, null, 4)}${ANSII_RESET}`)
     if (sessionId in sessions) {
       // Send response message to F/E via IO socket
       sessions[sessionId].socket.emit('message', req.body)
