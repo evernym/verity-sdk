@@ -331,19 +331,20 @@ Add the following code to the Verifier app to send proof request to the connecti
 
   await sendVerityRESTMessage('BzCbsNYhMrjHiqZDTUASHg', 'present-proof', '1.0', 'request', proofMessage, proofThreadId)
 
-  await requestProof
+  const verificationResult = await requestProof
+
+  if (verificationResult === 'ProofValidated') {
+    console.log('Proof is validated!')
+  } else {
+    console.log('Proof is NOT validated')
+  }
 ```
 Handler for proof response messages:
 ```javascript
 switch (message['@type']) {
-case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/presentation-result':
-      if (message.verification_result === 'ProofValidated') {
-        console.log('Proof is validated!')
-      } else {
-        console.log('Proof is NOT validated')
-      }
-      proofRequestMap.get(threadId)("proof response received")
-      break
+  case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/presentation-result':
+    proofRequestMap.get(threadId)(message.verification_result)
+    break
 }
 ```
 
