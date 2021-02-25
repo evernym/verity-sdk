@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "standard",
-    "lint-fix": "standard --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint-fix": "standard --fix"
   },
   "author": "Vladan Divac <vladan.divac@evernym.com>",
   "license": "",
@@ -15,10 +14,8 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "qrcode": "^1.4.4",
-    "socket.io": "^2.3.0",
+    "socket.io": "^3.1.1",
+    "url-join": "^4.0.1",
     "uuid4": "^2.0.2"
-  },
-  "devDependencies": {
-    "standard": "^14.3.4"
   }
 }
