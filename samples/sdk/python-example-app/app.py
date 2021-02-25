@@ -129,7 +129,7 @@ async def create_relationship(loop) -> str:
     handlers.add_handler(Relationship.MSG_FAMILY, Relationship.MSG_FAMILY_VERSION, invitation_handler)
 
     relationship: Relationship = Relationship(rel_did, thread_id)
-    await relationship.connection_invitation(context)
+    await relationship.out_of_band_invitation(context)
     await invitation
     return rel_did  # return owning DID for the connection
 
@@ -159,8 +159,22 @@ async def create_connection(loop):
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
 
+    # handler for relationship-reused message which is sent by the ConnectMe app if it is already connected with this example app agent
+    async def releationship_reused_handler(msg_name, message):
+        spinner.stop_and_persist('Done')
+        print_message(msg_name, message)
+        if msg_name == 'relationship-reused':
+            print('The mobile wallet app signalled that it already has the connection with this example app agent')
+            print('This example app does not support relationship-reuse since it does not store the data about previous relationships')
+            print('Please delete existing connection in your mobile wallet and re-run this application')
+            print('To learn how relationship-reuse can be used check out "ssi-auth" or "out-of-band" sample apps')
+            sys.exit(1)
+        else:
+            non_handled(f'Message name is not handled - {msg_name}', message)
+
     # adds handler to the set of handlers
     handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, connection_handler)
+    handlers.add_handler('out-of-band', '1.0', releationship_reused_handler)
 
     spinner.start()
 

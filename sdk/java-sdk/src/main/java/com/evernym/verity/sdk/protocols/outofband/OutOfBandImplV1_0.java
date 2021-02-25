@@ -19,6 +19,7 @@ import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
  */
 class OutOfBandImplV1_0 extends AbstractProtocol implements OutOfBandV1_0 {
     final static String CONNECTION_INVITATION = "reuse";
+    final static String RELATIONSHIP_REUSED = "relationship-reused";
 
     private final String inviteUrl;
     private final String forRelationship;

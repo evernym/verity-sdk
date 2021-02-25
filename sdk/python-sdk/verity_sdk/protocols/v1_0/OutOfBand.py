@@ -16,6 +16,8 @@ class OutOfBand(Protocol):
 
     REUSE = 'reuse'
     """Name for 'reuse' control message"""
+    RELATIONSHIP_REUSED = 'relationship-reused'
+    """Name for 'relationship-reused' signal message"""
 
     def __init__(self,
                  for_relationship: str = None,

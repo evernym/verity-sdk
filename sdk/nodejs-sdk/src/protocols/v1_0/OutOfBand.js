@@ -27,6 +27,7 @@ class OutOfBand extends Protocol {
     super(msgFamily, msgFamilyVersion, msgQualifier)
 
     this.msgNames.REUSE = 'reuse'
+    this.msgNames.RELATIONSHIP_REUSED = 'relationship-reused'
 
     this.forRelationship = forRelationship
     this.inviteUrl = inviteUrl
