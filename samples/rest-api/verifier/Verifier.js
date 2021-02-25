@@ -170,7 +170,13 @@ async function verifier () {
 
   await sendVerityRESTMessage('BzCbsNYhMrjHiqZDTUASHg', 'present-proof', '1.0', 'request', proofMessage, proofThreadId)
 
-  await requestProof
+  const verificationResult = await requestProof
+
+  if (verificationResult === 'ProofValidated') {
+    console.log('Proof is validated!')
+  } else {
+    console.log('Proof is NOT validated')
+  }
 
   console.log('Demo completed!')
   process.exit(0)
@@ -190,10 +196,10 @@ app.post('/webhook', async (req, res) => {
   // Handle received message differently based on the message type
   switch (message['@type']) {
     case 'did:sov:123456789abcdefghi1234;spec/configs/0.6/COM_METHOD_UPDATED':
-      webhookResolve("webhook updated")
+      webhookResolve('webhook updated')
       break
     case 'did:sov:123456789abcdefghi1234;spec/update-configs/0.6/status-report':
-      updateConfigsMap.get(threadId)("config updated")
+      updateConfigsMap.get(threadId)('config updated')
       break
     case 'did:sov:123456789abcdefghi1234;spec/relationship/1.0/created':
       relCreateMap.get(threadId)(message.did)
@@ -204,7 +210,7 @@ app.post('/webhook', async (req, res) => {
     case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/request-received':
       break
     case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/response-sent':
-      connectionAccepted.get(message.myDID)("connection accepted")
+      connectionAccepted.get(message.myDID)('connection accepted')
       break
     case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/trust_ping/1.0/sent-response':
       break
@@ -215,12 +221,7 @@ app.post('/webhook', async (req, res) => {
       console.log('To learn how relationship-reuse can be used check out "ssi-auth" or "out-of-band" sample apps')
       process.exit(1)
     case 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/presentation-result':
-      if (message.verification_result === 'ProofValidated') {
-        console.log('Proof is validated!')
-      } else {
-        console.log('Proof is NOT validated')
-      }
-      proofRequestMap.get(threadId)("proof response received")
+      proofRequestMap.get(threadId)(message.verification_result)
       break
     default:
       console.log(`Unexpected message type ${message['@type']}`)
