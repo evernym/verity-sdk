@@ -1,0 +1,20 @@
+{
+  "name": "sample-oob-request-attach-app",
+  "version": "1.0.0",
+  "description": "A sample app that demoes OOB request-attach with Verity REST API",
+  "main": "oob-request-attach.js",
+  "scripts": {
+    "lint": "standard",
+    "lint-fix": "standard --fix"
+  },
+  "author": "Vladan Divac <vladan.divac@evernym.com>",
+  "license": "",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "qrcode": "^1.4.4",
+    "url-join": "^4.0.1",
+    "uuid4": "^2.0.2"
+  }
+}
