@@ -2,6 +2,7 @@ const express = require('express')
 const axios = require('axios')
 const bodyParser = require('body-parser')
 const http = require('http')
+const urljoin = require('url-join')
 const session = require('express-session')
 const socketIO = require('socket.io')
 const QR = require('qrcode')
@@ -24,21 +25,30 @@ let domainDid
 let webhookUrl // public URL for the started Ngrok tunnel to the application port (localhost:3000)
 
 let webhookResolve
+let updateConfigResolve
 
-// Function to sends a Verity REST API call to the VAS
-// Full URL address for the REST API call is dynamically constructed based on the arguments
-// Field @type is dynamically constructed based on the arguments and added to the message payload
+// Sends a message to the Verity Application Service via the Verity REST API
 async function sendVerityRESTMessage (qualifier, msgFamily, msgFamilyVersion, msgName, message, threadId) {
-  // Add @type and @id fields to the message
-  // Field @type is dynamically constructed based on the function arguments and added into the message payload
+  // qualifier - either 'BzCbsNYhMrjHiqZDTUASHg' for Aries community protocols or '123456789abcdefghi1234' for Evernym-specific protocols
+  // msgFamily - message family (e.g. 'present-proof')
+  // msgFamilyVersion - version of the message family (e.g. '1.0')
+  // msgName - name of the protocol message to perform (e.g. 'request')
+  // message - message to be sent in the body payload
+  // threadId - unique identifier of the protocol interaction. The threadId is used to distinguish between simultaenous interactions
+
+  // Add @type and @id fields to the message in the body payload
+  // Field @type is dinamycially constructed from the function arguments and added into the message payload
   message['@type'] = `did:sov:${qualifier};spec/${msgFamily}/${msgFamilyVersion}/${msgName}`
   message['@id'] = uuid4()
+
   if (!threadId) {
     threadId = uuid4()
   }
-  const url = `${verityUrl}/api/${domainDid}/${msgFamily}/${msgFamilyVersion}/${threadId}`
-  console.log(`Posting message to ${url}`)
-  console.log(message)
+
+  // send prepared message to Verity and return Axios request promise
+  const url = urljoin(verityUrl, 'api', domainDid, msgFamily, msgFamilyVersion, threadId)
+  console.log(`Posting message to ${ANSII_GREEN}${url}${ANSII_RESET}`)
+  console.log(`${ANSII_GREEN}${JSON.stringify(message, null, 4)}${ANSII_RESET}`)
   return axios({
     method: 'POST',
     url: url,
@@ -104,8 +114,8 @@ async function validateVerityUrl (verityUrl) {
 // this is used to generate choices for the 2FA challenge
 function generateChallenges (n, min, max) {
   const challenges = []
-  for (var i = 0; i < n; i++) {
-    var temp = min + Math.floor(Math.random() * (max - min))
+  for (let i = 0; i < n; i++) {
+    const temp = min + Math.floor(Math.random() * (max - min))
     if (challenges.indexOf(temp) === -1) {
       challenges.push(temp)
     } else { i-- }
@@ -116,10 +126,7 @@ function generateChallenges (n, min, max) {
 // This function creates a new relationship invitation and returns created relationshipDid and inviteUrl
 // inviteUrl is later converted to the QR code and scanned by the user's wallet app
 async function createInvitation () {
-  const relationshipCreateMessage = {
-    label: 'SSI Savvy Org',
-    logoUrl: 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
-  }
+  const relationshipCreateMessage = {}
   const relThreadId = uuid4()
   const relationshipCreate =
    new Promise(function (resolve, reject) {
@@ -385,18 +392,19 @@ async function main () {
   // On this route application will receive messages from VAS
   app.post('/', async (req, res) => {
     const message = req.body
+    const threadId = message['~thread'] ? message['~thread'].thid : null
+    const pthid = message['~thread'] ? message['~thread'].pthid : null
     console.log('Got message on the webhook')
-    console.log(JSON.stringify(message, null, 4))
+    console.log(`${ANSII_GREEN}${JSON.stringify(message, null, 4)}${ANSII_RESET}`)
     res.status(202).send('Accepted')
-    if (message['~thread']) {
-      var threadId = message['~thread'].thid
-      var pthid = message['~thread'].pthid
-    }
 
     // Handle received message differently based on the message type
     switch (message['@type']) {
       case 'did:sov:123456789abcdefghi1234;spec/configs/0.6/COM_METHOD_UPDATED':
         webhookResolve(null)
+        break
+      case 'did:sov:123456789abcdefghi1234;spec/update-configs/0.6/status-report':
+        updateConfigResolve(null)
         break
       case 'did:sov:123456789abcdefghi1234;spec/relationship/1.0/created':
       // Resolve relationship creation promise with the DID of the created relationship
@@ -425,7 +433,7 @@ async function main () {
       default:
       // Print out any response message from Verity which is not explicitly handled and exit
         console.log(`Unexpected message type ${message['@type']}`)
-        console.log(`Message was: ${JSON.stringify(message)}`)
+        console.log(`Message was:\n${ANSII_GREEN}${JSON.stringify(message, null, 4)}${ANSII_RESET}`)
         process.exit(1)
     }
   })
@@ -440,7 +448,6 @@ async function main () {
 
   // Listen for messages from VAS
   server.listen(PORT, async () => {
-    console.log(`Listening on port ${PORT}`)
     // Update webhook endpoint
     const webhookMessage = {
       comMethod: {
@@ -458,6 +465,27 @@ async function main () {
         sendVerityRESTMessage('123456789abcdefghi1234', 'configs', '0.6', 'UPDATE_COM_METHOD', webhookMessage)
       })
     await updateWebhook
+
+    const updateConfigMessage = {
+      configs: [
+        {
+          name: 'logoUrl',
+          value: 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
+        },
+        {
+          name: 'name',
+          value: 'SSI Savvy Org'
+        }
+      ]
+    }
+    const updateConfig =
+      new Promise(function (resolve, reject) {
+        updateConfigResolve = resolve
+        sendVerityRESTMessage('123456789abcdefghi1234', 'update-configs', '0.6', 'update', updateConfigMessage)
+      })
+    await updateConfig
+
+    console.log(`Listening on port ${PORT}`)
   })
 }
 
