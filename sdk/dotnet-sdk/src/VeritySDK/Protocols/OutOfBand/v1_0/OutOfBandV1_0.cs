@@ -53,7 +53,7 @@ namespace VeritySDK.Protocols.OutOfBand
         #endregion 
 
         private string CONNECTION_INVITATION = "reuse";
-        private string RELATIONSHIP_REUSED = "relationship-reused";
+        // private string RELATIONSHIP_REUSED = "relationship-reused";
 
         private string inviteUrl;
         private string forRelationship;
