@@ -2,6 +2,9 @@ FROM ubuntu:18.04
 
 ENV LIBINDY_VERSION 1.15.0-bionic
 ENV VERITY_SERVER https://vas.pps.evernym.com
+ENV LANG=C.UTF-8
+
+RUN echo LANG=C.UTF-8 > /etc/default/locale
 
 RUN apt-get update && \
     apt-get install -y \
