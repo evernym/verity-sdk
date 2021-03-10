@@ -4,6 +4,9 @@ WORKDIR /root
 ENV LIBINDY_VERSION 1.15.0~1618-bionic
 ENV LIBMYSQLSTORAGE_VERSION 0.1.11
 ENV VERITY_APPLICATION_VERSION 0.4.112853588.bf9f776
+ENV LANG=C.UTF-8
+
+RUN echo LANG=C.UTF-8 > /etc/default/locale
 
 RUN apt-get update && apt-get install -y \
     software-properties-common \
