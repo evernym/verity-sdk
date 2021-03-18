@@ -1,3 +1,59 @@
+# Release notes - Verity 2.10.0 (0.4.115809643.e5a8582) - Mar 17 2021
+
+## Bugs
+    * [VE-2357] - Webhook URL does not support query strings
+    * [VE-2375] - invalid com method was switching Verity app state to degraded state
+    * [VE-2378] - GNR-100 ("system is unusually busy, try again later") returned on incorrect payload
+    * [VE-2382] - Wrong version of libmysqlstorage breaks Verity upgrade
+    * [VE-2389] - Verity is not returning Agency Agent Verkey
+    * [VE-2391] - Malicious payloads to connecting endpoint crashes Verity
+    * [VE-2392] - Malicious large payload to  "~for_relationship" crashes Verity
+    * [VE-2393] - SourceId: 1 crashes Verity
+    * [VE-2397] - Malicious credOffer message caused Verity crash
+    * [VE-2401] - oob-with-request-attach: Verifier needs to perform IssuerSetup so that connection reuse could work
+    * [VE-2419] - Fix protocol async service implementation closing over state issue
+    * [VE-2430] - Verity SDK i18n issues
+    * [VE-2441] - auth key referenced from 'endpoints' not exists in 'authorizedKeys'
+    * [VE-2447] - Fix agent provisioning protocols to use async wallet api
+
+## Tasks
+    * [VE-2234] - Add separate metric for time spent in LibIndy callbacks
+    * [VE-2301] - Adding proper supervisor strategy for persistent actors
+    * [VE-2326] - Migrate blocking WalletActor calls to asynchronous calls-Phase2
+    * [VE-2332] - Convert wallet access in protocols to follow the async design in the Url Shortener
+    * [VE-2359] - Verity cache size caps
+    * [VE-2365] - Audit Verity Code base for Unbounded large collections
+    * [VE-2366] - Remove old wallet API from Verity
+    * [VE-2383] - Implement caching for Ledger calls for Verity
+    * [VE-2403] - Switch Verity SDK sample apps to use OOB protocol
+    * [VE-2404] - Switch Verity REST API demo web app to use OOB protocol
+    * [VE-2405] - Switch Issuer/Verifier Verity REST API sample apps to use OOB protocol
+    * [VE-2422] - Create sample app for out-of-band with request attach that uses Verity REST API
+    * [VE-2438] - Change our supervisor settings to retry after 1 second instead of 3 seconds
+    * [VE-2439] - Refactor ItemContainer cleanup code to be more soften instead of trying to delete all events in one go
+    * [VE-2440] - remove "cache initialization info log" and "ledger svc unutilized caches"
+    * [VE-2452] - DynamoDB errors during connections load test
+    * [VE-2456] - Allow Verity to switch between 'libindy' and 'libindy-async'
+    * [VE-2427] - Remove legacy public identity behaviour config option
+    * [VE-2435] - Add more logging for http request observability
+
+# Release notes - Verity 2.9.0 (0.4.112853588.bf9f776) - Feb 10 2021
+
+## Bugs
+    * [VE-2304] - DomainId is used as the public DID in connection invites. 
+    * [VE-2346] - Prevent Kamon Timer warnings from overwhelming the logging system.
+
+## Tasks
+    * [VE-2118] - Check .NET SDK with the Verity integration tests
+    * [VE-2232] - Migrate blocking WalletActor calls to asynchronous calls: Phase1
+    * [VE-2246] - Add asynchronous API to protocol engine
+    * [VE-2320] - Investigate and fix problem with too many open sockets
+    * [VE-2336] - Expose msgType for Aries protocols in a way that doesn't break push Notifications for Connect.Me
+    * [VE-2340] - Review kamon metrics/reporter for any possible improvments
+    * [VE-2355] - Add support for Configurable Message Retention
+    * [VE-2361] - Switch default wallet impl to `standard`
+    * [VE-2373] - Add `INFO` log messages for Push Notfications
+
 # Release notes - Verity 2.8.0 (0.4.110434998.b502641) - Jan 13 2021
 
 ## Bugs
