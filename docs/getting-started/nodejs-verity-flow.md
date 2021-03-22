@@ -32,7 +32,7 @@ const provision = new sdk.protocols.v0_7.Provision(null, token)
 console.log('provision object')
 
 // ask that an agent by provision (setup) and associated with created key pair
-const context = provision.provision(ctx)
+const context = await provision.provision(ctx)
 
 // Save context
 fs.writeFileSync(CONFIG_PATH, JSON.stringify(context.getConfig()))
