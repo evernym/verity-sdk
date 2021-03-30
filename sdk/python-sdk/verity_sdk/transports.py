@@ -26,11 +26,13 @@ def send_packed_message(context, packed_message: bytes):
     """
     url = msg_endpoint(context.verity_url)
     try:
-        return requests.post(
+        r = requests.post(
             url,
             data=packed_message,
             headers={'Content-Type': 'application/octet-stream'}
-        ).content
+        )
+        r.raise_for_status()
+        return r.content
     except requests.RequestException as e:
         print('ERROR: Failed to POST message to {}'.format(url))
         raise e
