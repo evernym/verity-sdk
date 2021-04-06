@@ -21,10 +21,10 @@ namespace VeritySDK.Test
         [TestMethod]
         public void extractMessageName()
         {
-            string name = testFamily.messageName("did:sov:123456789abcdefghi1234;spec/testing/0.1/test");
+            string name = testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1/test");
             Assert.AreEqual("test", name);
 
-            name = testFamily.messageName("did:sov:123456789abcdefghi1234;spec/testing/0.1/234asdf234@$");
+            name = testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1/234asdf234@$");
             Assert.AreEqual("234asdf234@$", name);
         }
 
@@ -32,7 +32,7 @@ namespace VeritySDK.Test
         public void invalidMessageFamily()
         {
             Assert.ThrowsException<InvalidMessageTypeException>(() =>
-                testFamily.messageName("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/testing/0.1/test")
+                testFamily.messageName(Util.COMMUNITY_MSG_QUALIFIER + "/testing/0.1/test")
             );
         }
 
@@ -40,7 +40,7 @@ namespace VeritySDK.Test
         public void invalidMessageName()
         {
             Assert.ThrowsException<InvalidMessageTypeException>(() =>
-                testFamily.messageName("did:sov:123456789abcdefghi1234;spec/testing/0.1/")
+                testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1/")
             );
         }
 
@@ -48,7 +48,7 @@ namespace VeritySDK.Test
         public void invalidMessageName2()
         {
             Assert.ThrowsException<InvalidMessageTypeException>(() =>
-                testFamily.messageName("did:sov:123456789abcdefghi1234;spec/testing/0.1-test")
+                testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1-test")
             );
         }
     }

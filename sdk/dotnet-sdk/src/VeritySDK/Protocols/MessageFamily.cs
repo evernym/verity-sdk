@@ -86,7 +86,7 @@ namespace VeritySDK.Protocols
         /// <returns>a prefix portion of the message type</returns>
         public string messageFamily()
         {
-            return qualifier() + ";spec/" + family() + "/" + version();
+            return qualifier() + "/" + family() + "/" + version();
         }
 
 

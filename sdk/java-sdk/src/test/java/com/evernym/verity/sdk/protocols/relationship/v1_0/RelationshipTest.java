@@ -75,7 +75,7 @@ public class RelationshipTest {
     private void testCreateMsg(JSONObject msg, boolean hasLabel, boolean hasLogo, boolean hasPhoneNumber) {
 
         testBaseMessage(msg);
-        assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/create", msg.getString("@type"));
+        assertEquals(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/create", msg.getString("@type"));
         if (hasLabel)
             assertEquals(label.toString(), msg.getString("label"));
         else
@@ -106,7 +106,7 @@ public class RelationshipTest {
 
     private void testConnectionInvitationMsg(JSONObject msg, boolean hasShortInvite) {
         testBaseMessage(msg);
-        assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/connection-invitation", msg.getString("@type"));
+        assertEquals(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/connection-invitation", msg.getString("@type"));
         assertNotNull(forRelationship, msg.getString("~for_relationship"));
         if (hasShortInvite)
             assertEquals(shortInvite, msg.getBoolean("shortInvite"));
@@ -121,7 +121,7 @@ public class RelationshipTest {
 
     private void testSMSConnectionInvitationMsg(JSONObject msg) {
         testBaseMessage(msg);
-        assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/sms-connection-invitation", msg.getString("@type"));
+        assertEquals(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/sms-connection-invitation", msg.getString("@type"));
         assertNotNull(forRelationship, msg.getString("~for_relationship"));
     }
 
@@ -152,7 +152,7 @@ public class RelationshipTest {
 
     private void testOutOfBandInvitationMsg(JSONObject msg, boolean hasShortInvite, GoalCode goalCode) {
         testBaseMessage(msg);
-        assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/out-of-band-invitation", msg.getString("@type"));
+        assertEquals(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/out-of-band-invitation", msg.getString("@type"));
         assert(msg.getString("goalCode").equals(goalCode.code()));
         assert(msg.getString("goal").equals(goalCode.goalName()));
         if (hasShortInvite)
@@ -178,7 +178,7 @@ public class RelationshipTest {
 
     private void testSMSOutOfBandInvitationMsg(JSONObject msg, GoalCode goalCode) {
         testBaseMessage(msg);
-        assertEquals("did:sov:123456789abcdefghi1234;spec/relationship/1.0/sms-out-of-band-invitation", msg.getString("@type"));
+        assertEquals(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/sms-out-of-band-invitation", msg.getString("@type"));
         assert(msg.getString("goalCode").equals(goalCode.code()));
         assert(msg.getString("goal").equals(goalCode.goalName()));
     }

@@ -61,7 +61,7 @@ describe('PresentProof', () => {
     )
     const msg = await presentProof.requestMsg()
     expect(msg['@type']).to.equal(
-        `${presentProof.msgQualifier};spec/${presentProof.msgFamily}/${presentProof.msgFamilyVersion}/${presentProof.msgNames.PROOF_REQUEST}`
+        `${presentProof.msgQualifier}/${presentProof.msgFamily}/${presentProof.msgFamilyVersion}/${presentProof.msgNames.PROOF_REQUEST}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     assert(msg['~thread'].thid)
@@ -77,7 +77,7 @@ describe('PresentProof', () => {
     )
     const msg = await presentProof.statusMsg()
     expect(msg['@type']).to.equal(
-        `${presentProof.msgQualifier};spec/${presentProof.msgFamily}/${presentProof.msgFamilyVersion}/${presentProof.msgNames.STATUS}`
+        `${presentProof.msgQualifier}/${presentProof.msgFamily}/${presentProof.msgFamilyVersion}/${presentProof.msgNames.STATUS}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -90,7 +90,7 @@ describe('PresentProof', () => {
     )
     const msg = await presentProof.acceptProposalMsg()
     expect(msg['@type']).to.equal(
-        `${presentProof.msgQualifier};spec/${presentProof.msgFamily}/${presentProof.msgFamilyVersion}/${presentProof.msgNames.ACCEPT_PROPOSAL}`
+        `${presentProof.msgQualifier}/${presentProof.msgFamily}/${presentProof.msgFamilyVersion}/${presentProof.msgNames.ACCEPT_PROPOSAL}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -103,7 +103,7 @@ describe('PresentProof', () => {
     )
     const msg = await presentProof.rejectMsg(rejectReason)
     expect(msg['@type']).to.equal(
-        `${presentProof.msgQualifier};spec/${presentProof.msgFamily}/${presentProof.msgFamilyVersion}/${presentProof.msgNames.REJECT}`
+        `${presentProof.msgQualifier}/${presentProof.msgFamily}/${presentProof.msgFamilyVersion}/${presentProof.msgNames.REJECT}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)

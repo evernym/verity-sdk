@@ -58,12 +58,12 @@ public class ConnectionsTest extends TestBase {
 
     private void testAcceptInviteMessage(JSONObject msg) {
         testBaseMessage(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/accept", msg.getString("@type"));
+        assertEquals(Util.COMMUNITY_MSG_QUALIFIER + "/connections/1.0/accept", msg.getString("@type"));
     }
 
     private void testStatusInviteMessage(JSONObject msg) {
         testBaseMessage(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/status", msg.getString("@type"));
+        assertEquals(Util.COMMUNITY_MSG_QUALIFIER + "/connections/1.0/status", msg.getString("@type"));
     }
 
     private void testBaseMessage(JSONObject msg) {

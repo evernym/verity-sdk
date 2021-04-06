@@ -54,7 +54,7 @@ class MessageFamily {
   }
 
   _getMessageType (messageName) {
-    return `${this.msgQualifier};spec/${this.msgFamily}/${this.msgFamilyVersion}/${messageName}`
+    return `${this.msgQualifier}/${this.msgFamily}/${this.msgFamilyVersion}/${messageName}`
   }
 
   /**
@@ -64,12 +64,18 @@ class MessageFamily {
    */
   static parseMessageType (messageType) {
     const result = {}
-    const msgTypeParts1 = messageType.split(';spec/')
-    result.qualifier = msgTypeParts1[0]
-    const msgTypeParts2 = msgTypeParts1[1].split('/')
-    result.msgFamily = msgTypeParts2[0]
-    result.msgFamilyVersion = msgTypeParts2[1]
-    result.msgName = msgTypeParts2[2]
+    const msgTypeParts = messageType.split('/')
+    if (utils.constants.USE_NEW_QUALIFIER_FORMAT) {
+      result.qualifier = msgTypeParts[0].concat('//').concat(msgTypeParts[2])
+      result.msgFamily = msgTypeParts[3]
+      result.msgFamilyVersion = msgTypeParts[4]
+      result.msgName = msgTypeParts[5]
+    } else {
+      result.qualifier = msgTypeParts[0]
+      result.msgFamily = msgTypeParts[1]
+      result.msgFamilyVersion = msgTypeParts[2]
+      result.msgName = msgTypeParts[3]
+    }
     return result
   }
 }

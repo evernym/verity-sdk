@@ -100,7 +100,7 @@ def test_prepare_forward_message():
     msg = _prepare_forward_message(test_did, message)
     msg = json.loads(msg)
 
-    assert msg['@type'] == 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD'
+    assert msg['@type'] == EVERNYM_MSG_QUALIFIER+'/routing/1.0/FWD'
     assert msg['@fwd'] == test_did
     assert msg['@msg'] == json.loads(message.decode('utf-8'))
 
@@ -117,15 +117,15 @@ async def test_pack_message_for_verity_and_unpack_forward_message():
 
 
 def test_get_message_type():
-    msg_type: str = 'did:sov:123456789abcdefghi1234;spec/credential/0.1/status'
+    msg_type: str = EVERNYM_MSG_QUALIFIER+'/credential/0.1/status'
     assert get_message_type('credential', '0.1', 'status') == msg_type
 
 
 def test_get_problem_report_message_type():
     assert get_problem_report_message_type('credential', '0.1') == \
-           '{};spec/credential/0.1/problem-report'.format(EVERNYM_MSG_QUALIFIER)
+           '{}/credential/0.1/problem-report'.format(EVERNYM_MSG_QUALIFIER)
 
 
 def test_get_status_message_type():
     assert get_status_message_type('credential', '0.1') == \
-           '{};spec/credential/0.1/status'.format(EVERNYM_MSG_QUALIFIER)
+           '{}/credential/0.1/status'.format(EVERNYM_MSG_QUALIFIER)

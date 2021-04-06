@@ -3,6 +3,7 @@ import pytest
 from test.test_utils import get_test_config
 from verity_sdk.protocols.v0_7.Provision import Provision
 from verity_sdk.utils.Context import Context
+from verity_sdk.utils import EVERNYM_MSG_QUALIFIER
 
 
 @pytest.mark.asyncio
@@ -14,7 +15,7 @@ async def test_message():
 
     assert msg['requesterVk'] is not None
     assert msg['requesterVk'] == context.sdk_verkey
-    assert msg['@type'] == 'did:sov:123456789abcdefghi1234;spec/agent-provisioning/0.7/create-edge-agent'
+    assert msg['@type'] == EVERNYM_MSG_QUALIFIER+'/agent-provisioning/0.7/create-edge-agent'
 
     test_token = """{"sponseeId": "myId", "sponsorId": "evernym-test-sponsorabc123", "nonce": "123", "timestamp":
     "2020-06-05T21:33:36.085Z", "sig":
@@ -34,7 +35,7 @@ async def test_process_message():
 
     async def mock_send(_, __):
         return {
-            '@type': 'did:sov:123456789abcdefghi1234;spec/agent-provisioning/0.7/AGENT_CREATED',
+            '@type': EVERNYM_MSG_QUALIFIER+'/agent-provisioning/0.7/AGENT_CREATED',
             'selfDID': '4ut8tgCBdUMCYZrJh5JS4o',
             'agentVerKey': '38fBEUX2sUQF7ZsY6epz1cbCvfBfDbQghUZUzFP6JChE'
         }

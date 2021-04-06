@@ -39,7 +39,7 @@ namespace VeritySDK.Test
             IssuerSetupV0_6 p = IssuerSetup.v0_6();
             JsonObject msg = p.createMsg(context);
             Assert.AreEqual(
-                    "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/create",
+                    Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.6/create",
                     msg.getAsString("@type")
             );
             Assert.IsNotNull(msg.getAsString("@id"));
@@ -54,7 +54,7 @@ namespace VeritySDK.Test
                 byte[] message = testProtocol.createMsgPacked(context);
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 Assert.AreEqual(
-                        "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/create",
+                        Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.6/create",
                         unpackedMessage.getAsString("@type"));
             });
         }

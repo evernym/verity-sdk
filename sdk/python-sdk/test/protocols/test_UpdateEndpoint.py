@@ -12,7 +12,7 @@ async def test_write():
     update_endpoint = UpdateEndpoint()
     msg = update_endpoint.update_endpoint_msg(context)
 
-    assert msg['@type'] == '{};spec/configs/0.6/UPDATE_COM_METHOD'.format(EVERNYM_MSG_QUALIFIER)
+    assert msg['@type'] == '{}/configs/0.6/UPDATE_COM_METHOD'.format(EVERNYM_MSG_QUALIFIER)
     assert msg['@id'] is not None
     assert msg['comMethod']['id'] == 'webhook'
     assert msg['comMethod']['type'] == 2

@@ -40,7 +40,7 @@ namespace VeritySDK.Test
         [TestMethod]
         public void testGetMessageTypeComplete()
         {
-            String msgType = "did:sov:123456789abcdefghi1234;spec/credential/0.1/status";
+            String msgType = Util.EVERNYM_MSG_QUALIFIER + "/credential/0.1/status";
             Assert.AreEqual(msgType, Util.getMessageType(Util.EVERNYM_MSG_QUALIFIER, "credential", "0.1", "status"));
         }
 

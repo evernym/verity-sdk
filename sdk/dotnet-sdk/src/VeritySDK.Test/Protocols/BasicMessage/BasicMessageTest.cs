@@ -79,7 +79,7 @@ namespace VeritySDK.Test
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 testBaseMessage(unpackedMessage);
                 Assert.AreEqual(
-                        "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/basicmessage/1.0/send-message",
+                        Util.COMMUNITY_MSG_QUALIFIER + "/basicmessage/1.0/send-message",
                         unpackedMessage.getAsString("@type")
                 );
             });

@@ -120,13 +120,13 @@ namespace VeritySDK.Test
         private void testProposalMessage(JsonObject msg)
         {
             testCommonProposeAndOfferMsg(msg);
-            Assert.AreEqual("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/propose", msg.getAsString("@type"));
+            Assert.AreEqual(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/propose", msg.getAsString("@type"));
         }
 
         private void testOfferMessage(JsonObject msg)
         {
             testCommonProposeAndOfferMsg(msg);
-            Assert.AreEqual("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/offer", msg.getAsString("@type"));
+            Assert.AreEqual(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/offer", msg.getAsString("@type"));
             Assert.AreEqual(msg.getAsString("price"), price);
             Assert.AreEqual(bool.Parse(msg.getAsString("auto_issue")), autoIssue);
             Assert.AreEqual(bool.Parse(msg.getAsString("by_invitation")), byInvitation);
@@ -135,28 +135,28 @@ namespace VeritySDK.Test
         private void testIssueCredMessage(JsonObject msg)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/issue", msg.getAsString("@type"));
+            Assert.AreEqual(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/issue", msg.getAsString("@type"));
             Assert.AreEqual(threadId, msg.getAsJsonObject("~thread").getAsString("thid"));
         }
 
         private void testRequestMessage(JsonObject msg)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/request", msg["@type"].ToString().Trim('"'));
+            Assert.AreEqual(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/request", msg["@type"].ToString().Trim('"'));
             Assert.AreEqual(credDefId, msg.getAsString("cred_def_id"));
         }
 
         private void testRejectMessage(JsonObject msg)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/reject", msg["@type"].ToString().Trim('"'));
+            Assert.AreEqual(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/reject", msg["@type"].ToString().Trim('"'));
             Assert.AreEqual(threadId, msg.getAsJsonObject("~thread").getAsString("thid"));
         }
 
         private void testStatusMessage(JsonObject msg)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/status", msg["@type"].ToString().Trim('"'));
+            Assert.AreEqual(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/status", msg["@type"].ToString().Trim('"'));
             Assert.AreEqual(threadId, msg.getAsJsonObject("~thread").getAsString("thid"));
         }
 

@@ -38,7 +38,7 @@ async def test_write():
     write_schema = WriteSchema(schema_name, schema_version, attrs)
     msg = write_schema.write_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         WriteSchema.MSG_FAMILY,
         WriteSchema.MSG_FAMILY_VERSION,
@@ -55,7 +55,7 @@ async def test_write():
 
 def test_get_message_type():
     write_schema = WriteSchema(schema_name, schema_version, attrs)
-    assert write_schema.get_message_type('message_name') == '{};spec/{}/{}/message_name'.format(
+    assert write_schema.get_message_type('message_name') == '{}/{}/{}/message_name'.format(
         EVERNYM_MSG_QUALIFIER,
         WriteSchema.MSG_FAMILY,
         WriteSchema.MSG_FAMILY_VERSION

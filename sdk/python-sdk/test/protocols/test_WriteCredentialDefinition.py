@@ -27,7 +27,7 @@ async def test_write():
     write_cred_def = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
     msg = write_cred_def.write_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         WriteCredentialDefinition.MSG_FAMILY,
         WriteCredentialDefinition.MSG_FAMILY_VERSION,

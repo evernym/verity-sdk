@@ -16,15 +16,17 @@ namespace VeritySDK.Utils
     /// </summary>
     public class Util
     {
+        public static bool USE_NEW_QUALIFIER_FORMAT = false;
+
         /// <summary>
         /// QUALIFIER for evernym specific protocols
         /// </summary>
-        public static string EVERNYM_MSG_QUALIFIER = "did:sov:123456789abcdefghi1234";
+        public static string EVERNYM_MSG_QUALIFIER = USE_NEW_QUALIFIER_FORMAT ? "https://didcomm.evernym.com" : "did:sov:123456789abcdefghi1234;spec";
 
         /// <summary>
         /// QUALIFIER for community specified protocol
         /// </summary>
-        public static string COMMUNITY_MSG_QUALIFIER = "did:sov:BzCbsNYhMrjHiqZDTUASHg";
+        public static string COMMUNITY_MSG_QUALIFIER = USE_NEW_QUALIFIER_FORMAT ? "https://didcomm.org" : "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec";
 
         /// <summary>
         /// Packages message (instructor and encryption) for the verity-application. Uses local private keys and remote
@@ -162,7 +164,7 @@ namespace VeritySDK.Utils
         /// <return>a fully qualified message type</return>
         public static string getMessageType(string msgQualifier, string msgFamily, string msgFamilyVersion, string msgName)
         {
-            return msgQualifier + ";spec/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
+            return msgQualifier + "/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
         }
 
         [Obsolete]

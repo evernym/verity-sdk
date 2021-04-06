@@ -61,13 +61,13 @@ namespace VeritySDK.Test
         private void testAcceptInviteMessage(JsonObject msg)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/accept\"", msg["@type"].ToString());
+            Assert.AreEqual("\""+Util.COMMUNITY_MSG_QUALIFIER + "/connections/1.0/accept\"", msg["@type"].ToString());
         }
 
         private void testStatusInviteMessage(JsonObject msg)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/connections/1.0/status\"", msg["@type"].ToString());
+            Assert.AreEqual("\""+Util.COMMUNITY_MSG_QUALIFIER + "/connections/1.0/status\"", msg["@type"].ToString());
         }
 
         private void testBaseMessage(JsonObject msg)

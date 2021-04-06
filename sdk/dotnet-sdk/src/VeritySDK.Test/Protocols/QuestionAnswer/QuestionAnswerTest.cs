@@ -74,7 +74,7 @@ namespace VeritySDK.Test
                 byte[] message = questionAnswer.askMsgPacked(context);
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 Assert.AreEqual(
-                        "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/questionanswer/1.0/ask-question",
+                        Util.COMMUNITY_MSG_QUALIFIER + "/questionanswer/1.0/ask-question",
                         unpackedMessage.getAsString("@type")
                 );
             });

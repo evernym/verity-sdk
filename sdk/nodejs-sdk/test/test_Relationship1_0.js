@@ -36,7 +36,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.createMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CREATE}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CREATE}`
     )
     expect(msg['~thread'].thid).to.equal(threadId)
     expect(msg.label).to.equal(label)
@@ -53,7 +53,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.createMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CREATE}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CREATE}`
     )
     expect(msg['~thread'].thid).to.equal(threadId)
     expect(msg.label).to.equal(label)
@@ -71,7 +71,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.createMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CREATE}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CREATE}`
     )
     expect(msg['~thread'].thid).to.equal(threadId)
     expect(msg.label).to.equal(label)
@@ -86,7 +86,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.connectionInvitationMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CONNECTION_INVITATION}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CONNECTION_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -98,7 +98,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.connectionInvitationMsg(null, shortInvite)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CONNECTION_INVITATION}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CONNECTION_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -111,7 +111,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.smsConnectionInvitationMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_CONNECTION_INVITATION}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_CONNECTION_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -123,7 +123,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.outOfBandInvitationMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -137,7 +137,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.outOfBandInvitationMsg(null, null, GoalCodes.ISSUE_VC())
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -151,7 +151,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.outOfBandInvitationMsg(null, shortInvite)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.OUT_OF_BAND_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -166,7 +166,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.smsOutOfBandInvitationMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_OUT_OF_BAND_INVITATION}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_OUT_OF_BAND_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -180,7 +180,7 @@ describe('Relationship', () => {
     )
     const msg = await rel.smsOutOfBandInvitationMsg(null, GoalCodes.ISSUE_VC())
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_OUT_OF_BAND_INVITATION}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_OUT_OF_BAND_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)

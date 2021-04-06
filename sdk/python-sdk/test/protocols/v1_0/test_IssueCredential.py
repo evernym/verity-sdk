@@ -44,7 +44,7 @@ async def test_propose_credential():
     )
     msg = issue_credential.propose_credential_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         IssueCredential.MSG_FAMILY,
         IssueCredential.MSG_FAMILY_VERSION,
@@ -71,7 +71,7 @@ async def test_offer_credential():
     )
     msg = issue_credential.offer_credential_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         IssueCredential.MSG_FAMILY,
         IssueCredential.MSG_FAMILY_VERSION,
@@ -99,7 +99,7 @@ async def test_request_credential():
     issue_credential = IssueCredential(for_relationship, thread_id, cred_def_id, None, comment)
     msg = issue_credential.request_credential_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         IssueCredential.MSG_FAMILY,
         IssueCredential.MSG_FAMILY_VERSION,
@@ -121,7 +121,7 @@ async def test_reject_credential():
     issue_credential = IssueCredential(for_relationship, thread_id, None, None, comment)
     msg = issue_credential.reject_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         IssueCredential.MSG_FAMILY,
         IssueCredential.MSG_FAMILY_VERSION,
@@ -141,7 +141,7 @@ async def test_issue_credential():
     issue_credential = IssueCredential(for_relationship, thread_id)
     msg = issue_credential.issue_credential_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         IssueCredential.MSG_FAMILY,
         IssueCredential.MSG_FAMILY_VERSION,
@@ -161,7 +161,7 @@ async def test_status():
     issue_credential = IssueCredential(for_relationship, thread_id)
     msg = issue_credential.status_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         IssueCredential.MSG_FAMILY,
         IssueCredential.MSG_FAMILY_VERSION,

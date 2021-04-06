@@ -52,7 +52,7 @@ describe('IssueCredential', () => {
     )
     const msg = await issueCred.proposeCredentialMsg()
     expect(msg['@type']).to.equal(
-        `${issueCred.msgQualifier};spec/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.PROPOSE_CREDENTIAL}`
+        `${issueCred.msgQualifier}/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.PROPOSE_CREDENTIAL}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     assert(msg['~thread'].thid)
@@ -74,7 +74,7 @@ describe('IssueCredential', () => {
     )
     const msg = await issueCred.offerCredentialMsg()
     expect(msg['@type']).to.equal(
-        `${issueCred.msgQualifier};spec/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.OFFER_CREDENTIAL}`
+        `${issueCred.msgQualifier}/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.OFFER_CREDENTIAL}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     assert(msg['~thread'].thid)
@@ -96,7 +96,7 @@ describe('IssueCredential', () => {
     )
     const msg = await issueCred.requestCredentialMsg()
     expect(msg['@type']).to.equal(
-        `${issueCred.msgQualifier};spec/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.REQUEST_CREDENTIAL}`
+        `${issueCred.msgQualifier}/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.REQUEST_CREDENTIAL}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -114,7 +114,7 @@ describe('IssueCredential', () => {
     )
     const msg = await issueCred.rejectMsg()
     expect(msg['@type']).to.equal(
-        `${issueCred.msgQualifier};spec/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.REJECT_CREDENTIAL}`
+        `${issueCred.msgQualifier}/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.REJECT_CREDENTIAL}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -128,7 +128,7 @@ describe('IssueCredential', () => {
     )
     const msg = await issueCred.issueCredentialMsg()
     expect(msg['@type']).to.equal(
-        `${issueCred.msgQualifier};spec/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.ISSUE_CREDENTIAL}`
+        `${issueCred.msgQualifier}/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.ISSUE_CREDENTIAL}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
@@ -141,7 +141,7 @@ describe('IssueCredential', () => {
     )
     const msg = await issueCred.statusMsg()
     expect(msg['@type']).to.equal(
-        `${issueCred.msgQualifier};spec/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.CREDENTIAL_STATUS}`
+        `${issueCred.msgQualifier}/${issueCred.msgFamily}/${issueCred.msgFamilyVersion}/${issueCred.msgNames.CREDENTIAL_STATUS}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)

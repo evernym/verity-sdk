@@ -42,7 +42,7 @@ namespace VeritySDK.Test
                         context.EndpointUrl()
                 );
                 Assert.AreEqual(
-                        "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD",
+                        Util.EVERNYM_MSG_QUALIFIER + "/configs/0.6/UPDATE_COM_METHOD",
                         msg.getAsString("@type")
                 );
                 Assert.IsNotNull(msg.getAsString("@id"));
@@ -69,7 +69,7 @@ namespace VeritySDK.Test
                 byte[] message = testProtocol.updateMsgPacked(context);
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 Assert.AreEqual(
-                        "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD",
+                        Util.EVERNYM_MSG_QUALIFIER + "/configs/0.6/UPDATE_COM_METHOD",
                         unpackedMessage.getAsString("@type")
                 );
             });

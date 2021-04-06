@@ -73,7 +73,7 @@ namespace VeritySDK.Test
         {
 
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:123456789abcdefghi1234;spec/relationship/1.0/create", msg.getAsString("@type"));
+            Assert.AreEqual(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/create", msg.getAsString("@type"));
 
             if (hasLabel)
                 Assert.AreEqual(label.ToString(), msg.getAsString("label"));
@@ -110,7 +110,7 @@ namespace VeritySDK.Test
         private void testConnectionInvitationMsg(JsonObject msg, bool hasShortInvite)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:123456789abcdefghi1234;spec/relationship/1.0/connection-invitation", msg.getAsString("@type"));
+            Assert.AreEqual(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/connection-invitation", msg.getAsString("@type"));
             Assert.IsNotNull(forRelationship, msg.getAsString("~for_relationship"));
             if (hasShortInvite)
                 Assert.AreEqual(shortInvite, msg.getAsBoolean("shortInvite"));
@@ -127,7 +127,7 @@ namespace VeritySDK.Test
         private void testSMSConnectionInvitationMsg(JsonObject msg)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:123456789abcdefghi1234;spec/relationship/1.0/sms-connection-invitation", msg.getAsString("@type"));
+            Assert.AreEqual(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/sms-connection-invitation", msg.getAsString("@type"));
             Assert.IsNotNull(forRelationship, msg.getAsString("~for_relationship"));
         }
 
@@ -162,7 +162,7 @@ namespace VeritySDK.Test
         private void testOutOfBandInvitationMsg(JsonObject msg, bool hasShortInvite, GoalCode goalCode)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:123456789abcdefghi1234;spec/relationship/1.0/out-of-band-invitation", msg.getAsString("@type"));
+            Assert.AreEqual(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/out-of-band-invitation", msg.getAsString("@type"));
             Assert.IsTrue(msg.getAsString("goalCode").Equals(goalCode.code()));
             Assert.IsTrue(msg.getAsString("goal").Equals(goalCode.goalName()));
             if (hasShortInvite)
@@ -191,7 +191,7 @@ namespace VeritySDK.Test
         private void testSMSOutOfBandInvitationMsg(JsonObject msg, GoalCode goalCode)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:123456789abcdefghi1234;spec/relationship/1.0/sms-out-of-band-invitation", msg.getAsString("@type"));
+            Assert.AreEqual(Util.EVERNYM_MSG_QUALIFIER + "/relationship/1.0/sms-out-of-band-invitation", msg.getAsString("@type"));
             Assert.IsTrue(msg.getAsString("goalCode").Equals(goalCode.code()));
             Assert.IsTrue(msg.getAsString("goal").Equals(goalCode.goalName()));
         }

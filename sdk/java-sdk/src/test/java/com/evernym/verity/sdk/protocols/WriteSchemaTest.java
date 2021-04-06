@@ -87,9 +87,10 @@ public class WriteSchemaTest {
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
             assertEquals(
-                    "did:sov:123456789abcdefghi1234;spec/write-schema/0.6/write",
+                    Util.EVERNYM_MSG_QUALIFIER + "/write-schema/0.6/write",
                     unpackedMessage.getString("@type")
             );
+
         } catch(Exception e) {
             e.printStackTrace();
             fail();
