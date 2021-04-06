@@ -91,7 +91,7 @@ public class CommittedAnswerTest {
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
             assertEquals(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/ask-question",
+                    Util.COMMUNITY_MSG_QUALIFIER + "/committedanswer/1.0/ask-question",
                     unpackedMessage.getString("@type")
             );
         } catch(Exception e) {

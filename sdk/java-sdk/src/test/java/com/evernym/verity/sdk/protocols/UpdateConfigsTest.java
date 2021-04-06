@@ -68,7 +68,7 @@ public class UpdateConfigsTest {
         expectedConfigs.put("logoUrl", this.logoUrl);
 
         assertEquals(
-                "did:sov:123456789abcdefghi1234;spec/update-configs/0.6/update",
+                Util.EVERNYM_MSG_QUALIFIER + "/update-configs/0.6/update",
                 requestMsg.getString("@type")
         );
         assertNotNull(requestMsg.getString("@id"));
@@ -80,8 +80,9 @@ public class UpdateConfigsTest {
 
     private void testStatusMsg(JSONObject statusMsg) {
         assertEquals(
-                "did:sov:123456789abcdefghi1234;spec/update-configs/0.6/get-status",
-                statusMsg.getString("@type"));
+                Util.EVERNYM_MSG_QUALIFIER + "/update-configs/0.6/get-status",
+                statusMsg.getString("@type")
+        );
         assertNotNull(statusMsg.getString("@id"));
     }
 

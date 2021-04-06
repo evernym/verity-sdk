@@ -16,7 +16,7 @@ async def test_create():
     issuer_setup = IssuerSetup()
     msg = issuer_setup.create_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         IssuerSetup.MSG_FAMILY,
         IssuerSetup.MSG_FAMILY_VERSION,

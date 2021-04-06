@@ -82,7 +82,7 @@ public class BasicMessageTest {
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
             assertEquals(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/basicmessage/1.0/send-message",
+                    Util.COMMUNITY_MSG_QUALIFIER + "/basicmessage/1.0/send-message",
                     unpackedMessage.getString("@type")
             );
         } catch(Exception e) {

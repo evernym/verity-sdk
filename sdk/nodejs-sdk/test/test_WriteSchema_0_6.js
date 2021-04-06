@@ -43,7 +43,7 @@ describe('WriteSchema', () => {
     )
     const msg = await rel.writeMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.WRITE_SCHEMA}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.WRITE_SCHEMA}`
     )
     expect(msg['~thread'].thid).to.be.a('string')
     expect(msg.name).to.equal(name)

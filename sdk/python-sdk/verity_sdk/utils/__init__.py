@@ -6,15 +6,17 @@ from uuid import uuid4
 from indy import crypto
 from verity_sdk.utils.Context import Context
 
-EVERNYM_MSG_QUALIFIER = 'did:sov:123456789abcdefghi1234'
+USE_NEW_QUALIFIER_FORMAT = False
+
+EVERNYM_MSG_QUALIFIER = 'https://didcomm.evernym.com' if USE_NEW_QUALIFIER_FORMAT else 'did:sov:123489abcdefghi1234;spec'
 """QUALIFIER for evernym specific protocols"""
-COMMUNITY_MSG_QUALIFIER = 'did:sov:BzCbsNYhMrjHiqZDTUASHg'
+COMMUNITY_MSG_QUALIFIER = 'https://didcomm.org' if USE_NEW_QUALIFIER_FORMAT  else 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec'
 """QUALIFIER for community specified protocol"""
 
 
 def _prepare_forward_message(did: str, message: bytes) -> str:
     return json.dumps({
-        '@type': 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD',
+        '@type': EVERNYM_MSG_QUALIFIER+'/routing/1.0/FWD',
         '@fwd': did,
         '@msg': json.loads(message.decode('utf-8'))
     })
@@ -113,7 +115,7 @@ def get_message_type(msg_family: str,
 
     See: MesssageFamily.message_type
     """
-    return '{};spec/{}/{}/{}'.format(msg_qualifier, msg_family, msg_family_version, msg_name)
+    return '{}/{}/{}/{}'.format(msg_qualifier, msg_family, msg_family_version, msg_name)
 
 
 def get_problem_report_message_type(msg_family: str, msg_family_version: str) -> str:

@@ -37,7 +37,7 @@ describe('BasicMessage', () => {
     )
     const msg = await basicMessage.messageMsg()
     expect(msg['@type']).to.equal(
-        `${basicMessage.msgQualifier};spec/${basicMessage.msgFamily}/${basicMessage.msgFamilyVersion}/${basicMessage.msgNames.BASIC_MESSAGE}`
+        `${basicMessage.msgQualifier}/${basicMessage.msgFamily}/${basicMessage.msgFamilyVersion}/${basicMessage.msgNames.BASIC_MESSAGE}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg.content).to.equal(content)

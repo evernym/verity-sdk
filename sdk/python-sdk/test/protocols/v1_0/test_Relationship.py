@@ -45,7 +45,7 @@ async def test_create():
 
     msg = relationship.create_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -71,7 +71,7 @@ async def test_create_with_logo_url():
 
     msg = relationship.create_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -97,7 +97,7 @@ async def test_create_with_phone_number():
 
     msg = relationship.create_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -123,7 +123,7 @@ async def test_connection_invitation():
     msg = relationship.connection_invitation_msg(context)
     print(msg)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -147,7 +147,7 @@ async def test_connection_invitation_with_short_invite():
     msg = relationship.connection_invitation_msg(context, short_invite=short_invite)
     print(msg)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -171,7 +171,7 @@ async def test_sms_connection_invitation():
     msg = relationship.sms_connection_invitation_msg(context)
     print(msg)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -193,7 +193,7 @@ async def test_out_of_band_invitation():
 
     msg = relationship.out_of_band_invitation_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -218,7 +218,7 @@ async def test_out_of_band_invitation_with_goal():
 
     msg = relationship.out_of_band_invitation_msg(context, goal=GoalsList.ISSUE_VC)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -243,7 +243,7 @@ async def test_out_of_band_invitation_with_short_invite():
 
     msg = relationship.out_of_band_invitation_msg(context, short_invite=short_invite)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -268,7 +268,7 @@ async def test_sms_out_of_band_invitation():
 
     msg = relationship.sms_out_of_band_invitation_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,
@@ -292,7 +292,7 @@ async def test_sms_out_of_band_invitation_with_goal():
 
     msg = relationship.sms_out_of_band_invitation_msg(context, goal=GoalsList.ISSUE_VC)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         Relationship.MSG_FAMILY,
         Relationship.MSG_FAMILY_VERSION,

@@ -26,7 +26,7 @@ describe('OutOfBand', () => {
     )
     const msg = await rel.reuseMsg(null)
     expect(msg['@type']).to.equal(
-     `${rel.msgQualifier};spec/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.REUSE}`
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.REUSE}`
     )
     expect(msg.inviteUrl).to.equal(inviteUrl)
   })

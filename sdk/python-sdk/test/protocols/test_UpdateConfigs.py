@@ -22,7 +22,7 @@ async def test_update():
     update_configs = UpdateConfigs(name, logo_url)
     msg = update_configs.update_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         UpdateConfigs.MSG_FAMILY,
         UpdateConfigs.MSG_FAMILY_VERSION,
@@ -43,7 +43,7 @@ async def test_status():
     update_configs = UpdateConfigs()
     msg = update_configs.status_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
         UpdateConfigs.MSG_FAMILY,
         UpdateConfigs.MSG_FAMILY_VERSION,

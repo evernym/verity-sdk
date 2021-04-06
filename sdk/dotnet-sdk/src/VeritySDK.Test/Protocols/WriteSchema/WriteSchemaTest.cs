@@ -80,7 +80,7 @@ namespace VeritySDK.Test
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 testBaseMessage(unpackedMessage);
                 Assert.AreEqual(
-                        "did:sov:123456789abcdefghi1234;spec/write-schema/0.6/write",
+                        Util.EVERNYM_MSG_QUALIFIER + "/write-schema/0.6/write",
                         unpackedMessage.getAsString("@type")
                 );
             });

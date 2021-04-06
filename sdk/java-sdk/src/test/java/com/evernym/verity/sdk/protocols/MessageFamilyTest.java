@@ -15,25 +15,25 @@ public class MessageFamilyTest {
 
     @Test
     public void extractMessageName() throws InvalidMessageTypeException {
-        String name = testFamily.messageName("did:sov:123456789abcdefghi1234;spec/testing/0.1/test");
+        String name = testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1/test");
         assertEquals("test", name);
 
-        name = testFamily.messageName("did:sov:123456789abcdefghi1234;spec/testing/0.1/234asdf234@$");
+        name = testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1/234asdf234@$");
         assertEquals("234asdf234@$", name);
     }
 
     @Test(expected = InvalidMessageTypeException.class)
     public void invalidMessageFamily() throws InvalidMessageTypeException {
-        testFamily.messageName("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/testing/0.1/test");
+        testFamily.messageName(Util.COMMUNITY_MSG_QUALIFIER + "/testing/0.1/test");
     }
 
     @Test(expected = InvalidMessageTypeException.class)
     public void invalidMessageName() throws InvalidMessageTypeException {
-        testFamily.messageName("did:sov:123456789abcdefghi1234;spec/testing/0.1/");
+        testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1/");
     }
 
     @Test(expected = InvalidMessageTypeException.class)
     public void invalidMessageName2() throws InvalidMessageTypeException {
-        testFamily.messageName("did:sov:123456789abcdefghi1234;spec/testing/0.1-test");
+        testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "c/testing/0.1-test");
     }
 }

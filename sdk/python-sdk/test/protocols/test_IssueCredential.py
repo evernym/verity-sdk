@@ -33,7 +33,7 @@
 #     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
 #     msg = issue_credential.offer_credential_msg(context)
 #
-#     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+#     assert msg['@type'] == '{}/{}/{}/{}'.format(
 #         EVERNYM_MSG_QUALIFIER,
 #         IssueCredential.MSG_FAMILY,
 #         IssueCredential.MSG_FAMILY_VERSION,
@@ -59,7 +59,7 @@
 #     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
 #     msg = issue_credential.issue_credential_msg(context)
 #
-#     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+#     assert msg['@type'] == '{}/{}/{}/{}'.format(
 #         EVERNYM_MSG_QUALIFIER,
 #         IssueCredential.MSG_FAMILY,
 #         IssueCredential.MSG_FAMILY_VERSION,
@@ -79,7 +79,7 @@
 #     issue_credential = IssueCredential(for_relationship, None, name, cred_def_id, credential_values, price)
 #     msg = issue_credential.status_msg(context)
 #
-#     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+#     assert msg['@type'] == '{}/{}/{}/{}'.format(
 #         EVERNYM_MSG_QUALIFIER,
 #         IssueCredential.MSG_FAMILY,
 #         IssueCredential.MSG_FAMILY_VERSION,

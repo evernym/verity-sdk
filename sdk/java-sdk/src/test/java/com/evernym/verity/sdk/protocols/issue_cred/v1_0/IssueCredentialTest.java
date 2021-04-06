@@ -131,12 +131,12 @@ public class IssueCredentialTest extends TestBase {
 
     private void testProposalMessage(JSONObject msg) {
         testCommonProposeAndOfferMsg(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/propose", msg.getString("@type"));
+        assertEquals(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/propose", msg.getString("@type"));
     }
 
     private void testOfferMessage(JSONObject msg) {
         testCommonProposeAndOfferMsg(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/offer", msg.getString("@type"));
+        assertEquals(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/offer", msg.getString("@type"));
         assertEquals(msg.getString("price"), price);
         assertEquals(msg.getBoolean("auto_issue"), autoIssue);
         assertEquals(msg.getBoolean("by_invitation"), byInvitation);
@@ -144,14 +144,14 @@ public class IssueCredentialTest extends TestBase {
 
     private void testIssueCredMessage(JSONObject msg) {
         testBaseMessage(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/issue", msg.getString("@type"));
+        assertEquals(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/issue", msg.getString("@type"));
         assertEquals(threadId, msg.getJSONObject("~thread").getString("thid"));
 //        assertEquals(msg.getString("comment"), comment); // this is optional argument, this version is not able to send.
     }
 
     private void testRequestMessage(JSONObject msg) {
         testBaseMessage(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/request", msg.getString("@type"));
+        assertEquals(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/request", msg.getString("@type"));
         // this must be the same threadId as received, but this version does not support it
 //        assertEquals(threadId, msg.getJSONObject("~thread").getString("thid"));
         assertEquals(credDefId, msg.getString("cred_def_id"));
@@ -160,14 +160,14 @@ public class IssueCredentialTest extends TestBase {
 
     private void testRejectMessage(JSONObject msg) {
         testBaseMessage(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/reject", msg.getString("@type"));
+        assertEquals(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/reject", msg.getString("@type"));
         assertEquals(threadId, msg.getJSONObject("~thread").getString("thid"));
 //        assertEquals(msg.getString("comment"), comment); // this is optional argument, this version is not able to send.
     }
 
     private void testStatusMessage(JSONObject msg) {
         testBaseMessage(msg);
-        assertEquals("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/status", msg.getString("@type"));
+        assertEquals(Util.COMMUNITY_MSG_QUALIFIER + "/issue-credential/1.0/status", msg.getString("@type"));
         assertEquals(threadId, msg.getJSONObject("~thread").getString("thid"));
     }
 

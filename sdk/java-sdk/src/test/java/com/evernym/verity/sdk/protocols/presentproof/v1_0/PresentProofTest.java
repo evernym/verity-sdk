@@ -76,7 +76,7 @@ public class PresentProofTest {
     private void testRequestMsgMessages(JSONObject requestMsg) {
         testBaseMessage(requestMsg);
         assertEquals(
-                "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request",
+                Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/request",
                 requestMsg.getString("@type")
         );
         assertEquals(forRelationship, requestMsg.getString("~for_relationship"));
@@ -88,8 +88,9 @@ public class PresentProofTest {
     private void testStatusMsg(JSONObject statusMsg) {
         testBaseMessage(statusMsg);
         assertEquals(
-                "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/status",
-                statusMsg.getString("@type"));
+                Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/status",
+                statusMsg.getString("@type")
+        );
         assertEquals(forRelationship, statusMsg.getString("~for_relationship"));
     }
 
@@ -103,7 +104,7 @@ public class PresentProofTest {
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
             assertEquals(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request",
+                    Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/request",
                     unpackedMessage.getString("@type")
             );
         } catch(Exception e) {
@@ -124,7 +125,7 @@ public class PresentProofTest {
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
             assertEquals(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/status",
+                    Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/status",
                     unpackedMessage.getString("@type")
             );
         } catch(Exception e) {
@@ -145,7 +146,7 @@ public class PresentProofTest {
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
             assertEquals(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/accept-proposal",
+                    Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/accept-proposal",
                     unpackedMessage.getString("@type")
             );
         } catch(Exception e) {
@@ -166,7 +167,7 @@ public class PresentProofTest {
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
             assertEquals(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/reject",
+                    Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/reject",
                     unpackedMessage.getString("@type")
             );
             assertEquals("because", unpackedMessage.getString("reason"));

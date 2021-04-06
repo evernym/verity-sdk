@@ -33,7 +33,7 @@ async def test_request():
     present_proof = PresentProof(for_relationship, None, name, proof_attrs, proof_predicates)
     msg = present_proof.request_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         PresentProof.MSG_FAMILY,
         PresentProof.MSG_FAMILY_VERSION,
@@ -53,7 +53,7 @@ async def test_status():
     present_proof = PresentProof(for_relationship, thread_id)
     msg = present_proof.status_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         PresentProof.MSG_FAMILY,
         PresentProof.MSG_FAMILY_VERSION,
@@ -70,7 +70,7 @@ async def test_accept_proposal():
     present_proof = PresentProof(for_relationship, thread_id)
     msg = present_proof.accept_proposal_msg()
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         PresentProof.MSG_FAMILY,
         PresentProof.MSG_FAMILY_VERSION,
@@ -87,7 +87,7 @@ async def test_reject():
     present_proof = PresentProof(for_relationship, thread_id)
     msg = present_proof.reject_msg(reject_reason)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         PresentProof.MSG_FAMILY,
         PresentProof.MSG_FAMILY_VERSION,

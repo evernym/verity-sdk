@@ -30,7 +30,7 @@ async def test_ask():
                                        signature_required)
     msg = committed_answer.ask_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         CommittedAnswer.MSG_FAMILY,
         CommittedAnswer.MSG_FAMILY_VERSION,
@@ -55,7 +55,7 @@ async def test_status():
                                        signature_required)
     msg = committed_answer.status_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         CommittedAnswer.MSG_FAMILY,
         CommittedAnswer.MSG_FAMILY_VERSION,

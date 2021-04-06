@@ -43,7 +43,7 @@ public class IssuerSetupTest {
         IssuerSetupV0_6 p = IssuerSetup.v0_6();
         JSONObject msg = p.createMsg(context);
         assertEquals(
-                "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/create",
+                Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.6/create",
                 msg.getString("@type")
         );
         assertNotNull(msg.getString("@id"));
@@ -58,9 +58,10 @@ public class IssuerSetupTest {
             byte[] message = testProtocol.createMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
-                    "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/create",
+                    Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.6/create",
                     unpackedMessage.getString("@type")
             );
+
         } catch(Exception e) {
             e.printStackTrace();
             fail();

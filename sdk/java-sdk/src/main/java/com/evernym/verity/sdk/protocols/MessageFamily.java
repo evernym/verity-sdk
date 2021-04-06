@@ -80,9 +80,9 @@ public interface MessageFamily {
      * Combines the element of this message family into a prefix of the message type, without the message name
      * @return a prefix portion of the message type
      */
-    default String messageFamily() {
-        return qualifier() + ";spec/" + family() + "/" + version();
-    }
+    //default String messageFamily() { return qualifier() + ";spec/" + family() + "/" + version(); }
+    default String messageFamily() { return qualifier() + "/" + family() + "/" + version(); }
+
 
     /**
      * @deprecated replaced by {@link #messageFamily()}

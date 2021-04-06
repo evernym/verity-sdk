@@ -24,7 +24,7 @@
 #     connecting = Connecting(source_id, phone_number, include_public_did)
 #     msg = connecting.connect_msg(context)
 #
-#     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+#     assert msg['@type'] == '{}/{}/{}/{}'.format(
 #         EVERNYM_MSG_QUALIFIER,
 #         Connecting.MSG_FAMILY,
 #         Connecting.MSG_FAMILY_VERSION,
@@ -44,7 +44,7 @@
 #     connecting = Connecting(source_id, phone_number, include_public_did)
 #     msg = connecting.status_msg(context)
 #
-#     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+#     assert msg['@type'] == '{}/{}/{}/{}'.format(
 #         EVERNYM_MSG_QUALIFIER,
 #         Connecting.MSG_FAMILY,
 #         Connecting.MSG_FAMILY_VERSION,

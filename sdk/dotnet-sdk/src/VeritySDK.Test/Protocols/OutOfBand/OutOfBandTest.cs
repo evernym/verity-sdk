@@ -44,7 +44,7 @@ namespace VeritySDK.Test
         private void testHandshakeReuseMsg(JsonObject msg)
         {
             testBaseMessage(msg);
-            Assert.AreEqual("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/out-of-band/1.0/reuse", msg.getAsString("@type"));
+            Assert.AreEqual(Util.COMMUNITY_MSG_QUALIFIER + "/out-of-band/1.0/reuse", msg.getAsString("@type"));
             Assert.AreEqual("testForRelationship", msg.getAsString("~for_relationship"));
             Assert.AreEqual("testInviteUrl", msg.getAsString("inviteUrl"));
         }

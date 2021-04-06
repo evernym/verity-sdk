@@ -53,7 +53,7 @@ class MessageFamily:
         Returns:
             str: fully qualified message type
         """
-        return '{};spec/{}/{}/{}'.format(self.msg_qualifier, self.msg_family, self.msg_family_version, msg_name)
+        return '{}/{}/{}/{}'.format(self.msg_qualifier, self.msg_family, self.msg_family_version, msg_name)
 
     def get_message_type(self, msg_name):
         """

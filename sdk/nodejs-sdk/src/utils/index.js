@@ -6,9 +6,12 @@ const request = require('request-promise-native')
 const WrongSetupError = require('./WrongSetupError')
 const DbcUtil = require('./DbcUtil')
 
+const useNewQualifierFormat = false
+
 exports.constants = {
-  EVERNYM_MSG_QUALIFIER: 'did:sov:123456789abcdefghi1234',
-  COMMUNITY_MSG_QUALIFIER: 'did:sov:BzCbsNYhMrjHiqZDTUASHg'
+  EVERNYM_MSG_QUALIFIER: (useNewQualifierFormat ? 'https://didcomm.evernym.com' : 'did:sov:123456789abcdefghi1234;spec'),
+  COMMUNITY_MSG_QUALIFIER: (useNewQualifierFormat ? 'https://didcomm.org' : 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec'),
+  USE_NEW_QUALIFIER_FORMAT: useNewQualifierFormat
 }
 
 exports.WrongSetupError = WrongSetupError
@@ -69,7 +72,7 @@ exports.packMessage = async function (walletHandle, message, pairwiseRemoteDID, 
  */
 exports.prepareForwardMessage = async function (toDID, packedMessage) {
   const forwardMessage = {
-    '@type': 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD',
+    '@type': (useNewQualifierFormat ? 'https://didcomm.evernym.com/routing/1.0/FWD' : 'did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD'),
     '@fwd': toDID,
     '@msg': JSON.parse(packedMessage)
   }

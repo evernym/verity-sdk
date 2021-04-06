@@ -15,15 +15,17 @@ import java.util.concurrent.ExecutionException;
  * Static Utilities helper functions used for verity-sdk
  */
 public class Util {
+
+    public static final boolean QUALIFIER_TYPE_HTTP = false;
     /**
      * QUALIFIER for evernym specific protocols
      */
-    public static final String EVERNYM_MSG_QUALIFIER = "did:sov:123456789abcdefghi1234";
+    public static final String EVERNYM_MSG_QUALIFIER = QUALIFIER_TYPE_HTTP ? "https://didcomm.evernym.com" : "did:sov:123456789abcdefghi1234;spec";
 
     /**
      * QUALIFIER for community specified protocol
      */
-    public static final String COMMUNITY_MSG_QUALIFIER = "did:sov:BzCbsNYhMrjHiqZDTUASHg";
+    public static final String COMMUNITY_MSG_QUALIFIER = QUALIFIER_TYPE_HTTP ? "https://didcomm.org" : "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec";
 
     /**
      * Packages message (instructor and encryption) for the verity-application. Uses local private keys and remote
@@ -110,7 +112,7 @@ public class Util {
      */
     private static String prepareForwardMessage(String DID, byte[] message) {
         JSONObject fwdMessage = new JSONObject();
-        fwdMessage.put("@type", "did:sov:123456789abcdefghi1234;spec/routing/1.0/FWD");
+        fwdMessage.put("@type", EVERNYM_MSG_QUALIFIER+"/routing/1.0/FWD");
         fwdMessage.put("@fwd", DID);
         fwdMessage.put("@msg", new JSONObject(new String(message)));
         return fwdMessage.toString();
@@ -134,7 +136,6 @@ public class Util {
         }
     }
 
-
     /**
      * Combines elements the given of a message family static values with the given message name to produce a fully
      * qualified message type
@@ -155,7 +156,7 @@ public class Util {
      * @return a fully qualified message type
      */
     public static String getMessageType(String msgQualifier, String msgFamily, String msgFamilyVersion, String msgName) {
-        return msgQualifier + ";spec/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
+        return msgQualifier + "/" + msgFamily + "/" + msgFamilyVersion + "/" + msgName;
     }
 
     @Deprecated

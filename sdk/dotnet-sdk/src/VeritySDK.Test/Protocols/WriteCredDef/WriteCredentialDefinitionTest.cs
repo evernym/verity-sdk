@@ -89,7 +89,7 @@ namespace VeritySDK.Test
                 byte[] message = testProtocol.writeMsgPacked(context);
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 testBaseMessage(unpackedMessage);
-                Assert.AreEqual("did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/write", unpackedMessage.getAsString("@type"));
+                Assert.AreEqual(Util.EVERNYM_MSG_QUALIFIER + "/write-cred-def/0.6/write", unpackedMessage.getAsString("@type"));
             });
         }
 

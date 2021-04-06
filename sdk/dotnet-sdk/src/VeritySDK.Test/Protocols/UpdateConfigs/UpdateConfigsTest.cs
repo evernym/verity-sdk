@@ -63,7 +63,7 @@ namespace VeritySDK.Test
             expectedConfigs.Add("logoUrl", this.logoUrl);
 
             Assert.AreEqual(
-                    "did:sov:123456789abcdefghi1234;spec/update-configs/0.6/update",
+                    Util.EVERNYM_MSG_QUALIFIER + "/update-configs/0.6/update",
                     requestMsg.getAsString("@type")
             );
             Assert.IsNotNull(requestMsg.getAsString("@id"));
@@ -73,7 +73,7 @@ namespace VeritySDK.Test
         private void testStatusMsg(JsonObject statusMsg)
         {
             Assert.AreEqual(
-                    "did:sov:123456789abcdefghi1234;spec/update-configs/0.6/get-status",
+                    Util.EVERNYM_MSG_QUALIFIER + "/update-configs/0.6/get-status",
                     statusMsg.getAsString("@type"));
             Assert.IsNotNull(statusMsg.getAsString("@id"));
         }

@@ -93,7 +93,7 @@ public class WriteCredentialDefinitionTest {
             byte[] message = testProtocol.writeMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
-            assertEquals("did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/write", unpackedMessage.getString("@type"));
+            assertEquals(Util.EVERNYM_MSG_QUALIFIER + "/write-cred-def/0.6/write", unpackedMessage.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();

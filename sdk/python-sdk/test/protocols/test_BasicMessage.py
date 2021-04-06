@@ -25,7 +25,7 @@ async def test_message():
     basic_message = BasicMessage(for_relationship, None, content, sent_time, localization)
     msg = basic_message.message_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         BasicMessage.MSG_FAMILY,
         BasicMessage.MSG_FAMILY_VERSION,

@@ -30,7 +30,7 @@
 #                                      signature_required)
 #     msg = question_answer.ask_msg(context)
 #
-#     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+#     assert msg['@type'] == '{}/{}/{}/{}'.format(
 #         COMMUNITY_MSG_QUALIFIER,
 #         QuestionAnswer.MSG_FAMILY,
 #         QuestionAnswer.MSG_FAMILY_VERSION,
@@ -55,7 +55,7 @@
 #                                      signature_required)
 #     msg = question_answer.status_msg(context)
 #
-#     assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+#     assert msg['@type'] == '{}/{}/{}/{}'.format(
 #         COMMUNITY_MSG_QUALIFIER,
 #         QuestionAnswer.MSG_FAMILY,
 #         QuestionAnswer.MSG_FAMILY_VERSION,

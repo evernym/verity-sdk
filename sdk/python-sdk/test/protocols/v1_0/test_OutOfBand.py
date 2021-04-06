@@ -26,7 +26,7 @@ async def test_reuse():
 
     msg = relationship.reuse_msg(context)
 
-    assert msg['@type'] == '{};spec/{}/{}/{}'.format(
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
         COMMUNITY_MSG_QUALIFIER,
         OutOfBand.MSG_FAMILY,
         OutOfBand.MSG_FAMILY_VERSION,

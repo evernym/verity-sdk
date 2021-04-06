@@ -46,7 +46,7 @@ public class UpdateEndpointTest {
                     context.endpointUrl()
             );
             assertEquals(
-                    "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD",
+                    Util.EVERNYM_MSG_QUALIFIER + "/configs/0.6/UPDATE_COM_METHOD",
                     msg.getString("@type")
             );
             assertNotNull(msg.getString("@id"));
@@ -79,7 +79,7 @@ public class UpdateEndpointTest {
             byte [] message = testProtocol.updateMsgPacked(context);
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
-                    "did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD",
+                    Util.EVERNYM_MSG_QUALIFIER + "/configs/0.6/UPDATE_COM_METHOD",
                     unpackedMessage.getString("@type")
             );
 

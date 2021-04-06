@@ -69,7 +69,7 @@ namespace VeritySDK.Test
         {
             testBaseMessage(requestMsg);
             Assert.AreEqual(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request",
+                    Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/request",
                     requestMsg.getAsString("@type")
             );
             Assert.AreEqual(forRelationship, requestMsg.getAsString("~for_relationship"));
@@ -82,7 +82,7 @@ namespace VeritySDK.Test
         {
             testBaseMessage(statusMsg);
             Assert.AreEqual(
-                    "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/status",
+                    Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/status",
                     statusMsg.getAsString("@type"));
             Assert.AreEqual(forRelationship, statusMsg.getAsString("~for_relationship"));
         }
@@ -96,7 +96,7 @@ namespace VeritySDK.Test
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 testBaseMessage(unpackedMessage);
                 Assert.AreEqual(
-                        "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request",
+                        Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/request",
                         unpackedMessage.getAsString("@type")
                 );
             });
@@ -112,7 +112,7 @@ namespace VeritySDK.Test
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 testBaseMessage(unpackedMessage);
                 Assert.AreEqual(
-                        "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/status",
+                        Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/status",
                         unpackedMessage.getAsString("@type")
                 );
             });
@@ -128,7 +128,7 @@ namespace VeritySDK.Test
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 testBaseMessage(unpackedMessage);
                 Assert.AreEqual(
-                        "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/accept-proposal",
+                        Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/accept-proposal",
                         unpackedMessage.getAsString("@type")
                 );
             });
@@ -144,7 +144,7 @@ namespace VeritySDK.Test
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 testBaseMessage(unpackedMessage);
                 Assert.AreEqual(
-                        "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/reject",
+                        Util.COMMUNITY_MSG_QUALIFIER + "/present-proof/1.0/reject",
                         unpackedMessage.getAsString("@type")
                 );
                 Assert.AreEqual("because", unpackedMessage.getAsString("reason"));
