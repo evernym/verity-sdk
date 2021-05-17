@@ -1,0 +1,46 @@
+site_name: Verity SDK
+
+theme:
+  name: material
+  logo: "assets/logo.jpg"
+  features:
+    - navigation.instant
+  palette:
+    primary: white
+    accent: blue
+
+nav:
+  - Getting Started: ./getting-started/getting-started.md
+  - Language Specific SDK:
+      - .NET Verity Flow: ./getting-started/dotnet-verity-flow.md
+      - Java Verity Flow: ./getting-started/java-verity-flow.md
+      - Node.js Verity Flow: ./getting-started/nodejs-verity-flow.md
+      - Python Verity Flow: ./getting-started/python-verity-flow.md
+  - FAQ: ./FAQ.md
+
+# Extensions
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - markdown.extensions.def_list
+  - markdown.extensions.footnotes
+  - markdown.extensions.meta
+  - markdown.extensions.toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
