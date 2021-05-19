@@ -217,7 +217,9 @@ async function issuer () {
 
   // create invitation for the relationship
   const relationshipInvitationMessage = {
-    '~for_relationship': relationshipDid
+    '~for_relationship': relationshipDid,
+    'goalCode': 'issue-vc',
+    'goal': 'To issue a credential'
   }
   const relationshipInvitation =
     new Promise(function (resolve, reject) {

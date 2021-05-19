@@ -1,7 +1,6 @@
 'use strict'
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
-const GoalCodes = require('./GoalCodes')
 
 /**
  * An interface for controlling a 1.0 Relationship protocol.
@@ -15,7 +14,6 @@ class Relationship extends Protocol {
    * @param threadId the thread id of the already started protocol
    * @param label the label presented in the invitation to connect to this relationship
    * @param logoUrl logo url presented in invitation
-   * @param phoneNumber mobile phone number in international format (eg. +18011234567) which can be used for sending SMS invitations.
    * @return 1.0 Relationship object
    *
    * @property {String} msgFamily - 'relationship'
@@ -29,7 +27,7 @@ class Relationship extends Protocol {
    * @property {String} this.msgNames.CREATED - 'created'
    * @property {String} this.msgNames.INVITATION - 'invitation'
    */
-  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null, phoneNumber = null) {
+  constructor (forRelationship = null, threadId = null, label = null, logoUrl = null) {
     const msgFamily = 'relationship'
     const msgFamilyVersion = '1.0'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
@@ -46,7 +44,6 @@ class Relationship extends Protocol {
     this.forRelationship = forRelationship
     this.label = label
     this.logoUrl = logoUrl
-    this.phoneNumber = phoneNumber
   }
 
   /**
@@ -64,9 +61,6 @@ class Relationship extends Protocol {
     }
     if (this.logoUrl) {
       msg.logoUrl = this.logoUrl
-    }
-    if (this.phoneNumber) {
-      msg.phoneNumber = this.phoneNumber
     }
     return msg
   }
@@ -134,13 +128,15 @@ class Relationship extends Protocol {
   /**
      * Creates the control message without packaging and sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param phoneNumber mobile phone number in international format (eg. +18011234567) which can be used for sending SMS invitations.
      * @return the constructed message (JSON object)
      *
      * @see #smsConnectionInvitation
      */
-  async smsConnectionInvitationMsg (context) {
+  async smsConnectionInvitationMsg (context, phoneNumber) {
     var msg = this._getBaseMessage(this.msgNames.SMS_CONNECTION_INVITATION)
     msg['~for_relationship'] = this.forRelationship
+    msg.phoneNumber = phoneNumber
     msg = this._addThread(msg)
     return msg
   }
@@ -148,21 +144,23 @@ class Relationship extends Protocol {
   /**
      * Creates and packages message without sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param phoneNumber mobile phone number in international format (eg. +18011234567) which can be used for sending SMS invitations.
      * @return the byte array ready for transport
      *
      * @see #smsConnectionInvitation
      */
-  async smsConnectionInvitationMsgPacked (context) {
-    return this.getMessageBytes(context, await this.smsConnectionInvitationMsg(context))
+  async smsConnectionInvitationMsgPacked (context, phoneNumber) {
+    return this.getMessageBytes(context, await this.smsConnectionInvitationMsg(context, phoneNumber))
   }
 
   /**
      * Ask for aries invitation from the verity-application agent for the relationship created by this protocol
      *
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param phoneNumber mobile phone number in international format (eg. +18011234567) which can be used for sending SMS invitations.
      */
-  async smsConnectionInvitation (context) {
-    await this.sendMessage(context, await this.smsConnectionInvitationMsgPacked(context))
+  async smsConnectionInvitation (context, phoneNumber) {
+    await this.sendMessage(context, await this.smsConnectionInvitationMsgPacked(context, phoneNumber))
   }
 
   /**
@@ -174,7 +172,7 @@ class Relationship extends Protocol {
    *
    * @see #outOfBandInvitation
    */
-  async outOfBandInvitationMsg (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
+  async outOfBandInvitationMsg (context, shortInvite = null, goal = null) {
     var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
@@ -198,7 +196,7 @@ class Relationship extends Protocol {
    *
    * @see #outOfBandInvitation
    */
-  async outOfBandInvitationMsgPacked (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
+  async outOfBandInvitationMsgPacked (context, shortInvite = null, goal = null) {
     return this.getMessageBytes(context, await this.outOfBandInvitationMsg(context, shortInvite, goal))
   }
 
@@ -209,21 +207,23 @@ class Relationship extends Protocol {
    * @param shortInvite enables short version of invite to be generated
    * @param goal goal code for providing the goal of the connection
    */
-  async outOfBandInvitation (context, shortInvite = null, goal = GoalCodes.P2P_MESSAGING()) {
+  async outOfBandInvitation (context, shortInvite = null, goal = null) {
     await this.sendMessage(context, await this.outOfBandInvitationMsgPacked(context, shortInvite, goal))
   }
 
   /**
    * Creates the control message without packaging and sending it.
    * @param context an instance of the Context object initialized to a verity-application agent
+   * @param phoneNumber mobile phone number in international format (eg. +18011234567) which can be used for sending SMS invitations.
    * @param goal goal code for providing the goal of the connection
    * @return the constructed message (JSON object)
    *
    * @see #smsOutOfBandInvitation
    */
-  async smsOutOfBandInvitationMsg (context, goal = GoalCodes.P2P_MESSAGING()) {
+  async smsOutOfBandInvitationMsg (context, phoneNumber, goal = null) {
     var msg = this._getBaseMessage(this.msgNames.SMS_OUT_OF_BAND_INVITATION)
     msg['~for_relationship'] = this.forRelationship
+    msg.phoneNumber = phoneNumber
     msg = this._addThread(msg)
 
     if (goal != null) {
@@ -236,23 +236,25 @@ class Relationship extends Protocol {
   /**
    * Creates and packages message without sending it.
    * @param context an instance of the Context object initialized to a verity-application agent
+   * @param phoneNumber mobile phone number in international format (eg. +18011234567) which can be used for sending SMS invitations.
    * @param goal goal code for providing the goal of the connection
    * @return the byte array ready for transport
    *
    * @see #smsOutOfBandInvitation
    */
-  async smsOutOfBandInvitationMsgPacked (context, goal = GoalCodes.P2P_MESSAGING()) {
-    return this.getMessageBytes(context, await this.smsOutOfBandInvitationMsg(context, goal))
+  async smsOutOfBandInvitationMsgPacked (context, phoneNumber, goal) {
+    return this.getMessageBytes(context, await this.smsOutOfBandInvitationMsg(context, phoneNumber, goal))
   }
 
   /**
    * Ask for SMS aries out of band invitation from the verity-application agent for the relationship created by this protocol
    *
    * @param context an instance of the Context object initialized to a verity-application agent
+   * @param phoneNumber mobile phone number in international format (eg. +18011234567) which can be used for sending SMS invitations.
    * @param goal goal code for providing the goal of the connection
    */
-  async smsOutOfBandInvitation (context, goal = GoalCodes.P2P_MESSAGING()) {
-    await this.sendMessage(context, await this.smsOutOfBandInvitationMsgPacked(context, goal))
+  async smsOutOfBandInvitation (context, phoneNumber, goal = null) {
+    await this.sendMessage(context, await this.smsOutOfBandInvitationMsgPacked(context, phoneNumber, goal))
   }
 }
 

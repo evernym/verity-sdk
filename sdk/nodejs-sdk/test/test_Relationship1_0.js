@@ -41,7 +41,6 @@ describe('Relationship', () => {
     expect(msg['~thread'].thid).to.equal(threadId)
     expect(msg.label).to.equal(label)
     expect(msg.logoUrl).to.an('undefined')
-    expect(msg.phoneNumber).to.an('undefined')
   })
 
   it('should build CREATE msg correctly with logo url', async () => {
@@ -58,25 +57,6 @@ describe('Relationship', () => {
     expect(msg['~thread'].thid).to.equal(threadId)
     expect(msg.label).to.equal(label)
     expect(msg.logoUrl).to.equal(logoUrl)
-    expect(msg.phoneNumber).to.an('undefined')
-  })
-
-  it('should build CREATE msg correctly with phone number', async () => {
-    const rel = new Relationship(
-      null,
-      threadId,
-      label,
-      logoUrl,
-      phoneNumber
-    )
-    const msg = await rel.createMsg(null)
-    expect(msg['@type']).to.equal(
-     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.CREATE}`
-    )
-    expect(msg['~thread'].thid).to.equal(threadId)
-    expect(msg.label).to.equal(label)
-    expect(msg.logoUrl).to.equal(logoUrl)
-    expect(msg.phoneNumber).to.equal(phoneNumber)
   })
 
   it('should build INVITATION msg correctly', async () => {
@@ -109,12 +89,13 @@ describe('Relationship', () => {
       forRelationship,
       threadId
     )
-    const msg = await rel.smsConnectionInvitationMsg(null)
+    const msg = await rel.smsConnectionInvitationMsg(null, phoneNumber)
     expect(msg['@type']).to.equal(
      `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_CONNECTION_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
+    expect(msg.phoneNumber).to.equal(phoneNumber)
   })
   it('should build OutOfBand invitation msg correctly', async () => {
     const rel = new Relationship(
@@ -127,8 +108,8 @@ describe('Relationship', () => {
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
-    expect(msg.goalCode).to.equal(GoalCodes.P2P_MESSAGING().code)
-    expect(msg.goal).to.equal(GoalCodes.P2P_MESSAGING().goalName)
+    expect(msg.goalCode).to.an('undefined')
+    expect(msg.goal).to.an('undefined')
   })
   it('should build OutOfBand invitation msg correctly with goal', async () => {
     const rel = new Relationship(
@@ -155,8 +136,8 @@ describe('Relationship', () => {
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
-    expect(msg.goalCode).to.equal('p2p-messaging')
-    expect(msg.goal).to.equal('To establish a peer-to-peer messaging relationship')
+    expect(msg.goalCode).to.an('undefined')
+    expect(msg.goal).to.an('undefined')
     expect(msg.shortInvite).to.equal(shortInvite)
   })
   it('should build SMS OutOfBand invitation msg correctly', async () => {
@@ -164,26 +145,28 @@ describe('Relationship', () => {
       forRelationship,
       threadId
     )
-    const msg = await rel.smsOutOfBandInvitationMsg(null)
+    const msg = await rel.smsOutOfBandInvitationMsg(null, phoneNumber)
     expect(msg['@type']).to.equal(
      `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_OUT_OF_BAND_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
-    expect(msg.goalCode).to.equal(GoalCodes.P2P_MESSAGING().code)
-    expect(msg.goal).to.equal(GoalCodes.P2P_MESSAGING().goalName)
+    expect(msg.phoneNumber).to.equal(phoneNumber)
+    expect(msg.goalCode).to.an('undefined')
+    expect(msg.goal).to.an('undefined')
   })
   it('should build SMS OutOfBand invitation msg correctly with goal', async () => {
     const rel = new Relationship(
       forRelationship,
       threadId
     )
-    const msg = await rel.smsOutOfBandInvitationMsg(null, GoalCodes.ISSUE_VC())
+    const msg = await rel.smsOutOfBandInvitationMsg(null, phoneNumber, GoalCodes.ISSUE_VC())
     expect(msg['@type']).to.equal(
      `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.SMS_OUT_OF_BAND_INVITATION}`
     )
     expect(msg['~for_relationship']).to.equal(forRelationship)
     expect(msg['~thread'].thid).to.equal(threadId)
+    expect(msg.phoneNumber).to.equal(phoneNumber)
     expect(msg.goalCode).to.equal(GoalCodes.ISSUE_VC().code)
     expect(msg.goal).to.equal(GoalCodes.ISSUE_VC().goalName)
   })
