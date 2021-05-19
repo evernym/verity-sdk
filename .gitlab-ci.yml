@@ -1,4 +1,4 @@
-image: gitlab.corp.evernym.com:4567/dev/containers/build-sdk:134b350a
+image: registry.gitlab.com/evernym/verity/verity-sdk/build-sdk:134b350a
 
 stages:
   - test
@@ -65,7 +65,7 @@ java-publish:
   when: on_success
   only:
     refs:
-      - "master@dev/verity/verity-sdk"
+      - "main@evernym/verity/verity-sdk"
     changes:
       - sdk/java-sdk/**/*
       - .gitlab-ci.yml
@@ -87,7 +87,7 @@ java-release:
   allow_failure: true
   only:
     refs:
-      - tags@dev/verity/verity-sdk
+      - tags@evernym/verity/verity-sdk
 
 .python-common:
   variables:
@@ -138,7 +138,7 @@ python-publish:
     - make upload
   only:
     refs:
-      - "master@dev/verity/verity-sdk"
+      - "main@evernym/verity/verity-sdk"
     changes:
       - sdk/python-sdk/**/*
       - .gitlab-ci.yml
@@ -160,7 +160,7 @@ python-release:
   allow_failure: true
   only:
     refs:
-      - tags@dev/verity/verity-sdk
+      - tags@evernym/verity/verity-sdk
 
 .nodejs-common:
   before_script:
@@ -202,7 +202,7 @@ nodejs-publish:
     - npm run publish
   only:
     refs:
-      - master@dev/verity/verity-sdk
+      - main@evernym/verity/verity-sdk
     changes:
       - sdk/nodejs-sdk/**/*
       - .gitlab-ci.yml
@@ -225,7 +225,7 @@ nodejs-release:
   allow_failure: true
   only:
     refs:
-      - tags@dev/verity/verity-sdk
+      - tags@evernym/verity/verity-sdk
 
 .dotnet-common:
   before_script:
@@ -287,7 +287,7 @@ dotnet-publish:
   when: on_success
   only:
     refs:
-      - master@dev/verity/verity-sdk
+      - main@evernym/verity/verity-sdk
     changes:
       - sdk/dotnet-sdk/**/*
       - .gitlab-ci.yml
@@ -313,7 +313,7 @@ dotnet-release:
   allow_failure: true
   only:
     refs:
-      - tags@dev/verity/verity-sdk
+      - tags@evernym/verity/verity-sdk
 
 
 verity-image:
@@ -332,7 +332,7 @@ verity-image:
     - echo "{\"auths\":{\"$DOCKER_REGISTRY\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR/verity --dockerfile $CI_PROJECT_DIR/verity/verity.dockerfile --destination evernymdev/$DOCKER_REPOSITORY:$RELEASE_VERSION --destination evernymdev/$DOCKER_REPOSITORY:stable
   only:
-    - tags@dev/verity/verity-sdk
+    - tags@evernym/verity/verity-sdk
 
 sdk-sample-app-image:
   stage: publish-docker
@@ -350,4 +350,4 @@ sdk-sample-app-image:
     - echo "{\"auths\":{\"$DOCKER_REGISTRY\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/samples/sdk/Dockerfile --destination evernymdev/$DOCKER_REPOSITORY:$RELEASE_VERSION --destination evernymdev/$DOCKER_REPOSITORY:stable
   only:
-    - tags@dev/verity/verity-sdk
+    - tags@evernym/verity/verity-sdk
