@@ -56,7 +56,6 @@ async def test_create():
     assert msg['~thread']['thid'] is not None
     assert msg['label'] == label
     assert 'logoUrl' not in msg
-    assert 'phoneNumber' not in msg
 
 
 @pytest.mark.asyncio
@@ -82,33 +81,6 @@ async def test_create_with_logo_url():
     assert msg['~thread']['thid'] is not None
     assert msg['label'] == label
     assert msg['logoUrl'] == logo_url
-    assert 'phoneNumber' not in msg
-
-
-@pytest.mark.asyncio
-async def test_create_with_phone_number():
-    context = await Context.create_with_config(await get_test_config())
-    relationship = Relationship(
-        for_relationship=for_relationship,
-        thread_id=thread_id,
-        label=label,
-        phone_number=phone_number
-    )
-
-    msg = relationship.create_msg(context)
-
-    assert msg['@type'] == '{}/{}/{}/{}'.format(
-        EVERNYM_MSG_QUALIFIER,
-        Relationship.MSG_FAMILY,
-        Relationship.MSG_FAMILY_VERSION,
-        Relationship.CREATE
-    )
-    assert msg['@id'] is not None
-    assert msg['~thread'] is not None
-    assert msg['~thread']['thid'] is not None
-    assert msg['label'] == label
-    assert 'logoUrl' not in msg
-    assert msg['phoneNumber'] == phone_number
 
 
 @pytest.mark.asyncio
@@ -168,7 +140,7 @@ async def test_sms_connection_invitation():
         thread_id=thread_id
     )
 
-    msg = relationship.sms_connection_invitation_msg(context)
+    msg = relationship.sms_connection_invitation_msg(context, phone_number)
     print(msg)
 
     assert msg['@type'] == '{}/{}/{}/{}'.format(
@@ -181,6 +153,7 @@ async def test_sms_connection_invitation():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == for_relationship
+    assert msg['phoneNumber'] == phone_number
 
 
 @pytest.mark.asyncio
@@ -203,8 +176,8 @@ async def test_out_of_band_invitation():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == for_relationship
-    assert msg['goalCode'] == GoalsList.P2P_MESSAGING.value.code
-    assert msg['goal'] == GoalsList.P2P_MESSAGING.value.name
+    assert 'goalCode' not in msg
+    assert 'goal' not in msg
     assert 'shortInvite' not in msg
 
 
@@ -253,8 +226,8 @@ async def test_out_of_band_invitation_with_short_invite():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == for_relationship
-    assert msg['goalCode'] == GoalsList.P2P_MESSAGING.value.code
-    assert msg['goal'] == GoalsList.P2P_MESSAGING.value.name
+    assert 'goalCode' not in msg
+    assert 'goal' not in msg
     assert msg['shortInvite'] == short_invite
 
 
@@ -266,7 +239,7 @@ async def test_sms_out_of_band_invitation():
         thread_id=thread_id
     )
 
-    msg = relationship.sms_out_of_band_invitation_msg(context)
+    msg = relationship.sms_out_of_band_invitation_msg(context, phone_number)
 
     assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -278,8 +251,9 @@ async def test_sms_out_of_band_invitation():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == for_relationship
-    assert msg['goalCode'] == GoalsList.P2P_MESSAGING.value.code
-    assert msg['goal'] == GoalsList.P2P_MESSAGING.value.name
+    assert msg['phoneNumber'] == phone_number
+    assert 'goalCode' not in msg
+    assert 'goal' not in msg
 
 
 @pytest.mark.asyncio
@@ -290,7 +264,7 @@ async def test_sms_out_of_band_invitation_with_goal():
         thread_id=thread_id
     )
 
-    msg = relationship.sms_out_of_band_invitation_msg(context, goal=GoalsList.ISSUE_VC)
+    msg = relationship.sms_out_of_band_invitation_msg(context, phone_number, goal=GoalsList.ISSUE_VC)
 
     assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -302,5 +276,6 @@ async def test_sms_out_of_band_invitation_with_goal():
     assert msg['~thread'] is not None
     assert msg['~thread']['thid'] is not None
     assert msg['~for_relationship'] == for_relationship
+    assert msg['phoneNumber'] == phone_number
     assert msg['goalCode'] == GoalsList.ISSUE_VC.value.code
     assert msg['goal'] == GoalsList.ISSUE_VC.value.name

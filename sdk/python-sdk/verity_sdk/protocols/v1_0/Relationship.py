@@ -68,7 +68,6 @@ class Relationship(Protocol):
                  thread_id: str = None,
                  label: str = None,
                  logo_url: str = None,
-                 phone_number: str = None
                  ):
         """
         Args:
@@ -76,7 +75,6 @@ class Relationship(Protocol):
             thread_id (str): the thread id of the already started protocol
             label (str): he label presented in the invitation to connect to this relationship
             logo_url (str): logo url presented in invitation
-            phone_number (str): Mobile phone number in international format, eg. +18011234567
         """
         super().__init__(
             self.MSG_FAMILY,
@@ -88,7 +86,6 @@ class Relationship(Protocol):
         self.for_relationship = for_relationship
         self.label = label
         self.logo_url = logo_url
-        self.phone_number = phone_number
 
     async def create(self, context):
         """
@@ -115,8 +112,6 @@ class Relationship(Protocol):
             msg['label'] = self.label
         if self.logo_url:
             msg['logoUrl'] = self.logo_url
-        if self.phone_number:
-            msg['phoneNumber'] = self.phone_number
 
         return msg
 
@@ -171,39 +166,43 @@ class Relationship(Protocol):
         """
         return await self.get_message_bytes(context, self.connection_invitation_msg(context, short_invite))
 
-    async def sms_connection_invitation(self, context: Context):
+    async def sms_connection_invitation(self, context: Context, phone_number: str):
         """
         Ask for SMS aries invitation from the verity-application agent for the relationship created by this protocol
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            phone_number (str): Mobile phone number in international format, eg. +18011234567
         """
-        await self.send_message(context, await self.sms_connection_invitation_msg_packed(context))
+        await self.send_message(context, await self.sms_connection_invitation_msg_packed(context, phone_number))
 
-    def sms_connection_invitation_msg(self, context: Context):
+    def sms_connection_invitation_msg(self, context: Context, phone_number: str):
         """
         Creates the control message without packaging and sending it.
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            phone_number (str): Mobile phone number in international format, eg. +18011234567
         Return:
             the constructed message (dict object)
         """
         msg = self._get_base_message(self.SMS_CONNECTION_INVITATION)
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
+        msg['phoneNumber'] = phone_number
         return msg
 
-    async def sms_connection_invitation_msg_packed(self, context: Context):
+    async def sms_connection_invitation_msg_packed(self, context: Context, phone_number: str):
         """
         Creates and packages message without sending it.
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            phone_number (str): Mobile phone number in international format, eg. +18011234567
         Return:
             the bytes ready for transport
         """
-        return await self.get_message_bytes(context, self.sms_connection_invitation_msg(context))
+        return await self.get_message_bytes(context, self.sms_connection_invitation_msg(context, phone_number))
 
     async def out_of_band_invitation(self,
                                      context: Context,
@@ -223,7 +222,7 @@ class Relationship(Protocol):
     def out_of_band_invitation_msg(self,
                                    context: Context,
                                    short_invite: bool = None,
-                                   goal: GoalsList = GoalsList.P2P_MESSAGING):
+                                   goal: GoalsList = None):
         """
         Creates the control message without packaging and sending it.
 
@@ -249,7 +248,7 @@ class Relationship(Protocol):
     async def out_of_band_invitation_msg_packed(self,
                                                 context: Context,
                                                 short_invite: bool = None,
-                                                goal: GoalsList = GoalsList.P2P_MESSAGING):
+                                                goal: GoalsList = None):
         """
         Creates and packages message without sending it.
 
@@ -264,25 +263,29 @@ class Relationship(Protocol):
 
     async def sms_out_of_band_invitation(self,
                                          context: Context,
-                                         goal: GoalsList = GoalsList.P2P_MESSAGING):
+                                         phone_number: str,
+                                         goal: GoalsList = None):
         """
         Ask for SMS aries out of band invitation from the verity-application agent for the relationship
         created by this protocol
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            phone_number (str): Mobile phone number in international format, eg. +18011234567
             goal (GoalsList): the initial intended goal of the relationship (this goal is expressed in the invite)
         """
-        await self.send_message(context, await self.sms_out_of_band_invitation_msg_packed(context, goal))
+        await self.send_message(context, await self.sms_out_of_band_invitation_msg_packed(context, phone_number, goal))
 
     def sms_out_of_band_invitation_msg(self,
                                        context: Context,
-                                       goal: GoalsList = GoalsList.P2P_MESSAGING):
+                                       phone_number: str,
+                                       goal: GoalsList = None):
         """
         Creates the control message without packaging and sending it.
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            phone_number (str): Mobile phone number in international format, eg. +18011234567
             goal (GoalsList): the initial intended goal of the relationship (this goal is expressed in the invite)
         Return:
             the constructed message (dict object)
@@ -291,6 +294,7 @@ class Relationship(Protocol):
         self._add_thread(msg)
         self._add_relationship(msg, self.for_relationship)
 
+        msg['phoneNumber'] = phone_number
         if goal:
             msg['goalCode'] = goal.value.code
             msg['goal'] = goal.value.name
@@ -299,14 +303,16 @@ class Relationship(Protocol):
 
     async def sms_out_of_band_invitation_msg_packed(self,
                                                     context: Context,
-                                                    goal: GoalsList = GoalsList.P2P_MESSAGING):
+                                                    phone_number: str,
+                                                    goal: GoalsList = None):
         """
         Creates and packages message without sending it.
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            phone_number (str): Mobile phone number in international format, eg. +18011234567
             goal (GoalsList): the initial intended goal of the relationship (this goal is expressed in the invite)
         Return:
             the bytes ready for transport
         """
-        return await self.get_message_bytes(context, self.sms_out_of_band_invitation_msg(context, goal))
+        return await self.get_message_bytes(context, self.sms_out_of_band_invitation_msg(context, phone_number, goal))
