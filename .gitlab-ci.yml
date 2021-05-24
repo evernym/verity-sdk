@@ -91,10 +91,10 @@ java-release:
 
 .python-common:
   variables:
-    DEV_VERSION: '$DEV_BASE_VERSION.$CI_COMMIT_SHORT_SHA'
+    DEV_PYPI_VERSION: '$DEV_BASE_VERSION+$CI_COMMIT_SHORT_SHA'
   before_script:
     - cd sdk/python-sdk/
-    - echo "VERSION = '$DEV_VERSION'" > verity_sdk/version.py
+    - echo "VERSION = '$DEV_PYPI_VERSION'" > verity_sdk/version.py
 
 python-test:
   stage: test
@@ -135,7 +135,9 @@ python-publish:
   extends:
     - .python-common
   script:
-    - make upload
+    - pip3 install --upgrade keyrings.alt  
+    - python3 setup.py sdist bdist_wheel
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python3 -m twine upload --verbose --repository-url $CI_SERVER_URL/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
   only:
     refs:
       - "main@evernym/verity/verity-sdk"
@@ -199,13 +201,20 @@ nodejs-publish:
     - .nodejs-common
   script:
     - npm run package
-    - npm run publish
-  only:
-    refs:
-      - main@evernym/verity/verity-sdk
-    changes:
-      - sdk/nodejs-sdk/**/*
-      - .gitlab-ci.yml
+    - echo "//gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/npm/:_authToken=$CI_JOB_TOKEN" > .npmrc
+    - echo "@evernym:verity-sdk=https://gitlab.com/api/v4/packages/npm/" >> .npmrc
+    - npm config set @evernym:verity-sdk https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/npm/
+    - sed -i "s/CI_PROJECT_ID/$CI_PROJECT_ID/" package.json 
+    - cat .npmrc
+    - cat package.json
+    - npm config list
+    - npm publish
+#  only:
+#    refs:
+#      - main@evernym/verity/verity-sdk
+#    changes:
+#      - sdk/nodejs-sdk/**/*
+#      - .gitlab-ci.yml
 
 nodejs-release:
   stage: publish
