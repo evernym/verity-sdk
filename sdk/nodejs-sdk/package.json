@@ -1,7 +1,8 @@
 {
-  "name": "verity-sdk",
+  "name": "@evernym/verity-sdk",
   "author": "Evernym, Inc. <dev@evernym.com>",
   "version": "0.0.0-SNAPSHOT",
+  "publishConfig": { "@evernym:registry":" https://gitlab.com/api/v4/projects/CI_PROJECT_ID/packages/npm/ "},
   "description": "The official Node.js SDK for Evernym's Verity",
   "repository": {
     "type": "git",
@@ -13,8 +14,7 @@
     "test": "mocha",
     "lint": "standard",
     "lint-fix": "standard --fix",
-    "package": "version=\"$(cat package.json | jq -r .version)\"; npm pack && mv verity-sdk-$version.tgz verity-sdk_$version.tgz",
-    "publish": "version=\"$(cat package.json | jq -r .version)\"; curl -u \"${KRK_USERNAME}:${KRK_PASSWORD}\" -X POST -F \"file=@verity-sdk_$version.tgz\" https://kraken.corp.evernym.com/repo/npm/upload",
+    "package": "version=\"$(cat package.json | jq -r .version)\"; npm pack && mv evernym-verity-sdk-$version.tgz evernym-verity-sdk_$version.tgz",
     "doc-build": "./node_modules/.bin/jsdoc src -r -c doc/conf.json -d doc/_build"
   },
   "keywords": [
