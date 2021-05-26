@@ -45,18 +45,6 @@ namespace VeritySDK.Protocols.Relationship
         }
 
         /// <summary>
-        /// Constructor for the 1.0 Relationship object. This constructor creates an object that is ready to create a new relationship. 
-        /// </summary>
-        /// <param name="label">the label presented in the invitation to connect to this relationship</param>
-        /// <param name="logoUrl">logo url presented in invitation</param>
-        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
-        /// <returns>1.0 Relationship object</returns>
-        public static RelationshipV1_0 v1_0(string label, Url logoUrl, string phoneNumber)
-        {
-            return new RelationshipV1_0(label, logoUrl, phoneNumber);
-        }
-
-        /// <summary>
         /// Constructor for the 1.0 Relationship object. This constructor re-creates an object from a known relationship and
         /// threadId. This object can only check status of the protocol.
         /// </summary>

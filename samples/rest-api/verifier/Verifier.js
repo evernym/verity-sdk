@@ -123,7 +123,9 @@ async function verifier () {
 
   // create invitation for the relationship
   const relationshipInvitationMessage = {
-    '~for_relationship': relationshipDid
+    '~for_relationship': relationshipDid,
+    'goalCode': 'request-proof',
+    'goal': 'To request a proof'
   }
   const relationshipInvitation =
     new Promise(function (resolve, reject) {

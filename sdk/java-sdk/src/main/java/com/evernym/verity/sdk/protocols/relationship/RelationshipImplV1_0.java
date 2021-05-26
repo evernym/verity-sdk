@@ -28,7 +28,6 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     String forRelationship;
     String label;
     URL logoUrl = null;
-    String phoneNumber = null;
 
     // flag if this instance started the interaction
     boolean created = false;
@@ -45,18 +44,6 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     RelationshipImplV1_0(String label, URL logoUrl) {
         this.label = label;
         this.logoUrl = logoUrl;
-
-        this.created = true;
-    }
-
-    RelationshipImplV1_0(String label, URL logoUrl, String phoneNumber) {
-        if (!isNullOrWhiteSpace(label)) {
-            this.label = label;
-        } else {
-            this.label = "";
-        }
-        this.logoUrl = logoUrl;
-        this.phoneNumber = phoneNumber;
 
         this.created = true;
     }
@@ -79,8 +66,6 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
             rtn.put("label", label.toString());
         if (logoUrl != null)
             rtn.put("logoUrl", logoUrl.toString());
-        if (!isNullOrWhiteSpace(phoneNumber))
-            rtn.put("phoneNumber", phoneNumber);
         addThread(rtn);
         return rtn;
     }
@@ -134,15 +119,19 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     }
 
     @Override
-    public void smsConnectionInvitation(Context context) throws IOException, VerityException {
-        send(context, smsConnectionInvitationMsg(context));
+    public void smsConnectionInvitation(Context context, String phoneNumber) throws IOException, VerityException {
+        send(context, smsConnectionInvitationMsg(context, phoneNumber));
     }
 
     @Override
-    public JSONObject smsConnectionInvitationMsg(Context context) {
+    public JSONObject smsConnectionInvitationMsg(Context context, String phoneNumber) {
+        if (isNullOrWhiteSpace(phoneNumber))
+            throw new IllegalArgumentException("phoneNumber must be defined");
+
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(SMS_CONNECTION_INVITATION))
-                .put("@id", getNewId());
+                .put("@id", getNewId())
+                .put("phoneNumber", phoneNumber);
 
         if(!isNullOrWhiteSpace(forRelationship)) rtn.put("~for_relationship", forRelationship);
 
@@ -151,8 +140,8 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     }
 
     @Override
-    public byte[] smsConnectionInvitationMsgPacked(Context context) throws VerityException {
-        return packMsg(context, smsConnectionInvitationMsg(context));
+    public byte[] smsConnectionInvitationMsgPacked(Context context, String phoneNumber) throws VerityException {
+        return packMsg(context, smsConnectionInvitationMsg(context, phoneNumber));
     }
 
     @Override
@@ -182,14 +171,14 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
 
     @Override
     public JSONObject outOfBandInvitationMsg(Context context, Boolean shortInvite, GoalCode goal) {
+        if (isNullOrWhiteSpace(forRelationship))
+            throw new IllegalArgumentException("forRelationship must be defined");
+
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(OUT_OF_BAND_INVITATION))
                 .put("@id", getNewId());
 
-        if(goal == null){
-            rtn.put("goalCode", GoalCode.P2P_MESSAGING.code())
-                    .put("goal", GoalCode.P2P_MESSAGING.goalName());
-        } else {
+        if(goal != null) {
             rtn.put("goalCode", goal.code())
                     .put("goal", goal.goalName());
         }
@@ -220,30 +209,31 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     }
 
     @Override
-    public void smsOutOfBandInvitation(Context context) throws IOException, VerityException {
-        send(context, smsOutOfBandInvitationMsg(context));
+    public void smsOutOfBandInvitation(Context context, String phoneNumber) throws IOException, VerityException {
+        send(context, smsOutOfBandInvitationMsg(context, phoneNumber));
     }
 
     @Override
-    public void smsOutOfBandInvitation(Context context, GoalCode goal) throws IOException, VerityException {
-        send(context, smsOutOfBandInvitationMsg(context, goal));
+    public void smsOutOfBandInvitation(Context context, String phoneNumber, GoalCode goal) throws IOException, VerityException {
+        send(context, smsOutOfBandInvitationMsg(context, phoneNumber, goal));
     }
 
     @Override
-    public JSONObject smsOutOfBandInvitationMsg(Context context) throws VerityException {
-        return smsOutOfBandInvitationMsg(context, null);
+    public JSONObject smsOutOfBandInvitationMsg(Context context, String phoneNumber) throws VerityException {
+        return smsOutOfBandInvitationMsg(context, phoneNumber, null);
     }
 
     @Override
-    public JSONObject smsOutOfBandInvitationMsg(Context context, GoalCode goal) {
+    public JSONObject smsOutOfBandInvitationMsg(Context context, String phoneNumber, GoalCode goal) {
+        if (isNullOrWhiteSpace(phoneNumber))
+            throw new IllegalArgumentException("phoneNumber must be defined");
+
         JSONObject rtn = new JSONObject()
                 .put("@type", messageType(SMS_OUT_OF_BAND_INVITATION))
-                .put("@id", getNewId());
+                .put("@id", getNewId())
+                .put("phoneNumber", phoneNumber);
 
-        if(goal == null){
-            rtn.put("goalCode", GoalCode.P2P_MESSAGING.code())
-                    .put("goal", GoalCode.P2P_MESSAGING.goalName());
-        } else {
+        if(goal != null) {
             rtn.put("goalCode", goal.code())
                     .put("goal", goal.goalName());
         }
@@ -254,12 +244,12 @@ class RelationshipImplV1_0 extends AbstractProtocol implements RelationshipV1_0 
     }
 
     @Override
-    public byte[] smsOutOfBandInvitationMsgPacked(Context context) throws VerityException {
-        return packMsg(context, smsOutOfBandInvitationMsg(context));
+    public byte[] smsOutOfBandInvitationMsgPacked(Context context, String phoneNumber) throws VerityException {
+        return packMsg(context, smsOutOfBandInvitationMsg(context, phoneNumber));
     }
 
     @Override
-    public byte[] smsOutOfBandInvitationMsgPacked(Context context, GoalCode goal) throws VerityException {
-        return packMsg(context, smsOutOfBandInvitationMsg(context, goal));
+    public byte[] smsOutOfBandInvitationMsgPacked(Context context, String phoneNumber, GoalCode goal) throws VerityException {
+        return packMsg(context, smsOutOfBandInvitationMsg(context, phoneNumber, goal));
     }
 }

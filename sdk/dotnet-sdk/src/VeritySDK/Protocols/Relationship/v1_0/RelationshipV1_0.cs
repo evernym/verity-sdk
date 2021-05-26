@@ -64,25 +64,6 @@ namespace VeritySDK.Protocols.Relationship
         /// <summary>
         /// Constructor RelationshipV1_0 object
         /// </summary>
-        public RelationshipV1_0(string label, Url logoUrl, string phoneNumber)
-        {
-            if (!String.IsNullOrWhiteSpace(label))
-            {
-                this.label = label;
-            }
-            else
-            {
-                this.label = "";
-            }
-            this.logoUrl = logoUrl;
-            this.phoneNumber = phoneNumber;
-
-            this.created = true;
-        }
-
-        /// <summary>
-        /// Constructor RelationshipV1_0 object
-        /// </summary>
         public RelationshipV1_0(string forRelationship, string threadId) : base(threadId)
         {
             this.forRelationship = forRelationship;
@@ -99,7 +80,6 @@ namespace VeritySDK.Protocols.Relationship
         string forRelationship;
         string label;
         Url logoUrl = null;
-        string phoneNumber = null;
 
         // flag if this instance started the interaction
         bool created = false;
@@ -133,8 +113,6 @@ namespace VeritySDK.Protocols.Relationship
                 rtn.Add("label", label.ToString());
             if (logoUrl != null)
                 rtn.Add("logoUrl", logoUrl.ToString());
-            if (!String.IsNullOrWhiteSpace(phoneNumber))
-                rtn.Add("phoneNumber", phoneNumber);
             addThread(rtn);
             return rtn;
         }
@@ -224,21 +202,27 @@ namespace VeritySDK.Protocols.Relationship
         /// Ask for sending SMS aries invitation from the verity-application agent for the relationship created by this protocol 
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
-        public void smsConnectionInvitation(Context context)
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
+        public void smsConnectionInvitation(Context context, string phoneNumber)
         {
-            send(context, smsConnectionInvitationMsg(context));
+            send(context, smsConnectionInvitationMsg(context, phoneNumber));
         }
 
         /// <summary>
         /// Creates the control message without packaging and sending it. 
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
         /// <returns>the constructed message (JSON object)</returns>
-        public JsonObject smsConnectionInvitationMsg(Context context)
+        public JsonObject smsConnectionInvitationMsg(Context context, string phoneNumber)
         {
+            if (String.IsNullOrWhiteSpace(phoneNumber))
+                throw new ArgumentException("phoneNumber must be defined");
+
             JsonObject rtn = new JsonObject();
             rtn.Add("@type", messageType(SMS_CONNECTION_INVITATION));
             rtn.Add("@id", getNewId());
+            rtn.Add("phoneNumber", phoneNumber);
 
             if (!String.IsNullOrWhiteSpace(forRelationship))
                 rtn.Add("~for_relationship", forRelationship);
@@ -251,10 +235,11 @@ namespace VeritySDK.Protocols.Relationship
         /// Creates and packages message without sending it.
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
         /// <returns>the byte array ready for transport</returns>
-        public byte[] smsConnectionInvitationMsgPacked(Context context)
+        public byte[] smsConnectionInvitationMsgPacked(Context context, string phoneNumber)
         {
-            return packMsg(context, smsConnectionInvitationMsg(context));
+            return packMsg(context, smsConnectionInvitationMsg(context, phoneNumber));
         }
 
         /// <summary>
@@ -321,12 +306,7 @@ namespace VeritySDK.Protocols.Relationship
             rtn.Add("@type", messageType(OUT_OF_BAND_INVITATION));
             rtn.Add("@id", getNewId());
 
-            if (goal == null)
-            {
-                rtn.Add("goalCode", GoalCode.P2P_MESSAGING.code());
-                rtn.Add("goal", GoalCode.P2P_MESSAGING.goalName());
-            }
-            else
+            if (goal != null)
             {
                 rtn.Add("goalCode", goal?.code());
                 rtn.Add("goal", goal?.goalName());
@@ -380,49 +360,52 @@ namespace VeritySDK.Protocols.Relationship
         /// Ask for sending SMS aries out of band invitation from the verity-application agent for the relationship created by this protocol 
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
-        public void smsOutOfBandInvitation(Context context)
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
+        public void smsOutOfBandInvitation(Context context, string phoneNumber)
         {
-            send(context, smsOutOfBandInvitationMsg(context));
+            send(context, smsOutOfBandInvitationMsg(context, phoneNumber));
         }
 
         /// <summary>
         /// Ask for sending SMS aries out of band invitation from the verity-application agent for the relationship created by this protocol 
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
         /// <param name="goal">the initial intended goal of the relationship (this goal is expressed in the invite)</param>
-        public void smsOutOfBandInvitation(Context context, GoalCode goal)
+        public void smsOutOfBandInvitation(Context context, string phoneNumber, GoalCode goal)
         {
-            send(context, smsOutOfBandInvitationMsg(context, goal));
+            send(context, smsOutOfBandInvitationMsg(context, phoneNumber, goal));
         }
 
         /// <summary>
         /// Creates the control message without packaging and sending it.
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
         /// <returns>the constructed message (JSON object)</returns>
-        public JsonObject smsOutOfBandInvitationMsg(Context context)
+        public JsonObject smsOutOfBandInvitationMsg(Context context, string phoneNumber)
         {
-            return smsOutOfBandInvitationMsg(context, null);
+            return smsOutOfBandInvitationMsg(context, phoneNumber, null);
         }
 
         /// <summary>
         /// Creates the control message without packaging and sending it.
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
         /// <param name="goal">the initial intended goal of the relationship (this goal is expressed in the invite)</param>
         /// <returns>the constructed message (JSON object)</returns>
-        public JsonObject smsOutOfBandInvitationMsg(Context context, GoalCode? goal)
+        public JsonObject smsOutOfBandInvitationMsg(Context context, string phoneNumber, GoalCode? goal)
         {
+            if (String.IsNullOrWhiteSpace(phoneNumber))
+                throw new ArgumentException("phoneNumber must be defined");
+
             JsonObject rtn = new JsonObject();
             rtn.Add("@type", messageType(SMS_OUT_OF_BAND_INVITATION));
             rtn.Add("@id", getNewId());
+            rtn.Add("phoneNumber", phoneNumber);
 
-            if (goal == null)
-            {
-                rtn.Add("goalCode", GoalCode.P2P_MESSAGING.code());
-                rtn.Add("goal", GoalCode.P2P_MESSAGING.goalName());
-            }
-            else
+            if (goal != null)
             {
                 rtn.Add("goalCode", goal?.code());
                 rtn.Add("goal", goal?.goalName());
@@ -438,21 +421,23 @@ namespace VeritySDK.Protocols.Relationship
         /// Creates and packages message without sending it. 
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
         /// <returns>the byte array ready for transport</returns>
-        public byte[] smsOutOfBandInvitationMsgPacked(Context context)
+        public byte[] smsOutOfBandInvitationMsgPacked(Context context, string phoneNumber)
         {
-            return packMsg(context, smsOutOfBandInvitationMsg(context));
+            return packMsg(context, smsOutOfBandInvitationMsg(context, phoneNumber));
         }
 
         /// <summary>
         /// Creates and packages message without sending it. 
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="phoneNumber">mobile phone number in international format, eg. +18011234567</param>
         /// <param name="goal">the initial intended goal of the relationship (this goal is expressed in the invite)</param>
         /// <returns>the byte array ready for transport</returns>
-        public byte[] smsOutOfBandInvitationMsgPacked(Context context, GoalCode goal)
+        public byte[] smsOutOfBandInvitationMsgPacked(Context context, string phoneNumber, GoalCode goal)
         {
-            return packMsg(context, smsOutOfBandInvitationMsg(context, goal));
+            return packMsg(context, smsOutOfBandInvitationMsg(context, phoneNumber, goal));
         }
     }
 }
