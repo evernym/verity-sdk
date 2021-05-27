@@ -69,14 +69,18 @@ public interface PresentProofV1_0 extends Protocol {
     }
 
     /**
-     * Creates a predicate restriction for a presentation of proof. Indy Anoncreds only supports, so the
-     * value should be expressed as a greater than predicate.
+     * Creates a predicate restriction for a presentation of proof.
      *
      * @param name the attribute name to apply the restriction
+     * @param type (optional) predicate type (">=", ">", "<=", "<") defaults to ">=" if not specified
      * @param value the value the attribute must be greater than
      * @param restrictions an array restrictions to be used
      * @return A Predicate with the given name, value and restrictions
      */
+    static Predicate predicate(String name, String type, int value, Restriction... restrictions) {
+        return new Predicate(name, type, value, restrictions);
+    }
+
     static Predicate predicate(String name, int value, Restriction... restrictions) {
         return new Predicate(name, value, restrictions);
     }
@@ -94,14 +98,18 @@ public interface PresentProofV1_0 extends Protocol {
     }
 
     /**
-     * Creates a proposed predicate for a presentation of proof. Indy Anoncreds only supports, so the
-     * value should be expressed as a greater than predicate.
+     * Creates a proposed predicate for a presentation of proof.
      *
      * @param name the predicate name
+     * @param type (optional) predicate type (">=", ">", "<=", "<") defaults to ">=" if not specified
      * @param credDefId cred def id of credential being used for proposed predicate.
      * @param treshold the value the predicate must be greater than
      * @return A ProposedPredicate with the given name, credDefId, predicate type and treshold
      */
+    static ProposedPredicate proposedPredicate(String name, String type, String credDefId, int treshold) {
+        return new ProposedPredicate(name, type, credDefId, treshold);
+    }
+
     static ProposedPredicate proposedPredicate(String name, String credDefId, int treshold) {
         return new ProposedPredicate(name, credDefId, treshold);
     }

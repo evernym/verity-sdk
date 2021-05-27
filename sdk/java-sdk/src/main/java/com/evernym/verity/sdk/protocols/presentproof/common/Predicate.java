@@ -14,9 +14,18 @@ public class Predicate implements AsJsonObject  {
      * Constructs the Predicate object with the given attribute name, value and given restrictions
 
      * @param name the attribute name
+     * @param type (optional) predicate type (">=", ">", "<=", "<") defaults to ">=" if not specified
      * @param value the value the given attribute must be greater than
      * @param restrictions the restrictions for requested presentation for this predicate
      */
+    public Predicate(String name, String type, int value, Restriction... restrictions) {
+        this.data = new JSONObject()
+                .put("name", name)
+                .put("p_type", type)
+                .put("p_value", value)
+                .put("restrictions", makeArray(restrictions));
+    }
+
     public Predicate(String name, int value, Restriction... restrictions) {
         this.data = new JSONObject()
                 .put("name", name)
