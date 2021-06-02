@@ -121,9 +121,15 @@ namespace VeritySDK.Protocols.PresentProof
         /// Creates a predicate restriction for a presentation of proof. Indy Anoncreds only supports, so the value should be expressed as a greater than predicate. 
         /// </summary>
         /// <param name="name">the attribute name to apply the restriction</param>
+        /// <param name="name">(Optional) predicate type (">=", ">", "<=", "<") defaults to ">=" if not included</param>
         /// <param name="value">the value the attribute must be greater than</param>
         /// <param name="restrictions">an array restrictions to be used</param>
         /// <returns>A Predicate with the given name, value and restrictions</returns>
+        public static Predicate predicate(string name,string type, int value, params Restriction[] restrictions)
+        {
+            return new Predicate(name, type, value, restrictions);
+        }
+
         public static Predicate predicate(string name, int value, params Restriction[] restrictions)
         {
             return new Predicate(name, value, restrictions);
