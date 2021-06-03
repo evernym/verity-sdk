@@ -41,7 +41,7 @@ class PresentProof(Protocol):
             thread_id (str): the thread id of the already started protocol
             name (str): a human readable name for the given request
             proof_attrs (List[Dict]): an array of attribute based restrictions
-            proof_predicates (List[Dict]): an array of predicate based restrictions
+            proof_predicates (List[Dict]): an array of predicate based restrictions (">=", ">", "<=", "<")
             by_invitation (bool): flag to create out-of-band invitation as a part of the PresentProof protocol
         """
         super().__init__(

@@ -14,7 +14,7 @@ class PresentProofV1x0 extends Protocol {
   * @param threadId the thread id of the already started protocol
   * @param name A human readable name for the given request
   * @param attributes An array of attribute based restrictions
-  * @param predicates An array of predicates based restrictions
+  * @param predicates An array of predicates based restrictions (">=", ">", "<=", "<")
   * @param byInvitation flag to create out-of-band invitation as a part of the PresentProof protocol
   * @return 1.0 PresentProof object
   *

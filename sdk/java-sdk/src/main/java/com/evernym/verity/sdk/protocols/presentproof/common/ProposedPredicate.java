@@ -10,9 +10,18 @@ public class ProposedPredicate implements AsJsonObject {
     /**
      * Constructs the ProposedPredicate object
      * @param name the predicate name
+     * @param type (optional) predicate type (">=", ">", "<=", "<") defaults to ">=" if not specified
      * @param credDefId the credential definition used for this predicate.
      * @param threshold threshold value of the predicate.
      */
+    public ProposedPredicate(String name, String type, String credDefId, int threshold){
+        this.data = new JSONObject()
+                .put("name", name)
+                .put("cred_def_id", credDefId)
+                .put("predicate", type)
+                .put("threshold", threshold);
+    }
+
     public ProposedPredicate(String name, String credDefId, int threshold){
         this.data = new JSONObject()
                 .put("name", name)

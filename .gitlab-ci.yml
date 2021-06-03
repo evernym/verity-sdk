@@ -63,12 +63,12 @@ java-publish:
   script:
     - mvn --errors deploy --settings ./settings.xml -DskipTests
   when: on_success
-#  only:
-#    refs:
-#      - "main@evernym/verity/verity-sdk"
-#    changes:
-#      - sdk/java-sdk/**/*
-#      - .gitlab-ci.yml
+  only:
+    refs:
+      - "main@evernym/verity/verity-sdk"
+    changes:
+      - sdk/java-sdk/**/*
+      - .gitlab-ci.yml
 
 java-release:
   stage: publish
@@ -138,12 +138,12 @@ python-publish:
     - pip3 install --upgrade keyrings.alt  
     - python3 setup.py sdist bdist_wheel
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python3 -m twine upload --verbose --repository-url $CI_SERVER_URL/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
-#  only:
-#    refs:
-#      - "main@evernym/verity/verity-sdk"
-#    changes:
-#      - sdk/python-sdk/**/*
-#      - .gitlab-ci.yml
+  only:
+    refs:
+      - "main@evernym/verity/verity-sdk"
+    changes:
+      - sdk/python-sdk/**/*
+      - .gitlab-ci.yml
 
 python-release:
   stage: publish
@@ -205,16 +205,14 @@ nodejs-publish:
     - echo "@evernym:verity-sdk=https://gitlab.com/api/v4/packages/npm/" >> .npmrc
     - npm config set @evernym:verity-sdk https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/npm/
     - sed -i "s/CI_PROJECT_ID/$CI_PROJECT_ID/" package.json 
-    - cat .npmrc
-    - cat package.json
     - npm config list
     - npm publish
-#  only:
-#    refs:
-#      - main@evernym/verity/verity-sdk
-#    changes:
-#      - sdk/nodejs-sdk/**/*
-#      - .gitlab-ci.yml
+  only:
+    refs:
+      - main@evernym/verity/verity-sdk
+    changes:
+      - sdk/nodejs-sdk/**/*
+      - .gitlab-ci.yml
 
 nodejs-release:
   stage: publish
@@ -294,12 +292,12 @@ dotnet-publish:
     - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
     - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
   when: on_success
-#  only:
-#    refs:
-#      - main@evernym/verity/verity-sdk
-#    changes:
-#      - sdk/dotnet-sdk/**/*
-#      - .gitlab-ci.yml
+  only:
+    refs:
+      - main@evernym/verity/verity-sdk
+    changes:
+      - sdk/dotnet-sdk/**/*
+      - .gitlab-ci.yml
 
 dotnet-release:
   stage: publish
