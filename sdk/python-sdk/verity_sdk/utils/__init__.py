@@ -8,7 +8,7 @@ from verity_sdk.utils.Context import Context
 
 USE_NEW_QUALIFIER_FORMAT = False
 
-EVERNYM_MSG_QUALIFIER = 'https://didcomm.evernym.com' if USE_NEW_QUALIFIER_FORMAT else 'did:sov:123489abcdefghi1234;spec'
+EVERNYM_MSG_QUALIFIER = 'https://didcomm.evernym.com' if USE_NEW_QUALIFIER_FORMAT else 'did:sov:123456789abcdefghi1234;spec'
 """QUALIFIER for evernym specific protocols"""
 COMMUNITY_MSG_QUALIFIER = 'https://didcomm.org' if USE_NEW_QUALIFIER_FORMAT  else 'did:sov:BzCbsNYhMrjHiqZDTUASHg;spec'
 """QUALIFIER for community specified protocol"""
