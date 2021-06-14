@@ -1,0 +1,69 @@
+.nodejs-common:
+  before_script:
+    - cd sdk/nodejs-sdk/
+    - npm version --no-git-tag-version $DEV_VERSION
+
+nodejs-test:
+  stage: test
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .nodejs-common
+  script:
+    - npm install
+    - npm run lint # Node.js linting
+    - npm test # Node.js testing
+
+nodejs-doc:
+  stage: doc
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .nodejs-common
+  script:
+    - npm install
+    - npm run doc-build
+
+nodejs-publish:
+  stage: publish
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .nodejs-common
+  script:
+    - npm run package
+    - echo "//gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/npm/:_authToken=$CI_JOB_TOKEN" > .npmrc
+    - echo "@evernym:verity-sdk=https://gitlab.com/api/v4/packages/npm/" >> .npmrc
+    - npm config set @evernym:verity-sdk https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/npm/
+    - sed -i "s/CI_PROJECT_ID/$CI_PROJECT_ID/" package.json
+    - npm config list
+    - npm publish
+  only:
+    refs:
+      - main@evernym/verity/verity-sdk
+    changes:
+      - sdk/nodejs-sdk/**/*
+      - .gitlab-ci.yml
+
+nodejs-release:
+  stage: publish
+  tags:
+    - s3docs
+    - docker-machine
+  extends:
+    - .nodejs-common
+  script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`                       # pull version from tag name
+    - npm version --no-git-tag-version $RELEASE_VERSION                             # set version to tagged version
+    - echo '//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}' > .npmrc            # set rc file to use auth token
+    - npm install                                                                   # pre for publish
+    - npm publish                                                                   # publish to npm
+    - npm run doc-build                                                             # build doc
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/nodejs/$RELEASE_VERSION # upload javadoc to s3
+  allow_failure: true
+  only:
+    refs:
+      - tags@evernym/verity/verity-sdk
