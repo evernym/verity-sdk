@@ -25,6 +25,11 @@
       <name>Devin Fisher</name>
       <email>devin.fisher@evernym.com</email>
     </developer>
+    <developer>
+      <id>dkulic</id>
+      <name>Darko Kulic</name>
+      <email>darko.kulic@evernym.com</email>
+    </developer>
   </developers>
 
   <licenses>
@@ -76,7 +81,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
+            <version>3.0.1</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -115,28 +120,28 @@
     <dependency>
       <groupId>org.bitcoinj</groupId>
       <artifactId>bitcoinj-core</artifactId>
-      <version>0.15.8</version>
+      <version>0.15.10</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.8</version>
+      <version>4.5.13</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.26</version>
+      <version>1.7.30</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.7.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.0.0</version>
+      <version>3.11.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -146,7 +151,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <configuration>
           <!-- different goals use these configuration different, we need both -->
           <destDir>${project.basedir}/doc/_build</destDir>
@@ -164,7 +169,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.1</version>
+        <version>2.22.2</version>
         <configuration>
           <parallel>all</parallel>
           <useUnlimitedThreads>true</useUnlimitedThreads>
@@ -173,7 +178,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.13.0</version>
+        <version>3.14.0</version>
         <configuration>
           <failOnViolation>true</failOnViolation> <!-- this is actually true by default, but can be disabled -->
           <printFailingErrors>true</printFailingErrors>
@@ -191,7 +196,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>

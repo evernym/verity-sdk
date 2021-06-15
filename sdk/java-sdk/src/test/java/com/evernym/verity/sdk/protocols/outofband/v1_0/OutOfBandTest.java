@@ -2,19 +2,15 @@ package com.evernym.verity.sdk.protocols.outofband.v1_0;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
-import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.protocols.outofband.OutOfBand;
-import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class OutOfBandTest {
 

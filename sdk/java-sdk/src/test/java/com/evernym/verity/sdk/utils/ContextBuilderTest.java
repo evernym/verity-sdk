@@ -4,12 +4,12 @@ import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 import static com.evernym.verity.sdk.utils.ContextConstants.V_0_2;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ContextBuilderTest {
 
