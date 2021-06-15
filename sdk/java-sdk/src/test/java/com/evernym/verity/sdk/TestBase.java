@@ -2,7 +2,7 @@ package com.evernym.verity.sdk;
 
 import com.evernym.verity.sdk.utils.Context;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class TestBase {
 

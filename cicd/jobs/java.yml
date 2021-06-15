@@ -1,0 +1,77 @@
+.java-common:
+  cache:
+    paths:
+      - .m2/repository
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  before_script:
+    - cd sdk/java-sdk/
+    - mvn versions:set -DnewVersion=$DEV_VERSION
+
+java-test:
+  stage: test
+  tags:
+    - docker-machine
+    - large
+  extends:
+    - .java-common
+  script:
+    - mvn pmd:check # Java SDK linting
+    - mvn pmd:cpd-check # Java SDK linting
+    - mvn test # Java SDK unit tests
+
+java-package:
+  stage: package
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .java-common
+  script:
+    - mvn package -DskipTests
+
+java-doc:
+  stage: doc
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .java-common
+  script:
+    - mvn javadoc:javadoc
+
+java-publish:
+  stage: publish
+  tags:
+    - docker-machine
+    - micro
+  extends:
+    - .java-common
+  script:
+    - mvn --errors deploy --settings ./settings.xml -DskipTests
+  when: on_success
+  only:
+    refs:
+      - "main@evernym/verity/verity-sdk"
+    changes:
+      - sdk/java-sdk/**/*
+      - .gitlab-ci.yml
+
+java-release:
+  stage: publish
+  tags:
+    - s3docs
+    - docker-machine
+  extends:
+    - .java-common
+  script:
+    - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`                        # pull version from tag name
+    - gpg --batch --passphrase $OSSHR_GPG_PASSPHRASE --import $OSSRH_GPG_SIGNING_KEY # set GPG key to keyring
+    - mvn versions:set -DnewVersion=$RELEASE_VERSION                                 # set version to tagged version
+    - mvn clean deploy --settings ./settings.xml -DskipTests -P release              # deploy to sonatype OSSRH repo
+    - mvn javadoc:javadoc                                                            # build javadoc
+    - aws s3 sync doc/_build s3://developer.evernym.com/doc/java/$RELEASE_VERSION    # upload javadoc to s3
+  allow_failure: true
+  only:
+    refs:
+      - tags@evernym/verity/verity-sdk

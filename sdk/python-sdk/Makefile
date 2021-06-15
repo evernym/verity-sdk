@@ -1,8 +1,3 @@
-REPO=https://kraken.corp.evernym.com
-VERSION=$(shell python3 setup.py -q --version 2> /dev/null)
-FILE="dist/verity-sdk-${VERSION}.tar.gz"
-FILENAME="verity-sdk_${VERSION}.tar.gz"
-
 pytest:
 	pytest --workers auto
 
@@ -19,9 +14,8 @@ build-artifacts:
 
 upload:
 	make build-artifacts
-	curl -if -u "$${KRK_USERNAME}:$${KRK_PASSWORD}" -X POST -F "file=@${FILE};filename=${FILENAME}" "${REPO}/repo/python/upload"
+	python3 -m twine upload --verbose --repository-url $TWINE_REPO_URL dist/*
 
 upload-to-pypi:
 	make build-artifacts
 	python3 -m twine upload --skip-existing dist/*
-

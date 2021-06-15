@@ -1,10 +1,8 @@
 package com.evernym.verity.sdk.protocols.presentproof.common;
 
-import com.evernym.verity.sdk.protocols.presentproof.common.Restriction;
-import com.evernym.verity.sdk.protocols.presentproof.common.RestrictionBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RestrictionTest {
 

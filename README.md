@@ -105,5 +105,8 @@ Various tutorials and instructions can be found [here](docs/howto).
 ### Architectiure
 More information about the architecture of Evernym platform and sequence diagrams for basic protocols such are connecting, issuing and proving, you can find [here](docs/verity-architecture).
 
+## Acknowledgements
+This effort is part of a project that has received funding from the European Union’s Horizon 2020 research and innovation program under grant agreement No 871932 delivered through our participation in the eSSIF-Lab, which aims to advance the broad adoption of self-sovereign identity for the benefit of all.
+
 ---
 For more information about Evernym products, visit https://www.evernym.com/products/.

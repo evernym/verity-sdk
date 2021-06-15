@@ -1,20 +1,19 @@
 package com.evernym.verity.sdk.protocols.issue_cred.v1_0;
 
 import com.evernym.verity.sdk.TestBase;
-import com.evernym.verity.sdk.protocols.connecting.Connecting;
-import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class IssueCredentialTest extends TestBase {
 
@@ -55,14 +54,18 @@ public class IssueCredentialTest extends TestBase {
         assertNotNull(testProtocol.getThreadId());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorWithRequiredFieldAsNull() {
-        IssueCredential.v1_0(null, null,null, null, null, null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            IssueCredential.v1_0(null, null,null, null, null, null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructorWithAllOptionalAsNull() {
-        IssueCredential.v1_0(forRelationship, null,null, null, null, null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            IssueCredential.v1_0(forRelationship, null,null, null, null, null);
+        });
     }
 
 
