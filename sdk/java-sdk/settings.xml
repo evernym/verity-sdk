@@ -1,6 +1,16 @@
 <settings>
   <servers>
     <server>
+      <id>internal-repo</id>
+      <username>${env.IO_CLOUDREPO_ACCOUNT_USER}</username><!-- Email Address of the Repository User (Account Owner Credentials WILL NOT WORK). -->
+      <password>${env.IO_CLOUDREPO_ACCOUNT_PASSWORD}</password><!-- Password of the Repository User. -->
+    </server>
+    <server>
+      <id>ossrh</id>
+      <username>${env.OSSRH_ACCOUNT_USER}</username>
+      <password>${env.OSSRH_ACCOUNT_PASSWORD}</password>
+    </server>
+    <server>
       <id>gitlab-maven</id>
       <configuration>
         <httpHeaders>
@@ -12,4 +22,16 @@
       </configuration>
     </server>
   </servers>
+  <profiles>
+    <profile>
+      <id>internal-deploy</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <repository.id>internal-repo</repository.id>
+        <repository.url>https://evernym.mycloudrepo.io/repositories/evernym-dev</repository.url>
+      </properties>
+    </profile>
+  </profiles>
 </settings>
