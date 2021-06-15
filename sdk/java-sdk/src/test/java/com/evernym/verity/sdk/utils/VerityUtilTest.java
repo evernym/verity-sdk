@@ -6,14 +6,15 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.message.BasicHeader;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static com.evernym.verity.sdk.utils.VerityUtil.retrieveVerityPublicDid;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,7 +45,7 @@ public class VerityUtilTest {
         assertEquals("7G3LhXFKXKTMv7XGx1Qc9wqkMbwcU2iLBHL8x1JXWWC2", did.verkey);
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void RetrieveVerityPublicDid_exceptionWhenNon200() throws IOException {
         //given:
         HttpClient httpClient = mock(HttpClient.class);
@@ -63,7 +64,9 @@ public class VerityUtilTest {
         when(entity.getContentType()).thenReturn(new BasicHeader("Content-Type", "application/json"));
         when(entity.getContent()).thenReturn(new ByteArrayInputStream(validContent.getBytes(StandardCharsets.UTF_8)));
 
-        retrieveVerityPublicDid(httpGet, httpClient);
+        Assertions.assertThrows(IOException.class, () -> {
+            retrieveVerityPublicDid(httpGet, httpClient);
+        });
     }
 
 }

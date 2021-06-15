@@ -2,17 +2,15 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
-import com.evernym.verity.sdk.protocols.writecreddef.v0_6.WriteCredentialDefinitionV0_6;
 import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
 import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WriteSchemaTest {
 
@@ -59,7 +57,7 @@ public class WriteSchemaTest {
             WriteSchema.v0_6(schemaName, "", attr1, attr2);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            WriteSchema.v0_6(schemaName, schemaVersion, null);
+            WriteSchema.v0_6(schemaName, schemaVersion, (String) null);
         });
         assertThrows(IllegalArgumentException.class, () -> {
             WriteSchema.v0_6(schemaName, schemaVersion, attr1, null);

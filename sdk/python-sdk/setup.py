@@ -14,9 +14,9 @@ setuptools.setup(
     license="Apache-2.0",
     url="https://github.com/evernym/verity-sdk",
     install_requires=[
-        'python3-indy~=1.15.0',
-        'requests~=2.22',
-        'base58~=2.0.0'
+        'python3-indy~=1.16.0',
+        'requests~=2.25.1',
+        'base58~=2.1.0'
     ],
     python_requires='~=3.6',
     long_description=long_description,

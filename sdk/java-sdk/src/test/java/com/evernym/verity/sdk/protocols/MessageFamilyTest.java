@@ -2,9 +2,10 @@ package com.evernym.verity.sdk.protocols;
 
 import com.evernym.verity.sdk.exceptions.InvalidMessageTypeException;
 import com.evernym.verity.sdk.utils.Util;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageFamilyTest {
     public final static MessageFamily testFamily = new MessageFamily(){
@@ -22,18 +23,24 @@ public class MessageFamilyTest {
         assertEquals("234asdf234@$", name);
     }
 
-    @Test(expected = InvalidMessageTypeException.class)
+    @Test
     public void invalidMessageFamily() throws InvalidMessageTypeException {
-        testFamily.messageName(Util.COMMUNITY_MSG_QUALIFIER + "/testing/0.1/test");
+        Assertions.assertThrows(InvalidMessageTypeException.class, () -> {
+            testFamily.messageName(Util.COMMUNITY_MSG_QUALIFIER + "/testing/0.1/test");
+        });
     }
 
-    @Test(expected = InvalidMessageTypeException.class)
+    @Test
     public void invalidMessageName() throws InvalidMessageTypeException {
-        testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1/");
+        Assertions.assertThrows(InvalidMessageTypeException.class, () -> {
+            testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "/testing/0.1/");
+        });
     }
 
-    @Test(expected = InvalidMessageTypeException.class)
+    @Test
     public void invalidMessageName2() throws InvalidMessageTypeException {
-        testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "c/testing/0.1-test");
+        Assertions.assertThrows(InvalidMessageTypeException.class, () -> {
+            testFamily.messageName(Util.EVERNYM_MSG_QUALIFIER + "c/testing/0.1-test");
+        });
     }
 }

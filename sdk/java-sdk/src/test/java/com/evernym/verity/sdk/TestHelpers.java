@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import java.util.UUID;
 
 import static com.evernym.verity.sdk.utils.Util.unpackMessage;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestHelpers {
     protected TestHelpers() {

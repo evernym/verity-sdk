@@ -3,10 +3,10 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SomeProtocol extends AbstractProtocol {
   private static final String MSG_QUALIFIER = "did:sov:some_did";

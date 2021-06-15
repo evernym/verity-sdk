@@ -7,10 +7,10 @@ import com.evernym.verity.sdk.protocols.basicmessage.v1_0.BasicMessageV1_0;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.evernym.verity.sdk.TestHelpers.unpackForwardMessage;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BasicMessageTest {
 

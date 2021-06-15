@@ -1,14 +1,14 @@
-python3-indy==1.15.0
-requests==2.22.0
-base58==2.0.0
+python3-indy==1.16.0
+requests==2.25.1
+base58==2.1.0
 
 # Development Dependencies (including testing)
-wheel==0.33.4
-setuptools==41.0.1
-pylint==2.3.1
-pylint-quotes==0.2.1
-pytest==3.6.4
-pytest-mock==1.11.2
-pytest-parallel==0.0.9
-pytest-asyncio==0.14.0
+wheel==0.36.2
+setuptools==57.0.0
+pylint==2.8.3
+pylint-quotes==0.2.3
+pytest==6.2.4
+pytest-mock==3.6.1
+pytest-parallel==0.1.0
+pytest-asyncio==0.15.1
 aiohttp==3.7.4
