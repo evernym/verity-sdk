@@ -2,7 +2,6 @@
   "name": "@evernym/verity-sdk",
   "author": "Evernym, Inc. <dev@evernym.com>",
   "version": "0.0.0-SNAPSHOT",
-  "publishConfig": { "@evernym:registry":" https://gitlab.com/api/v4/projects/CI_PROJECT_ID/packages/npm/ "},
   "description": "The official Node.js SDK for Evernym's Verity",
   "repository": {
     "type": "git",
