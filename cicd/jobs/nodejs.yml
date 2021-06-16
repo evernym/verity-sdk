@@ -40,7 +40,7 @@ nodejs-publish:
     - npm config set @evernym:verity-sdk https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/npm/
     - sed -i "s/CI_PROJECT_ID/$CI_PROJECT_ID/" package.json
     - npm config list
-    - npm publish
+    - npm publish --@evernym:registry=https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/npm/
   only:
     refs:
       - main@evernym/verity/verity-sdk
