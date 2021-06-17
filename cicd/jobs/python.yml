@@ -62,13 +62,17 @@ python-release:
   tags:
     - s3docs
     - docker-machine
+  variables:
+    TWINE_PASSWORD: '$PYPI_PASSWORD'
+    TWINE_USERNAME: '$PYPI_USERNAME'
+    TWINE_REPO_URL: 'https://upload.pypi.org/legacy/'
   extends:
     - .python-common
   script:
     - export RELEASE_VERSION=`echo $CI_COMMIT_TAG | cut -c2-`                   # pull version from tag name
     - echo "VERSION = '$RELEASE_VERSION'" > verity_sdk/version.py               # set version to tagged version
     - echo "$RELEASE_VERSION"
-    - make upload-to-pypi                                                       # upload to pypi
+    - make upload                                                               # upload to pypi
     - make doc-build                                                            # build doc
     - aws s3 sync doc/_build s3://developer.evernym.com/doc/python/$RELEASE_VERSION # upload javadoc to s3
   allow_failure: true
