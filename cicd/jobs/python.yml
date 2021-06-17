@@ -41,7 +41,7 @@ python-publish:
   variables:
     TWINE_PASSWORD: '$CI_JOB_TOKEN'
     TWINE_USERNAME: 'gitlab-ci-token'
-    TWINE_REPO_URL: '$CI_SERVER_URL/api/v4/projects/${CI_PROJECT_ID}/packages/pypi'
+    TWINE_REPOSITORY_URL: '$CI_SERVER_URL/api/v4/projects/${CI_PROJECT_ID}/packages/pypi'
   tags:
     - docker-machine
     - micro
