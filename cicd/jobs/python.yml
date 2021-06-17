@@ -50,12 +50,12 @@ python-publish:
   script:
     - pip3 install --upgrade keyrings.alt
     - make upload
-  only:
-    refs:
-      - "main@evernym/verity/verity-sdk"
-    changes:
-      - sdk/python-sdk/**/*
-      - .gitlab-ci.yml
+#  only:
+#    refs:
+#      - "main@evernym/verity/verity-sdk"
+#    changes:
+#      - sdk/python-sdk/**/*
+#      - .gitlab-ci.yml
 
 python-release:
   stage: publish

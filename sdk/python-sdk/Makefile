@@ -14,7 +14,7 @@ build-artifacts:
 
 upload:
 	make build-artifacts
-	python3 -m twine upload --verbose --repository-url $TWINE_REPO_URL dist/*
+	python3 -m twine upload --verbose --repository-url $(TWINE_REPO_URL) dist/*
 
 upload-to-pypi:
 	make build-artifacts
