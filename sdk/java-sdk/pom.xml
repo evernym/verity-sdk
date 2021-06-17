@@ -109,6 +109,10 @@
       <name>sovrin</name>
       <url>https://repo.sovrin.org/repository/maven-public/</url>
     </repository>
+    <repository>
+      <id>gitlab-maven</id>
+      <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -227,9 +231,19 @@
   </build>
 
   <distributionManagement>
+  <!--
     <repository>
       <id>${repository.id}</id>
       <url>${repository.url}</url>
     </repository>
+  -->
+    <repository>
+      <id>gitlab-maven</id>
+      <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id>gitlab-maven</id>
+      <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+    </snapshotRepository>
   </distributionManagement>
 </project>
