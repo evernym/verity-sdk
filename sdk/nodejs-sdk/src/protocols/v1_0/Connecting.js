@@ -58,7 +58,7 @@ class ConnectingV10 extends Protocol {
      *
      * @see #accept
      */
-  async acceptMsgPascked (context) {
+  async acceptMsgPacked (context) {
     return this.getMessageBytes(context, this.acceptMsg())
   }
 
@@ -94,7 +94,7 @@ class ConnectingV10 extends Protocol {
      * @see #status
      */
   async statusMsgPacked (context) {
-    return this.getMessageBytes(context, this.rejectMsg())
+    return this.getMessageBytes(context, this.statusMsg())
   }
 
   /**
