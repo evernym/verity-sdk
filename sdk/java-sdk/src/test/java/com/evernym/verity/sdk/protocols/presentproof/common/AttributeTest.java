@@ -32,6 +32,16 @@ public class AttributeTest {
     }
 
     @Test
+    public void multipleRestrictionsTest() {
+        Restriction r1 = RestrictionBuilder.blank().credDefId("credDefId1").build();
+        Restriction r2 = RestrictionBuilder.blank().credDefId("credDefId2").build();
+        Attribute a = new Attribute("test", r1, r2);
+        JSONArray restrictions = a.data.getJSONArray("restrictions");
+        assertEquals(2, restrictions.length());
+        assertEquals(restrictions.toString(), "[{\"cred_def_id\":\"credDefId1\"},{\"cred_def_id\":\"credDefId2\"}]");
+    }
+
+    @Test
     public void namesTest() {
         String[] names = {"A", "B", "C"};
         Attribute a = new Attribute(names, (Restriction) null);
