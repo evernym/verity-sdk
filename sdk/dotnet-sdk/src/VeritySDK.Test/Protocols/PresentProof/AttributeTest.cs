@@ -35,6 +35,21 @@ namespace VeritySDK.Test
         }
 
         [TestMethod]
+        public void multipleRestrictionTest()
+        {
+            Restriction r1 = RestrictionBuilder.blank()
+                    .credDefId("credDefId1")
+                    .build();
+            Restriction r2 = RestrictionBuilder.blank()
+                    .credDefId("credDefId2")
+                    .build();
+            Attribute a = new Attribute("test", r1, r2);
+            JsonArray restrictions = a.data.getAsJsonArray("restrictions");
+            Assert.AreEqual(2, restrictions.Count);
+            Assert.AreEqual(restrictions.ToString(), "[{\"cred_def_id\": \"credDefId1\"}, {\"cred_def_id\": \"credDefId2\"}]");
+        }
+
+        [TestMethod]
         public void namesTest()
         {
             string[] names = {"A", "B", "C"};
