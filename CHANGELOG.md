@@ -1,3 +1,101 @@
+# Release notes - Verity 2.12.2 (0.4.123069613.a21b28b) - Jun 16 2021
+
+## Bugs
+    *[VE-2667] - vcx connection issue
+
+## Tasks
+    *[VE-2614] - Remove sms endpoint and related configuration
+    *[VE-2537] - Use a unique resource key for each message type
+    *[VE-2042] - Creating the right configuration for the throttle limits we previously defined
+
+# Release notes - Verity 2.12.1 (0.4.122738797.8b2e9a7) - Jun 16 2021
+
+## Tasks
+    *[VE-2656] - add support in data retention feature to allow deletion of data once protocol is completed
+
+# Release notes - Verity 2.12.0 (0.4.122576192.7d4abd6) - Jun 16 2021
+
+## Bugs
+    * [VE-2643] - Prod VAS: error during persisting actor event MultiEvent: java.lang.NullPointerException
+    * [VE-2642] - All Verity-Sdk wrappers should support all 4 predicate types \(">=", ">", "<", "<="\)
+    * [VE-2637] - make pushId: ComMethodDetail in GetToken optional
+    * [VE-2615] - In some cases errors during write schema are treated as success
+    * [VE-2602] - Verity often does not send signal message back when the payload is incorrect.
+    * [VE-2598] - Scanning the same oob-request-attach QR code twice cause protocol crash/restart
+
+## Task
+    * [VE-2660] - Puppet work for on demand data retention
+    * [VE-2648] - Improve testing speed and output
+    * [VE-2644] - backport iata-hotfix changes part-2
+    * [VE-2640] - Move unneeded verity main resource config files to verity test or integration test module as needed
+    * [VE-2632] - Optimize message size limits integration tests
+    * [VE-2627] - Refactoring RoutingAgent actors such that it is scalable
+    * [VE-2620] - Disable HttpsSupport trait as that is not being used anyhow in verity code
+    * [VE-2619] - make sure all catch clauses are exhaustive else it may throw MatchError which may include secure/private information
+    * [VE-2618] - Refactor RequestMsgContext and its usage
+    * [VE-2617] - Fix unhandled message type logging in AgentMsgProcessor to not log any secure/private information
+    * [VE-2606] - backport iata-hotfix changes part-1
+    * [VE-2601] - Decide and implement data-retention for the Relationship protocol
+    * [VE-2574] - Ensure S3API is using correct future dispatcher
+    * [VE-2566] - Puppet work
+    * [VE-2536] - Make it possible to differentiate targets for "all messages" and "all endpoints"
+    * [VE-2499] - Implement For all protocols
+    * [VE-2498] - Retrieving/Reading Data
+    * [VE-2497] - Storing Data
+    * [VE-2496] - Verity Configuration
+    * [VE-2494] - Storage Interface Refactoring
+    * [VE-2493] - AWS Bucket Creation
+    * [VE-2334] - Migrate thread context to protocol actor state
+    * [VE-2293] - Fix wallet actor performance integration test and make it run as part of CI 
+
+# Release notes - Verity 2.11.1 (0.4.121264702.2e0e555) - May 25 2021
+
+## Bugs
+    * [VE-2664] - add more test around data retention at integration level
+    * [VE-2628] - Goal Code and Goal should be optional parameters in the Verity API
+    * [VE-2621] - Change ledger svc code so that status details errors are Future.failure and not success
+
+# Release notes - Verity 2.11.0 (0.4.118200948.54709ad) - May 12 2021
+
+## Bugs
+    * [VE-2609] - make sure invitation is not re-usable once it is accepted by one user
+    * [VE-2607] - prod CAS: unhandled ServiceUnavailableException
+    * [VE-2590] - fix retry issue with OutgoingMsgSender
+    * [VE-2559] - CAS connection failure with 3 nodes
+    * [VE-2533] - Fix sync response issue with get-status of update-configs 0.6 protocol
+    * [VE-2473] - Increased number of errors on Demo VAS after Verity release
+    * [VE-2450] - Resource usage violation actions with track-by=user are not triggered when expected
+    * [VE-2396] - Invalid replayed event, multiple persistent actor instances with same persistence id?
+
+## Tasks
+    * [VE-2613] - Add libmysqlstorage to install script
+    * [VE-2612] - Intermittent failures during unit tests
+    * [VE-2593] - Add entries for VS Code/Scala Metals to .gitignore file
+    * [VE-2557] - Remove dependencies on bintray in Verity pipelines
+    * [VE-2552] - Move off of bintray repos
+    * [VE-2535] - Make it possible to target all messages specifically coming from "my domain" or from "their domain"
+    * [VE-2527] - Indentify Verity dependencies
+    * [VE-2514] - Upgrade verity-sdk docker image and packages to use Ubuntu 18.04
+    * [VE-2490] - Make it possible to run clustered Verity in docker
+    * [VE-2488] - Fix local run failures of Verity integration tests
+    * [VE-2487] - Fix problem with non-steady network traffic in issuance test
+    * [VE-2486] - Make libindy wallet connections limit configurable in ephemeral envs
+    * [VE-2475] - Exceptions from libindy should be properly logged
+    * [VE-2469] - Investigate reasons of increased DynamoDB usage in load tests
+    * [VE-2462] - "Actor not found" error during verification load test
+    * [VE-2457] - Verity integration tests error handling improvement
+    * [VE-2437] - Increase ask timeout to 30 seconds
+    * [VE-2289] - Replace the @type decorator from using did:sov:12345678abcd…. to http://didcom.org
+
+# Release notes - Verity 2.10.1 (0.4.116677980.e8b6f05) - Mar 25 2021
+
+## Bugs
+    * [VE-2481] - fix 'needs-endorsement' broken flow
+    * [VE-2477] - fix agent provisioning new key creation in agency agent wallet issue
+
+## Tasks
+    * [VE-2471] - Add agent provisioning 0.7 support for libvcx
+
 # Release notes - Verity 2.10.0 (0.4.115809643.e5a8582) - Mar 17 2021
 
 ## Bugs
