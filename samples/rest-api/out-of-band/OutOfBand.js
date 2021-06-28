@@ -47,7 +47,6 @@ async function sendVerityRESTMessage (qualifier, msgFamily, msgFamilyVersion, ms
     }
   })
 }
-
 async function createConnection () {
   // create relationship
   const relationshipCreateMessage = {
@@ -98,7 +97,8 @@ function sleep (ms) {
 
 let webhookResolve
 let pthid
-
+// Setup Issuer
+const setupIssuerMap = new Map()
 // Stores relationship create promises. ThreadId is used as a key
 const relCreateResolveMap = new Map()
 // Stores relationship invitation promises. ThreadId is used as a key
@@ -128,6 +128,37 @@ async function oob () {
     })
   await sendVerityRESTMessage('123456789abcdefghi1234', 'configs', '0.6', 'UPDATE_COM_METHOD', webhookMessage)
   await updateWebhook
+  // ISSUER SETUP
+  let issuerDid
+  let issuerVerkey
+
+  // check if Issuer Keys were already created
+  const getIssuerKeysMsg = {}
+  const getIssuerKeysThreadId = uuid4()
+
+  const getIssuerKeys =
+     new Promise(function (resolve, reject) {
+       setupIssuerMap.set(getIssuerKeysThreadId, resolve)
+     })
+
+  await sendVerityRESTMessage('123456789abcdefghi1234', 'issuer-setup', '0.6', 'current-public-identifier', getIssuerKeysMsg, getIssuerKeysThreadId);
+
+  [issuerDid, issuerVerkey] = await getIssuerKeys
+
+  if (issuerDid === undefined) {
+    // if issuer Keys were not created, create Issuer keys
+    const setupIssuerMsg = {}
+    const setupIssuerThreadId = uuid4()
+    const setupIssuer =
+         new Promise(function (resolve, reject) {
+           setupIssuerMap.set(setupIssuerThreadId, resolve)
+         })
+
+    await sendVerityRESTMessage('123456789abcdefghi1234', 'issuer-setup', '0.6', 'create', setupIssuerMsg, setupIssuerThreadId);
+    [issuerDid, issuerVerkey] = await setupIssuer
+    console.log(`Issuer DID: ${ANSII_GREEN}${issuerDid}${ANSII_RESET}`)
+    console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
+  }
 
   // Create the first connection based on the Out-of-Band invitation
   console.log('Establishing the first connection with the same Holder')
@@ -159,6 +190,19 @@ app.post('/webhook', async (req, res) => {
   switch (message['@type']) {
     case 'did:sov:123456789abcdefghi1234;spec/configs/0.6/COM_METHOD_UPDATED':
       webhookResolve(null)
+      break
+    case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier-created':
+      setupIssuerMap.get(threadId)([message.identifier.did, message.identifier.verKey])
+      break
+    case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/problem-report':
+      if (
+        message.message === 'Issuer Identifier has not been created yet'
+      ) {
+        setupIssuerMap.get(threadId)([undefined, undefined])
+      }
+      break
+    case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier':
+      setupIssuerMap.get(threadId)([message.did, message.verKey])
       break
     case 'did:sov:123456789abcdefghi1234;spec/relationship/1.0/created':
       // Resolve relationship creation promise with the DID of created relationship
