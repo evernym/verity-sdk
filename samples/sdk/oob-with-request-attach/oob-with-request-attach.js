@@ -5,7 +5,6 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 })
-const bodyParser = require('body-parser')
 const request = require('request-promise-native')
 const { v4: uuidv4 } = require('uuid')
 const QR = require('qrcode')
@@ -387,7 +386,7 @@ async function main () {
   // Serve static files (F/E) contained in the 'public' folder
   app.use(express.static('public'))
 
-  app.use(bodyParser.text({
+  app.use(express.text({
     type: function (_) {
       return 'text'
     }

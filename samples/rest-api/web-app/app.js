@@ -5,7 +5,6 @@
 // F/E = Front end (static Vue.js HTML page defined in public/index.html)
 
 const axios = require('axios')
-const bodyParser = require('body-parser')
 const express = require('express')
 const http = require('http')
 const urljoin = require('url-join')
@@ -125,7 +124,7 @@ async function main () {
 
   await readInputParameters()
 
-  app.use(bodyParser.json())
+  app.use(express.json())
 
   // Serve static files contained in public folder
   app.use(express.static('public'))
