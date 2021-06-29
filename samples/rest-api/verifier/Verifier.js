@@ -1,7 +1,6 @@
 'use strict'
 
 const axios = require('axios')
-const bodyParser = require('body-parser')
 const express = require('express')
 const QR = require('qrcode')
 const uuid4 = require('uuid4')
@@ -124,8 +123,8 @@ async function verifier () {
   // create invitation for the relationship
   const relationshipInvitationMessage = {
     '~for_relationship': relationshipDid,
-    'goalCode': 'request-proof',
-    'goal': 'To request a proof'
+    goalCode: 'request-proof',
+    goal: 'To request a proof'
   }
   const relationshipInvitation =
     new Promise(function (resolve, reject) {
@@ -186,7 +185,7 @@ async function verifier () {
 
 const app = express()
 
-app.use(bodyParser.json())
+app.use(express.json())
 
 // Verity Application Service will send REST API callbacks to this endpoint
 app.post('/webhook', async (req, res) => {

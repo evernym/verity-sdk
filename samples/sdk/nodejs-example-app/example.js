@@ -2,7 +2,6 @@
 
 const express = require('express')
 const http = require('http')
-const bodyParser = require('body-parser')
 const readline = require('readline')
 const fs = require('fs')
 const sdk = require('verity-sdk')
@@ -580,7 +579,7 @@ async function main () {
 
 async function start () {
   const app = express()
-  app.use(bodyParser.text({
+  app.use(express.text({
     type: function (_) {
       return 'text'
     }

@@ -2,7 +2,6 @@
 
 const fs = require('fs')
 const axios = require('axios')
-const bodyParser = require('body-parser')
 const express = require('express')
 const QR = require('qrcode')
 const uuid4 = require('uuid4')
@@ -218,8 +217,8 @@ async function issuer () {
   // create invitation for the relationship
   const relationshipInvitationMessage = {
     '~for_relationship': relationshipDid,
-    'goalCode': 'issue-vc',
-    'goal': 'To issue a credential'
+    goalCode: 'issue-vc',
+    goal: 'To issue a credential'
   }
   const relationshipInvitation =
     new Promise(function (resolve, reject) {
@@ -269,7 +268,7 @@ async function issuer () {
 
 const app = express()
 
-app.use(bodyParser.json())
+app.use(express.json())
 
 // Verity Application Server will send REST API callbacks to this endpoint
 app.post('/webhook', async (req, res) => {
