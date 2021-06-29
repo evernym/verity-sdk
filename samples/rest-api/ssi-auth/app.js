@@ -1,6 +1,5 @@
 const express = require('express')
 const axios = require('axios')
-const bodyParser = require('body-parser')
 const http = require('http')
 const urljoin = require('url-join')
 const session = require('express-session')
@@ -24,8 +23,7 @@ let xApiKey // REST API key associated with Domain DID
 let domainDid
 let webhookUrl // public URL for the started Ngrok tunnel to the application port (localhost:3000)
 
-let webhookResolve
-let updateConfigResolve
+let webhookResolve // Update webhook protocol is synchronous and does not support threadId
 
 // Sends a message to the Verity Application Service via the Verity REST API
 async function sendVerityRESTMessage (qualifier, msgFamily, msgFamilyVersion, msgName, message, threadId) {
@@ -175,20 +173,107 @@ async function waitConnectionAccepted (relationshipDid) {
   return [status, redirectDID]
 }
 
-// Stores relationship create promises. threadId is used as the key
+async function initialize () {
+  // Update webhook endpoint
+  const webhookMessage = {
+    comMethod: {
+      id: 'webhook',
+      type: 2,
+      value: webhookUrl,
+      packaging: {
+        pkgType: 'plain'
+      }
+    }
+  }
+
+  const updateWebhook =
+  new Promise(function (resolve, reject) {
+    webhookResolve = resolve
+    sendVerityRESTMessage('123456789abcdefghi1234', 'configs', '0.6', 'UPDATE_COM_METHOD', webhookMessage)
+  })
+
+  await updateWebhook
+
+  // Update organization name and logo
+  const updateConfigMessage = {
+    configs: [
+      {
+        name: 'logoUrl',
+        value: 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
+      },
+      {
+        name: 'name',
+        value: 'SSI Savvy Org'
+      }
+    ]
+  }
+
+  const updateConfigsThreadId = uuid4()
+  const updateConfigs =
+  new Promise(function (resolve, reject) {
+    updateConfigsMap.set(updateConfigsThreadId, resolve)
+  })
+
+  await sendVerityRESTMessage('123456789abcdefghi1234', 'update-configs', '0.6', 'update', updateConfigMessage, updateConfigsThreadId)
+
+  await updateConfigs
+
+  // Setup Issuer keys
+  // It is needed to create issuer keys to support connection reuse scenario.
+  // The Issuer DID is included in the field "public_did" of the connection invitation
+  // and is used on the Holder's side to determine if it is already connected with the Inviter
+  let issuerDid
+  let issuerVerkey
+
+  // check if Issuer Keys were already created
+  const getIssuerKeysMsg = {}
+  const getIssuerKeysThreadId = uuid4()
+
+  const getIssuerKeys =
+  new Promise(function (resolve, reject) {
+    setupIssuerMap.set(getIssuerKeysThreadId, resolve)
+  })
+
+  await sendVerityRESTMessage('123456789abcdefghi1234', 'issuer-setup', '0.6', 'current-public-identifier', getIssuerKeysMsg, getIssuerKeysThreadId);
+
+  [issuerDid, issuerVerkey] = await getIssuerKeys
+
+  if (issuerDid === undefined) {
+    // if issuer Keys were not created, create Issuer keys
+    const setupIssuerMsg = {}
+    const setupIssuerThreadId = uuid4()
+    const setupIssuer =
+      new Promise(function (resolve, reject) {
+        setupIssuerMap.set(setupIssuerThreadId, resolve)
+      })
+
+    await sendVerityRESTMessage('123456789abcdefghi1234', 'issuer-setup', '0.6', 'create', setupIssuerMsg, setupIssuerThreadId);
+    [issuerDid, issuerVerkey] = await setupIssuer
+    console.log(`Issuer DID: ${ANSII_GREEN}${issuerDid}${ANSII_RESET}`)
+    console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
+  }
+}
+
+// Maps containing promises for the started interactions - threadId is used as the map key
+// Update configs
+const updateConfigsMap = new Map()
+// Setup Issuer
+const setupIssuerMap = new Map()
+// Create relationship
 const relCreateResolveMap = new Map()
-// Stores relationship invitation promises. threadId is used as the key
+// Relationship invitation
 const relInvitationResolveMap = new Map()
 // Stores connection promises. Relationship DID is used as the key
 const connectionResolveMap = new Map()
-// Maps Out-of-band invitationId to the relationship DID
-const inviteToDidMap = new Map()
 // Stores 2FA question promises. threadId is used as the key
 const questionResolveMap = new Map()
+
+// Maps Out-of-band invitationId to the relationship DID
+const inviteToDidMap = new Map()
 // Maps relationship DID to the user's email
 const didToEmailMap = new Map()
-// Stores pending Out-of-band connections for 1st time user journeys
-// where invite (QR code) is generated but account details are not yet provided
+// Stores releationship DIDs for OoB connections for the 1st time user journeys
+// i.e. where invite (QR code) is generated but account details are not yet provided
 const pendingOobConnections = new Map()
 
 // Stores data (name, email, password, did) about users. email is used as the key
@@ -218,8 +303,8 @@ async function main () {
 
   await readInputParameters()
 
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
   app.use(session({ secret: 'Your secret key', saveUninitialized: 'false', resave: 'false' }))
 
   // This route handles registration requests for the 2FA use case
@@ -401,10 +486,23 @@ async function main () {
     // Handle received message differently based on the message type
     switch (message['@type']) {
       case 'did:sov:123456789abcdefghi1234;spec/configs/0.6/COM_METHOD_UPDATED':
-        webhookResolve(null)
+        webhookResolve('webhook updated')
         break
       case 'did:sov:123456789abcdefghi1234;spec/update-configs/0.6/status-report':
-        updateConfigResolve(null)
+        updateConfigsMap.get(threadId)('config updated')
+        break
+      case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier-created':
+        setupIssuerMap.get(threadId)([message.identifier.did, message.identifier.verKey])
+        break
+      case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/problem-report':
+        if (
+          message.message === 'Issuer Identifier has not been created yet'
+        ) {
+          setupIssuerMap.get(threadId)([undefined, undefined])
+        }
+        break
+      case 'did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier':
+        setupIssuerMap.get(threadId)([message.did, message.verKey])
         break
       case 'did:sov:123456789abcdefghi1234;spec/relationship/1.0/created':
       // Resolve relationship creation promise with the DID of the created relationship
@@ -448,43 +546,7 @@ async function main () {
 
   // Listen for messages from VAS
   server.listen(PORT, async () => {
-    // Update webhook endpoint
-    const webhookMessage = {
-      comMethod: {
-        id: 'webhook',
-        type: 2,
-        value: webhookUrl,
-        packaging: {
-          pkgType: 'plain'
-        }
-      }
-    }
-    const updateWebhook =
-      new Promise(function (resolve, reject) {
-        webhookResolve = resolve
-        sendVerityRESTMessage('123456789abcdefghi1234', 'configs', '0.6', 'UPDATE_COM_METHOD', webhookMessage)
-      })
-    await updateWebhook
-
-    const updateConfigMessage = {
-      configs: [
-        {
-          name: 'logoUrl',
-          value: 'https://freeiconshop.com/wp-content/uploads/edd/bank-flat.png'
-        },
-        {
-          name: 'name',
-          value: 'SSI Savvy Org'
-        }
-      ]
-    }
-    const updateConfig =
-      new Promise(function (resolve, reject) {
-        updateConfigResolve = resolve
-        sendVerityRESTMessage('123456789abcdefghi1234', 'update-configs', '0.6', 'update', updateConfigMessage)
-      })
-    await updateConfig
-
+    await initialize()
     console.log(`Listening on port ${PORT}`)
   })
 }
