@@ -57,6 +57,15 @@ And
   }
 }`
 
+### Is there a retry mechanism on Verity when sending to the registered webhook fails?
+When message sending to webhook fails, currently we only retry the failed messages for 5 times (that too in very short span of 4 minute). For example:
+- Original attempt failed at 10:00:00 am
+- 1st retry after 15 seconds at 10:00:15 am
+- 2nd retry after 30 seconds (post 1st retry) at 10:00:45 am
+- 3rd retry after 45 seconds (post 2nd retry) at 10:01:30 am
+- 4th retry after 60 seconds (post 3rd retry) at 10:02:30 am
+- 5th retry after 75 seconds (post 4th retry) at 10:04:00 am
+
 ### How best to horizontally scale a service that integrated with Verity using Verity SDK?
 There are two options for horizontally scaling a service on client side using the Verity SDK. Libindy can be reconfigured to use MySQL storage, instead of the SQLite. This is not available out of the box and if you are planning to do this, please contact Evernym support to assist you configuring this. 
 
