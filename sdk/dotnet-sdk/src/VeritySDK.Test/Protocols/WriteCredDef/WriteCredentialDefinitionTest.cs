@@ -12,6 +12,7 @@ namespace VeritySDK.Test
         private string schemaId = "...someSchemaId...";
         private string tag = "latest";
         private RevocationRegistryConfig revocationDetails = WriteCredentialDefinitionV0_6.disabledRegistryConfig();
+        private string endorserDID = "endorserDID";
 
         [TestMethod]
         public void testGetMessageType()
@@ -90,6 +91,11 @@ namespace VeritySDK.Test
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 testBaseMessage(unpackedMessage);
                 Assert.AreEqual(Util.EVERNYM_MSG_QUALIFIER + "/write-cred-def/0.6/write", unpackedMessage.getAsString("@type"));
+
+                byte[] message2 = testProtocol.writeMsgPacked(context, endorserDID);
+                JsonObject unpackedMessage2 = TestHelpers.unpackForwardMessage(context, message2);
+                testMessageWithEndorser(unpackedMessage2);
+                Assert.AreEqual(Util.EVERNYM_MSG_QUALIFIER + "/write-cred-def/0.6/write", unpackedMessage2.getAsString("@type"));
             });
         }
 
@@ -98,6 +104,12 @@ namespace VeritySDK.Test
             Assert.IsNotNull(msg.getAsString("@type"));
             Assert.IsNotNull(msg.getAsString("@id"));
             Assert.IsNotNull(msg.getAsJsonObject("~thread").getAsString("thid"));
+        }
+
+        private void testMessageWithEndorser(JsonObject msg)
+        {
+            testBaseMessage(msg);
+            Assert.AreEqual(endorserDID, msg.getAsString("endorserDID"));
         }
     }
 }

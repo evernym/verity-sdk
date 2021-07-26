@@ -8,6 +8,7 @@ from ..test_utils import get_test_config, cleanup
 schema_name = 'schema name'
 schema_version = '0.1.0'
 attrs = ['name', 'degree', 'age']
+endorser_did = 'endorserDID'
 
 
 def test_init():
@@ -49,6 +50,26 @@ async def test_write():
     assert msg['name'] == schema_name
     assert msg['version'] == schema_version
     assert msg['attrNames'] == list(attrs)
+
+
+@pytest.mark.asyncio
+async def test_write_with_endorser_override():
+    context = await Context.create_with_config(await get_test_config())
+    write_schema = WriteSchema(schema_name, schema_version, attrs)
+    msg = write_schema.write_msg(context, endorser_did)
+
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
+        EVERNYM_MSG_QUALIFIER,
+        WriteSchema.MSG_FAMILY,
+        WriteSchema.MSG_FAMILY_VERSION,
+        WriteSchema.WRITE_SCHEMA
+    )
+    assert msg['@id'] is not None
+    assert msg['~thread']['thid'] is not None
+    assert msg['name'] == schema_name
+    assert msg['version'] == schema_version
+    assert msg['attrNames'] == list(attrs)
+    assert msg['endorserDID'] == endorser_did
 
     await cleanup(context)
 

@@ -18,6 +18,7 @@ public class WriteSchemaTest {
     private final String schemaVersion = "0.0.1";
     private final String attr1 = "name";
     private final String attr2 = "degree";
+    private final String endorserDID = "endorserDID";
 
     @Test
     public void testGetMessageType() {
@@ -89,6 +90,14 @@ public class WriteSchemaTest {
                     unpackedMessage.getString("@type")
             );
 
+            // test endorser DID
+            byte[] message2 = testProtocol.writeMsgPacked(context, endorserDID);
+            JSONObject unpackedMessage2 = unpackForwardMessage(context, message2);
+            testMessageWithEndorser(unpackedMessage2);
+            assertEquals(
+                    Util.EVERNYM_MSG_QUALIFIER + "/write-schema/0.6/write",
+                    unpackedMessage2.getString("@type")
+            );
         } catch(Exception e) {
             e.printStackTrace();
             fail();
@@ -101,5 +110,10 @@ public class WriteSchemaTest {
         assertNotNull(msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertNotNull(msg.getJSONObject("~thread").getString("thid"));
+    }
+
+    private void testMessageWithEndorser(JSONObject msg) {
+        testBaseMessage(msg);
+        assertEquals(endorserDID, msg.getString("endorserDID"));
     }
 }

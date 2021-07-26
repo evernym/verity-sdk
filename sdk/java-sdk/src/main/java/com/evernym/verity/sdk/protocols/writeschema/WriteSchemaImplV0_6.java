@@ -56,4 +56,21 @@ class WriteSchemaImplV0_6 extends AbstractProtocol implements WriteSchemaV0_6 {
         return packMsg(context, writeMsg(context));
     }
 
+    @Override
+    public void write(Context context, String endorserDID) throws IOException, VerityException {
+        send(context, writeMsg(context, endorserDID));
+    }
+
+    @Override
+    public JSONObject writeMsg(Context context, String endorserDID) {
+        JSONObject message = writeMsg(context);
+        message.put("endorserDID", endorserDID);
+        return message;
+    }
+
+    @Override
+    public byte[] writeMsgPacked(Context context, String endorserDID) throws VerityException {
+        return packMsg(context, writeMsg(context, endorserDID));
+    }
+
 }

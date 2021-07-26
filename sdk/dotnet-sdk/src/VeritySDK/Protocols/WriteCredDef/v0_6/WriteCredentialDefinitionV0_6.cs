@@ -126,5 +126,41 @@ namespace VeritySDK.Protocols.WriteCredDef
         {
             return packMsg(context, writeMsg(context));
         }
+
+        /// <summary>
+        /// Directs verity-application to write the specified Credential Definition to the Ledger
+        ///
+        /// This version is used, only if override of default endorser is needed.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="endorserDID">DID of an organization to endorse writing transactions to the ledger</param>
+        public void write(Context context, string endorserDID)
+        {
+            send(context, writeMsg(context, endorserDID));
+        }
+
+        /// <summary>
+        /// Creates the control message without packaging and sending it.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="endorserDID">DID of an organization to endorse writing transactions to the ledger</param>
+        /// <returns>the constructed message (JSON object)</returns>
+        public JsonObject writeMsg(Context context, string endorserDID)
+        {
+            JsonObject message = writeMsg(context);
+            message.Add("endorserDID", endorserDID);
+            return message;
+        }
+
+        /// <summary>
+        /// Creates and packages message without sending it.
+        /// </summary>
+        /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
+        /// <param name="endorserDID">DID of an organization to endorse writing transactions to the ledger</param>
+        /// <returns>the byte array ready for transport</returns>
+        public byte[] writeMsgPacked(Context context, string endorserDID)
+        {
+            return packMsg(context, writeMsg(context, endorserDID));
+        }
     }
 }

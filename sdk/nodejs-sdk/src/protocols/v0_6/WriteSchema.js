@@ -47,37 +47,45 @@ class WriteSchema extends Protocol {
   /**
      * Creates the control message without packaging and sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param endorserDID DID of an organization to endorse writing transactions to the ledger
      * @return the constructed message (JSON object)
      *
      * @see #write
      */
-  async writeMsg (context) {
+  async writeMsg (context, endorserDID = null) {
     var msg = this._getBaseMessage(this.msgNames.WRITE_SCHEMA)
     msg = this._addThread(msg)
     msg.name = this.name
     msg.version = this.version
     msg.attrNames = this.attrs
+    if (endorserDID) {
+      msg.endorserDID = endorserDID
+    }
     return msg
   }
 
   /**
      * Creates and packages message without sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param endorserDID DID of an organization to endorse writing transactions to the ledger
      * @return the byte array ready for transport
      *
      * @see #write
      */
-  async writeMsgPacked (context) {
-    return this.getMessageBytes(context, await this.writeMsg(context))
+  async writeMsgPacked (context, endorserDID = null) {
+    return this.getMessageBytes(context, await this.writeMsg(context, endorserDID))
   }
 
   /**
      * Directs verity-application to write the specified Schema to the Ledger
      *
+     * Endorser did should be provided, only if override of default endorser is needed.
+     *
      * @param context an instance of the Context object initialized to a verity-application agent
+     * @param endorserDID DID of an organization to endorse writing transactions to the ledger
      */
-  async write (context) {
-    await this.sendMessage(context, await this.writeMsgPacked(context))
+  async write (context, endorserDID = null) {
+    await this.sendMessage(context, await this.writeMsgPacked(context, endorserDID))
   }
 }
 module.exports = WriteSchema

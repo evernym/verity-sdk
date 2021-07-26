@@ -10,6 +10,7 @@ name = 'name'
 schema_id = 'schema id'
 tag = 'tag'
 revocation_details = {'support_revocation': False}
+endorser_did = 'endorserDID'
 
 
 def test_init():
@@ -39,5 +40,26 @@ async def test_write():
     assert msg['schemaId'] == schema_id
     assert msg['tag'] == tag
     assert msg['revocationDetails'] == revocation_details
+
+
+@pytest.mark.asyncio
+async def test_write_with_endorser_override():
+    context = await Context.create_with_config(await get_test_config())
+    write_cred_def = WriteCredentialDefinition(name, schema_id, tag, revocation_details)
+    msg = write_cred_def.write_msg(context, endorser_did)
+
+    assert msg['@type'] == '{}/{}/{}/{}'.format(
+        EVERNYM_MSG_QUALIFIER,
+        WriteCredentialDefinition.MSG_FAMILY,
+        WriteCredentialDefinition.MSG_FAMILY_VERSION,
+        WriteCredentialDefinition.WRITE_CRED_DEF
+    )
+    assert msg['@id'] is not None
+    assert msg['~thread']['thid'] is not None
+    assert msg['name'] == name
+    assert msg['schemaId'] == schema_id
+    assert msg['tag'] == tag
+    assert msg['revocationDetails'] == revocation_details
+    assert msg['endorserDID'] == endorser_did
 
     await cleanup(context)

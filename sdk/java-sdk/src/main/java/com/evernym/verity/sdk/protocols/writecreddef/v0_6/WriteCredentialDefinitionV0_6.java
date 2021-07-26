@@ -94,4 +94,39 @@ public interface WriteCredentialDefinitionV0_6 extends Protocol {
      * @see #write
      */
     byte[] writeMsgPacked(Context context) throws VerityException;
+
+    /**
+     * Directs verity-application to write the specified Credential Definition to the Ledger
+     *
+     * This version is used, only if override of default endorser is needed.
+     *
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param endorserDID DID of an organization to endorse writing transactions to the ledger
+     * @throws IOException when the HTTP library fails to post to the agency endpoint
+     * @throws VerityException when wallet operations fails or given invalid context
+     */
+    void write(Context context, String endorserDID) throws IOException, VerityException;
+
+    /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param endorserDID DID of an organization to endorse writing transactions to the ledger
+     * @return the constructed message (JSON object)
+     * @throws VerityException when given invalid context
+     *
+     * @see #write
+     */
+    JSONObject writeMsg(Context context, String endorserDID) throws UndefinedContextException;
+
+    /**
+     * Creates and packages message without sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param endorserDID DID of an organization to endorse writing transactions to the ledger
+     * @return the byte array ready for transport
+     * @throws VerityException when wallet operations fails or given invalid context
+     *
+     * @see #write
+     */
+    byte[] writeMsgPacked(Context context, String endorserDID) throws VerityException;
+
 }

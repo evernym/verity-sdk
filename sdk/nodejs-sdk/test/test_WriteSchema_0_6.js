@@ -9,6 +9,7 @@ const WriteSchema = require('../src/protocols/v0_6/WriteSchema')
 const name = 'test label'
 const version = '1.0'
 const attributes = ['name', 'age']
+const endorserDID = 'endorserDID'
 
 function createWriteSchemaTest (name, version, attributes) {
   const rel = new WriteSchema(
@@ -49,5 +50,22 @@ describe('WriteSchema', () => {
     expect(msg.name).to.equal(name)
     expect(msg.version).to.equal(version)
     expect(msg.attrNames).to.equal(attributes)
+  })
+
+  it('should build WRITE msg with endorserDID correctly', async () => {
+    const rel = createWriteSchemaTest(
+      name,
+      version,
+      attributes
+    )
+    const msg = await rel.writeMsg(null, endorserDID)
+    expect(msg['@type']).to.equal(
+     `${rel.msgQualifier}/${rel.msgFamily}/${rel.msgFamilyVersion}/${rel.msgNames.WRITE_SCHEMA}`
+    )
+    expect(msg['~thread'].thid).to.be.a('string')
+    expect(msg.name).to.equal(name)
+    expect(msg.version).to.equal(version)
+    expect(msg.attrNames).to.equal(attributes)
+    expect(msg.endorserDID).to.equal(endorserDID)
   })
 })

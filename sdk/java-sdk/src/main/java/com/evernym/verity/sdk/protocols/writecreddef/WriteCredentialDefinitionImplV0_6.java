@@ -73,4 +73,21 @@ class WriteCredentialDefinitionImplV0_6 extends AbstractProtocol implements Writ
     public byte[] writeMsgPacked(Context context) throws VerityException {
         return packMsg(context, writeMsg(context));
     }
+
+    @SuppressWarnings("WeakerAccess")
+    public void write(Context context, String endorserDID) throws IOException, VerityException {
+        send(context, writeMsg(context, endorserDID));
+    }
+
+    @Override
+    public JSONObject writeMsg(Context context, String endorserDID) {
+        JSONObject message = writeMsg(context);
+        message.put("endorserDID", endorserDID);
+        return message;
+    }
+
+    @Override
+    public byte[] writeMsgPacked(Context context, String endorserDID) throws VerityException {
+        return packMsg(context, writeMsg(context, endorserDID));
+    }
 }
