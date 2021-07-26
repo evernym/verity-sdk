@@ -1,0 +1,26 @@
+FROM evernymdev/verity-server-dev:stable
+WORKDIR /root
+
+RUN apt-get update && apt-get install -y \
+    npm \
+    net-tools \
+    ; exit 0
+    
+RUN rm -rf /etc/verity/verity-application/*
+ADD verity/configuration/ /etc/verity/verity-application/.
+
+ENV RUN_MODE="docker"
+
+ADD verity/verity_backchannel.js verity_backchannel.js
+ADD verity/verity_config/ verity_config/
+ADD verity/package.json package.json
+ADD verity/package-lock.json package-lock.json
+
+RUN npm install -g npm@5.6.0
+RUN npm install
+
+ADD verity/entrypoint.sh entrypoint.sh
+
+RUN ls -la
+
+ENTRYPOINT ["node", "verity_backchannel.js"]
