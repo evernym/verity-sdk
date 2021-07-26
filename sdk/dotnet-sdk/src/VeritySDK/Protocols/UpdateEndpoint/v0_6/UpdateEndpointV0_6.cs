@@ -29,13 +29,36 @@ namespace VeritySDK.Protocols.UpdateEndpoint
         /// </summary>
         public override string version() { return "0.6"; }
 
-        #endregion 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor UpdateEndpointV0_6 object
+        /// </summary>
+        public UpdateEndpointV0_6()
+        {
+        }
+
+        /// <summary>
+        /// Constructor UpdateEndpointV0_6 object
+        /// <param name="authentication">Authentication for the endpoint url.</param>
+        /// </summary>
+        public UpdateEndpointV0_6(Authentication authentication)
+        {
+            this.authentication = authentication;
+        }
+
+        #endregion
+
 
         /// <summary>
         /// Name for 'update-endpoint' control message
         /// </summary>
         string UPDATE_ENDPOINT = "UPDATE_COM_METHOD";
         int COM_METHOD_TYPE = 2;
+
+        Authentication authentication;
 
         /// <summary>
         /// Directs verity-application to update the used endpoint for out-going signal message to the
@@ -72,6 +95,9 @@ namespace VeritySDK.Protocols.UpdateEndpoint
             packaging.Add("recipientKeys", recipientKeys);
 
             comMethod.Add("packaging", packaging);
+
+            if (authentication != null)
+                comMethod.Add("authentication", authentication.toJson());
 
             message.Add("comMethod", comMethod);
             return message;

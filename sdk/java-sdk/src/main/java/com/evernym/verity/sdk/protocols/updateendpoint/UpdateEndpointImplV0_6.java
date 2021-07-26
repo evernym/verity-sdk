@@ -3,6 +3,7 @@ package com.evernym.verity.sdk.protocols.updateendpoint;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.AbstractProtocol;
+import com.evernym.verity.sdk.protocols.updateendpoint.common.Authentication;
 import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONArray;
@@ -18,8 +19,15 @@ import java.io.IOException;
  */
 class UpdateEndpointImplV0_6 extends AbstractProtocol implements UpdateEndpointV0_6 {
 
+    Authentication authentication = null;
+
     UpdateEndpointImplV0_6() {
         super();
+    }
+
+    UpdateEndpointImplV0_6(Authentication authentication) {
+        super();
+        this.authentication = authentication;
     }
 
     final int COM_METHOD_TYPE = 2;
@@ -45,6 +53,8 @@ class UpdateEndpointImplV0_6 extends AbstractProtocol implements UpdateEndpointV
         recipientKeys.put(context.sdkVerKey());
         packaging.put("recipientKeys", recipientKeys);
         comMethod.put("packaging", packaging);
+        if (authentication != null)
+            comMethod.put("authentication", authentication.toJson());
         message.put("comMethod", comMethod);
         return message;
     }

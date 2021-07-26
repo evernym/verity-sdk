@@ -12,7 +12,20 @@ class UpdateEndpoint extends Protocol {
   /**
    * Constructor for the 0.6 UpdateEndpoint object. This constructor creates an object that is ready to update
    * the endpoint.
-   * @param threadId the thread id of the already started protocol
+   * @param authentication {Object} Authentication for the endpoint url.
+   *   Please consult documentation about this parameter.
+   *   eg:
+   *   {
+   *     type: 'OAuth2',
+   *     version: 'v1',
+   *     data: {
+   *       url: 'https://auth.url/token',
+   *       grant_type: 'client_credentials',
+   *       client_id: 'ajeyKDizsDkwYeEmRmHU78gf7W3VIEoA',
+   *       client_secret: 'aaGxxcGi6kb6AxIe'
+   *     }
+   *   }
+   *
    * @return 0.6 UpdateEndpoint object
    *
    * @property {String} msgFamily - 'configs'
@@ -20,11 +33,12 @@ class UpdateEndpoint extends Protocol {
    * @property {String} msgQualifier - 'Community Qualifier'
    * @property {String} this.msgNames.UPDATE_ENDPOINT - 'UPDATE_COM_METHOD'
    */
-  constructor (threadId = null) {
+  constructor (authentication = null) {
     const msgFamily = 'configs'
     const msgFamilyVersion = '0.6'
     const msgQualifier = utils.constants.EVERNYM_MSG_QUALIFIER
-    super(msgFamily, msgFamilyVersion, msgQualifier, threadId)
+    super(msgFamily, msgFamilyVersion, msgQualifier, null)
+    this.authentication = authentication
 
     this.msgNames.UPDATE_ENDPOINT = 'UPDATE_COM_METHOD'
   }
@@ -49,6 +63,9 @@ class UpdateEndpoint extends Protocol {
         pkgType: '1.0',
         recipientKeys: [context.sdkVerKey]
       }
+    }
+    if (this.authentication) {
+      msg.comMethod.authentication = this.authentication
     }
     return msg
   }

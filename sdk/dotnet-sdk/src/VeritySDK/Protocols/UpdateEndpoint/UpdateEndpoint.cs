@@ -26,5 +26,15 @@ namespace VeritySDK.Protocols.UpdateEndpoint
         {
             return new UpdateEndpointV0_6();
         }
+
+        /// <summary>
+        /// Constructor for the 0.6 UpdateEndpoint object. This constructor creates an object that is ready to update the endpoint.
+        /// </summary>
+        /// <param name="authentication">Authentication for the endpoint url.</param>
+        /// <returns>0.6 UpdateEndpoint object</returns>
+        public static UpdateEndpointV0_6 v0_6(Authentication authentication)
+        {
+            return new UpdateEndpointV0_6(authentication);
+        }
     }
 }

@@ -18,12 +18,29 @@ class UpdateEndpoint(Protocol):
     UPDATE_ENDPOINT = 'UPDATE_COM_METHOD'
     """Name for 'update' control message"""
 
-    def __init__(self):
+    def __init__(self, authentication=None):
+        """
+        Args:
+            authentication (Dict): Authentication for the endpoint url.
+                Please consult documentation about this parameter.
+                eg:
+                    {
+                        'type': 'OAuth2',
+                        'version': 'v1',
+                        'data': {
+                            'url': 'https://auth.url/token',
+                            'grant_type': 'client_credentials',
+                            'client_id': 'ajeyKDizsDkwYeEmRmHU78gf7W3VIEoA',
+                            'client_secret': 'aaGxxcGi6kb6AxIe'
+                        }
+                    }
+        """
         super().__init__(
             self.MSG_FAMILY,
             self.MSG_FAMILY_VERSION,
             msg_qualifier=EVERNYM_MSG_QUALIFIER,
         )
+        self.authentication = authentication
 
     async def update(self, context):
         """
@@ -60,6 +77,8 @@ class UpdateEndpoint(Protocol):
                 'recipientKeys': [context.sdk_verkey]
             }
         }
+        if self.authentication is not None:
+            msg['comMethod']['authentication'] = self.authentication
         return msg
 
     async def update_endpoint_msg_packed(self, context):
