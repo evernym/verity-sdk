@@ -1,5 +1,6 @@
 package com.evernym.verity.sdk.protocols.updateendpoint;
 
+import com.evernym.verity.sdk.protocols.updateendpoint.common.Authentication;
 import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointV0_6;
 
 /**
@@ -21,5 +22,17 @@ public class UpdateEndpoint {
      */
     public static UpdateEndpointV0_6 v0_6() {
         return new UpdateEndpointImplV0_6();
+    }
+
+    /**
+     * Constructor for the 0.6 UpdateEndpoint object. This constructor creates an object that is ready to update
+     * the endpoint.
+     *
+     * @param authentication Authentication for the endpoint url.
+     *
+     * @return 0.6 UpdateEndpoint object
+     */
+    public static UpdateEndpointV0_6 v0_6(Authentication authentication) {
+        return new UpdateEndpointImplV0_6(authentication);
     }
 }
