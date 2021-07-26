@@ -3,8 +3,6 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
-import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
-import com.evernym.verity.sdk.protocols.updateendpoint.v0_6.UpdateEndpointV0_6;
 import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
 import com.evernym.verity.sdk.protocols.writecreddef.v0_6.RevocationRegistryConfig;
 import com.evernym.verity.sdk.protocols.writecreddef.v0_6.WriteCredentialDefinitionV0_6;
@@ -22,6 +20,7 @@ public class WriteCredentialDefinitionTest {
     private final String schemaId = "...someSchemaId...";
     private final String tag = "latest";
     private final RevocationRegistryConfig revocationDetails = WriteCredentialDefinitionV0_6.disabledRegistryConfig();
+    private final String endorserDID = "endorserDID";
 
     @Test
     public void testGetMessageType() {
@@ -94,6 +93,12 @@ public class WriteCredentialDefinitionTest {
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             testBaseMessage(unpackedMessage);
             assertEquals(Util.EVERNYM_MSG_QUALIFIER + "/write-cred-def/0.6/write", unpackedMessage.getString("@type"));
+
+            // test endorser DID
+            byte[] message2 = testProtocol.writeMsgPacked(context, endorserDID);
+            JSONObject unpackedMessage2 = unpackForwardMessage(context, message2);
+            testMessageWithEndorser(unpackedMessage2);
+            assertEquals(Util.EVERNYM_MSG_QUALIFIER + "/write-cred-def/0.6/write", unpackedMessage2.getString("@type"));
         } catch(Exception e) {
             e.printStackTrace();
             fail();
@@ -106,5 +111,10 @@ public class WriteCredentialDefinitionTest {
         assertNotNull(msg.getString("@type"));
         assertNotNull(msg.getString("@id"));
         assertNotNull(msg.getJSONObject("~thread").getString("thid"));
+    }
+
+    private void testMessageWithEndorser(JSONObject msg) {
+        testBaseMessage(msg);
+        assertEquals(endorserDID, msg.getString("endorserDID"));
     }
 }

@@ -38,21 +38,25 @@ class WriteCredentialDefinition(Protocol):
         self.tag = tag
         self.revocation_details = revocation_details
 
-    async def write(self, context):
+    async def write(self, context, endorser_did=None):
         """
         Directs verity-application to write the specified Credential Definition to the Ledger
 
+        Endorser did should be provided, only if override of default endorser is needed.
+
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            endorser_did (str): DID of an organization to endorse writing transactions to the ledger
         """
-        await self.send_message(context, await self.write_msg_packed(context))
+        await self.send_message(context, await self.write_msg_packed(context, endorser_did))
 
-    def write_msg(self, context):
+    def write_msg(self, context, endorser_did=None):
         """
         Creates the control message without packaging and sending it.
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            endorser_did (str): DID of an organization to endorse writing transactions to the ledger
 
         Return:
             the constructed message (dict object)
@@ -62,17 +66,20 @@ class WriteCredentialDefinition(Protocol):
         msg['schemaId'] = self.schema_id
         msg['tag'] = self.tag
         msg['revocationDetails'] = self.revocation_details
+        if endorser_did is not None:
+            msg['endorserDID'] = endorser_did
         self._add_thread(msg)
         return msg
 
-    async def write_msg_packed(self, context):
+    async def write_msg_packed(self, context, endorser_did=None):
         """
         Creates and packages message without sending it.
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
+            endorser_did (str): DID of an organization to endorse writing transactions to the ledger
 
         Return:
             the bytes ready for transport
         """
-        return await self.get_message_bytes(context, self.write_msg(context))
+        return await self.get_message_bytes(context, self.write_msg(context, endorser_did))
