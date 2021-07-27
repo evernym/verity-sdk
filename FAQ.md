@@ -70,3 +70,35 @@ When message sending to webhook fails, currently we only retry the failed messag
 There are two options for horizontally scaling a service on client side using the Verity SDK. Libindy can be reconfigured to use MySQL storage, instead of the SQLite. This is not available out of the box and if you are planning to do this, please contact Evernym support to assist you configuring this. 
 
 The other option is to copy the SQLite db ($HOME/.indy_client) and verity-context.json to each of your horizontally scalable machines running client software. 
+
+### Moving to Production
+
+When ready to move to the production environment, please follow the steps below.
+
+##### STEP 1 - Assign a DomainDID and a REST API key or an SDK provisioning token that points to the PROD Verity SaaS
+
+Please contact Evernym support to receive a DomainDID and a REST API key (if using REST API) or an SDK provisioning token (if using Verity SDK).
+
+Alternatively, you can create DomainDID and REST API key yourself if you use SDK for provisioning.
+
+> At this step, please tell Evernym your desired configuration for the data retention policy (default: no data is stored) and the connection invitation URL (default: Connect.Me).
+
+##### STEP 2 – Set up a webhook
+
+Call `UpdateEndpoint` endpoint that sets up the callback webhook: https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0/#/UpdateEndpoint/updateEndpoint
+
+##### STEP 3 – Set up an Issuer
+
+Call `IssuerSetup` endpoint that creates Issuer DID and Verkey keypair: https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0/#/IssuerSetup
+
+##### STEP 4 – Have your Issuer DID and Verkey written to the Sovrin MainNet as Transaction Endorser
+
+There are two options you can choose from when it comes to transaction endorsement on Sovrin MainNet. First, you can contact Sovrin to become a Transaction Endorser yourself. Alternatively, Evernym can help you endorse your transactions. If you prefer the latter option, the costs of endorsement will be passed to you. Please contact Evernym support to discuss commercial terms.
+
+A list of Sovrin Ledger Fees and a link to the Transaction Endorser Application form are available [here](https://sovrin.org/issue-credentials/).
+
+##### Verity Application Service endpoint for PROD
+
+```
+https://vas.evernym.com
+```
