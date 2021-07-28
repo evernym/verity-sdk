@@ -1,17 +1,52 @@
+# Release notes - Verity 2.13.1 (0.4.126701053.087c5c2) - Jul 27 2021
+
+### Bugs
+   * [VE-2752] - handshake\_protocols field in the OoB invitation is wrong
+
+### Task
+   * [VE-2663] - Implement authentication mechanism for Verity callbacks
+   * [VE-2762] - Investigate and fix spurious issuing/proving failures with Demo VAS
+   * [VE-2760] - Cut down number of metrics exported to Datadog as soon as possible
+   * [VE-2740] - Remove cycle dependency between verity.\* and verity.app\_launcher
+
+# Release notes - Verity 2.13.0 (0.4.125606469.19a6981) - Jul 13 2021
+
+### Bugs
+   * [VE-2718] - Fix actor state cleanup bug
+   * [VE-2712] - Fix item manager issue
+   * [VE-2711] - Fix actor state cleanup bug
+
+### Tasks
+   * [VE-1699] - Refactor "ItemConfigManager" to a class
+   * [VE-1698] - Refactor "InitializingState" object to a class
+   * [VE-1696] - Refactor "ResourceBlockingStatusMngrCache" and "ResourceWarningStatusMngrCache" object into a class
+   * [VE-1695] - Refactor "MsgProgressTrackerCache" object into a class
+   * [VE-1694] - Remove "Util.logger" and use "LoggingUtil" to get a logger.
+   * [VE-1690] - Refactor 'AppStateUpdateAPI' singleton object into a class
+   * [VE-2704] - Phase0: add event/state encryption/decryption behaviour to typed actor
+   * [VE-2702] - Update verity-sdk dependencies
+   * [VE-2666] - demo vas iata slow actor startup issue
+   * [VE-2646] - Provide kamon with application version
+   * [VE-2626] - Enable split-brain resolver in Verity
+   * [VE-2594] - Truncate large replies in GET\_MSGs to fit in multi-node message limits
+   * [VE-2550] - Calls to create\_wallet and open\_wallet in async libindy often take more than 20 seconds to complete when under heavy load
+   * [VE-2409] - Switch Verity to use Async Libindy
+   * [VE-2303] - Implement MySQL cache in async libindy
+
 # Release notes - Verity 2.12.2 (0.4.123069613.a21b28b) - Jun 16 2021
 
 ## Bugs
-    *[VE-2667] - vcx connection issue
+    * [VE-2667] - vcx connection issue
 
 ## Tasks
-    *[VE-2614] - Remove sms endpoint and related configuration
-    *[VE-2537] - Use a unique resource key for each message type
-    *[VE-2042] - Creating the right configuration for the throttle limits we previously defined
+    * [VE-2614] - Remove sms endpoint and related configuration
+    * [VE-2537] - Use a unique resource key for each message type
+    * [VE-2042] - Creating the right configuration for the throttle limits we previously defined
 
 # Release notes - Verity 2.12.1 (0.4.122738797.8b2e9a7) - Jun 16 2021
 
 ## Tasks
-    *[VE-2656] - add support in data retention feature to allow deletion of data once protocol is completed
+    * [VE-2656] - add support in data retention feature to allow deletion of data once protocol is completed
 
 # Release notes - Verity 2.12.0 (0.4.122576192.7d4abd6) - Jun 16 2021
 
