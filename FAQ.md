@@ -102,3 +102,13 @@ A list of Sovrin Ledger Fees and a link to the Transaction Endorser Application 
 ```
 https://vas.evernym.com
 ```
+
+### Deep links in the Connect.Me
+
+Besides QR code scanning, you can use deep links for a connection invitation in the Connect.Me app. 
+
+A deep link is constructed by prepending URL-encoded inviteURL or shortInviteURL with [https://connectme.app.link?t=]() . 
+
+The deep link URL will look like this:
+
+[https://connectme.app.link?t=https%3A%2F%2Fvty.im%2Fk7gw0]() .
