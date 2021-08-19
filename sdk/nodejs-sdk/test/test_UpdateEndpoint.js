@@ -40,7 +40,7 @@ describe('UpdateEndpoint', () => {
     expect(msg.comMethod.packaging.pkgType).to.equal('1.0')
     expect(msg.comMethod.packaging.recipientKeys).to.eql([context.sdkVerKey])
     expect(msg.comMethod.authentication).to.an('undefined')
-  })
+  }).timeout(5000)
 
   it('should build UPDATE_COM_METHOD msg with OAuth2 v1 authentication correctly', async () => {
     const context = await helpers.getTestContext()
@@ -74,5 +74,5 @@ describe('UpdateEndpoint', () => {
     expect(msg.comMethod.authentication.data.grant_type).to.equal('client_credentials')
     expect(msg.comMethod.authentication.data.client_id).to.equal('ajeyKDizsDkwYeEmRmHU78gf7W3VIEoA')
     expect(msg.comMethod.authentication.data.client_secret).to.equal('aaGxxcGi6kb6AxIe')
-  })
+  }).timeout(5000)
 })
