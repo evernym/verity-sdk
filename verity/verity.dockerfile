@@ -1,8 +1,7 @@
 FROM ubuntu:18.04
 WORKDIR /root
 
-ENV LIBINDY_VERSION 1.15.0~1618-bionic
-ENV LIBMYSQLSTORAGE_VERSION 0.1.11
+ENV LIBINDY_ASYNC_VERSION 1.95.0~1624
 ENV VERITY_APPLICATION_VERSION 0.4.128237112.a11b56e
 ENV LANG=C.UTF-8
 
@@ -14,13 +13,8 @@ RUN apt-get update && apt-get install -y \
     apt-transport-https \
     default-jdk \
     wget \
-    tar \
     curl \
-    python-dev \
     maven \
-    git \
-    python3-pip \
-    iproute2 \
     jq \
     unzip
 
@@ -36,20 +30,15 @@ RUN mkdir -p /usr/local/share/ca-certificates
 ADD configuration/Evernym_Root_CA.crt /usr/local/share/ca-certificates/Evernym_Root_CA.crt
 RUN update-ca-certificates
 
-# Setup apt for Sovrin repository
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
-    add-apt-repository "deb https://repo.sovrin.org/sdk/deb bionic master"
-
 # Setup apt for evernym repositories
 RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
 RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main"
+RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-rc-ubuntu main"
 
 # install verity-application, ignoring failed post-install script
 RUN apt-get update && apt-get install -y \
-    libindy=${LIBINDY_VERSION} \
-    libnullpay=${LIBINDY_VERSION} \
-    libmysqlstorage=${LIBMYSQLSTORAGE_VERSION} \
-    indy-cli=${LIBINDY_VERSION}
+    libindy-async=${LIBINDY_ASYNC_VERSION}-bionic \
+    libnullpay-async=${LIBINDY_ASYNC_VERSION}-bionic
 RUN apt-get update && apt-get install -y \
     verity-application=${VERITY_APPLICATION_VERSION} \
     ; exit 0
