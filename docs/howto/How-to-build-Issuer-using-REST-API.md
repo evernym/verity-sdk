@@ -13,7 +13,9 @@ The Issuer application will require you to specify:
 * Domain DID
 * X-API-KEY
 
-You should have received this data from Evernym
+You should have received this data from Evernym when you signed up for a free developer account [on our website](https://www.evernym.com/developer/).
+
+> **NOTE**: You can reuse your Domain DID and X-API-KEY for running sample apps and/or building your own. 
 
 The issuer application will also need to expose a webhook endpoint. The webhook endpoint (**/webhook**) needs to be served on a public URL so that Verity Application service can send messages to it. For development purposes, the Issuer application listening port can be assigned a public URL via means of the Ngrok tool.
 
