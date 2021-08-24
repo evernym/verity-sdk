@@ -42,6 +42,12 @@ The instructions for this SDK use the following terms:
 - Verity Application Service -- Evenym's Verity platform hosted and managed by Evernym and provided as SaaS
 - Example application -- A sample application in the 'Getting Started' guided tutorial  intended to demonstrate the main functionalities of Verity and to walk you through setting up and using Verity SDK
 
+#### Minimum system requirements
+
+Minimum system requirements of Verity SDK match system requirements for a language runtime. Enough is defined by an app and a flow, as some apps may try to force Indy SDK to keep an unlimited amount of data in RAM.
+
+Languages: Python 3.6, Java 11 (OpenJDK), NodeJS 12, and .NET Core SDK 3.1.
+
 #### First steps
 These are the general steps for getting going with the Verity SDK:
 1. Provisioning an Agent on Evernym's Verity Application Serivce
