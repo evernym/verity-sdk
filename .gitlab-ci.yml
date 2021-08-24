@@ -17,3 +17,8 @@ include:
   - '/cicd/jobs/java.yml'
   - '/cicd/jobs/nodejs.yml'
   - '/cicd/jobs/python.yml'
+  - template: Security/SAST.gitlab-ci.yml
+
+spotbugs-sast:
+  variables:
+    FAIL_NEVER: 1
