@@ -71,8 +71,14 @@ The application can be launched from a local development environment. Using this
 ### Prerequisites
 * `libindy` -- Install a stable version. Follow the instructions on the 
 [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
-* `Ngrok` -- This is a temporary installation to facilitate early experimentation. 
-Follow the instructions on the [Ngrok website](https://ngrok.com/download).
+
+>**NOTE:** 
+>
+>On **Windows** you'll also need to create a system variable LD_LIBRARY_PATH with a value of a path to Libindy /lib directory which contains dll file.
+
+* `Ngrok` -- This is a temporary installation to facilitate early experimentation. Follow the instructions on the [Ngrok website](https://ngrok.com/download).
+* `NodeJs v12` -- Follow the instructions on the [NodeJs website](https://nodejs.org/en/).
+* `C++ build tools and Python 3.6+` --  NodeJs Indy SDK uses `node-gyp` package that depends on C++ and Python. For more information, follow this [link](https://www.npmjs.com/package/node-gyp).
 
 ### Build
 
