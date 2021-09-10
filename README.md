@@ -28,7 +28,9 @@ Verity also incorporates a digital wallet for storing keys, it orchestrates all 
 Verity is currently hosted and managed by Evernym, while you are responsible for building the integration layer with Verity. This repo also provides local version of Verity in a Docker, but this is only intended for development and learning purposes. 
 
 ### Getting started with Verity
-The best way to start with Verity is to go through the example app that will walk you through the installation of Verity SDK and through the main capabilities of the Verity. Communication with Verity is asynchronous and requires you to stand up an endpoint where Verity will send its response. The example app and other sample code uses ngrok as a temporary service to provide such an endpoint but for building your own code to use for pilot or production, we recommend standing up your own endpoint.
+The best way to start with Verity is to go through the example app that will walk you through the installation of Verity SDK and through the main capabilities of the Verity. Communication with Verity is asynchronous and requires you to stand up an endpoint where Verity will send its response. The example app and other sample code uses ngrok as a temporary service to provide such an endpoint but for building your own code to use for pilot or production, we recommend standing up your own endpoint. 
+
+There are two general approaches to working with Verity: [**Verity SDK**](#verity-sdk) and [**Verity REST API**](#rest-api). Check out [this explanation](FAQ.md#verity-sdk-vs-rest-api) if you are wondering which approach suits your use case better. If you need more guidance in making your selection, please [reach out to us](mailto:support@evernym.com). 
 
 ### Verity SDK
 The goal of the Verity SDK is to provide easy application integration with the Verity server. With Verity SDK, you can enable issuing or verifying or both functions into your project and interact with individuals using Connect.Me or some other compatible digital wallet app. Verity SDK also provides methods for writing Schemas and Credential Definitions to the ledger.
