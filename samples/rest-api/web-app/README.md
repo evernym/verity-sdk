@@ -60,4 +60,8 @@ docker run -p 3000:3000 --env-file .env -it demo-web-app
 
 The application will be available on http://localhost:3000
 
+### Suggestions?
+
+Are there other sample apps you would like to see here? [Send us your suggestions!](mailto:support@evernym.com)
+
 © 2013-2020, ALL RIGHTS RESERVED, EVERNYM INC.

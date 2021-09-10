@@ -112,3 +112,7 @@ A deep link is constructed by prepending URL-encoded inviteURL or shortInviteURL
 The deep link URL will look like this:
 
 [https://connectme.app.link?t=https%3A%2F%2Fvty.im%2Fk7gw0]() .
+
+### Improving documentation
+
+Can’t find what you are looking for, or have suggestions on what to include in the docs? [Drop us a line](mailto:support@evernym.com), we'd love to receive your ideas.
