@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://use.fontawesome.com/62efe02dbf.js"></script>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
     <link
       rel="stylesheet"
@@ -343,20 +344,27 @@
                         </div>
 
                         <div class="w3-margin-top w3-margin-bottom">
-                          <label
-                            for="schema-attrs"
-                            class="w3-text-gray w3-small"
-                            >Schema Attrs (comma deliminated)</label
-                          >
-                          <input
-                            id="schema-attrs"
-                            class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
-                            type="text"
-                            v-model="schema.attrs"
-                            @focus="handleFocus"
-                            @blur="handleBlur"
-                          />
-                        </div>
+                        <fieldset>
+                          <legend id="schema-attributes" class="w3-text-gray w3-small">Attribute Names</legend>
+                            <div class="w3-margin-bottom" v-for="(attr, index) in schema.attrs">
+                              <input
+                              v-model.trim="attr.value"
+                              name="attribute-name"
+                              :id="attr+index"
+                              aria-label='Schema attribute name'
+                              class="w3-input-short w3-light-grey w3-border-0 w3-round w3-padding"
+                              type="text"
+                              @focus="handleFocus"
+                              @blur="handleBlur"
+                              v-on:keyUp="addNewField(schema.attrs)"
+                              />
+                              <button 
+                                class="btn w3-small pointer w3-padding-small" v-bind:class="{hidden: index===0}" v-on:click.prevent="deleteAttribute(index, schema.attrs)">
+                                <i class="fa fa-times-circle"></i>
+                              </button>  
+                            </div>
+                        </fieldset> 
+                      </div>
 
                         <div
                           v-if="spinners.schemas"
@@ -476,16 +484,25 @@
                             class="w3-text-gray w3-small"
                             >Schema ID</label
                           >
-                          <input
+                          <select
                             id="cred-def-schema-id"
                             class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
                             type="text"
                             v-model="credDef.schemaId"
                             @focus="handleFocus"
                             @blur="handleBlur"
-                          />
-                        </div>
-
+                            @change="handleSelect($event, schemas)"
+                          >
+                            <option disabled value="">
+                              -- select an option --
+                            </option>
+                            <option
+                              v-for="schema in schemas"
+                              v-bind:value="schema.id">
+                              {{schema.id}}
+                            </option>
+                        </select>
+                    </div>
                         <div class="w3-margin-top w3-margin-bottom">
                           <label
                             for="cred-def-tag"
@@ -741,6 +758,7 @@
                       v-model="credential.credDefId"
                       @focus="handleFocus"
                       @blur="handleBlur"
+                      @change="handleSelect($event, credDefs)"  
                     >
                       <option disabled value="">
                         -- select an option --
@@ -754,19 +772,25 @@
                     </select>
                   </div>
 
-                  <div class="w3-margin-top w3-margin-bottom">
-                    <label for="credential-values" class="w3-text-gray w3-small"
-                      >Credential Values (as JSON)</label
-                    >
-                    <input
-                      id="credential-values"
-                      class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
-                      v-model="credential.values"
-                      @focus="handleFocus"
-                      @blur="handleBlur"
-                      placeholder='{"attr1":"value1", "attr2":"value2"}'
-                    />
-                  </div>
+                  <div class="w3-margin-top">
+                    <fieldset>
+                      <legend id="credential-values" class="w3-text-gray w3-small">Credential Values</legend>
+                        <div v-if="credential.attrs.length === 0" class="w3-margin-bottom">
+                          <span class="w3-text-gray w3-small">
+                            -- please choose Credential Definition ID from the dropdown above first --
+                          </span>
+                        </div>
+                        <div class="w3-margin-bottom" v-for="(attr, index) in credential.attrs">
+                        <label for="index+attr" v-bind:key="index" class="w3-text-gray w3-small">{{attr}}</label>
+                        <input 
+                        :id="index+attr" 
+                        v-bind:key="index" 
+                        class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
+                        v-model="credential.attrValues[index]"
+                        />
+                      </div>
+                    </fieldset>
+                  </div>  
 
                   <div
                     v-if="spinners.creds"
@@ -851,18 +875,27 @@
                         </select>
                       </div>
 
-                      <div class="w3-margin-bottom">
-                        <label for="proof-attrs" class="w3-text-gray w3-small"
-                          >JSON Array of Proof Attrs</label
-                        >
-                        <input
-                          id="proof-attrs"
-                          class="w3-input w3-light-grey w3-border-0 w3-round w3-padding"
-                          v-model="proof.attrs"
-                          @focus="handleFocus"
-                          @blur="handleBlur"
-                          placeholder='[{"name":"first_attr"},{"name":"second_attr"}]'
-                        />
+                      <div class="w3-margin-top">
+                        <fieldset>
+                          <legend id="proof-attributes" class="w3-text-gray w3-small">Proof Attributes</legend>
+                            <div class="w3-margin-bottom" v-for="(attr, index) in proof.attrs">
+                              <input
+                              v-model.trim="attr.name"
+                              name="attribute-name"
+                              :id="attr.name+index"
+                              aria-label='Proof attribute name'
+                              class="w3-input-short w3-light-grey w3-border-0 w3-round w3-padding"
+                              type="text"
+                              @focus="handleFocus"
+                              @blur="handleBlur"
+                              v-on:keyUp="addNewField(proof.attrs)"
+                              />
+                              <button 
+                                class="btn w3-small pointer w3-padding-small" v-bind:class="{hidden: index===0}" v-on:click.prevent="deleteAttribute(index, proof.attrs)">
+                                <i class="fa fa-times-circle"></i>
+                              </button>  
+                            </div>
+                        </fieldset> 
                       </div>
 
                       <div class="w3-margin-bottom">
@@ -1293,13 +1326,14 @@
           schema: {
             name: "",
             version: "",
-            attrs: "",
+            attrs: [{ value: ""}, { value: ""}],
           },
           credDef: {
             name: "",
             schemaId: "",
             tag: "",
             revocationDetails: "",
+            attrs: [],
           },
           connection: {
             name: "",
@@ -1309,13 +1343,14 @@
             name: "",
             relationshipDID: "",
             credDefId: "",
-            values: "",
+            attrs: [],
+            attrValues: [],
             threadId: "",
           },
           proof: {
             relationshipDID: "",
             name: "",
-            attrs: "",
+            attrs: [{ name: ""}, { name: ""}],
             predicates: "",
             revocationInterval: "",
           },
@@ -1429,6 +1464,46 @@
               hour12: false,
             });
           },
+          // adds an extra input field when no empty fields left
+          addNewField: function (attributesArray) {
+            let hasNoEmptyValue = attributesArray.every(item => item.value) || attributesArray.every(item => item.name);
+            if(hasNoEmptyValue && attributesArray === this.schema.attrs){
+              attributesArray.push({ value: '' });
+            }
+            else if(hasNoEmptyValue && attributesArray === this.proof.attrs){
+              attributesArray.push({ name: '' });
+            }
+          },
+          // deletes selected attribute field
+          deleteAttribute: function(index, attributesArray) {
+            attributesArray.splice(index, 1);
+          },
+          // adds attributes of a corresponding schema to credDef or credential
+          handleSelect: function (event, selectedValue) {
+            if (selectedValue === this.schemas){
+              selectedSchema = selectedValue.filter(schema => schema.id === event.target.value);
+              const schemaAttrs = selectedSchema[0].attrs;
+              this.credDef.attrs = [];
+              this.credDef.attrs = this.credDef.attrs.concat(schemaAttrs);
+            }
+            else if (selectedValue === this.credDefs){
+              this.credential.attrValues = [];
+              selectedCredDef = selectedValue.filter(credDef => credDef.id === event.target.value);
+              const credDefAttr = selectedCredDef[0].attrs;
+              this.credential.attrs = [];
+              this.credential.attrs = this.credential.attrs.concat(credDefAttr);
+            }
+          },
+          // creates credentialValues object 
+          addCredentialValues: function () {
+            let credentialValues = {}
+            this.credential.attrs.forEach((attr, i) => {
+              this.credential.attrValues.forEach((value) => {
+              credentialValues[attr] = this.credential.attrValues[i]
+              });
+            });
+            return credentialValues;
+          },
           // Sends request to B/E to register Issuer DID/Verkey on Sovrin Staging Net via Sovrin SelfServe portal
           registerDID: async function (did, verkey) {
             var response = await axios.post("/registerDID", {
@@ -1474,16 +1549,17 @@
                   this.schemas.push({
                     name: message.schemaId.split(":")[2],
                     id: message.schemaId,
+                    attrs: this.schema.attrs.map(i => i.value).filter(attr => attr),
                   });
                   this.schema.name = "";
                   this.schema.version = "";
-                  this.schema.attrs = "";
+                  this.schema.attrs = [{ value: ""}, { value: ""}],
                   this.spinners.schemas = false;
                   break;
                 case "did:sov:123456789abcdefghi1234;spec/write-schema/0.6/problem-report":
                   this.schema.name = "";
                   this.schema.version = "";
-                  this.schema.attrs = "";
+                  this.schema.attrs = [{ value: ""}, { value: ""}],
                   this.spinners.schemas = false;
                   alert(message.message);
                   break;
@@ -1491,9 +1567,13 @@
                   this.credDefs.push({
                     name: this.credDef.name,
                     id: message.credDefId,
+                    schemaId: this.credDef.schemaId, 
+                    attrs: this.credDef.attrs
                   });
                   this.credDef.name = "";
+                  this.credDef.id = "";
                   this.credDef.schemaId = "";
+                  this.credDef.attrs = [];
                   this.credDef.tag = "";
                   this.credDef.revocationDetails = "";
                   this.spinners.credDefs = false;
@@ -1534,7 +1614,8 @@
                     this.credential.name = "";
                     this.credential.relationshipDID = "";
                     this.credential.credDefId = "";
-                    this.credential.values = "";
+                    this.credential.attrs = "";
+                    this.credential.attrValues = [];
                     this.spinners.creds = false;
                   } catch (err) {
                     console.error(err);
@@ -1597,6 +1678,9 @@
                 case "did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/public-identifier":
                   await this.registerDID(message.did, message.verKey);
                   break;
+                case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/problem-report":
+                  alert(message.description.en);
+                  break;
                 case "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/presentation-result":
                   this.proofs.push({
                     did: this.proof.relationshipDID,
@@ -1605,7 +1689,7 @@
 
                   this.proof.relationshipDID = "";
                   this.proof.name = "";
-                  this.proof.attrs = "";
+                  this.proof.attrs = [{ name: ""}, { name: ""}],
                   this.proof.predicates = "";
                   this.proof.revocationInterval = "";
                   this.spinners.proofs = false;
@@ -1769,7 +1853,7 @@
               const message = {
                 name: this.schema.name,
                 version: this.schema.version,
-                attrNames: this.schema.attrs.split(/[,]+/).map(s => s.trim().replace(/^"(.*)"$/, '$1')),
+                attrNames: this.schema.attrs.map(attr => attr.value).filter(value => value),
               };
               await this.sendMessage("write-schema", "0.6", "write", message);
             } catch (err) {
@@ -1831,107 +1915,106 @@
             }
           },
           offerCredential: async function () {
-            try {
-              this.spinners.creds = true;
-              let values;
+            if(this.credential.attrValues.length === 0){
+              alert("Please choose Relationship DID, Credential Definition ID, and fill in Credential Values before issuing a Credential.");
+              return;
+            } else if (this.credential.attrValues.length !== this.credential.attrs.length) {
+              alert("Please fill in Credential Values before issuing a Credential.");
+              return;
+            } else {
               try {
-                values = JSON.parse(this.credential.values);
-              } catch (err) {
-                alert(
-                  "Credential Values are not valid JSON. Credential Values should be a simple map of field names (from the schema) to values, formatted as JSON."
+                this.spinners.creds = true;
+                let credValues = this.addCredentialValues();
+                let values = JSON.parse(JSON.stringify(credValues));
+                const message = {
+                  "~for_relationship": this.credential.relationshipDID,
+                  comment: this.credential.name,
+                  cred_def_id: this.credential.credDefId,
+                  credential_values: values,
+                  price: 0,
+                };
+                await this.sendMessage(
+                  "issue-credential",
+                  "1.0",
+                  "offer",
+                  message,
+                  null,
+                  "BzCbsNYhMrjHiqZDTUASHg"
                 );
                 this.spinners.creds = false;
-                return;
+              } catch (err) {
+                console.error(err);
+                alert(
+                  "Failed to issue credential. See console for more details."
+                );
+                this.spinners.creds = false;
               }
-              const message = {
-                "~for_relationship": this.credential.relationshipDID,
-                comment: this.credential.name,
-                cred_def_id: this.credential.credDefId,
-                credential_values: values,
-                price: 0,
-              };
-              await this.sendMessage(
-                "issue-credential",
-                "1.0",
-                "offer",
-                message,
-                null,
-                "BzCbsNYhMrjHiqZDTUASHg"
-              );
-              this.spinners.creds = false;
-            } catch (err) {
-              console.error(err);
-              alert(
-                "Failed to issue credential. See console for more details."
-              );
-              this.spinners.creds = false;
             }
           },
           sendProofRequest: async function () {
-            try {
-              this.spinners.proofs = true;
-              let proofAttrs;
-              let proofPredicates;
-              let revocationInterval;
+            let proofVals = this.proof.attrs.filter(attr => attr.name !== "");
+            if(proofVals.length === 0) {
+              alert(
+                "Please fill in Proof Attributes fields before sending a Proof Request."
+              );
+              return;
+            } else {
               try {
-                proofAttrs = JSON.parse(this.proof.attrs);
-              } catch (err) {
-                alert(
-                  "Proof Attributes are not valid JSON. Should be a JSON Array of proof attribute objects"
+                this.spinners.proofs = true;
+                let proofAttrs = JSON.parse(JSON.stringify(proofVals));
+                let proofPredicates;
+                let revocationInterval;
+                if (this.proof.predicates) {
+                  try {
+                    proofPredicates = JSON.parse(this.proof.predicates);
+                  } catch (err) {
+                    alert(
+                      "Proof Predicates are not valid JSON. Should be a JSON Array of proof predicate objects"
+                    );
+                    this.spinners.proofs = false;
+                    return;
+                  }
+                } else {
+                  proofPredicates = [];
+                }
+                if (this.proof.revocationInterval) {
+                  try {
+                    revocationInterval = JSON.parse(
+                      this.proof.revocationInterval
+                    );
+                  } catch (err) {
+                    alert(
+                      "Proof Revocation Interval is not valid JSON. Should be a Revocation Interval JSON Object"
+                    );
+                    this.spinners.proofs = false;
+                    return;
+                  }
+                } else {
+                  revocationInterval = {};
+                }
+                const message = {
+                  "~for_relationship": this.proof.relationshipDID,
+                  name: this.proof.name,
+                  proof_attrs: proofAttrs,
+                  proof_predicates: proofPredicates,
+                  revocation_interval: revocationInterval,
+                };
+                await this.sendMessage(
+                  "present-proof",
+                  "1.0",
+                  "request",
+                  message,
+                  null,
+                  "BzCbsNYhMrjHiqZDTUASHg"
                 );
                 this.spinners.proofs = false;
-                return;
-              }
-              if (this.proof.predicates) {
-                try {
-                  proofPredicates = JSON.parse(this.proof.predicates);
-                } catch (err) {
-                  alert(
-                    "Proof Predicates are not valid JSON. Should be a JSON Array of proof predicate objects"
-                  );
-                  this.spinners.proofs = false;
-                  return;
-                }
-              } else {
-                proofPredicates = [];
-              }
-              if (this.proof.revocationInterval) {
-                try {
-                  revocationInterval = JSON.parse(
-                    this.proof.revocationInterval
-                  );
-                } catch (err) {
-                  alert(
-                    "Proof Revocation Interval is not valid JSON. Should be a Revocation Interval JSON Object"
-                  );
-                  this.spinners.proofs = false;
-                  return;
-                }
-              } else {
-                revocationInterval = {};
-              }
-              const message = {
-                "~for_relationship": this.proof.relationshipDID,
-                name: this.proof.name,
-                proof_attrs: proofAttrs,
-                proof_predicates: proofPredicates,
-                revocation_interval: revocationInterval,
-              };
-              await this.sendMessage(
-                "present-proof",
-                "1.0",
-                "request",
-                message,
-                null,
-                "BzCbsNYhMrjHiqZDTUASHg"
-              );
-              this.spinners.proofs = false;
             } catch (err) {
               console.error(err);
               alert(
                 "Failed to send proof request. See console for more details."
               );
               this.spinners.proofs = false;
+              }
             }
           },
           sendStructuredMessage: async function () {
