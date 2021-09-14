@@ -258,3 +258,39 @@ nav.navbar {
   font-size: 12px;
   color: #505050 !important;
 }
+
+.w3-input-short {
+  display: inline-block;
+  width: 85%;
+  font-size: 12px;
+  color: #505050 !important;
+ }
+  
+ @media (min-width: 480px) {
+  .w3-input-short {
+    width: 90%;
+  }
+ }
+  
+ @media (min-width: 768px) and (max-width: 1074px)  {
+  .w3-input-short {
+    width: 80%;
+  }
+ }
+  
+ .btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+ }
+  
+ .hidden {
+  display: none;
+ }
+  
+ fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+ }
