@@ -71,6 +71,24 @@ There are two options for horizontally scaling a service on client side using th
 
 The other option is to copy the SQLite db ($HOME/.indy_client) and verity-context.json to each of your horizontally scalable machines running client software. 
 
+### What are the limits on a schema size? How many attributes can be added to a schema?
+
+125 attributes is currently the maximum number of attributes that can be included in a schema. The maximum attribute name length is 256 characters. These two limits are defined by Libindy, and may be different for other ledgers we plan on supporting in the future. 
+
+We ran some tests issuing credentials with a large number of characters to see the effect on usability and performance, and the results of our tests are shown in the chart below. 
+
+For reference: 
+* For a single attribute credential the limit is ~220,000 characters. 
+* For a 10 attribute credential the limit is ~22,000 characters.
+* Issuing a credential with 125 attributes 1000 characters each succeeded. 
+* Issuing a credential with 125 attributes 1250 characters each resulted in an error. 
+
+Please note that the numbers are near approximations, not exact limits.
+
+[![Credential-Size-Limits.png](https://i.postimg.cc/sDhfn5WT/Credential-Size-Limits.png)](https://postimg.cc/JGRW0DPX)
+
+> **NOTE**: The Y axis is log scale so attribute size goes down fast with attribute number.
+
 ### Moving to Production
 
 When ready to move to the production environment, please follow the steps below.
