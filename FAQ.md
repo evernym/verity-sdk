@@ -75,7 +75,7 @@ The other option is to copy the SQLite db ($HOME/.indy_client) and verity-contex
 
 125 attributes is currently the maximum number of attributes that can be included in a schema. The maximum attribute name length is 256 characters. These two limits are defined by Libindy, and may be different for other ledgers we plan on supporting in the future. 
 
-We ran some tests issuing credentials with a large number of characters to see the effect on usability and performance, and the results of our tests are shown in the chart below. 
+The maximum length of the contents of a credential attribute (the attribute value) are determined by the total size of the credential after packing and encryption. This means that credentials with more attributes will need to have shorter values in each attribute. This also means that one attribute can have a large value if other attributes have shorter values. We ran some tests issuing credentials with a large number of characters to see what the maximum size could be in practice, and the chart below represents the maximum attribute length we have successfully tested for a given number of attributes.
 
 For reference: 
 * For a single attribute credential the limit is ~220,000 characters. 
