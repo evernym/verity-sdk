@@ -186,10 +186,10 @@ After you have launched the example application in the previous step and have Co
    1. Provisioning an Agent: 
    
       Code Examples: 
-        [ [Java](../getting-started/java-verity-flow.md#provisioning-agent-on-verity) ]
-        [ [Python](../getting-started/python-verity-flow.md#provisioning-agent-on-verity) ]
-        [ [Node](../getting-started/nodejs-verity-flow.md#provisioning-agent-on-verity) ]
-        [ [.NET](../getting-started/dotnet-verity-flow.md#provisioning-agent-on-verity) ]
+        [ [Java](../getting-started/java-verity-sdk.md#provisioning-agent-on-verity) ]
+        [ [Python](../getting-started/python-verity-sdk.md#provisioning-agent-on-verity) ]
+        [ [Node](../getting-started/nodejs-verity-sdk.md#provisioning-agent-on-verity) ]
+        [ [.NET](../getting-started/dotnet-verity-sdk.md#provisioning-agent-on-verity) ]
    
       This provisioning creates an Agent that serves one **Identity Owner** During that process keys are generated and exchanged.
       
@@ -200,20 +200,20 @@ After you have launched the example application in the previous step and have Co
    2. Registering a webhook:
    
       Code Examples: 
-        [ [Java](../getting-started/java-verity-flow.md#handling-asynchronous-response-messages) ]
-        [ [Python](../getting-started/python-verity-flow.md#handling-asynchronous-response-messages) ]
-        [ [Node](../getting-started/nodejs-verity-flow.md#handling-asynchronous-response-messages) ]
-        [ [.NET](../getting-started/dotnet-verity-flow.md#handling-asynchronous-response-messages) ]
+        [ [Java](../getting-started/java-verity-sdk.md#handling-asynchronous-response-messages) ]
+        [ [Python](../getting-started/python-verity-sdk.md#handling-asynchronous-response-messages) ]
+        [ [Node](../getting-started/nodejs-verity-sdk.md#handling-asynchronous-response-messages) ]
+        [ [.NET](../getting-started/dotnet-verity-sdk.md#handling-asynchronous-response-messages) ]
    
        The webhook is a URL for a web server that will receive communication from the Verity server instance. It must be publicly available. (`ngrok` is generally used to meet that requirement.)
 
    3. Setting up an Issuer identity:
    
       Code Examples: 
-        [ [Java](../getting-started/java-verity-flow.md#setting-up-an-issuer-identity) ]
-        [ [Python](../getting-started/python-verity-flow.md#setting-up-an-issuer-identity) ]
-        [ [Node](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity) ]
-        [ [.NET](../getting-started/dotnet-verity-flow.md#setting-up-an-issuer-identity) ]
+        [ [Java](../getting-started/java-verity-sdk.md#setting-up-an-issuer-identity) ]
+        [ [Python](../getting-started/python-verity-sdk.md#setting-up-an-issuer-identity) ]
+        [ [Node](../getting-started/nodejs-verity-sdk.md#setting-up-an-issuer-identity) ]
+        [ [.NET](../getting-started/dotnet-verity-sdk.md#setting-up-an-issuer-identity) ]
    
       This is a public identity that will need to be written to a Sovrin Ledger (for this demo use-cases the Sovrin Staging should be used). This identity will be used and associated with Credentials issued by this Agent previously provisioned.
    
@@ -235,10 +235,10 @@ After you have launched the example application in the previous step and have Co
 1. **Connect**
 
     Code Examples: 
-    [ [Java](../getting-started/java-verity-flow.md#connecting) ]
-    [ [Python](../getting-started/python-verity-flow.md#connecting) ]
-    [ [Node](../getting-started/nodejs-verity-flow.md#connecting) ]
-    [ [.NET](../getting-started/dotnet-verity-flow.md#connecting) ]
+    [ [Java](../getting-started/java-verity-sdk.md#connecting) ]
+    [ [Python](../getting-started/python-verity-sdk.md#connecting) ]
+    [ [Node](../getting-started/nodejs-verity-sdk.md#connecting) ]
+    [ [.NET](../getting-started/dotnet-verity-sdk.md#connecting) ]
    
    Connecting is used to form a pairwise relationship between the Identity owner represented by the Agent provision, and the user of Connect.Me. This connection interaction is between two parties and happens over asynchronous messages between these parties. 
    
@@ -250,10 +250,10 @@ After you have launched the example application in the previous step and have Co
 1. **Write Schema to Ledger**
 
     Code Examples: 
-    [ [Java](../getting-started/java-verity-flow.md#write-schema-to-ledger) ]
-    [ [Python](../getting-started/python-verity-flow.md#write-schema-to-ledger) ]
-    [ [Node](../getting-started/nodejs-verity-flow.md#write-schema-to-ledger) ]
-    [ [.NET](../getting-started/dotnet-verity-flow.md#write-schema-to-ledger) ]
+    [ [Java](../getting-started/java-verity-sdk.md#write-schema-to-ledger) ]
+    [ [Python](../getting-started/python-verity-sdk.md#write-schema-to-ledger) ]
+    [ [Node](../getting-started/nodejs-verity-sdk.md#write-schema-to-ledger) ]
+    [ [.NET](../getting-started/dotnet-verity-sdk.md#write-schema-to-ledger) ]
    
    The `schema` is an essential element of Verifiable Credentials Exchange. This `schema` must be publicly available from a trusted source. The Identity ledger provided by Sovrin is used for the purpose. The `schema` is used to express the shape of the data in the credential. This interaction uses the `write-schema` protocol to both create and write the `schema` object to the ledger.
 
@@ -263,10 +263,10 @@ After you have launched the example application in the previous step and have Co
 1. **Write Credential Definition to Ledger**
 
     Code Examples: 
-    [ [Java](../getting-started/java-verity-flow.md#write-credential-definition-to-ledger) ]
-    [ [Python](../getting-started/python-verity-flow.md#write-credential-definition-to-ledger) ]
-    [ [Node](../getting-started/nodejs-verity-flow.md#write-credential-definition-to-ledger) ]
-    [ [.NET](../getting-started/dotnet-verity-flow.md#write-credential-definition-to-ledger) ]
+    [ [Java](../getting-started/java-verity-sdk.md#write-credential-definition-to-ledger) ]
+    [ [Python](../getting-started/python-verity-sdk.md#write-credential-definition-to-ledger) ]
+    [ [Node](../getting-started/nodejs-verity-sdk.md#write-credential-definition-to-ledger) ]
+    [ [.NET](../getting-started/dotnet-verity-sdk.md#write-credential-definition-to-ledger) ]
 
    The `credDef` object is similar to the `schema` object. It is also used for Verifiable Credentials Exchange and writen to an identity ledger. The `credDef` is used to hold public keys for an Issuer. This interaction uses the `write-cred-def` protocol to both create and write the `credDef` object to the ledger.
 
@@ -276,10 +276,10 @@ After you have launched the example application in the previous step and have Co
 1. **Issue Degree Credential**
 
     Code Examples: 
-    [ [Java](../getting-started/java-verity-flow.md#issue-credential) ]
-    [ [Python](../getting-started/python-verity-flow.md#issue-credential) ]
-    [ [Node](../getting-started/nodejs-verity-flow.md#issue-credential) ]
-    [ [.NET](../getting-started/dotnet-verity-flow.md#issue-credential) ]
+    [ [Java](../getting-started/java-verity-sdk.md#issue-credential) ]
+    [ [Python](../getting-started/python-verity-sdk.md#issue-credential) ]
+    [ [Node](../getting-started/nodejs-verity-sdk.md#issue-credential) ]
+    [ [.NET](../getting-started/dotnet-verity-sdk.md#issue-credential) ]
    
    The `issue-credential` protocol used in this interaction is the heart of the Verifiable Credentials Exchange. Using the `schema`, `credDef` and `connection` created before, a Credential can be issued. 
    
@@ -289,10 +289,10 @@ After you have launched the example application in the previous step and have Co
 1. **Request Proof Presentation**
 
     Code Examples: 
-    [ [Java](../getting-started/java-verity-flow.md#request-proof-presentation) ]
-    [ [Python](../getting-started/python-verity-flow.md#request-proof-presentation) ]
-    [ [Node](../getting-started/nodejs-verity-flow.md#request-proof-presentation) ]
-    [ [.NET](../getting-started/dotnet-verity-flow.md#request-proof-presentation) ]
+    [ [Java](../getting-started/java-verity-sdk.md#request-proof-presentation) ]
+    [ [Python](../getting-started/python-verity-sdk.md#request-proof-presentation) ]
+    [ [Node](../getting-started/nodejs-verity-sdk.md#request-proof-presentation) ]
+    [ [.NET](../getting-started/dotnet-verity-sdk.md#request-proof-presentation) ]
    
    The `present-proof` protocol used in this interaction allow the final step of the Verifiable Credentials Exchange. Requesting a presentation of proof derived by a verifiable credential allow for the exchange of information from parties that test each other. 
 
