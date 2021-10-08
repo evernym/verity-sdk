@@ -1,3 +1,5 @@
+Verity is running in a three node Akka cluster split across two independent AWS availability zones based in Frankfurt. 
+
 There are multiple Verity environments depending on your goals. Each environment hosts a set of Verity services that you can use depending on the Evernym products you are leveraging.
 
 You should protect your webhooks from accepting connections to unknown parties. You can do that by whitelisting the IP addresses indicated here. Alternatively, you can protect your webhook with OAuth and configure Verity to provide the OAuth credentials with each response. This is documented in the [UpdateEndpointAuth](https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0#/UpdateEndpointAuth) schema in the [updateEndpoint REST API](https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0#/UpdateEndpoint/updateEndpoint) of the Swagger API documentation.
