@@ -4,7 +4,7 @@ import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
 import com.evernym.verity.sdk.wallet.DefaultWalletConfig;
 import com.evernym.verity.sdk.wallet.WalletConfig;
-import org.hyperledger.indy.sdk.wallet.Wallet;
+import com.evernym.vdrtools.wallet.Wallet;
 import org.json.JSONObject;
 
 import java.io.IOException;
