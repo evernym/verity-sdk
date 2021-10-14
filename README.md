@@ -110,6 +110,9 @@ Here you can find links to various sample codes and example apps that cover diff
 ### Tutorials
 Various tutorials and instructions can be found [here](docs/howto).
 
+### Announcement for New Customers
+If you signed up for the Developer Plan and received your developer keys from Evernym after October 1, 2021, please read [this document](docs/new-customers/README.md). The process of writing transactions to the Sovrin StagingNet has been changed, and some additional steps are necessary before you start your development. 
+
 ### Architectiure
 More information about the architecture of Evernym platform and sequence diagrams for basic protocols such are connecting, issuing and proving, you can find [here](docs/verity-architecture).
 

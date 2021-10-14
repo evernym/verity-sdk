@@ -1,0 +1,232 @@
+{
+	"info": {
+		"_postman_id": "2f9c3ea3-cbf7-475a-aa86-5eb85c649b51",
+		"name": "Verity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Update Endpoint",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"comMethod\": {\n        \"id\": \"webhook\",\n        \"type\": 2,\n        \"value\": \"{{Webhook}}\",\n        \"packaging\": {\n            \"pkgType\": \"plain\"\n        }\n    },\n    \"@type\": \"did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD\",\n    \"@id\": \"{{$guid}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/configs/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"configs",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Setup Issuer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@type\": \"did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/create\",\n    \"@id\": \"{{$guid}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/issuer-setup/0.6/{{$guid}} ",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"issuer-setup",
+						"0.6",
+						"{{$guid}} "
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Issuer Setup – Current Public Identifier",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{$guid}}\",\n    \"@type\": \"did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/current-public-identifier\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/issuer-setup/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"issuer-setup",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Write Schema",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"@type\": \"did:sov:123456789abcdefghi1234;spec/write-schema/0.6/write\",\n  \"@id\": \"{{$guid}}\",\n  \"name\": \"YOUR_SCHEMA_NAME\",\n  \"version\": \"1.0.0\",\n  \"attrNames\": [\"firstName\", \"lastName\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/write-schema/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"write-schema",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Write CredDef",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"COVID-19 Test Result\",\n  \"schemaId\": \"DmNBB8FCjhEhFJFJUdiAaG:2:COVID-19 Test Result:1.0\",\n  \"@type\": \"did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/write\",\n  \"tag\": \"latest\",\n  \"revocationDetails\": {\n    \"support_revocation\": false,\n    \"tails_file\": \"string\",\n    \"max_creds\": 0\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/write-cred-def/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"write-cred-def",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-API-KEY",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "DomainDID",
+			"value": ""
+		},
+		{
+			"key": "Webhook",
+			"value": ""
+		},
+		{
+			"key": "LogoURLConfig",
+			"value": ""
+		},
+		{
+			"key": "IssuerNameConfig",
+			"value": ""
+		}
+	]
+}
