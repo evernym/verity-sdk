@@ -11,6 +11,8 @@ There are two paths to launching the example application:
 
 The `docker` path simplifies the set up process but the local environment walkthrough has a more complete set of instructions for a given language SDK. 
 
+> **NOTE**: If you signed up for the Developer Plan and received your developer keys from Evernym after October 1, 2021, please read [this document](/docs/new-customers/README.md). The process of writing transactions to the Sovrin StagingNet has been changed, and some additional steps are necessary before you start your development. 
+
 ## Getting Connect.Me
 1. Download [Connect.Me](https://connect.me/) from the
  [App Store](https://itunes.apple.com/us/app/connect-me/id1260651672?mt=8) or the 
