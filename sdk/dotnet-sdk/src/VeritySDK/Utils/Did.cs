@@ -1,6 +1,6 @@
-﻿using Hyperledger.Indy;
-using Hyperledger.Indy.DidApi;
-using Hyperledger.Indy.WalletApi;
+﻿using Com.Evernym.Vdrtools;
+using Com.Evernym.Vdrtools.DidApi;
+using Com.Evernym.Vdrtools.WalletApi;
 using System;
 using System.Json;
 using VeritySDK.Exceptions;
@@ -63,7 +63,7 @@ namespace VeritySDK.Utils
                     didJson = CreateAndStoreMyDidJSONParameter(null, seed, null, null);
                 };
 
-                var result = Hyperledger.Indy.DidApi.Did.CreateAndStoreMyDidAsync(handle, didJson).GetAwaiter().GetResult();
+                var result = Com.Evernym.Vdrtools.DidApi.Did.CreateAndStoreMyDidAsync(handle, didJson).GetAwaiter().GetResult();
 
                 return new Did(result);
             }
