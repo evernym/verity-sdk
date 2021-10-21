@@ -15,6 +15,18 @@ A typical flow is as follows:
 * Merge that state with the additional information in the webhook response payload.
 * Proceed with your protocol.
 
+## Message Queue and Webhooks 
+The Verity Application Server has an internal message queue that is proprietary. When the VAS receives the request, it will perform the functions necessary to process that request and send a message back to a webhook server that you have created to handle the callbacks. The webhook receives the message and then determines the next step, which sometimes will be a second call to the VAS to process the former step. Often credential exchanges and proofs require a multiple-step process, which is why the service is asynchronous. Credential Offers and Proofs generally remain in the Queue until they are rejected or accepted by the individual using the end wallet app (most likely a mobile device).
+
+A typical Issuer flow is as follows:
+* An Issuer DID is set up on the VAS.
+* A Webhook is set up and established on the VAS to receive messages for the Issuer DID.
+* Credential definitions are written to the Ledger for the DID.
+* A Credential Offer is generated and sent to an end user (either through OOB or with a Relationship established).
+* Credential Offer is processed and sent to the Relationship (and sent to the queue as a pending request).
+* The recipient accepts the offer (or rejects it).
+* The credential data is sent to the recipient (or the offer is removed from the queue in the event that they reject the offer). 
+
 ## Background Reading
 The Aries RFCs describe how this approach to asynchronous programming should work.
 
