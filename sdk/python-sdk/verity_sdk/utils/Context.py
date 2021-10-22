@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 import requests
 from base58 import b58encode
 
-from indy import wallet, crypto
+from vdrtools import wallet, crypto
 
 from verity_sdk.utils import Did
 from verity_sdk.utils.Wallet import create_and_open_wallet

@@ -3,7 +3,7 @@ import json
 from typing import Dict
 from uuid import uuid4
 
-from indy import crypto
+from vdrtools import crypto
 from verity_sdk.utils.Context import Context
 
 USE_NEW_QUALIFIER_FORMAT = False
