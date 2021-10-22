@@ -1,7 +1,7 @@
 'use strict'
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
-const indy = require('indy-sdk')
+const vdrtools = require('vdr-tools')
 
 /**
  * An interface for controlling a 0.7 Provision protocol.
@@ -42,7 +42,7 @@ class Provision extends Protocol {
     const data = Buffer.from(concatStr, 'utf-8')
     const sig = Buffer.from(token.sig, 'base64')
 
-    const valid = await indy.cryptoVerify(token.sponsorVerKey, data, sig)
+    const valid = await vdrtools.cryptoVerify(token.sponsorVerKey, data, sig)
 
     if (valid === false) {
       throw new Error('Invalid provision token -- signature does not validate')

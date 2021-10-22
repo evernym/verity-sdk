@@ -1,7 +1,7 @@
 'use strict'
 const { v4: uuidv4 } = require('uuid')
 const URL = require('url').URL
-const indy = require('./indy')
+const vdrtools = require('./vdrtools')
 const request = require('request-promise-native')
 const WrongSetupError = require('./WrongSetupError')
 const DbcUtil = require('./DbcUtil')
@@ -45,7 +45,7 @@ exports.packMessageForVerity = async function (context, message) {
  * Packages message (instructor and encryption) for the verity-application. Uses local private keys and remote
  * public keys for encryption. The encryption and instructor is defined by the Aries community.
  *
- * @param walletHandle the handle to a created and open Indy wallet
+ * @param walletHandle the handle to a created and open wallet
  * @param message the JSON message to be communicated to the verity-application
  * @param pairwiseRemoteDID the domain DID of the intended recipient agent on the verity-application
  * @param pairwiseRemoteVerkey the verkey for the agent on the verity-application
@@ -56,12 +56,12 @@ exports.packMessageForVerity = async function (context, message) {
  * @see <a href="https://github.com/hyperledger/aries-rfcs/tree/9b0aaa39df7e8bd434126c4b33c097aae78d65bf/features/0019-encryption-envelope" target="_blank" rel="noopener noreferrer">Aries 0019: Encryption Envelope</a>
  */
 exports.packMessage = async function (walletHandle, message, pairwiseRemoteDID, pairwiseRemoteVerkey, pairwiseLocalVerkey, publicVerkey) {
-  indy.init()
+  vdrtools.init()
   const msgBytes = Buffer.from(JSON.stringify(message), 'utf-8')
-  const agentMsg = await indy.sdk.packMessage(walletHandle, msgBytes, [pairwiseRemoteVerkey], pairwiseLocalVerkey)
+  const agentMsg = await vdrtools.sdk.packMessage(walletHandle, msgBytes, [pairwiseRemoteVerkey], pairwiseLocalVerkey)
   const innerFwd = await exports.prepareForwardMessage(pairwiseRemoteDID, agentMsg)
   const innerFwdBytes = Buffer.from(JSON.stringify(innerFwd), 'utf-8')
-  return indy.sdk.packMessage(walletHandle, innerFwdBytes, [publicVerkey], null)
+  return vdrtools.sdk.packMessage(walletHandle, innerFwdBytes, [publicVerkey], null)
 }
 
 /**
@@ -87,9 +87,9 @@ exports.prepareForwardMessage = async function (toDID, packedMessage) {
  * @return an unencrypted messages as a JSON object
  */
 exports.unpackForwardMessage = async function (context, messageBytes) {
-  indy.init()
+  vdrtools.init()
   const forwardMessage = await exports.unpackMessage(context, messageBytes)
-  const message = JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, Buffer.from(JSON.stringify(forwardMessage['@msg']))))
+  const message = JSON.parse(await vdrtools.sdk.unpackMessage(context.walletHandle, Buffer.from(JSON.stringify(forwardMessage['@msg']))))
   message.message = JSON.parse(message.message)
   return message
 }
@@ -102,7 +102,7 @@ exports.unpackForwardMessage = async function (context, messageBytes) {
  * @return an unencrypted messages as a JSON object
  */
 exports.unpackMessage = async function (context, messageBytes) {
-  return JSON.parse(JSON.parse(await indy.sdk.unpackMessage(context.walletHandle, messageBytes)).message)
+  return JSON.parse(JSON.parse(await vdrtools.sdk.unpackMessage(context.walletHandle, messageBytes)).message)
 }
 
 /**
