@@ -1,13 +1,13 @@
 import json
 from uuid import uuid4 as uuid
 import pytest
-from vdrtools import wallet
 from verity_sdk.utils import _prepare_forward_message, pack_message_for_verity, \
     unpack_forward_message, get_message_type, get_problem_report_message_type, \
     EVERNYM_MSG_QUALIFIER, get_status_message_type
 from verity_sdk.utils.Context import Context
 from verity_sdk.utils.Did import create_new_did
 
+from vdrtools import wallet
 
 async def get_test_config(seed=None):
     test_config = {
