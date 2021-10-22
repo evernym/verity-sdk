@@ -14,7 +14,7 @@ setuptools.setup(
     license="Apache-2.0",
     url="https://github.com/evernym/verity-sdk",
     install_requires=[
-        'vdrtools~=0.0.2',
+        'vdr-tools~=0.0.5',
         'requests~=2.25.1',
         'base58~=2.1.0'
     ],

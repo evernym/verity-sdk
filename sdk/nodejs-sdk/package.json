@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "bs58": "^4.0.1",
-    "indy-sdk": "^1.16.0",
+    "vdr-tools": "^0.0.5",
     "request-promise-native": "^1.0.9",
     "uuid": "^8.3.2"
   }
