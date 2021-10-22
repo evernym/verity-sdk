@@ -2,7 +2,7 @@ import base64
 import copy
 import json
 
-from indy.crypto import crypto_verify
+from vdrtools.crypto import crypto_verify
 
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.transports import send_packed_message

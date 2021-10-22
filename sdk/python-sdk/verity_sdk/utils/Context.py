@@ -4,10 +4,10 @@ from urllib.parse import urljoin
 import requests
 from base58 import b58encode
 
-from vdrtools import wallet, crypto
-
 from verity_sdk.utils import Did
 from verity_sdk.utils.Wallet import create_and_open_wallet
+
+from vdrtools import wallet, crypto
 
 V_0_1 = '0.1'
 V_0_2 = '0.2'
