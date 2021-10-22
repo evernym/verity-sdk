@@ -7,6 +7,7 @@ from verity_sdk.utils import _prepare_forward_message, pack_message_for_verity, 
 from verity_sdk.utils.Context import Context
 from verity_sdk.utils.Did import create_new_did
 
+
 from vdrtools import wallet
 
 async def get_test_config(seed=None):
