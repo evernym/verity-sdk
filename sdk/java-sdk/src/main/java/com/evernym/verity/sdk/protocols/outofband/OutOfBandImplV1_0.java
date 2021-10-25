@@ -7,8 +7,7 @@ import com.evernym.verity.sdk.utils.Context;
 import org.json.JSONObject;
 
 import java.io.IOException;
-
-import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
+import static com.evernym.vdrtools.StringUtils.isNullOrWhiteSpace;
 
 @SuppressWarnings("CPD-START")
 /*

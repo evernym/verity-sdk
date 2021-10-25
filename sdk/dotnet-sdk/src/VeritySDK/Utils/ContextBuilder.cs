@@ -420,7 +420,7 @@ namespace VeritySDK.Utils
             }
         }
 
-        public void walletHandle(Hyperledger.Indy.WalletApi.Wallet val) { _walletHandle = val; }
+        public void walletHandle(Com.Evernym.Vdrtools.WalletApi.Wallet val) { _walletHandle = val; }
 
 
         public static Context scratchContext(WalletConfig wallet, string verityUrl, string seed) 
@@ -457,7 +457,7 @@ namespace VeritySDK.Utils
 
         private Dictionary<string, string> _elements = new Dictionary<string, string>();
         private WalletConfig _walletConfig;
-        private Hyperledger.Indy.WalletApi.Wallet _walletHandle = null;
+        private Com.Evernym.Vdrtools.WalletApi.Wallet _walletHandle = null;
 
         private ContextBuilder() { }
 

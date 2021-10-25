@@ -1,5 +1,5 @@
-﻿using Hyperledger.Indy;
-using Hyperledger.Indy.WalletApi;
+﻿using Com.Evernym.Vdrtools;
+using Com.Evernym.Vdrtools.WalletApi;
 using System;
 using System.Collections.Generic;
 using System.Json;

@@ -2,7 +2,7 @@ package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
-import org.hyperledger.indy.sdk.IndyException;
+import com.evernym.vdrtools.IndyException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 

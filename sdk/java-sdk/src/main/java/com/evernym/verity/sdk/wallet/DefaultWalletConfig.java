@@ -3,7 +3,7 @@ package com.evernym.verity.sdk.wallet;
 import org.json.JSONObject;
 
 /**
- * The config object for the local default wallet provided by the Indy SDK
+ * The config object for the local default wallet provided by VDR Tools
  */
 public class DefaultWalletConfig implements WalletConfig {
     /**

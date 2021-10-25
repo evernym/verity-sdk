@@ -1,6 +1,6 @@
 'use strict'
 const URL = require('url').URL
-const indy = require('./indy')
+const vdrtools = require('./vdrtools')
 const utils = require('./index')
 
 const V_0_1 = '0.1'
@@ -48,11 +48,11 @@ class Context {
 
     if (V_0_1 === version) {
       const rtn = Context.parseV01(config)
-      rtn.walletHandle = await indy.openWallet(rtn.walletConfig, rtn.walletCredentials)
+      rtn.walletHandle = await vdrtools.openWallet(rtn.walletConfig, rtn.walletCredentials)
       return rtn
     } else if (V_0_2 === version) {
       const rtn = Context.parseV02(config)
-      rtn.walletHandle = await indy.openWallet(rtn.walletConfig, rtn.walletCredentials)
+      rtn.walletHandle = await vdrtools.openWallet(rtn.walletConfig, rtn.walletCredentials)
       return rtn
     } else {
       throw new Error(`Invalid context version -- '${version}' is not supported`)
@@ -109,7 +109,7 @@ class Context {
    * @param verityAgentVerKey the verkey for the agent on the verity-application
    * @param endpointUrl the endpoint for receiving messages from the agent on the verity-application
    * @param seed seed used to create did
-   * @param walletPath custom path where libindy wallet should be stored (default is ~/.indy_client/wallet)
+   * @param walletPath custom path where wallet should be stored (default is ~/.indy_client/wallet)
    */
   static async create (
     walletName,
@@ -144,9 +144,9 @@ class Context {
     context.buildWalletCredentails(walletKey)
 
     await context.updateVerityInfo()
-    context.walletHandle = await indy.createAndOpenWallet(context.walletConfig, context.walletCredentials);
+    context.walletHandle = await vdrtools.createAndOpenWallet(context.walletConfig, context.walletCredentials);
 
-    [context.sdkVerKeyId, context.sdkVerKey] = await indy.newDid(context, seed)
+    [context.sdkVerKeyId, context.sdkVerKey] = await vdrtools.newDid(context, seed)
 
     return context
   }
@@ -247,21 +247,21 @@ class Context {
    * @return a REST API token
    */
   async restApiToken () {
-    return indy.restApiToken(this)
+    return vdrtools.restApiToken(this)
   }
 
   /**
    * Closes the the open wallet handle stored inside the Context object.
    */
   async closeWallet () {
-    return indy.closeWallet(this.walletHandle)
+    return vdrtools.closeWallet(this.walletHandle)
   }
 
   /**
    * Deletes the open wallet handle stored inside the Context object.
    */
   async deleteWallet () {
-    return indy.deleteWallet(this.walletHandle, this.walletConfig, this.walletCredentials)
+    return vdrtools.deleteWallet(this.walletHandle, this.walletConfig, this.walletCredentials)
   }
 }
 module.exports = Context

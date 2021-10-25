@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import static com.evernym.verity.sdk.utils.JsonUtil.makeArray;
-import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
+import static com.evernym.vdrtools.StringUtils.isNullOrWhiteSpace;
 
 /*
  * NON_VISIBLE

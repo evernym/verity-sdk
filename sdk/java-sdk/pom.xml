@@ -117,9 +117,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.hyperledger</groupId>
-      <artifactId>indy</artifactId>
-      <version>1.15.0</version>
+      <groupId>com.evernym.vdrtools</groupId>
+      <artifactId>vdr-tools</artifactId>
+      <version>0.0.5</version>
     </dependency>
     <dependency>
       <groupId>org.bitcoinj</groupId>

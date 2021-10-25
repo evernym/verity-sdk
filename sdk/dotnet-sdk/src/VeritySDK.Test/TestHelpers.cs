@@ -1,4 +1,4 @@
-﻿using Hyperledger.Indy.WalletApi;
+﻿using Com.Evernym.Vdrtools.WalletApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
