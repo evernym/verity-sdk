@@ -5,7 +5,7 @@ const http = require('http')
 const readline = require('readline')
 const fs = require('fs')
 const sdk = require('verity-sdk')
-const indy = require('indy-sdk')
+const vdrtools = require('vdr-tools')
 const Spinner = require('cli-spinner').Spinner
 const QRCode = require('qrcode')
 const request = require('request-promise-native')
@@ -227,12 +227,12 @@ async function writeLedgerSchema () {
   const firstStep = new Promise((resolve) => {
     handlers.addHandler(schema.msgFamily, schema.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case schema.msgNames.STATUS:
+        case 'needs-endorsement':
           spinner.stop()
           printMessage(msgName, message)
-          print('Please manually endorse this transaction on the ledger: ')
-          print(message.schemaJson)
-          print('If you do not have a valid endorser DID send the transaction to Evernym for endorsement.')
+          console.log('Please manually endorse this transaction on the ledger: ')
+          console.log(message.schemaJson)
+          console.log('If you do not have a valid endorser DID send the transaction to Evernym for endorsement.')
           await readlineInput('Press ENTER when the transaction has been endorsed')
           resolve(message.schemaId)
           break
@@ -268,9 +268,9 @@ async function writeLedgerCredDef (schemaId) {
         case 'needs-endorsement':
           spinner.stop()
           printMessage(msgName, message)
-          print('Please manually endorse this transaction on the ledger: ')
-          print(message.credDefJson)
-          print('If you do not have a valid endorser DID send the transaction to Evernym for endorsement.')
+          console.log('Please manually endorse this transaction on the ledger: ')
+          console.log(message.credDefJson)
+          console.log('If you do not have a valid endorser DID send the transaction to Evernym for endorsement.')
           await readlineInput('Press ENTER when the transaction has been endorsed')
           resolve(message.credDefId)
           break
@@ -400,7 +400,7 @@ async function setup () {
       config = fs.readFileSync(CONFIG_PATH)
     } else {
       try {
-        await indy.deleteWallet({ id: WALLET_NAME }, { key: WALLET_KEY })
+        await vdrtools.deleteWallet({ id: WALLET_NAME }, { key: WALLET_KEY })
       } catch (e) {
         if (e.message !== 'WalletNotFoundError') {
           throw (e)
