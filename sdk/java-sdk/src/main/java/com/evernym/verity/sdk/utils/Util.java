@@ -3,9 +3,9 @@ package com.evernym.verity.sdk.utils;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.protocols.MessageFamily;
-import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.crypto.Crypto;
-import org.hyperledger.indy.sdk.wallet.Wallet;
+import com.evernym.vdrtools.IndyException;
+import com.evernym.vdrtools.crypto.Crypto;
+import com.evernym.vdrtools.wallet.Wallet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

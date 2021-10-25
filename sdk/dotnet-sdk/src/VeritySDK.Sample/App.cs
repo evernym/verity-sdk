@@ -1,4 +1,4 @@
-﻿using Hyperledger.Indy.WalletApi;
+﻿using Com.Evernym.VdrTools.WalletApi;
 using QRCoder;
 using System;
 using System.Collections.Generic;

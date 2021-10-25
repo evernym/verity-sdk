@@ -6,8 +6,8 @@ This procedure shows you how to set up your NodeJs development environment to us
 
 ## Prerequisites
 Install the following items:
-* `libindy` -- Install a stable version. Follow the instructions on the 
-[indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
+* `libvdrtools` -- Install a stable version. Follow the instructions on the 
+[vdr-tools gitlab page](https://gitlab.com/evernym/verity/vdr-tools/).
 
 ## Get Latest NodeJs Verity SDK
 See [npm package](https://www.npmjs.com/package/verity-sdk) page to find the latest release. 

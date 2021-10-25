@@ -9,8 +9,8 @@ import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
 import com.evernym.verity.sdk.transports.HTTPTransport;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
-import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.crypto.Crypto;
+import com.evernym.vdrtools.IndyException;
+import com.evernym.vdrtools.crypto.Crypto;
 import org.json.JSONObject;
 
 import java.io.IOException;

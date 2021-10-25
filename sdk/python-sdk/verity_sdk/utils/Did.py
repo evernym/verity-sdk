@@ -1,7 +1,7 @@
 import json
 
-from indy.did import create_and_store_my_did
-from indy.error import IndyError
+from vdrtools.did import create_and_store_my_did
+from vdrtools.error import IndyError
 
 
 async def create_new_did(wallet_handle: int, seed: str = None):
