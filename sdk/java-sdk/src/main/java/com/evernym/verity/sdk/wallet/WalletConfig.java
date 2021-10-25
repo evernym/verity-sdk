@@ -3,18 +3,18 @@ package com.evernym.verity.sdk.wallet;
 import org.json.JSONObject;
 
 /**
- * The generic interface for the wallet configuration for the Indy-SDK wallet
+ * The generic interface for the wallet configuration for the VDR wallet
  */
 public interface WalletConfig {
     /**
-     * Provides a JSON string that is valid config for the Indy-SDK wallet API
+     * Provides a JSON string that is valid config for the VDR wallet API
      *
      * @return a JSON wallet config string
      */
     String config();
 
     /**
-     * Provides a JSON string that is valid credential for the Indy-SDK wallet API
+     * Provides a JSON string that is valid credential for the VDR wallet API
      *
      * @return a JSON wallet credential string
      */
