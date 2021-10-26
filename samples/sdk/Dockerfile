@@ -21,9 +21,9 @@ RUN apt-get update && \
         unzip \
         vim
 
-# Adding Evernym ca cert
+# Add Evernym Cert
 RUN mkdir -p /usr/local/share/ca-certificates
-RUN curl -k https://repo.corp.evernym.com/ca.crt | tee /usr/local/share/ca-certificates/Evernym_Root_CA.crt
+ADD Evernym_Root_CA.crt /usr/local/share/ca-certificates/Evernym_Root_CA.crt
 RUN update-ca-certificates
 
 # Setup apt for evernym repositories
