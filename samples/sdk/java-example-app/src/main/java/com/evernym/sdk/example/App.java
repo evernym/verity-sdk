@@ -166,7 +166,7 @@ public class App extends Helper {
         println("Issuer Verkey: " + ANSII_GREEN + issuerVerkey + ANSII_RESET);
         println("The issuer DID and Verkey must be on the ledger.");
 
-        boolean automatedRegistration = consoleYesNo("Attempt automated registration via " + ANSII_GREEN + "https://selfserve.sovrin.org" + ANSII_RESET, true);
+        boolean automatedRegistration = false; // consoleYesNo("Attempt automated registration via " + ANSII_GREEN + "https://selfserve.sovrin.org" + ANSII_RESET, true);
         
         if (automatedRegistration) {
             CloseableHttpClient client = HttpClients.createDefault();
@@ -204,6 +204,7 @@ public class App extends Helper {
             client.close();
         }
         else {
+            println("Automated registration is currently unavailable");
             println("Please add Issuer DID and Verkey to the ledger manually");
             waitFor("Press ENTER when DID is on ledger");
         }
@@ -451,6 +452,7 @@ public class App extends Helper {
 
         // wait for operation to be complete
         waitFor(schemaComplete, "Waiting to write schema to ledger");
+        waitFor("Press ENTER when transaction has been endorsed is on ledger");
         // returns ledger schema identifier
         return schemaIdRef.get();
     }
@@ -460,8 +462,11 @@ public class App extends Helper {
                                     AtomicBoolean schemaComplete) {
         // handler for message received when schema is written
         handle(writeSchema, (String msgName, JSONObject message) -> {
-            if("status-report".equals(msgName)) {
+            if("needs-endorsement".equals(msgName)) {
                 printlnMessage(msgName, message);
+                println("Please manually endorse the following transaction:");
+                println(message.getString("schemaJson"));
+                println("If you do not have a valid endorser did send the transaction json to Evernym for endorsement");
                 schemaIdRef.set(message.getString("schemaId"));
                 schemaComplete.set(true);
 
@@ -490,6 +495,8 @@ public class App extends Helper {
         def.write(context);
         // wait for operation to be complete
         waitFor(defComplete, "Waiting to write cred def to ledger");
+        waitFor("Press ENTER when transaction has been endorsed is on ledger");
+
         // returns ledger cred def identifier
         return defIdRef.get();
     }
@@ -499,8 +506,11 @@ public class App extends Helper {
                                     AtomicBoolean defComplete) {
         // handler for message received when schema is written
         handle(def, (String msgName, JSONObject message) -> {
-            if("status-report".equals(msgName)) {
+            if("needs-endorsement".equals(msgName)) {
                 printlnMessage(msgName, message);
+                println("Please manually endorse the following transaction:");
+                println(message.getString("credDefJson"));
+                println("If you do not have a valid endorser did send the transaction json to Evernym for endorsement");
                 defIdRef.set(message.getString("credDefId"));
                 defComplete.set(true);
 

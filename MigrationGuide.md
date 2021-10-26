@@ -1,5 +1,10 @@
 ##Migration Guide 
 
+### `0.4.9` to `0.5.0`
+This release brought in support for [Evernym Verifiable Data Registry Tools](https://gitlab.com/evernym/verity/vdr-tools)
+which replaces Indy-Sdk. VDR-Tools produces libvdrtools, a replacement for libindy. Instructions to install libvdrtools can be found 
+[here](https://gitlab.com/evernym/verity/vdr-tools) and a migration guide from libindy to libvdrtools can be
+found [here](https://gitlab.com/evernym/verity/vdr-tools/docs/migration-guides/migration-guide-libindy_1.16.0-libvdrtools_0.8.0.md)
 ### `0.4.1` to `0.4.2`
 ####Java
 The Provision protocol (v0.7) method `provision` now throws `ProvisionTokenException` exception which will provide 

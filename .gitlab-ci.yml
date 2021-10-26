@@ -8,7 +8,7 @@ stages:
   - publish-docker
 
 variables:
-  DEV_BASE_VERSION: "0.4.10"
+  DEV_BASE_VERSION: "0.5.0"
   DEV_VERSION: '$DEV_BASE_VERSION-$CI_COMMIT_SHORT_SHA'
 
 include:

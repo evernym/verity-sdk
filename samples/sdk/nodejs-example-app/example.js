@@ -5,7 +5,7 @@ const http = require('http')
 const readline = require('readline')
 const fs = require('fs')
 const sdk = require('verity-sdk')
-const indy = require('indy-sdk')
+const vdrtools = require('vdr-tools')
 const Spinner = require('cli-spinner').Spinner
 const QRCode = require('qrcode')
 const request = require('request-promise-native')
@@ -227,10 +227,13 @@ async function writeLedgerSchema () {
   const firstStep = new Promise((resolve) => {
     handlers.addHandler(schema.msgFamily, schema.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case schema.msgNames.STATUS:
+        case 'needs-endorsement':
           spinner.stop()
           printMessage(msgName, message)
-
+          console.log('Please manually endorse this transaction on the ledger: ')
+          console.log(message.schemaJson)
+          console.log('If you do not have a valid endorser DID send the transaction to Evernym for endorsement.')
+          await readlineInput('Press ENTER when the transaction has been endorsed')
           resolve(message.schemaId)
           break
         default:
@@ -262,10 +265,13 @@ async function writeLedgerCredDef (schemaId) {
   const firstStep = new Promise((resolve) => {
     handlers.addHandler(def.msgFamily, def.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
-        case def.msgNames.STATUS:
+        case 'needs-endorsement':
           spinner.stop()
           printMessage(msgName, message)
-
+          console.log('Please manually endorse this transaction on the ledger: ')
+          console.log(message.credDefJson)
+          console.log('If you do not have a valid endorser DID send the transaction to Evernym for endorsement.')
+          await readlineInput('Press ENTER when the transaction has been endorsed')
           resolve(message.credDefId)
           break
         default:
@@ -394,7 +400,7 @@ async function setup () {
       config = fs.readFileSync(CONFIG_PATH)
     } else {
       try {
-        await indy.deleteWallet({ id: WALLET_NAME }, { key: WALLET_KEY })
+        await vdrtools.deleteWallet({ id: WALLET_NAME }, { key: WALLET_KEY })
       } catch (e) {
         if (e.message !== 'WalletNotFoundError') {
           throw (e)
@@ -502,7 +508,7 @@ async function setupIssuer () {
           console.log(`Issuer DID:  ${ANSII_GREEN}${issuerDID}${ANSII_RESET}`)
           console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
           console.log('The issuer DID and Verkey must be registered on the ledger.')
-          const automatedRegistration = await readlineYesNo(`Attempt automated registration via ${ANSII_GREEN}https://selfserve.sovrin.org${ANSII_RESET}`, true)
+          const automatedRegistration = false// await readlineYesNo(`Attempt automated registration via ${ANSII_GREEN}https://selfserve.sovrin.org${ANSII_RESET}`, true)
           if (automatedRegistration) {
             const res = await request.post({
               uri: 'https://selfserve.sovrin.org/nym',
@@ -521,6 +527,7 @@ async function setupIssuer () {
               console.log(`Got response from Sovrin portal: ${ANSII_GREEN}${res.body}${ANSII_RESET}`)
             }
           } else {
+            console.log('Automated registration is currently unavailable')
             console.log('Please add Issuer DID and Verkey to the ledger manually')
             await readlineInput('Press ENTER when DID is on ledger')
           }
