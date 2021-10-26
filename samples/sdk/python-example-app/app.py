@@ -22,8 +22,8 @@ from verity_sdk.protocols.v1_0.PresentProof import PresentProof
 from verity_sdk.protocols.v1_0.Relationship import Relationship
 from verity_sdk.protocols.v1_0.CommittedAnswer import CommittedAnswer
 from verity_sdk.utils.Context import Context
-from indy.wallet import delete_wallet
-from indy.error import WalletNotFoundError
+from vdrtools.wallet import delete_wallet
+from vdrtools.error import WalletNotFoundError
 
 from helper import *
 
