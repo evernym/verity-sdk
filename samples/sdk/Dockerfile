@@ -21,7 +21,17 @@ RUN apt-get update && \
         unzip \
         vim
 
-RUN apt install -y libvdrtools=0.8.0-bionic
+# Adding Evernym ca cert
+RUN mkdir -p /usr/local/share/ca-certificates
+RUN curl -k https://repo.corp.evernym.com/ca.crt | tee /usr/local/share/ca-certificates/Evernym_Root_CA.crt
+RUN update-ca-certificates
+
+# Setup apt for evernym repositories
+RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
+RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main"
+RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-rc-ubuntu main"
+
+RUN apt-get install -y libvdrtools=0.8.0-bionic
 
 # Install Ngrok
 RUN curl -O -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
