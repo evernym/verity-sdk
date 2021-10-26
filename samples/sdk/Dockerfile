@@ -21,16 +21,7 @@ RUN apt-get update && \
         unzip \
         vim
 
-
-# Setup apt for Sovrin repository
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
-    add-apt-repository "deb https://repo.sovrin.org/sdk/deb bionic stable"
-
-
-# Install libindy library from Sovrin repo
-RUN apt-get update && apt-get install -y \
-    libindy=${LIBINDY_VERSION}
-
+RUN apt install -y libvdrtools=0.8.0
 
 # Install Ngrok
 RUN curl -O -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
