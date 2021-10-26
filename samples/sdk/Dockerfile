@@ -21,7 +21,7 @@ RUN apt-get update && \
         unzip \
         vim
 
-RUN apt install -y libvdrtools=0.8.0
+RUN apt install -y libvdrtools=0.8.0-bionic
 
 # Install Ngrok
 RUN curl -O -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
