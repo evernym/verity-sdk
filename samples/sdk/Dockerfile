@@ -31,7 +31,7 @@ RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key ad
 RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main"
 RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-rc-ubuntu main"
 
-RUN apt-get install -y libvdrtools=0.8.0-bionic
+RUN apt-get update && apt-get install -y libvdrtools=0.8.0-bionic
 
 # Install Ngrok
 RUN curl -O -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
