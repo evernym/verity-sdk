@@ -757,12 +757,14 @@ namespace VeritySDK.Sample
                    handler,
                    (msgName, message) =>
                    {
-                       if ("status-report".Equals(msgName))
+                       if ("needs-endorsement".Equals(msgName))
                        {
                            App.consolePrintMessage(msgName, message);
-
+                           Console.write(
+                               "Automatic endoresement is currently unavailable, please endorse the following transaction manually:");
+                           Console.write(message["schemaJson"]);
+                           WaitReturn("Press ENTER when the transaction has been endorsed");
                            _schemaIdRef = message["schemaId"];
-
                            schemaComplete = true;
                        }
                        else
@@ -808,7 +810,10 @@ namespace VeritySDK.Sample
                        if ("status-report".Equals(msgName))
                        {
                            App.consolePrintMessage(msgName, message);
-
+                           Console.write(
+                               "Automatic endoresement is currently unavailable, please endorse the following transaction manually:");
+                           Console.write(message["credDefJson"]);
+                           WaitReturn("Press ENTER when the transaction has been endorsed");
                            _defIdRef = message["credDefId"];
 
                            defComplete = true;
