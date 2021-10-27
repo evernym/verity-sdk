@@ -1,4 +1,4 @@
-﻿using Com.Evernym.VdrTools.WalletApi;
+﻿using Com.Evernym.Vdrtools.WalletApi;
 using QRCoder;
 using System;
 using System.Collections.Generic;
