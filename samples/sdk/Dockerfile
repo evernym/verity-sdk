@@ -20,11 +20,12 @@ RUN apt-get update && \
         software-properties-common \
         unzip \
         vim
+        
+# Add Evernym Cert (needed to access Evernym repo)
+RUN mkdir -p /usr/local/share/ca-certificates && \
+    cat "$EVERNYM_CERTIFICATE" >> /usr/local/share/ca-certificates/Evernym_Root_CA.crt && \
+    update-ca-certificates
 
-# Add Evernym Cert
-RUN mkdir -p /usr/local/share/ca-certificates
-ADD Evernym_Root_CA.crt /usr/local/share/ca-certificates/Evernym_Root_CA.crt
-RUN update-ca-certificates
 
 # Setup apt for evernym repositories
 RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -

@@ -25,10 +25,11 @@ ENV JAVA_HOME /usr/lib/jvm/java-1.11.0-openjdk-amd64/
 RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
     unzip ngrok-stable-linux-amd64.zip && cp ngrok /usr/local/bin/.
 
-# Add Evernym Cert
-RUN mkdir -p /usr/local/share/ca-certificates
-ADD configuration/Evernym_Root_CA.crt /usr/local/share/ca-certificates/Evernym_Root_CA.crt
-RUN update-ca-certificates
+# Add Evernym Cert (needed to access Evernym repo)
+RUN mkdir -p /usr/local/share/ca-certificates && \
+    cat "$EVERNYM_CERTIFICATE" >> /usr/local/share/ca-certificates/Evernym_Root_CA.crt && \
+    update-ca-certificates
+
 
 # Setup apt for evernym repositories
 RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
