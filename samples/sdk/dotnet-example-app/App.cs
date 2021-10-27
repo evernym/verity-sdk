@@ -477,7 +477,7 @@ namespace VeritySDK.Sample
             App.coloredConsoleOutput(_issuerVerkey, "Issuer Verkey: ");
             App.consoleOutput("The issuer DID and Verkey must be on the ledger.");
 
-            bool automatedRegistration = consoleYesNo("Attempt automated registration via https://selfserve.sovrin.org", true);
+            bool automatedRegistration = false; // consoleYesNo("Attempt automated registration via https://selfserve.sovrin.org", true);
 
             if (automatedRegistration)
             {
