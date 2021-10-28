@@ -1,5 +1,7 @@
 FROM ubuntu:18.04
 
+ARG EVERNYM_CERTIFICATE
+
 ENV LIBINDY_VERSION 1.15.0-bionic
 ENV VERITY_SERVER https://vas.pps.evernym.com
 ENV LANG=C.UTF-8

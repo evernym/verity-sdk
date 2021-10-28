@@ -1,6 +1,8 @@
 FROM ubuntu:18.04
 WORKDIR /root
 
+ARG EVERNYM_CERTIFICATE
+
 ENV LIBINDY_ASYNC_VERSION 1.95.0~1624-bionic
 ENV VERITY_APPLICATION_VERSION 0.4.128237112.a11b56e
 ENV LANG=C.UTF-8
@@ -40,7 +42,6 @@ RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-rc-
 RUN apt-get update && apt-get install -y \
     libindy-async=${LIBINDY_ASYNC_VERSION} \
     libnullpay-async=${LIBINDY_ASYNC_VERSION} \
-RUN apt-get update && apt-get install -y \
     verity-application=${VERITY_APPLICATION_VERSION} \
     ; exit 0
 RUN apt-get autoremove -y && \
