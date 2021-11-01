@@ -119,6 +119,9 @@ More information about the architecture of Evernym platform and sequence diagram
 ### Data retention
 More information about the data retention on Verity, the default configuration and how default can be changed can be found [here](docs/DataRetention.md).
 
+### Authentication Webhooks
+More information about authenticating webhooks can be found [here](docs/AuthenticatingWebhooks.md).
+
 ### Improving documentation
 
 Can’t find what you are looking for, or have suggestions on what to include in the docs? [Drop us a line](mailto:support@evernym.com), we'd love to receive your ideas.
