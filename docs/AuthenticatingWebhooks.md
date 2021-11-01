@@ -1,6 +1,6 @@
 # Authenticating Verity Webhooks
 Some users may wish to implement some form of authentication on their Verity webhook endpoint to increase application security. 
-Instructions for authenticating webhooks can be found in this document. Currently the only form of authentication available is OAuth,
+Instructions for authenticating webhooks can be found in this document. Currently the only form of authentication available is OAuth2,
 if you require a different form of authentication please contact Evernym directly and we can discuss possible solutions. 
 
 ## Verity OAuth 2.0 flow
@@ -60,7 +60,7 @@ Note: values mentioned in angular brackets should be replaced accordingly.
 }
 ```
 
-## How OAuth2.0 flow works
+## How OAuth2 flow works
 1. Verity has to send a message to a registered endpoint
 2. It checks the endpoint information, if it is:
    1. **OAuth2 v1**, it checks
