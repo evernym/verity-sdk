@@ -46,7 +46,7 @@ The instructions for this SDK use the following terms:
 
 #### Minimum system requirements
 
-Minimum system requirements of Verity SDK match system requirements for a language runtime. Enough is defined by an app and a flow, as some apps may try to force Indy SDK to keep an unlimited amount of data in RAM.
+Minimum system requirements of Verity SDK match system requirements for a language runtime. Enough is defined by an app and an use-case, as some apps may try to force Indy SDK to keep an unlimited amount of data in RAM.
 
 Languages: Python 3.6, Java 11 (OpenJDK), NodeJS 12, and .NET Core SDK 3.1.
 

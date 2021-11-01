@@ -1,16 +1,16 @@
 # Verifier Documentation
-The getting started guide has more comprehensive explanations for the Verity flow. [Getting Started Guide](../getting-started/getting-started.md)
+The getting started guide has more comprehensive explanations for the basic flow. [Getting Started Guide](../getting-started/getting-started.md)
 
 Here are basic code examples showing how to interface with verity-sdk to: 
-1. Create an Agent on Verity - [Provision](../getting-started/nodejs-verity-flow.md#provisioning-agent-on-verity)
-2. Handle asynchronous response messages from Verity - [Message Handling](../getting-started/nodejs-verity-flow.md#handling-asynchronous-response-messages)
-3. Setting up an Issuer - [Issuer Setup](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity)
-4. Writing a schema to the ledger - [Write Schema](../getting-started/nodejs-verity-flow.md#write-schema-to-ledger)
-5. Writing a credential definition to the ledger - [Write Credential Definition](../getting-started/nodejs-verity-flow.md#write-credential-definition-to-ledger)
-6. Establishing Connections between parties - [Connecting](../getting-started/nodejs-verity-flow.md#connecting)
-7. Issuing credentials - [Issue Credential](../getting-started/nodejs-verity-flow.md#issue-credential)
-8. Requesting Proof Presentations - [Request Proof Presentation](../getting-started/nodejs-verity-flow.md#request-proof-presentation)
-9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../getting-started/nodejs-verity-flow.md#utils)
+1. Create an Agent on Verity - [Provision](../getting-started/nodejs-verity-sdk.md#provisioning-agent-on-verity)
+2. Handle asynchronous response messages from Verity - [Message Handling](../getting-started/nodejs-verity-sdk.md#handling-asynchronous-response-messages)
+3. Setting up an Issuer - [Issuer Setup](../getting-started/nodejs-verity-sdk.md#setting-up-an-issuer-identity)
+4. Writing a schema to the ledger - [Write Schema](../getting-started/nodejs-verity-sdk.md#write-schema-to-ledger)
+5. Writing a credential definition to the ledger - [Write Credential Definition](../getting-started/nodejs-verity-sdk.md#write-credential-definition-to-ledger)
+6. Establishing Connections between parties - [Connecting](../getting-started/nodejs-verity-sdk.md#connecting)
+7. Issuing credentials - [Issue Credential](../getting-started/nodejs-verity-sdk.md#issue-credential)
+8. Requesting Proof Presentations - [Request Proof Presentation](../getting-started/nodejs-verity-sdk.md#request-proof-presentation)
+9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../getting-started/nodejs-verity-sdk.md#utils)
 
 ## Setup
 ### Provisioning agent on Verity
@@ -93,7 +93,7 @@ async function end () {
 ### Response message handling 
 Most Verity interactions respond to a request asynchronously. Here are some details that will help with the handling of these messages.
 1. A response message is delivered via HTTPs. These messages can be processed however the application thinks best. Our example applications use webhooks.
-    The http body will contain an encrypted protocol message which needs to be handled by the [Handlers](../getting-started/nodejs-verity-flow.md#registers-message-handler) object. Decryption of the message happens here.
+    The http body will contain an encrypted protocol message which needs to be handled by the [Handlers](../getting-started/nodejs-verity-sdk.md#registers-message-handler) object. Decryption of the message happens here.
     ```
     await handlers.handleMessage(context, Buffer.from(req.body, 'utf8'))
     ``` 
@@ -104,7 +104,7 @@ Most Verity interactions respond to a request asynchronously. Here are some deta
    - `~thread`: `{"thid":"<id>"}`
    - Message specific fields
 3. Example handler: 
-    - Registering the handler [Registers Message Handler](../getting-started/nodejs-verity-flow.md#registers-message-handler)
+    - Registering the handler [Registers Message Handler](../getting-started/nodejs-verity-sdk.md#registers-message-handler)
     - Protocol Message handlers: 
         > **NOTE:** The MessageFamily in this example is an instance of ConnectionsV1_0.
     ```
@@ -193,7 +193,7 @@ await updateConfigs.update(context)
 
 ## Write Schema to Ledger
 When data is going to be shared via credential exchange, the data needs to be publicaly defined. 
-This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity) must be complete to have the proper permissions.
+This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../getting-started/nodejs-verity-sdk.md#setting-up-an-issuer-identity) must be complete to have the proper permissions.
 ```
 // input parameters for schema
 const schemaName = 'Diploma ' + uuidv4().substring(0, 8)
@@ -223,7 +223,7 @@ Message Response:
 ## Write Credential Definition to Ledger
 An issuer will write a credential definition to the ledger which corresponds to a specific Schema. \
 This is how an entity can publicaly define the data which will be sent in a credential.
-* `schemaId`: received in the write schema response [Write Schema](../getting-started/nodejs-verity-flow.md#write-schema-to-ledger)
+* `schemaId`: received in the write schema response [Write Schema](../getting-started/nodejs-verity-sdk.md#write-schema-to-ledger)
 
 ```
 // input parameters for cred definition
@@ -327,13 +327,13 @@ handlers.addHandler(connecting.msgFamily, connecting.msgFamilyVersion, async (ms
 ```
 
 ## Issue Credential
-When an entity provides data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity) and [Write Credential Definition](../getting-started/nodejs-verity-flow.md#write-credential-definition-to-ledger) protocols need to have been completed.
+When an entity provides data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../getting-started/nodejs-verity-sdk.md#setting-up-an-issuer-identity) and [Write Credential Definition](../getting-started/nodejs-verity-sdk.md#write-credential-definition-to-ledger) protocols need to have been completed.
 
 The Issue Credential has two steps: 
 
 1. Send the Credential Offer
-* `defId`: received in the credential definition response [Credential Definition Response](../getting-started/nodejs-verity-flow.md#write-credential-definition-to-ledger)    
-* `relDID`: received in the create Relationship response [Creating Relationship](../getting-started/nodejs-verity-flow.md#creating-an-invitation-with-relationship-protocol)
+* `defId`: received in the credential definition response [Credential Definition Response](../getting-started/nodejs-verity-sdk.md#write-credential-definition-to-ledger)    
+* `relDID`: received in the create Relationship response [Creating Relationship](../getting-started/nodejs-verity-sdk.md#creating-an-invitation-with-relationship-protocol)
     ```
     // input parameters for issue credential
     const credentialData = {
@@ -356,8 +356,8 @@ The Issue Credential has two steps:
 ## Request Proof Presentation
 When an entity requests a party prove specific things by providing self attested information or information corresponding to an already issued credential, the Proof Presentation protocol is used. 
 
-* `issuerDID`: received in the IssuerSetup response [Issuer Setup](../getting-started/nodejs-verity-flow.md#setting-up-an-issuer-identity)
-* `relDID`: received in the create Relationship response [Creating Relationship](../getting-started/nodejs-verity-flow.md#creating-an-invitation-with-relationship-protocol)
+* `issuerDID`: received in the IssuerSetup response [Issuer Setup](../getting-started/nodejs-verity-sdk.md#setting-up-an-issuer-identity)
+* `relDID`: received in the create Relationship response [Creating Relationship](../getting-started/nodejs-verity-sdk.md#creating-an-invitation-with-relationship-protocol)
 ```
 // global issuer_did
 // input parameters for request proof

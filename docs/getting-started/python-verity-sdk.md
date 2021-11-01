@@ -2,35 +2,36 @@
 The getting started guide has more comprehensive explanations for the Verity flow. [Getting Started Guide](../getting-started/getting-started.md)
 
 Here are basic code examples showing how to interface with verity-sdk to: 
-1. Create an Agent on Verity - [Provision](../getting-started/java-verity-flow.md#provisioning-agent-on-verity)
-2. Handle asynchronous response messages from Verity - [Message Handling](../getting-started/java-verity-flow.md#handling-asynchronous-response-messages)
-3. Setting up an Issuer - [Issuer Setup](../getting-started/java-verity-flow.md#setting-up-an-issuer-identity)
-4. Writing a schema to the ledger - [Write Schema](../getting-started/java-verity-flow.md#write-schema-to-ledger)
-5. Writing a credential definition to the ledger - [Write Credential Definition](../getting-started/java-verity-flow.md#write-credential-definition-to-ledger)
-6. Establishing Connections between parties - [Connecting](../getting-started/java-verity-flow.md#connecting)
-7. Issuing credentials - [Issue Credential](../getting-started/java-verity-flow.md#issue-credential)
-8. Requesting Proof Presentations - [Request Proof Presentation](../getting-started/java-verity-flow.md#request-proof-presentation)
-9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../getting-started/java-verity-flow.md#utils)
+1. Create an Agent on Verity - [Provision](../getting-started/python-verity-sdk.md#provisioning-agent-on-verity)
+2. Handle asynchronous response messages from Verity - [Message Handling](../getting-started/python-verity-sdk.md#handling-asynchronous-response-messages)
+3. Setting up an Issuer - [Issuer Setup](../getting-started/python-verity-sdk.md#setting-up-an-issuer-identity)
+4. Writing a schema to the ledger - [Write Schema](../getting-started/python-verity-sdk.md#write-schema-to-ledger)
+5. Writing a credential definition to the ledger - [Write Credential Definition](../getting-started/python-verity-sdk.md#write-credential-definition-to-ledger)
+6. Establishing Connections between parties - [Connecting](../getting-started/python-verity-sdk.md#connecting)
+7. Issuing credentials - [Issue Credential](../getting-started/python-verity-sdk.md#issue-credential)
+8. Requesting Proof Presentations - [Request Proof Presentation](../getting-started/python-verity-sdk.md#request-proof-presentation)
+9. Utils for saving verity-sdk context and registering Message Handlers  - [Utils](../getting-started/python-verity-sdk.md#utils)
 
 ## Setup
 ### Provisioning agent on Verity
 Provisioning is the first step done when interacting with Verity. It creates a dedicated cloud agent on Verity for the user of the sdk. Provisioning is done only once.
 
-```java
-File contextFile = new File("verity-context.json");
-String verityUrl = "http://verity.url";
-// token used for provisioning - Evernym provides this offline for their customers
-String token = "..."; 
+```python
+global context
+wallet_name = 'examplewallet1'  # for libindy wallet
+wallet_key = 'examplewallet1'
+#token used for provisioning - Evernym provides this offline for their customers
+token = '....' 
+verity_url = 'http://verity.url'
+# create initial Context
+context = await Context.create(wallet_name, wallet_key, verity_url)
 
-// First we create an initial context.
-Context ctx = ContextBuilder.fromScratch("wallet-name", "wallet-secret-key", verityUrl);
+# ask that an agent by provision (setup) and associated with created key pair
+context = await Provision(token).provision(context)
 
-// do provisioning and get the context.
-ProvisionV0_7 provisioner = Provision.v0_7(token);
-ctx = provisioner.provision(ctx);
-
-// save the context to file.
-Files.write(contextFile.toPath(), ctx.toJson().toString(2).getBytes());
+# Save context 
+with open('verity-context.json', 'w') as f:
+    f.write(context.to_json())
 ```
 The wallet (usualy created in $HOME/.indy_client/wallet/<wallet-name>) needs to be saved with the context file.
 
@@ -39,36 +40,40 @@ The wallet (usualy created in $HOME/.indy_client/wallet/<wallet-name>) needs to 
 Most Verity response messages are sent asynchronously. For receiving messages, a public endpoint is needed. The UpdateEndpoint protocol should be used for setting up the address of this endpoint.
 The endpoint dedicated for receiving messages from Verity Server, may look like this:
 
-```java
-// Needed if an updated endpoint is used
+```python
+# Needed if an updated endpoint is used
 
-String webhook = "";
-try {
-    webhook = context.endpointUrl();
-} catch (Exception ignored) {}
+global context, port
+webhook: str = context.endpoint_url
 
-context = context.toContextBuilder().endpointUrl(webhook).build();
+context.endpoint_url = webhook
 
-// request that verity-application use specified webhook endpoint
-UpdateEndpoint.v0_6().update(context);
+# request that verity application use specified webhook endpoint
+await UpdateEndpoint().update(context)
+
+# Write the context with the updated endpoint
+with open('verity-context.json', 'w') as f:
+    f.write(context.to_json())
 ```
 
-Example Webhook 
-- This example uses the Java Spring Framework but Java Spring is not required for verity-sdk.
-```java
-@PostMapping("/verity-webhook")
-public String webHook(HttpEntity<byte[]> requestEntity) throws VerityException {
-    handlers.handleMessage(context, requestEntity.getBody());
-    return "OK";
-}
+Example Webhook
+```python
+@routes.post('/')
+async def endpoint_handler(request):
+    try:
+        await handlers.handle_message(context, await request.read())
+        return web.Response(text='Success')
+    except Exception as e:
+        traceback.print_exc()
+        return web.Response(text=str(e))
 ```
 
 ### Response message handling 
 Most Verity interactions respond to a request asynchronously. Here are some details that will help with the handling of these messages.
 1. A response message is delivered via HTTPs. These messages can be processed however the application thinks best. Our example applications use webhooks.
-    The http body will contain an encrypted protocol message which needs to be handled by the [Handlers](../getting-started/java-verity-flow.md#registers-message-handler) object. Decryption of the message happens here.
-    ```java
-    handlers.handleMessage(context, requestEntity.getBody());
+    The http body will contain an encrypted protocol message which needs to be handled by the [Handlers](../getting-started/python-verity-sdk.md#registers-message-handler) object. Decryption of the message happens here.
+    ```python
+    await handlers.handle_message(context, await request.read())
     ``` 
 2. Common Fields which show up in a response: 
    - `@type` - \<did info>;spec/\<message family>/\<version of protocol>/\<protocol message>" 
@@ -77,19 +82,20 @@ Most Verity interactions respond to a request asynchronously. Here are some deta
    - `~thread`: `{"thid":"<id>"}`
    - Message specific fields
 3. Example handler: 
-    - Registering the handler [Registers Message Handler](../getting-started/java-verity-flow.md#registers-message-handler)
+    - Registering the handler [Registers Message Handler](../getting-started/python-verity-sdk.md#registers-message-handler)
     - Protocol Message handlers: 
         > **NOTE:** The MessageFamily in this example is an instance of ConnectionsV1_0.
-    ```java
-    handle(Connecting.v1_0("",""), (String msgName, JSONObject message) -> {
-        if("request-received".equals(msgName)) {
-            // Received the Request
-        } else if("response-sent".equals(msgName)) {
-            // Response sent
-        } else {
-           // Message received but not supported by the Message Family. 
-        }
-    });
+    ```python
+   # Adding the message handler to list of handlers
+   handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, connection_resposne_handler)
+
+    # handler for the accept message sent when connection is accepted
+    async def connection_response_handler(msg_name, message):
+        print_message(msg_name, message)
+        if msg_name == 'response-sent':
+           # Message Handling 
+        else:
+           # No handler for response message (msg_name, message)
     ```
 
 ## Setting up an Issuer identity
@@ -97,17 +103,13 @@ When an entity issues a credential, they need to have privileged keys on the led
 the issuer keys and register them on the dedicated cloud agent so that writing to the ledger and issuing credentials can be accomplished.
 ### Check to see if Issuer is already setup
 Checks to see if issuer setup has been done. Gets did and verkey from the Verity Application
-```java
-// These values need to be saved during the handling of the response
-private String issuerDID;
-private String issuerVerkey;
+```python
+# constructor for the Issuer Setup protocol
+issuer_setup = IssuerSetup()
 
-// constructor for the Issuer Setup protocol
-IssuerSetupV0_6 issuerSetup = IssuerSetup.v0_6();
-
-// 1. query the current identifier
-// 2. application's message handler should handle the asynchronous response
-issuerSetup.currentPublicIdentifier(context);
+# 1. query the current identifier
+# 2. application's message handler should handle the asynchronous response
+await issuer_setup.current_public_identifier(context)
 ```
 
 Message Response: 
@@ -127,17 +129,15 @@ Message Response:
     - `verkey`: newly created issuer verkey
 
 ### Setup new Issuer
-```java
-// These values need to be saved during the handling of the response
-private String issuerDID;
-private String issuerVerkey;
+```python
+# constructor for the Issuer Setup protocol
+issuer_setup = IssuerSetup()
 
-// constructor for the Issuer Setup protocol
-IssuerSetupV0_6 newIssuerSetup = IssuerSetup.v0_6();
+# add handler to the set of handlers
 
-// 1. request that issuer identifier be created
-// 2. application's message handler should handle the asynchronous response
-newIssuerSetup.create(context);
+# 1. request that issuer identifier be created
+# 2. application's message handler should handle the asynchronous response
+await issuer_setup.create(context)
 ```
 
 Message Response: 
@@ -160,29 +160,31 @@ Message Response:
 
 ## Updating Config
 Update agent configs to set the institution's name and logo url. 
-```java
-String INSTITUTION_NAME = "Faber College";
-String LOGO_URL = "http://robohash.org/235";
-
-UpdateConfigsV0_6 updateConfigs = UpdateConfigs.v0_6(INSTITUTION_NAME, LOGO_URL);
-updateConfigs.update(context);
-updateConfigs.status(context);
+```python
+INSTITUTION_NAME = 'Faber College'
+LOGO_URL = 'http://robohash.org/235'
+handlers.add_handler('update-configs', '0.6', noop)
+configs = UpdateConfigs(INSTITUTION_NAME, LOGO_URL)
+await configs.update(context)
 ```
 
 ## Write Schema to Ledger
 When data is going to be shared via credential exchange, the data needs to be publicaly defined. 
-This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../getting-started/java-verity-flow.md#setting-up-an-issuer-identity) must be complete to have the proper permissions.
-```java
-// input parameters for schema
-String schemaName = "Diploma "+ UUID.randomUUID().toString().substring(0, 8);
-String schemaVersion = "0.1";
+This is done by writing a schema to the ledger. Different issuers can create credentials that use this defined Schema. [Issuer Setup](../getting-started/python-verity-sdk.md#setting-up-an-issuer-identity) must be complete to have the proper permissions.
+```python
+# input parameters for schema
+schema_name = 'Diploma'
+schema_version = '0.1' # get_random_version()
+schema_attrs = ['name', 'degree']
 
-// constructor for the Write Schema protocol
-WriteSchemaV0_6 writeSchema = WriteSchema.v0_6(schemaName, schemaVersion, "name", "degree");
+# constructor for the Write Schema protocol
+schema = WriteSchema(schema_name, schema_version, schema_attrs)
 
-// 1. request schema be written to ledger
-// 2. application's message handler should handle the asynchronous response
-writeSchema.write(context);
+# add handler to the set of handlers
+
+# 1. request schema be written to ledger
+# 2. application's message handler should handle the asynchronous response
+await schema.write(context)
 ```
 Message Response: 
 * type: `status-report`
@@ -199,22 +201,21 @@ Message Response:
 ## Write Credential Definition to Ledger
 An issuer will write a credential definition to the ledger which corresponds to a specific Schema. \
 This is how an entity can publicaly define the data which will be sent in a credential.
-[Issuer Setup](../getting-started/java-verity-flow.md#setting-up-an-issuer-identity) must be complete to have the proper permissions to both write to the ledger and sign data in a credential.
-* `schemaId`: received in the write schema response [Write Schema](../getting-started/java-verity-flow.md#write-schema-to-ledger)
+[Issuer Setup](../getting-started/python-verity-sdk.md#setting-up-an-issuer-identity) must be complete to have the proper permissions to both write to the ledger and sign data in a credential.
+* `schema_id`: received in the write schema response [Write Schema](../getting-started/python-verity-sdk.md#write-schema-to-ledger)
+```python
+# input parameters for cred definition
+cred_def_name = 'Trinity College Diplomas'
+cred_def_tag = 'latest'
 
-```java
-private String writeLedgerCredDef(String schemaId) throws IOException, VerityException {
-    // input parameters for cred definition
-    String credDefName = "Trinity Collage Diplomas";
-    String credDefTag = "latest";
+# constructor for the Write Credential Definition protocol
+cred_def = WriteCredentialDefinition(cred_def_name, schema_id, cred_def_tag)
 
-    // constructor for the Write Credential Definition protocol
-    WriteCredentialDefinitionV0_6 def = WriteCredentialDefinition.v0_6(credDefName, schemaId, credDefTag);
+# add handler to the set of handlers
 
-    // 1. request the cred def be writen to ledger
-    // 2. application's message handler should handle the asynchronous response
-    def.write(context);
-}
+# 1. request the cred def be writen to ledger
+# 2. application's message handler should handle the asynchronous response
+await cred_def.write(context)
 ```
 
 Message Response: 
@@ -238,10 +239,17 @@ This code is just an example, it does not handle error cases.
 
 The Relationship protocol has two steps: 
 1. create relationship key 
-    ```java
-    RelationshipV1_0 relProvisioning = Relationship.v1_0("inviter");
+    ```python 
+   global context
+   global handlers
 
-    relProvisioning.create(context);
+   # Constructor for the Relationship API
+   relationship: Relationship = Relationship(label='inviter')
+
+   # add handler to the set of handlers
+
+   # starts the relationship protocol
+   await relationship.create(context)
     ```
    Message Response: 
    * type: `created`
@@ -259,10 +267,10 @@ The Relationship protocol has two steps:
         - `did`: did created for a specific relationship
         - `verkey`: verkey created for a specific relationship
 2. create invitation
-    - `relDid` and `threadId` were given in the `created` response
-        ```java
-        RelationshipV1_0 relationship = Relationship.v1_0(relDID.get(), threadId.get());
-        relationship.connectionInvitation(context);
+    - `rel_did` and `thread_id` were given in the `created` response
+        ```python
+        relationship: Relationship = Relationship(rel_did, thread_id)
+        await relationship.connection_invitation(context)
         ```
     Message Response: 
     * type: `invitation`
@@ -279,62 +287,81 @@ The Relationship protocol has two steps:
 ### Connection Listener 
 Once the mobile device receives the `inviteURL` or scans the QR Code, the rest is automated in verity-sdk. \
 You can setup a handler to view incoming messages.
-```java
-handlers.addHandler(Connecting.v1_0("",""), (String msgName, JSONObject message) -> {
-    if("request-received".equals(msgName)) {
-        // Received the Request
-    } else if("response-sent".equals(msgName)) {
-        // Response sent
-    } 
-});
+```python
+# handler for the response to the request to start the Connecting protocol.
+async def inviter_handler(msg_name, message):
+    spinner.stop_and_persist('Done')
+    print_message(msg_name, message)
+    if msg_name == 'request-received':
+        # request received
+    elif msg_name == 'response-sent':
+        # response sent
+    else:
+        # non supported response
+
+# adds handler to the set of handlers
+handlers.add_handler(Connecting.MSG_FAMILY, Connecting.MSG_FAMILY_VERSION, inviter_handler)
 ```
 
 ## Issue Credential
-When an entity provides data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../getting-started/java-verity-flow.md#setting-up-an-issuer-identity) and [Write Credential Definition](../getting-started/java-verity-flow.md#write-credential-definition-to-ledger) protocols need to have been completed.
+
+When an entity provides data to another party, the Issue Credential protocol is used. Both the [Issuer Setup](../getting-started/python-verity-sdk.md#setting-up-an-issuer-identity) and [Write Credential Definition](../getting-started/python-verity-sdk.md#write-credential-definition-to-ledger) protocols need to have been completed.
 
 The Issue Credential has two steps: 
 
 1. Send the Credential Offer
- * `defId`: received in the credential definition response [Credential Definition Response](../getting-started/java-verity-flow.md#write-credential-definition-to-ledger)    
- * `forDID`: received in the create Relationship response [Creating Relationship](../getting-started/java-verity-flow.md#creating-an-invitation-with-relationship-protocol)
-    ```java
-    // input parameters for issue credential
-    String credentialName = "Degree";
-    Map<String, String> credentialData = new HashMap<>();
-    credentialData.put("name", "Joe Smith");
-    credentialData.put("degree", "Bachelors");
-    // constructor for the Issue Credential protocol
-    IssueCredentialV1_0 issue = IssueCredential.v1_0(forDID, defId, credentialData, "comment", "0", true);
+* `cred_def_id`: received in the credential definition response [Credential Definition Response](../getting-started/python-verity-sdk.md#Write Credential Definition to Ledger)    
+* `rel_did`: received in the create Relationship response [Create Relationship](../getting-started/python-verity-sdk.md#creating-an-invitation-with-relationship-protocol)
+    ```python
+    # input parameters for issue credential
+    cred_def_id = ...
+    credential_name = 'Degree'
+    credential_data = {
+        'name': 'Joe Smith',
+        'degree': 'Bachelors'
+    }
 
-    // request that credential is offered
-    issue.offerCredential(context);
-    ```
+    # constructor for the Issue Credential protocol
+    issue = IssueCredential(rel_did, None, cred_def_id, credential_data, 'comment', 0, True)
+
+    # add handler to the set of handlers
+   
+    # 1. request that credential is offered
+    # 2. application's message handler should handle the asynchronous response
+    await issue.offer_credential(context)
+   ```
    
 2. Send the Credential once the holder sends a `accept-request` - This is automated in the sdk
 
 ## Request Proof Presentation
 When an entity requests a party prove specific things by providing self attested information or information corresponding to an already issued credential, the Proof Presentation protocol is used. 
 
-* `issuerDID`: received in the IssuerSetup response [Issuer Setup](../getting-started/java-verity-flow.md#setting-up-an-issuer-identity)
-* `forDID`: received in the create Relationship response [Creating Relationship](../getting-started/java-verity-flow.md#creating-an-invitation-with-relationship-protocol)
-```java
-// input parameters for request proof
-String proofName = "Proof of Degree - "+UUID.randomUUID().toString().substring(0, 8);
+* `issuer_did`: received in the IssuerSetup response [Issuer Setup](../getting-started/python-verity-sdk.md#setting-up-an-issuer-identity)
+* `for_did`: received in the create Relationship response [Create Relationship](../getting-started/python-verity-sdk.md#creating-an-invitation-with-relationship-protocol)
+```python
+global issuer_did
 
-Restriction restriction =  RestrictionBuilder
-        .blank()
-        .issuerDid(issuerDID)
-        .build();
+# input parameters for request proof
+proof_name = 'Proof of Degree'
+proof_attrs = [
+    {
+        'name': 'name',
+        'restrictions': [{'issuer_did': issuer_did}]
+    },
+    {
+        'name': 'degree',
+        'restrictions': [{'issuer_did': issuer_did}]
+    }
+]
 
-Attribute nameAttr = PresentProofV1_0.attribute("name", restriction);
-Attribute degreeAttr = PresentProofV1_0.attribute("degree", restriction);
+# constructor for the Present Proof protocol
+proof = PresentProof(for_did, None, proof_name, proof_attrs)
 
-// constructor for the Present Proof protocol
-PresentProofV1_0 proof = PresentProof.v1_0(forDID, proofName, nameAttr, degreeAttr);
+# add handler to the set of handlers
 
-// 1. request proof
-// 2. application's message handler should handle the asynchronous response
-proof.request(context);
+# 1. request proof
+# 2. application's message handler should handle the asynchronous response
+await proof.request(context)
 ```
 
 Message Response: 
@@ -371,38 +398,29 @@ Message Response:
     }
     ```
     * to see if the presentation is valid, evaluate `verification_result`
-
+    
+    
 ## Utils
 ### Object used to register response message handlers
 The `handlers` variable is defined as field variable in the controller class like this:
 <a name="Handlers"></a>
-```java
-Handlers handlers = new Handlers();
+```python
+handlers: Handlers = Handlers()
 ```
 ### Registers Message Handler
 Sets a specific response handler for protocol interactions
 <a name="handle"></a>
-```java
-MessageFamily messageFamily = ...; 
-MessageHandler.Handler messageHandler = ...;
-handlers.addHandler(messageFamily, (String msgName, JSONObject message) -> {
-    try {
-        messageHandler.handle(msgName, message);
-    } catch(Exception ex) {
-        ex.printStackTrace();
-    }
-});
-```
+```python
+await handlers.handle_message(context, await request.read())
+``` 
 ### Loading Context Object
 Saved context should be loaded with code like this:
-```java
-Context loadContext(File contextFile) throws IOException, WalletOpenException {
-    return ContextBuilder.fromJson(
-            new JSONObject(
-                    new String(Files.readAllBytes(contextFile.toPath()))
-            )
-    ).build();
-}
+```python
+def load_context(file_path) -> str:
+    with open(file_path, 'r') as f:
+        config = f.read()
+        context = await Context.create_with_config(config)
+        return context
 ```
 Example Context Object: 
 ```json
