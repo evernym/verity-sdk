@@ -60,7 +60,7 @@ Note: values mentioned in angular brackets should be replaced accordingly.
 }
 ```
 
-## How OAuth2 flow works
+### How OAuth2 flow works
 1. Verity has to send a message to a registered endpoint
 2. It checks the endpoint information, if it is:
    1. **OAuth2 v1**, it checks
