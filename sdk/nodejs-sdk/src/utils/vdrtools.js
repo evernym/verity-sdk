@@ -1,5 +1,5 @@
 'use strict'
-const sdk = require('indy-sdk')
+const sdk = require('vdr-tools')
 const bs58 = require('bs58')
 let initialized = false
 

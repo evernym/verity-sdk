@@ -5,7 +5,7 @@ const expect = chai.expect
 chai.use(require('chai-as-promised'))
 const Context = require('../src/utils/Context')
 const utils = require('../src/utils')
-const indy = require('../src/utils/indy')
+const vdrtools = require('../src/utils/vdrtools')
 
 const testConfig = {
   verityUrl: 'http://vas-team1.pdev.evernym.com',
@@ -48,7 +48,7 @@ describe('Context', () => {
   it('should accept valid configuration and contain all data', async () => {
     const configStr = getTestConfig()
     const config = JSON.parse(configStr)
-    await indy.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
+    await vdrtools.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
     const context = await Context.createWithConfig(configStr)
     expect(context.verityUrl).to.equal(config.verityUrl)
     expect(context.verityPublicDID).to.equal(config.verityPublicDID)
@@ -67,7 +67,7 @@ describe('Context', () => {
   it('should parse config if a JSON value', async () => {
     const configStr = getTestConfig()
     const config = JSON.parse(configStr)
-    await indy.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
+    await vdrtools.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
     const context = await Context.createWithConfig(configStr)
     expect(context.verityUrl).to.equal(config.verityUrl)
     expect(context.verityPublicDID).to.equal(config.verityPublicDID)
@@ -118,7 +118,7 @@ describe('Context', () => {
       "sdkPairwiseDID": "XNRkA8tboikwHD3x1Yh7Uz"
     }`
 
-    await indy.createWallet(JSON.stringify({ id: JSON.parse(v01Str).walletName }), JSON.stringify({ key: JSON.parse(v01Str).walletKey }))
+    await vdrtools.createWallet(JSON.stringify({ id: JSON.parse(v01Str).walletName }), JSON.stringify({ key: JSON.parse(v01Str).walletKey }))
     const ctx = await Context.createWithConfig(v01Str)
 
     expect(ctx.domainDID).to.equal('NTvSuSXzygyxWrF3scrhdc')
@@ -160,9 +160,9 @@ describe('Context', () => {
   it('should create valid Rest API Token', async () => {
     const configStr = getTestConfig()
     const config = JSON.parse(configStr)
-    await indy.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
+    await vdrtools.createWallet(buildWalletConfig(config.walletName, config.walletPath), buildWalletCredentails(config.walletKey))
     const context = await Context.createWithConfig(configStr)
-    await indy.newDid(context, '000000000000000000000000Team1VAS')
+    await vdrtools.newDid(context, '000000000000000000000000Team1VAS')
     expect(await context.restApiToken()).to.eql('HZ3Ak6pj9ryFASKbA9fpwqjVh42F35UDiCLQ13J58Xoh' +
       ':4Wf6JtGy9enwwXVKcUgADPq7Pnf9T2YZ8LupMEVxcQQf98uuRYxWGHLAwXWp8DtaEYHo4cUeExDjApMfvLJQ48Kp')
     await context.deleteWallet()

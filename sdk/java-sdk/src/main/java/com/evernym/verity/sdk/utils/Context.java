@@ -3,10 +3,10 @@ package com.evernym.verity.sdk.utils;
 import com.evernym.verity.sdk.exceptions.*;
 import com.evernym.verity.sdk.wallet.WalletConfig;
 import org.bitcoinj.core.Base58;
-import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.LibIndy;
-import org.hyperledger.indy.sdk.crypto.Crypto;
-import org.hyperledger.indy.sdk.wallet.Wallet;
+import com.evernym.vdrtools.IndyException;
+import com.evernym.vdrtools.LibIndy;
+import com.evernym.vdrtools.crypto.Crypto;
+import com.evernym.vdrtools.wallet.Wallet;
 import org.json.JSONException;
 import org.json.JSONObject;
 

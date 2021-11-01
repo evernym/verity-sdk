@@ -1,5 +1,5 @@
-using Hyperledger.Indy;
-using Hyperledger.Indy.CryptoApi;
+using Com.Evernym.Vdrtools;
+using Com.Evernym.Vdrtools.CryptoApi;
 using System;
 using System.Json;
 using System.Text;

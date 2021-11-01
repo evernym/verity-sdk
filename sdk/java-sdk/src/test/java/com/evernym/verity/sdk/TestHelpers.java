@@ -5,7 +5,7 @@ import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
 import com.evernym.verity.sdk.utils.TestWallet;
 import com.evernym.verity.sdk.wallet.WalletConfig;
-import org.hyperledger.indy.sdk.wallet.Wallet;
+import com.evernym.vdrtools.wallet.Wallet;
 import org.json.JSONObject;
 
 import java.util.UUID;

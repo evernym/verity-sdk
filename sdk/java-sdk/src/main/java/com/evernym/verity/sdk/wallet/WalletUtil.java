@@ -2,11 +2,11 @@ package com.evernym.verity.sdk.wallet;
 
 import com.evernym.verity.sdk.exceptions.WalletException;
 import com.evernym.verity.sdk.exceptions.WalletOpenException;
-import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.LibIndy;
-import org.hyperledger.indy.sdk.wallet.Wallet;
-import org.hyperledger.indy.sdk.wallet.WalletExistsException;
-import org.hyperledger.indy.sdk.wallet.WalletNotFoundException;
+import com.evernym.vdrtools.IndyException;
+import com.evernym.vdrtools.LibIndy;
+import com.evernym.vdrtools.wallet.Wallet;
+import com.evernym.vdrtools.wallet.WalletExistsException;
+import com.evernym.vdrtools.wallet.WalletNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 

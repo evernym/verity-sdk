@@ -1,5 +1,7 @@
 FROM ubuntu:18.04
 
+ARG EVERNYM_CERTIFICATE
+
 ENV LIBINDY_VERSION 1.15.0-bionic
 ENV VERITY_SERVER https://vas.pps.evernym.com
 ENV LANG=C.UTF-8
@@ -20,17 +22,19 @@ RUN apt-get update && \
         software-properties-common \
         unzip \
         vim
+        
+# Add Evernym Cert (needed to access Evernym repo)
+RUN mkdir -p /usr/local/share/ca-certificates && \
+    cat "$EVERNYM_CERTIFICATE" >> /usr/local/share/ca-certificates/Evernym_Root_CA.crt && \
+    update-ca-certificates
 
 
-# Setup apt for Sovrin repository
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68DB5E88 && \
-    add-apt-repository "deb https://repo.sovrin.org/sdk/deb bionic stable"
+# Setup apt for evernym repositories
+RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
+RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main"
+RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-rc-ubuntu main"
 
-
-# Install libindy library from Sovrin repo
-RUN apt-get update && apt-get install -y \
-    libindy=${LIBINDY_VERSION}
-
+RUN apt-get update && apt-get install -y libvdrtools=0.8.0-bionic
 
 # Install Ngrok
 RUN curl -O -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \

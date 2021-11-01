@@ -1,6 +1,6 @@
-﻿using Hyperledger.Indy;
-using Hyperledger.Indy.CryptoApi;
-using Hyperledger.Indy.WalletApi;
+﻿using Com.Evernym.Vdrtools;
+using Com.Evernym.Vdrtools.CryptoApi;
+using Com.Evernym.Vdrtools.WalletApi;
 using SimpleBase;
 using System;
 using System.Json;

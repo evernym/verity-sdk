@@ -1,6 +1,8 @@
 FROM ubuntu:18.04
 WORKDIR /root
 
+ARG EVERNYM_CERTIFICATE
+
 ENV LIBINDY_ASYNC_VERSION 1.95.0~1624-bionic
 ENV VERITY_APPLICATION_VERSION 0.4.128237112.a11b56e
 ENV LANG=C.UTF-8
@@ -25,10 +27,11 @@ ENV JAVA_HOME /usr/lib/jvm/java-1.11.0-openjdk-amd64/
 RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
     unzip ngrok-stable-linux-amd64.zip && cp ngrok /usr/local/bin/.
 
-# Add Evernym Cert
-RUN mkdir -p /usr/local/share/ca-certificates
-ADD configuration/Evernym_Root_CA.crt /usr/local/share/ca-certificates/Evernym_Root_CA.crt
-RUN update-ca-certificates
+# Add Evernym Cert (needed to access Evernym repo)
+RUN mkdir -p /usr/local/share/ca-certificates && \
+    cat "$EVERNYM_CERTIFICATE" >> /usr/local/share/ca-certificates/Evernym_Root_CA.crt && \
+    update-ca-certificates
+
 
 # Setup apt for evernym repositories
 RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
@@ -39,7 +42,6 @@ RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-rc-
 RUN apt-get update && apt-get install -y \
     libindy-async=${LIBINDY_ASYNC_VERSION} \
     libnullpay-async=${LIBINDY_ASYNC_VERSION} \
-RUN apt-get update && apt-get install -y \
     verity-application=${VERITY_APPLICATION_VERSION} \
     ; exit 0
 RUN apt-get autoremove -y && \

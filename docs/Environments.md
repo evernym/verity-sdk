@@ -1,3 +1,5 @@
+Verity is running in a three node Akka cluster split across two independent AWS availability zones based in Frankfurt. 
+
 There are multiple Verity environments depending on your goals. Each environment hosts a set of Verity services that you can use depending on the Evernym products you are leveraging.
 
 You should protect your webhooks from accepting connections to unknown parties. You can do that by whitelisting the IP addresses indicated here. Alternatively, you can protect your webhook with OAuth and configure Verity to provide the OAuth credentials with each response. This is documented in the [UpdateEndpointAuth](https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0#/UpdateEndpointAuth) schema in the [updateEndpoint REST API](https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0#/UpdateEndpoint/updateEndpoint) of the Swagger API documentation.
@@ -14,27 +16,31 @@ The service that drives Verity SaaS. This is most likely the service you need.
 https://vas.pps.evernym.com
 
 ### IP Addresses for Webhook Whitelists
-pvas-ore-ve001 44.230.110.185 \
-pvas-ore-ve002 35.166.63.87 \
-pvas-ore-ve003 35.80.156.43 \
+44.230.110.185 \
+35.166.63.87 \
+35.80.156.43 \
+52.32.225.118 \
+44.241.236.129
 
 
 ## Consumer Agency Service (CAS)
 Used when integrating with the Evernym Mobile SDK
 
 ### IP Addresses for Webhook Whitelists
-pcas-ore-ve001 34.210.191.37 \
-pcas-ore-ve002 44.231.240.123 \
-pcas-ore-ve003 35.81.146.64 \
+34.210.191.37 \
+44.231.240.123 \
+35.81.146.64 \
+52.32.225.118 \
+44.241.236.129
 
 
 ## Enterprise Agency Service (EAS)
 Legacy environment used by self-hosted Verity 1 / LibVCX
 
 ### IP Addresses for Webhook Whitelists
-peas-ore-ve001 52.26.236.159 \
-peas-ore-ve002 35.81.215.155 \
-peas-ore-ve003 34.214.220.195 \
+52.26.236.159 \
+35.81.215.155 \
+34.214.220.195
 
 
 # PROD
@@ -49,24 +55,28 @@ The service that drives Verity SaaS. This is most likely the service you need.
 https://vas.evernym.com
 
 ### IP Addresses for Webhook Whitelists
-avas-frk-pe001 35.156.27.211
-avas-frk-pe002 18.196.203.94 <--NEW
-avas-frk-pe003 3.65.216.242 <--NEW
+35.156.27.211 \
+18.196.203.94 \
+3.65.216.242 \
+3.123.187.241 \
+3.70.162.34
 
 
 ## Consumer Agency Service (CAS)
 Used when integrating with the Evernym Mobile SDK
 
 ### IP Addresses for Webhook Whitelists
-acas-frk-pe001 35.157.43.126
-acas-frk-pe002 18.195.149.109
-acas-frk-pe003 18.198.174.167
+35.157.43.126 \
+18.195.149.109 \
+18.198.174.167 \
+3.123.187.241 \
+3.70.162.34
 
 
 ## Enterprise Agency Service (EAS)
 Legacy environment used by self-hosted Verity 1 / LibVCX
 
 ### IP Addresses for Webhook Whitelists
-aeas-frk-pe001 52.59.149.255
-aeas-frk-pe002 3.66.12.188 <--NEW (only for customers using Verity1/libcx)
-aeas-frk-pe003 3.64.236.130 <--NEW (only for customers using Verity1/libcx)
+52.59.149.255 \
+3.66.12.188 \
+3.64.236.130

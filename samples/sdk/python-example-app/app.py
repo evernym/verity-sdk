@@ -22,8 +22,8 @@ from verity_sdk.protocols.v1_0.PresentProof import PresentProof
 from verity_sdk.protocols.v1_0.Relationship import Relationship
 from verity_sdk.protocols.v1_0.CommittedAnswer import CommittedAnswer
 from verity_sdk.utils.Context import Context
-from indy.wallet import delete_wallet
-from indy.error import WalletNotFoundError
+from vdrtools.wallet import delete_wallet
+from vdrtools.error import WalletNotFoundError
 
 from helper import *
 
@@ -198,7 +198,10 @@ async def write_ledger_schema(loop) -> str:
     async def schema_written_handler(msg_name, message):
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
-        if msg_name == WriteSchema.STATUS:
+        if msg_name == 'needs-endorsement':
+            print('Please manually endorse this schema json. If you do not have an endorser DID on the ledger send it to Evernym to be endorsed: ')
+            print(message['schemaJson'])
+            console_input('Press enter when the schema has been endorsed', None)
             first_step.set_result(message['schemaId'])
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
@@ -230,8 +233,11 @@ async def write_ledger_cred_def(loop, schema_id: str) -> str:
     async def cred_def_written_handler(msg_name, message):
         spinner.stop_and_persist('Done')
         print_message(msg_name, message)
-        if msg_name == WriteCredentialDefinition.STATUS:
+        if msg_name == 'needs-endorsement':
+            print('Please manually endorse this cred def json. If you do not have an endorser DID on the ledger send it to Evernym to be endorsed: ')
+            print(message['credDefJson'])
             first_step.set_result(message['credDefId'])
+            console_input('Press enter when the cred def has been endorsed', None)
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
 
@@ -515,7 +521,8 @@ async def setup_issuer(loop):
             print(f'Issuer DID:  {ANSII_GREEN}{issuer_did}{ANSII_RESET}')
             print(f'Issuer Verkey: {ANSII_GREEN}{issuer_verkey}{ANSII_RESET}')
             print('The issuer DID and Verkey must be registered on the ledger.')
-            automated_registration = console_yes_no(f'Attempt automated registration via {ANSII_GREEN}https://selfserve.sovrin.org{ANSII_RESET}', True)
+            print('Automated registration is currently unavailable')
+            automated_registration = False # console_yes_no(f'Attempt automated registration via {ANSII_GREEN}https://selfserve.sovrin.org{ANSII_RESET}', True)
             if automated_registration:
                 url = 'https://selfserve.sovrin.org/nym'
                 payload = json.dumps({
@@ -533,7 +540,6 @@ async def setup_issuer(loop):
                 else:
                     print(f'Got response from Sovrin portal: {ANSII_GREEN}{response.text}{ANSII_RESET}')
             else:
-                print('Please add Issuer DID and Verkey to the ledger manually')
                 console_input('Press ENTER when DID is on ledger')
             first_step.set_result(None)
         else:

@@ -2,13 +2,12 @@ import base64
 import copy
 import json
 
-from indy.crypto import crypto_verify
-
 from verity_sdk.protocols.Protocol import Protocol
 from verity_sdk.transports import send_packed_message
 from verity_sdk.utils import _pack_message_for_verity_direct, unpack_message, EVERNYM_MSG_QUALIFIER
 from verity_sdk.utils.Context import Context
 
+from vdrtools.crypto import crypto_verify
 
 class Provision(Protocol):
     """

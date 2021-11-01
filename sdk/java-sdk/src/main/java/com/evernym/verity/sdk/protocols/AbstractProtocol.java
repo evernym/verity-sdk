@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.UUID;
 
-import static org.hyperledger.indy.sdk.StringUtils.isNullOrWhiteSpace;
+import static com.evernym.vdrtools.StringUtils.isNullOrWhiteSpace;
 
 /**
  * The base class for all protocols

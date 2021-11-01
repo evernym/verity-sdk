@@ -3,3 +3,4 @@ aiohttp==3.7.4
 pyqrcode==1.2.1
 pypng==0.0.20
 halo==0.0.29
+vdr-tools==0.8.0

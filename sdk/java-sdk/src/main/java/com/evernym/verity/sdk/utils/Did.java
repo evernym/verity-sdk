@@ -1,10 +1,10 @@
 package com.evernym.verity.sdk.utils;
 
 import com.evernym.verity.sdk.exceptions.WalletException;
-import org.hyperledger.indy.sdk.IndyException;
-import org.hyperledger.indy.sdk.did.DidJSONParameters;
-import org.hyperledger.indy.sdk.did.DidResults;
-import org.hyperledger.indy.sdk.wallet.Wallet;
+import com.evernym.vdrtools.IndyException;
+import com.evernym.vdrtools.did.DidJSONParameters;
+import com.evernym.vdrtools.did.DidResults;
+import com.evernym.vdrtools.wallet.Wallet;
 
 import java.util.concurrent.ExecutionException;
 
@@ -64,7 +64,7 @@ public class Did {
                 ).toJson();
             }
 
-            return new Did(org.hyperledger.indy.sdk.did.Did.createAndStoreMyDid(
+            return new Did(com.evernym.vdrtools.did.Did.createAndStoreMyDid(
                     handle,
                     didJson
             ).get());
