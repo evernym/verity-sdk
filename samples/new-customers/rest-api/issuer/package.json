@@ -1,0 +1,19 @@
+{
+  "name": "sample-issuer-app",
+  "version": "1.0.0",
+  "description": "A sample Issuer app that uses the Verity REST API",
+  "main": "Issuer.js",
+  "scripts": {
+    "lint": "standard",
+    "lint-fix": "standard --fix"
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "express": "^4.17.1",
+    "qrcode": "^1.4.4",
+    "url-join": "^4.0.1",
+    "uuid4": "^2.0.2"
+  }
+}
