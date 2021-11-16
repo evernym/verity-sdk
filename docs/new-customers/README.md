@@ -63,6 +63,8 @@ If you would like to create your own Schema, you can call the [`WriteSchema` end
 #### Write Credential Definition 
 Call the [`WriteCredDef` endpoint](https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0#/WriteCredDef/writeCredDef) by running the  `Write CredDef` request in Postman. 
 
+A schemaId you use here must be on the ledger. If you created a custom schema, please make sure your issuerDID and Verkey and schema are endorsed by Evernym. For more information, see [Step 3](#step-3--contact-evernym-to-endorse-your-transactions).
+
 > **NOTE**: If you would like to use an alternative Schema for your Credential Definition, you can choose an existing Schema from [indyscan.io](https://indyscan.io/txs/SOVRIN_STAGINGNET/domain?page=1&pageSize=50&filterTxNames=[%22SCHEMA%22]&sortFromRecent=true) and use that Schema's `schemaId` when you run `Write CredDef` request.  
 
 Examples of responses you will receive on your webhook:
