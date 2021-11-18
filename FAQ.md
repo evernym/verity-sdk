@@ -78,14 +78,14 @@ The other option is to copy the SQLite db ($HOME/.indy_client) and verity-contex
 The maximum length of the contents of a credential attribute (the attribute value) are determined by the total size of the credential after packing and encryption. This means that credentials with more attributes will need to have shorter values in each attribute. This also means that one attribute can have a large value if other attributes have shorter values. We ran some tests issuing credentials with a large number of characters to see what the maximum size could be in practice, and the chart below represents the maximum attribute length we have successfully tested for a given number of attributes.
 
 For reference: 
-* For a single attribute credential the limit is ~220,000 characters. 
-* For a 10 attribute credential the limit is ~22,000 characters.
-* Issuing a credential with 125 attributes 1000 characters each succeeded. 
-* Issuing a credential with 125 attributes 1250 characters each resulted in an error. 
+* For a single attribute credential the limit is ~170,000 characters. 
+* For a 10 attribute credential the limit is ~17,000 characters.
+* Issuing a credential with 125 attributes 1300 characters each succeeded. 
+* Issuing a credential with 125 attributes 1400 characters each resulted in an error. 
 
 Please note that the numbers are near approximations, not exact limits.
 
-[![Credential-Size-Limits.png](https://i.postimg.cc/sDhfn5WT/Credential-Size-Limits.png)](https://postimg.cc/JGRW0DPX)
+![cred-size-limits.png](cred-size-limits.png)
 
 > **NOTE**: The Y axis is log scale so attribute size goes down fast with attribute number.
 
