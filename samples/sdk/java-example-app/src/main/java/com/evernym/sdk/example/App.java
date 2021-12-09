@@ -349,8 +349,7 @@ public class App extends Helper {
                 }
 
                 if (!(System.getenv("HTTP_SERVER_URL") == null) ) {
-                    println("Open the following URL in your browser and scan presented QR code");
-                    println(ANSII_GREEN + System.getenv("HTTP_SERVER_URL") + "/java-example-app/qrcode.html" + ANSII_RESET);
+                    println("Please copy and paste the inviteURL into an external QR code generator (e.g. https://www.qr-code-generator.com/) and scan the QR code from there to establish a connection");
                 }
                 else {
                     println("QR code generated at: qrcode.png");
