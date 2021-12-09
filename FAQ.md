@@ -89,6 +89,51 @@ Please note that the numbers are near approximations, not exact limits.
 
 > **NOTE**: The Y axis is log scale so attribute size goes down fast with attribute number.
 
+### Proof Restrictions
+
+Verifiers can use proof restrictions to impose certain requirements on the proofs, ensuring data is provided from the correct sources. With proof restrictions, verifiers can define a set of trusted issuers and only accept credentials from the issuers they approved, or, for example, enforce a rule that all attributes must come from the same credential.
+
+Proof restrictions (aka proof constraints) specify what attribute values are allowed for a proof to satisfy the requirements of the verifier. Proof restrictions can be defined by schema, issuer, and credential definition. Proof restriction parameters are listed in the [Swagger API documentation](https://app.swaggerhub.com/apis/evernym/verity-rest-api/1.0#/Restriction) and include:
+
+- `schema_id`
+- `schema_issuer_did`
+- `schema_name`
+- `schema_version`
+- `issuer_did`
+- `cred_def_id` 
+
+You can have complex statements in the proof restrictions as there is an implicit `AND` between conditions inside `{}` and implicit `OR` between `{}` inside `[]`: see [here](https://github.com/hyperledger/indy-sdk/blob/6ecf3dded79fde74206ec0939d2dda179784768c/vcx/wrappers/python3/vcx/api/proof.py#L125).  
+For example, the proof request below will require either `schema_name` `Diploma` AND `schema_issuer_did` `BnE29oB6dJyQJYNm5qSGGJ`, OR `schema_name` `Passport` AND `schema_issuer_did` `KjyPWa3y5VD2F5CL143ZJ` for a proof to be considered valid and acceptable by the verifier. 
+
+```json
+{
+  "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request",
+  "@id": "e3692334-2447-4184-8c03-314603793bb7",
+  "~for_relationship": "AfwFzPnvbHfs97Ji9A8oz9",
+  "name": "proof-request-1",
+  "proof_attrs": [
+    {
+      "name": "givenName",
+      "restrictions": [
+        {"schema_name": "Diploma", "schema_issuer_did": "BnE29oB6dJyQJYNm5qSGGJ"},
+        {"schema_name": "Passport", "schema_issuer_did": "KjyPWa3y5VD2F5CL143ZJ"}
+      ],
+      "self_attest_allowed": false
+    },
+    {
+      "name": "lastName",
+      "restrictions": [
+        {"schema_name": "Diploma", "schema_issuer_did": "BnE29oB6dJyQJYNm5qSGGJ"},
+        {"schema_name": "Passport", "schema_issuer_did": "KjyPWa3y5VD2F5CL143ZJ"}
+      ],
+      "self_attest_allowed": false
+    }
+  ],
+  "proof_predicates": [],
+  "by_invitation": false
+} 
+```
+
 ### Moving to Production
 
 When ready to move to the production environment, please follow the steps below.
