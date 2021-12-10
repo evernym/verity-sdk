@@ -1,8 +1,5 @@
 FROM ubuntu:18.04
 
-ARG EVERNYM_CERTIFICATE
-
-ENV LIBINDY_VERSION 1.15.0-bionic
 ENV VERITY_SERVER https://vas.pps.evernym.com
 ENV LANG=C.UTF-8
 
@@ -21,41 +18,31 @@ RUN apt-get update && \
         python3-pip \
         software-properties-common \
         unzip \
-        vim
-        
-# Add Evernym Cert (needed to access Evernym repo)
-RUN mkdir -p /usr/local/share/ca-certificates && \
-    cat "$EVERNYM_CERTIFICATE" >> /usr/local/share/ca-certificates/Evernym_Root_CA.crt && \
-    update-ca-certificates
+        vim && \
+        # Install libvdrtools
+        curl https://gitlab.com/evernym/verity/vdr-tools/-/package_files/19878647/download --output libvdrtools_0.8.0-bionic_amd64.deb && \
+        apt-get install -y ./libvdrtools_0.8.0-bionic_amd64.deb && \
+        # Install NodeJS
+        curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
+        echo "deb https://deb.nodesource.com/node_12.x bionic main\ndeb-src https://deb.nodesource.com/node_12.x bionic main" > /etc/apt/sources.list.d/nodesource.list && \
+        apt-get update && \
+        apt-get install -y nodejs && \
+        # Install DotNet and Mono
+        curl -sL https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -o /tmp/packages-microsoft-prod.deb && \
+        dpkg -i /tmp/packages-microsoft-prod.deb && \
+        apt-get update && \
+        apt-get install -y dotnet-sdk-3.1 && \
+        apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+        add-apt-repository "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" && \
+        apt-get update && \
+        apt-get install -y mono-complete && \
+        rm -rf /var/lib/apt/lists/*
 
-
-# Setup apt for evernym repositories
-RUN curl https://repo.corp.evernym.com/repo.corp.evenym.com-sig.key | apt-key add -
-RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-dev-ubuntu main"
-RUN add-apt-repository "deb https://repo.corp.evernym.com/deb evernym-agency-rc-ubuntu main"
-
-RUN apt-get update && apt-get install -y libvdrtools=0.8.0-bionic
 
 # Install Ngrok
 RUN curl -O -s https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
     unzip ngrok-stable-linux-amd64.zip && \
     cp ngrok /usr/local/bin/.
-
-
-# Install NodeJS
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-    apt-get install -y nodejs
-
-
-# Install DotNet and Mono
-RUN curl -sL https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -o /tmp/packages-microsoft-prod.deb && \
-    dpkg -i /tmp/packages-microsoft-prod.deb && \
-    apt-get update && \
-    apt-get install -y dotnet-sdk-3.1
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    add-apt-repository "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" && \
-    apt-get update && \
-    apt-get install -y mono-complete
 
 
 # Copy SDKs into the container
