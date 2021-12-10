@@ -23,7 +23,7 @@ Since `inviteURL` with attachments can get very long, the `protocol-invitation` 
 
 ## Launching application using Docker
 
-Prepared `Dockerfile` will setup a complete environment for running this sample application. This is the quickest way to try the application and avoid some complexity around `ngrok` and `libindy` when working on Windows/MacOS.
+Prepared `Dockerfile` will setup a complete environment for running this sample application. This is the quickest way to try the application and avoid some complexity around `ngrok` and `libvdrtools` when working on Windows/MacOS.
 
 ### Prerequisites
 * `docker` is required for this path and installation instructions can be found at [Get Docker Page](https://www.docker.com/get-docker/). 
@@ -69,12 +69,7 @@ Prepared `Dockerfile` will setup a complete environment for running this sample 
 The application can be launched from a local development environment. Using this local environment, one can try the verity-sdk in a similar environment that a developer developing with verity-sdk would use. This path requires a few more steps, but these steps would be required to build an application with verity-sdk.
 
 ### Prerequisites
-* `libindy` -- Install a stable version. Follow the instructions on the 
-[indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
-
->**NOTE:** 
->
->On **Windows** you'll also need to create a system variable LD_LIBRARY_PATH with a value of a path to Libindy /lib directory which contains dll file.
+* `libvdrtools` -- Installation instructions can be found [here](https://gitlab.com/evernym/verity/vdr-tools#installing).
 
 * `Ngrok` -- This is a temporary installation to facilitate early experimentation. Follow the instructions on the [Ngrok website](https://ngrok.com/download).
 * `NodeJs v12` -- Follow the instructions on the [NodeJs website](https://nodejs.org/en/).

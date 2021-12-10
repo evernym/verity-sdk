@@ -18,7 +18,7 @@ Provisioning is the first step done when interacting with Verity. It creates a d
 
 ```python
 global context
-wallet_name = 'examplewallet1'  # for libindy wallet
+wallet_name = 'examplewallet1'  # for indy wallet
 wallet_key = 'examplewallet1'
 #token used for provisioning - Evernym provides this offline for their customers
 token = '....' 

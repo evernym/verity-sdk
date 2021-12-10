@@ -86,7 +86,7 @@ public class ContextBuilder {
      * @param domainDID the domain DID for the agent already provisioned
      * @param verityAgentVerKey the verkey for the agent already provisioned
      * @param seed the seed used to generate the local key-pair
-     * @param walletPath custom path where libindy wallet should be stored (default is ~/.indy_client/wallet/)
+     * @param walletPath custom path where indy wallet should be stored (default is ~/.indy_client/wallet/)
      * @return a ContextBuilder with given, retrieved and created fields
      * @throws IOException when retrieving info from the verity-application fails (bad url, unreachable, etc)
      * @throws WalletException when wallet operations fail
