@@ -16,9 +16,6 @@ The service that drives Verity SaaS. This is most likely the service you need.
 https://vas.pps.evernym.com
 
 ### IP Addresses for Webhook Whitelists
-44.230.110.185 \
-35.166.63.87 \
-35.80.156.43 \
 52.32.225.118 \
 44.241.236.129
 
@@ -27,9 +24,6 @@ https://vas.pps.evernym.com
 Used when integrating with the Evernym Mobile SDK
 
 ### IP Addresses for Webhook Whitelists
-34.210.191.37 \
-44.231.240.123 \
-35.81.146.64 \
 52.32.225.118 \
 44.241.236.129
 
@@ -55,9 +49,6 @@ The service that drives Verity SaaS. This is most likely the service you need.
 https://vas.evernym.com
 
 ### IP Addresses for Webhook Whitelists
-35.156.27.211 \
-18.196.203.94 \
-3.65.216.242 \
 3.123.187.241 \
 3.70.162.34
 
@@ -66,9 +57,6 @@ https://vas.evernym.com
 Used when integrating with the Evernym Mobile SDK
 
 ### IP Addresses for Webhook Whitelists
-35.157.43.126 \
-18.195.149.109 \
-18.198.174.167 \
 3.123.187.241 \
 3.70.162.34
 
