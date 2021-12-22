@@ -8,4 +8,6 @@ The configuration can be made per a tenant's identity domain (DomainDID) but als
 
 The default Evernym policy is {"expire-after-days": 3 days,"expire-after-terminal-state": true}, which translates to protocol data is deleted as soon as the protocol is completed and after 3 days for protocols that haven't been completed. That policy is applied to all protocols unless overridden.
 
+The URL Shortener will only store URLs for 14 days, meaning that `shortInviteUrls` will expire after this time period. This behavior is not currently configurable.
+
 If needed, every tenant can override the default policy for its own protocols and also the policy for a specific protocol by sending a request to support@evernym.com.
