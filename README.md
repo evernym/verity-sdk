@@ -35,7 +35,7 @@ There are two general approaches to working with Verity: [**Verity SDK**](#verit
 ### Verity SDK
 The goal of the Verity SDK is to provide easy application integration with the Verity server. With Verity SDK, you can enable issuing or verifying or both functions into your project and interact with individuals using Connect.Me or some other compatible digital wallet app. Verity SDK also provides methods for writing Schemas and Credential Definitions to the ledger.
 
-The SDK uses libindy and DIDcomm protocols to securely authenticate and communicate with the Verity server. With the creation of language-specific bindings, developers can quickly integrate their backend services into the world of SSI with minimal overhead.
+The SDK uses Aries and DIDcomm protocols to securely authenticate and communicate with the Verity server. With the creation of language-specific bindings, developers can quickly integrate their backend services into the world of SSI with minimal overhead.
 
 By design, Verity SDK is largely stateless (requiring only a small configuration context and a single public/private key pair), which allows applications to orchestrate SSI integrations without heavy involvement in the interactions.
 

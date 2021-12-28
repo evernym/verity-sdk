@@ -6,8 +6,7 @@ This procedure shows you how to set up your NodeJs development environment to us
 
 ## Prerequisites
 Install the following items:
-* `libvdrtools` -- Install a stable version. Follow the instructions on the 
-[vdr-tools gitlab page](https://gitlab.com/evernym/verity/vdr-tools/).
+* `libvdrtools` -- Installation instructions can be found [here](https://gitlab.com/evernym/verity/vdr-tools#installing).
 
 ## Get Latest NodeJs Verity SDK
 See [npm package](https://www.npmjs.com/package/verity-sdk) page to find the latest release. 

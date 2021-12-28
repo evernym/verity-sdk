@@ -11,8 +11,7 @@ Install the following items:
 * `.NET Core 3.1` -- Install .Net Core 3.1. Follow the instructions on the
 [Microsoft website](https://docs.microsoft.com/en-us/dotnet/core/install/).
 
-* `libindy` -- Install a stable version. Follow the instructions on the
-[indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
+* `libvdrtools` -- Installation instructions can be found [here](https://gitlab.com/evernym/verity/vdr-tools#installing).
 
 * `Mono` -- Install Mono (if you are using Ubuntu or Mac). Follow the instructions on the
 [Mono website](https://www.mono-project.com/download/stable/).

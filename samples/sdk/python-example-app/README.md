@@ -5,8 +5,7 @@ See [Getting Started](../../../docs/getting-started/getting-started.md) guide fo
 
 ## Prerequisites
 Install the following items:
-* `libindy` -- Install a stable version. Follow the instructions on the 
-[indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk).
+* `libvdrtools` -- Installation instructions can be found [here](https://gitlab.com/evernym/verity/vdr-tools#installing).
 * `Ngrok` -- This is a temporary installation to facilitate early experimentation.
 * `Python3` -- Follow the instructions on the [Python3 website](https://www.python.org/downloads/)
 

@@ -7,32 +7,13 @@ See [Getting Started](../../../docs/getting-started/getting-started.md) guide fo
 ### Prerequisites
 
 Install the following items:
-* `libindy` -- Install a stable version. Follow the instructions on the   
-  [indy-sdk Github Project Page](https://github.com/hyperledger/indy-sdk#installing-the-sdk). For **Windows**, see the section below.
+* `libvdrtools` -- Installation instructions can be found [here](https://gitlab.com/evernym/verity/vdr-tools#installing). For **Windows**, see the section below.
 * `Ngrok` -- This is a temporary installation to facilitate early experimentation.
 * `.Net Core 3.1` -- Follow the instructions on the [Microsoft website](https://docs.microsoft.com/en-us/dotnet/core/install)
 
-### Libindy installation guide for Windows
+### Libvdrtools for Windows
 
-Many Windows users might find the official Libindy installation guide insufficient, and in this section, we've provided a detailed installation guide for Windows machines.  
-For installation of Libindy on Windows, follow these steps:
-* Go to  https://repo.sovrin.org/windows/libindy/stable/ and download the **latest version** of Libindy (be aware that the latest version will be somewhere in the middle of the list! ).
-* Unzip archives to the directory where you want to save the library (it is recommended to save it somewhere where it won't be accidentally deleted, e.g. make a directory in (C:)).
-* Your working directory for libindy will look like this:
-    - `include`
-        -  `...`
-    - `lib`
-        - `indy.dll`
-        - `libeay32md.dll`
-        - `libsodium.dll`
-        - `libzmq.dll`
-        - `ssleay32md.dll`
-* Open the **lib** directory, and copy a path to it
-* Type Environment Variables in the search bar and press Enter
-* Click on Environment Variables
-* Double click on Path under the System Variables, and a new window will appear
-* Click on New and paste a full path to the lib directory there
-* Make sure that you've saved the changes
+We do not currently provide VDR Tools artifacts for Windows, but we will be bringing this support in the future. At the moment, we recommend running this sample app with Docker, rather than locally. Alternatively, you can use Linux virtual machine or Windows Subsystem for Linux. 
 
 ### Build the example application
 

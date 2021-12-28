@@ -189,7 +189,7 @@ async function writeLedgerCredDef (schemaId) {
 
 // provisions an agent on the Verity Application Service
 // This function will consume the provisioning token and will return the context
-// NOTE: The context and the libindy wallet ($HOME/.indy_client/wallet) need to be persisted to re-gain access to your agent
+// NOTE: The context and the indy wallet ($HOME/.indy_client/wallet) need to be persisted to re-gain access to your agent
 async function provisionAgent (role) {
   let token = null
   if (await readlineYesNo('Provide Provision Token', true)) {

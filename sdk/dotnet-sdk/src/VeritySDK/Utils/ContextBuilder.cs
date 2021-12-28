@@ -75,7 +75,7 @@ namespace VeritySDK.Utils
         /// <param name="domainDID">the domain DID for the agent already provisioned</param>
         /// <param name="verityAgentVerKey">the verkey for the agent already provisioned</param>
         /// <param name="seed">the seed used to generate the local key-pair</param>
-        /// <param name="walletPath">custom path where libindy wallet should be stored (default is ~/.indy_client/wallet/)</param>
+        /// <param name="walletPath">custom path where indy wallet should be stored (default is ~/.indy_client/wallet/)</param>
         /// <return>a ContextBuilder with given, retrieved and created fields</return>
         public static Context fromScratch(string walletId,
                                           string walletKey,

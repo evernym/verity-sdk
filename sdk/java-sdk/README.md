@@ -6,8 +6,7 @@ Instructions for setting up your Java development environment to use the Verity 
 
 ## Prerequisites
 Install the following items:
-* `libvdrtools` -- Install a stable version. Follow the instructions on the 
-[vdr-tools gitlab page](https://gitlab.com/evernym/verity/vdr-tools/).
+* `libvdrtools` -- Installation instructions can be found [here](https://gitlab.com/evernym/verity/vdr-tools#installing).
 
 > **NOTE:** Verify that you have read access to the Public Sovrin Maven repo.
 
