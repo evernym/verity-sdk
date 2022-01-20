@@ -115,8 +115,7 @@ async def create_relationship(loop) -> str:
             qr.png('qrcode.png')
 
             if os.environ.get('HTTP_SERVER_URL'):
-                print('Open the following URL in your browser and scan presented QR code')
-                print(f'{ANSII_GREEN}{os.environ.get("HTTP_SERVER_URL")}/python-example-app/qrcode.html{ANSII_RESET}')
+                print('Please copy and paste the inviteURL into an external QR code generator (e.g. https://www.qr-code-generator.com/) and scan the QR code from there to establish a connection')
             else:
                 print('QR code generated at: qrcode.png')
                 print('Open this file and scan QR code to establish a connection')
