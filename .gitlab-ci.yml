@@ -1,4 +1,4 @@
-image: registry.gitlab.com/evernym/containers/build-verity-sdk:19cdfef1
+image: registry.gitlab.com/evernym/containers/build-verity-sdk:8c9f000e
 
 stages:
   - test
