@@ -105,11 +105,6 @@
 
   <repositories>
     <repository>
-      <id>sovrin</id>
-      <name>sovrin</name>
-      <url>https://repo.sovrin.org/repository/maven-public/</url>
-    </repository>
-    <repository>
       <id>gitlab-maven</id>
       <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
     </repository>
@@ -119,7 +114,7 @@
     <dependency>
       <groupId>com.evernym.vdrtools</groupId>
       <artifactId>vdr-tools</artifactId>
-      <version>0.8.3</version>
+      <version>0.8.4</version>
     </dependency>
     <dependency>
       <groupId>org.bitcoinj</groupId>

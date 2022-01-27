@@ -1,4 +1,4 @@
-vdr-tools==0.8.3
+vdr-tools==0.8.4
 requests==2.25.1
 base58==2.1.0
 

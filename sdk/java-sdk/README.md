@@ -25,7 +25,7 @@ Example: `Maven`
 ```
 ## Documentation
 **API Documentation (JavaDoc)**:
-* [0.4.0](https://developer.evernym.com/doc/java/0.4.0/index.html)
+* [0.5.0](https://developer.evernym.com/doc/java/0.4.0/index.html)
 
 ## Develop the Java Verity SDK
 
