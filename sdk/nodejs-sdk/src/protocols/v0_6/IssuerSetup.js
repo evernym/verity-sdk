@@ -40,7 +40,7 @@ class IssuerSetup extends Protocol {
      * @see #create
      */
   async createMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.CREATE)
+    let msg = this._getBaseMessage(this.msgNames.CREATE)
     msg = this._addThread(msg)
     return msg
   }
@@ -73,7 +73,7 @@ class IssuerSetup extends Protocol {
      * @see #currentPublicIdentifier
      */
   async currentPublicIdentifierMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.CURRENT_PUBLIC_IDENTIFIER)
+    let msg = this._getBaseMessage(this.msgNames.CURRENT_PUBLIC_IDENTIFIER)
     msg = this._addThread(msg)
     return msg
   }
