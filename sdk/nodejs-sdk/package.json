@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "bs58": "^4.0.1",
-    "vdr-tools": "^0.0.5",
+    "vdr-tools": "^0.8.4",
     "request-promise-native": "^1.0.9",
     "uuid": "^8.3.2"
   }

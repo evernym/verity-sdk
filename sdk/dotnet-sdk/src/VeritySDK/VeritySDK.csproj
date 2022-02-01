@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="vdr-tools" Version="0.8.0" />
+    <PackageReference Include="vdr-tools" Version="0.8.4" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="SimpleBase" Version="2.1.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
