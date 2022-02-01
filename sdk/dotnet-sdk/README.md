@@ -18,7 +18,7 @@ Install the following items:
 
 ## Documentation
 **API Documentation (docfx)**:
-* [0.5.0](https://developer.evernym.com/doc/dotnet/0.4.5/index.html)
+* [0.6.0](https://developer.evernym.com/doc/dotnet/0.6.0/index.html)
 
 ## How to build
 
