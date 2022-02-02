@@ -20,12 +20,12 @@ Example: `Maven`
 <dependency>
   <groupId>com.evernym.verity</groupId>
   <artifactId>verity-sdk</artifactId>
-  <version>0.4.0</version>
+  <version>0.6.0</version>
 </dependency>
 ```
 ## Documentation
 **API Documentation (JavaDoc)**:
-* [0.4.0](https://developer.evernym.com/doc/java/0.4.0/index.html)
+* [0.6.0](https://developer.evernym.com/doc/java/0.6.0/index.html)
 
 ## Develop the Java Verity SDK
 

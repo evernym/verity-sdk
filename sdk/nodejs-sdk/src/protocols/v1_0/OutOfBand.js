@@ -42,7 +42,7 @@ class OutOfBand extends Protocol {
   * @see #handshakeReuse
   */
   async reuseMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.REUSE)
+    let msg = this._getBaseMessage(this.msgNames.REUSE)
     msg['~for_relationship'] = this.forRelationship
     msg.inviteUrl = this.inviteUrl
     msg = this._addThread(msg)
