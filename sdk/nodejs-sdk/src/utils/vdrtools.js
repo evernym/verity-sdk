@@ -86,7 +86,7 @@ exports.deleteWallet = async function (walletHandle, walletConfig, walletCredent
  */
 exports.newDid = async function (context, seed = null) {
   init()
-  var param = {}
+  const param = {}
   if (seed) {
     param.seed = seed
   }
