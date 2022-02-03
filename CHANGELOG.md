@@ -1,8 +1,18 @@
 Note: Additional useful information is contained in the release notes for dependencies such as [the Verity Service](https://gitlab.com/evernym/verity/verity/-/blob/main/CHANGELOG.md) and [VDR Tools](https://gitlab.com/evernym/verity/vdr-tools/-/blob/main/CHANGELOG.md).
 
 
-# Release notes - Verity SDK 0.6.0 released 26 January 2022
+# Release notes - Verity SDK 0.6.1 released 3 February 2022
 Built with VDR Tools 0.8.4
+
+## Tasks
+* [VE-3304] Updated the VDR-Tools version used in the Verity SDK
+  * Adds support for NodeJS 10+ ([dropping support for NodeJS 8](https://www.evernym.com/blog/january-2022-release-notes/#verity))
+  * Drop support for NodeJS 8+
+* [VE-3310] [Document reasons for NullPointerExceptions in Java SDK](https://gitlab.com/evernym/verity/verity-sdk/-/blob/5f4862dac90ee9e16e6ba55bcd44ec2c53b1332f/samples/sdk/java-example-app/README.md)
+
+
+# Release notes - Verity SDK 0.6.0 released 26 January 2022
+Built with VDR Tools 0.0.5
 
 ## Features
 * Update the sample apps to point to a QR code generator
@@ -10,9 +20,6 @@ Built with VDR Tools 0.8.4
 * [Added a sample app for issuers](https://gitlab.com/evernym/verity/verity-sdk/-/tree/fe8597b5111fb4352bd15919b79e9b8d3d999393/samples/new-customers/rest-api/issuer)
 * [Added a sample app for out-of-band with request-attached](https://gitlab.com/evernym/verity/verity-sdk/-/tree/fe8597b5111fb4352bd15919b79e9b8d3d999393/samples/new-customers/rest-api/issuer)
 * [Updated the list of IP addresses used for webhook responses.](https://gitlab.com/evernym/verity/verity-sdk/-/blob/583193fb52eba410a77458f76f5c0c6a84fbee9a/docs/Environments.md)
-
-## Bugs
-* [VE-3310] Fix null pointer error when running the Java sample app, caused by the VDR Tools Java Wrapper
 
 
 # Release notes - Verity SDK 0.5.0 released 27 October 2021
