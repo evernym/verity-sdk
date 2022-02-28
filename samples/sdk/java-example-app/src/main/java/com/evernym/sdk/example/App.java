@@ -3,53 +3,53 @@
  */
 package com.evernym.sdk.example;
 
+import com.evernym.verity.sdk.exceptions.ProvisionTokenException;
 import com.evernym.verity.sdk.exceptions.UndefinedContextException;
 import com.evernym.verity.sdk.exceptions.VerityException;
-import com.evernym.verity.sdk.exceptions.WalletException;
-import com.evernym.verity.sdk.exceptions.WalletOpenException;
-import com.evernym.verity.sdk.exceptions.ProvisionTokenException;
-import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
-import com.evernym.verity.sdk.protocols.relationship.Relationship;
-import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
 import com.evernym.verity.sdk.protocols.connecting.Connecting;
 import com.evernym.verity.sdk.protocols.connecting.v1_0.ConnectionsV1_0;
-import com.evernym.verity.sdk.protocols.outofband.OutOfBand;
-import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
 import com.evernym.verity.sdk.protocols.issuecredential.IssueCredential;
 import com.evernym.verity.sdk.protocols.issuecredential.v1_0.IssueCredentialV1_0;
 import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
 import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
-import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
+import com.evernym.verity.sdk.protocols.outofband.OutOfBand;
+import com.evernym.verity.sdk.protocols.outofband.v1_0.OutOfBandV1_0;
 import com.evernym.verity.sdk.protocols.presentproof.PresentProof;
-import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
+import com.evernym.verity.sdk.protocols.presentproof.common.Attribute;
 import com.evernym.verity.sdk.protocols.presentproof.common.Restriction;
 import com.evernym.verity.sdk.protocols.presentproof.common.RestrictionBuilder;
+import com.evernym.verity.sdk.protocols.presentproof.v1_0.PresentProofV1_0;
 import com.evernym.verity.sdk.protocols.provision.Provision;
+import com.evernym.verity.sdk.protocols.provision.v0_7.ProvisionV0_7;
 import com.evernym.verity.sdk.protocols.questionanswer.CommittedAnswer;
 import com.evernym.verity.sdk.protocols.questionanswer.v1_0.CommittedAnswerV1_0;
+import com.evernym.verity.sdk.protocols.relationship.Relationship;
+import com.evernym.verity.sdk.protocols.relationship.v1_0.RelationshipV1_0;
+import com.evernym.verity.sdk.protocols.updateconfigs.UpdateConfigs;
 import com.evernym.verity.sdk.protocols.updateconfigs.v0_6.UpdateConfigsV0_6;
 import com.evernym.verity.sdk.protocols.updateendpoint.UpdateEndpoint;
-import com.evernym.verity.sdk.protocols.updateconfigs.UpdateConfigs;
 import com.evernym.verity.sdk.protocols.writecreddef.WriteCredentialDefinition;
 import com.evernym.verity.sdk.protocols.writecreddef.v0_6.WriteCredentialDefinitionV0_6;
 import com.evernym.verity.sdk.protocols.writeschema.WriteSchema;
 import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
-import com.evernym.verity.sdk.utils.Util;
 import com.evernym.verity.sdk.wallet.WalletUtil;
 import net.glxn.qrgen.QRCode;
-import org.json.JSONObject;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONObject;
 
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -349,7 +349,14 @@ public class App extends Helper {
                 }
 
                 if (!(System.getenv("HTTP_SERVER_URL") == null) ) {
-                    println("Please copy and paste the inviteURL into an external QR code generator (e.g. https://www.qr-code-generator.com/) and scan the QR code from there to establish a connection");
+                    try {
+                        println("Open the following URL in your browser and scan presented QR code");
+                        println(ANSII_GREEN + "https://chart.googleapis.com/chart?cht=qr&chs=512x512&chl=" +
+                                URLEncoder.encode(inviteURL, StandardCharsets.UTF_8.toString()) + ANSII_RESET);
+                    } catch (Exception e) {
+                        println("Please copy and paste the inviteURL into an external QR code generator (e.g. https://www.qr-code-generator.com/) and scan the QR code from there to establish a connection");
+                        println(ANSII_GREEN + inviteURL + ANSII_RESET);
+                    }
                 }
                 else {
                     println("QR code generated at: qrcode.png");
