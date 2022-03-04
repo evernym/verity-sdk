@@ -18,15 +18,17 @@ The `docker` path simplifies the set up process but the local environment walkth
  [App Store](https://itunes.apple.com/us/app/connect-me/id1260651672?mt=8) or the 
  [Google Play Store](https://play.google.com/store/apps/details?id=me.connect&hl=en).
 
-2. Accept the End User License Agreement.
+2. Set up your passcode to secure the app.
 
-3. Select **Start Fresh** on the next screen.
+3. Choose an authentication method.
 
-4. Select **Use Staging Net**, as shown in the screenshot below.
-   
-   ![Connect.Me Developer Mode Switch](https://i.postimg.cc/sDj0SzyG/use-staging-net-CM1-4.jpg)
+> **NOTE:** You have an option to select **Use Staging Net** on the bottom of the setup screen. Flipping that switch will change the behavior of the application to:  
+> * Use the demo agency for connections that rely on the pre-Aries connection protocol.
+> * Only accept credentials anchored on Sovrin Staging Net, which can help with testing.  
+>
+> If you don't switch the toggle, Connect.Me will hold credentials from multiple Indy ledgers simultaneously. 
 
-5. Choose an authentication method.
+4. Accept the End User License Agreement.
 
 After these steps, Connect.Me is ready for the interactions that are demonstrated by the example application. 
 
