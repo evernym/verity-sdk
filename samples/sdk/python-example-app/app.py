@@ -51,13 +51,13 @@ async def example(loop):
     logging.info('Starting setup')
     await setup(loop)
 
+    schema_id = await write_ledger_schema(loop)
+    cred_def_id = await write_ledger_cred_def(loop, schema_id)
+
     rel_did = await create_relationship(loop)
     await create_connection(loop)
 
     await ask_question(loop, rel_did)
-
-    schema_id = await write_ledger_schema(loop)
-    cred_def_id = await write_ledger_cred_def(loop, schema_id)
 
     await issue_credential(loop, rel_did, cred_def_id)
 
@@ -204,6 +204,8 @@ async def write_ledger_schema(loop) -> str:
             print(message['schemaJson'])
             console_input('Press enter when the schema has been endorsed', None)
             first_step.set_result(message['schemaId'])
+        elif msg_name == 'status-report':
+            first_step.set_result(message['schemaId'])
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
 
@@ -239,6 +241,8 @@ async def write_ledger_cred_def(loop, schema_id: str) -> str:
             print(message['credDefJson'])
             first_step.set_result(message['credDefId'])
             console_input('Press enter when the cred def has been endorsed', None)
+        elif msg_name == 'status-report':
+            first_step.set_result(message['credDefId'])
         else:
             non_handled(f'Message name is not handled - {msg_name}', message)
 

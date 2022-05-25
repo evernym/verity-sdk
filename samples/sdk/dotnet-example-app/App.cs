@@ -252,15 +252,15 @@ namespace VeritySDK.Sample
 
                 DoSetup();
 
+                DoWriteLedgerSchema();
+
+                DoWriteLedgerCredDef();
+
                 DoCreateRelationship();
 
                 DoCreateConnection();
 
                 DoAskQuestion();
-
-                DoWriteLedgerSchema();
-
-                DoWriteLedgerCredDef();
 
                 DoIssueCredential();
 
@@ -748,7 +748,6 @@ namespace VeritySDK.Sample
 
             // wait for operation to be complete
             WaitFor(ref schemaComplete, "Waiting to write schema to ledger");
-            WaitReturn("Press ENTER when the transaction has been endorsed");
         }
 
         void writeSchemaHandler(WriteSchemaV0_6 handler)
@@ -761,8 +760,15 @@ namespace VeritySDK.Sample
                        if ("needs-endorsement".Equals(msgName))
                        {
                            App.consolePrintMessage(msgName, message);
-                           Console.Write("Automatic endoresement is currently unavailable, please endorse the following transaction manually:");
+                           Console.Write("Automatic endorsement is currently unavailable, please endorse the following transaction manually:");
+                           WaitReturn("Press ENTER when the transaction has been endorsed");
                            Console.Write((string)message["schemaJson"]);
+                           _schemaIdRef = message["schemaId"];
+                           schemaComplete = true;
+                       }
+                       else if ("status-report".Equals(msgName))
+                       {
+                           App.consolePrintMessage(msgName, message);
                            _schemaIdRef = message["schemaId"];
                            schemaComplete = true;
                        }
@@ -797,7 +803,6 @@ namespace VeritySDK.Sample
 
             // wait for operation to be complete
             WaitFor(ref defComplete, "Waiting to write cred def to ledger");
-            WaitReturn("Press ENTER when the transaction has been endorsed");
         }
 
         void writeCredDefHandler(WriteCredentialDefinitionV0_6 handler)
@@ -811,10 +816,17 @@ namespace VeritySDK.Sample
                        {
                            App.consolePrintMessage(msgName, message);
                            Console.Write(
-                               "Automatic endoresement is currently unavailable, please endorse the following transaction manually:");
+                               "Automatic endorsement is currently unavailable, please endorse the following transaction manually:");
+                           WaitReturn("Press ENTER when the transaction has been endorsed");
                            Console.Write((string)message["credDefJson"]);
                            _defIdRef = message["credDefId"];
 
+                           defComplete = true;
+                       }
+                       else if ("status-report".Equals(msgName))
+                       {
+                           App.consolePrintMessage(msgName, message);
+                           _defIdRef = message["credDefId"];
                            defComplete = true;
                        }
                        else

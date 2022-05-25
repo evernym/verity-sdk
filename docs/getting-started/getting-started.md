@@ -235,6 +235,32 @@ After you have launched the example application in the previous step and have Co
 
    After initial setup, the context for the Verity SDK is saved to disk and can be reused. 
 
+1. **Write Schema to Ledger**
+
+   Code Examples:
+   [ [Java](../getting-started/java-verity-sdk.md#write-schema-to-ledger) ]
+   [ [Python](../getting-started/python-verity-sdk.md#write-schema-to-ledger) ]
+   [ [Node](../getting-started/nodejs-verity-sdk.md#write-schema-to-ledger) ]
+   [ [.NET](../getting-started/dotnet-verity-sdk.md#write-schema-to-ledger) ]
+
+   The `schema` is an essential element of Verifiable Credentials Exchange. This `schema` must be publicly available from a trusted source. The Identity ledger provided by Sovrin is used for the purpose. The `schema` is used to express the shape of the data in the credential. This interaction uses the `write-schema` protocol to both create and write the `schema` object to the ledger.
+
+   Writing the schema to the ledger is fully automated in the example application. You can view
+   incoming messages in the console as they arrive from the Verity server instance.
+
+1. **Write Credential Definition to Ledger**
+
+   Code Examples:
+   [ [Java](../getting-started/java-verity-sdk.md#write-credential-definition-to-ledger) ]
+   [ [Python](../getting-started/python-verity-sdk.md#write-credential-definition-to-ledger) ]
+   [ [Node](../getting-started/nodejs-verity-sdk.md#write-credential-definition-to-ledger) ]
+   [ [.NET](../getting-started/dotnet-verity-sdk.md#write-credential-definition-to-ledger) ]
+
+   The `credDef` object is similar to the `schema` object. It is also used for Verifiable Credentials Exchange and writen to an identity ledger. The `credDef` is used to hold public keys for an Issuer. This interaction uses the `write-cred-def` protocol to both create and write the `credDef` object to the ledger.
+
+   Writing the credential definition to the ledger is fully automated in the example application.
+   You can view incoming messages in the console as they arrive from the Verity server instance.
+
 1. **Connect**
 
     Code Examples: 
@@ -249,32 +275,6 @@ After you have launched the example application in the previous step and have Co
    in the console as they arrive from the Verity server instance.
     
    A QR code image will be generated and placed in the current working directory. Scan this QR code with Connect.Me to finish forming the connection between the Verity server instance and Connect.Me.
-
-1. **Write Schema to Ledger**
-
-    Code Examples: 
-    [ [Java](../getting-started/java-verity-sdk.md#write-schema-to-ledger) ]
-    [ [Python](../getting-started/python-verity-sdk.md#write-schema-to-ledger) ]
-    [ [Node](../getting-started/nodejs-verity-sdk.md#write-schema-to-ledger) ]
-    [ [.NET](../getting-started/dotnet-verity-sdk.md#write-schema-to-ledger) ]
-   
-   The `schema` is an essential element of Verifiable Credentials Exchange. This `schema` must be publicly available from a trusted source. The Identity ledger provided by Sovrin is used for the purpose. The `schema` is used to express the shape of the data in the credential. This interaction uses the `write-schema` protocol to both create and write the `schema` object to the ledger.
-
-   Writing the schema to the ledger is fully automated in the example application. You can view 
-   incoming messages in the console as they arrive from the Verity server instance.
-
-1. **Write Credential Definition to Ledger**
-
-    Code Examples: 
-    [ [Java](../getting-started/java-verity-sdk.md#write-credential-definition-to-ledger) ]
-    [ [Python](../getting-started/python-verity-sdk.md#write-credential-definition-to-ledger) ]
-    [ [Node](../getting-started/nodejs-verity-sdk.md#write-credential-definition-to-ledger) ]
-    [ [.NET](../getting-started/dotnet-verity-sdk.md#write-credential-definition-to-ledger) ]
-
-   The `credDef` object is similar to the `schema` object. It is also used for Verifiable Credentials Exchange and writen to an identity ledger. The `credDef` is used to hold public keys for an Issuer. This interaction uses the `write-cred-def` protocol to both create and write the `credDef` object to the ledger.
-
-   Writing the credential definition to the ledger is fully automated in the example application. 
-   You can view incoming messages in the console as they arrive from the Verity server instance.
 
 1. **Issue Degree Credential**
 

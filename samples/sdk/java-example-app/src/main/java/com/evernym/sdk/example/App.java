@@ -70,13 +70,13 @@ public class App extends Helper {
     public void example() throws IOException, VerityException, InterruptedException {
         setup();
 
+        String schemaId = writeLedgerSchema();
+        String defId = writeLedgerCredDef(schemaId);
+
         String relDID = createRelationship();
         createConnection(relDID);
 
         askQuestion(relDID);
-
-        String schemaId = writeLedgerSchema();
-        String defId = writeLedgerCredDef(schemaId);
 
         issueCredential(relDID, defId);
 
@@ -458,7 +458,7 @@ public class App extends Helper {
 
         // wait for operation to be complete
         waitFor(schemaComplete, "Waiting to write schema to ledger");
-        waitFor("Press ENTER when transaction has been endorsed is on ledger");
+
         // returns ledger schema identifier
         return schemaIdRef.get();
     }
@@ -473,9 +473,15 @@ public class App extends Helper {
                 println("Please manually endorse the following transaction:");
                 println(message.getString("schemaJson"));
                 println("If you do not have a valid endorser did send the transaction json to Evernym for endorsement");
+                waitFor("Press ENTER when transaction has been endorsed is on ledger");
                 schemaIdRef.set(message.getString("schemaId"));
                 schemaComplete.set(true);
 
+            }
+            else if("status-report".equals(msgName)) {
+                printlnMessage(msgName, message);
+                schemaIdRef.set(message.getString("schemaId"));
+                schemaComplete.set(true);
             }
             else {
                 nonHandled("Message Name is not handled - "+msgName);
@@ -501,7 +507,6 @@ public class App extends Helper {
         def.write(context);
         // wait for operation to be complete
         waitFor(defComplete, "Waiting to write cred def to ledger");
-        waitFor("Press ENTER when transaction has been endorsed is on ledger");
 
         // returns ledger cred def identifier
         return defIdRef.get();
@@ -517,9 +522,15 @@ public class App extends Helper {
                 println("Please manually endorse the following transaction:");
                 println(message.getString("credDefJson"));
                 println("If you do not have a valid endorser did send the transaction json to Evernym for endorsement");
+                waitFor("Press ENTER when transaction has been endorsed is on ledger");
                 defIdRef.set(message.getString("credDefId"));
                 defComplete.set(true);
 
+            }
+            else if("status-report".equals(msgName)) {
+                printlnMessage(msgName, message);
+                defIdRef.set(message.getString("credDefId"));
+                defComplete.set(true);
             }
             else {
                 nonHandled("Message Name is not handled - "+msgName);
