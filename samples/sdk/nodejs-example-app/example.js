@@ -33,14 +33,13 @@ let issuerVerkey
 
 async function example () {
   await setup()
+  const schemaId = await writeLedgerSchema()
+  const defId = await writeLedgerCredDef(schemaId)
 
   const relDID = await createRelationship()
   await createConnection(relDID)
 
   await askQuestion(relDID)
-
-  const schemaId = await writeLedgerSchema()
-  const defId = await writeLedgerCredDef(schemaId)
 
   await issueCredential(relDID, defId)
 
@@ -227,6 +226,11 @@ async function writeLedgerSchema () {
   const firstStep = new Promise((resolve) => {
     handlers.addHandler(schema.msgFamily, schema.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
+        case 'status-report':
+          spinner.stop()
+          printMessage(msgName, message)
+          resolve(message.schemaId)
+          break
         case 'needs-endorsement':
           spinner.stop()
           printMessage(msgName, message)
@@ -265,6 +269,11 @@ async function writeLedgerCredDef (schemaId) {
   const firstStep = new Promise((resolve) => {
     handlers.addHandler(def.msgFamily, def.msgFamilyVersion, async (msgName, message) => {
       switch (msgName) {
+        case 'status-report':
+          spinner.stop()
+          printMessage(msgName, message)
+          resolve(message.credDefId)
+          break
         case 'needs-endorsement':
           spinner.stop()
           printMessage(msgName, message)
