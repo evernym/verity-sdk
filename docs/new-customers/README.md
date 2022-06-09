@@ -6,8 +6,6 @@ If this is the case, Evernym will endorse transactions on Sovrin StagingNet for 
 
 More details about the changes at Sovrin and what it means for our customers can be found [here](https://www.evernym.com/blog/september-2021-release-notes/#sovrin). 
 
-> **NOTE**: We are currently updating our products to use Sovrin BuilderNet. The process described in this document will be in place only while this work is in progress.
-
 ## Prerequisites
 - You received Domain DID and API key from Evernym
 - You have [Postman](https://www.postman.com/) installed
