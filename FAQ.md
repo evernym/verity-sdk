@@ -67,9 +67,9 @@ When message sending to webhook fails, currently we only retry the failed messag
 - 5th retry after 75 seconds (post 4th retry) at 10:04:00 am
 
 ### How best to horizontally scale a service that integrated with Verity using Verity SDK?
-There are two options for horizontally scaling a service on client side using the Verity SDK. VDR Tools can be reconfigured to use MySQL storage, instead of the SQLite. This is not available out of the box and if you are planning to do this, please contact Evernym support to assist you configuring this. 
+To horizontally scale a service on the client side using the Verity SDK, you can copy the SQLite db ($HOME/.indy_client) and verity-context.json to each of your machines running client software. 
 
-The other option is to copy the SQLite db ($HOME/.indy_client) and verity-context.json to each of your horizontally scalable machines running client software. 
+The wallet (SQLite db) only contains one key used for communication with the Verity server. This key can be a shared static SQLite file that the redundant nodes would need. Alternatively, the key can be regenerated from the seed on each local machine.
 
 ### What are the limits on a schema size? How many attributes can be added to a schema?
 
