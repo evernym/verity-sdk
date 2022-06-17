@@ -526,26 +526,8 @@ async def setup_issuer(loop):
             print(f'Issuer DID:  {ANSII_GREEN}{issuer_did}{ANSII_RESET}')
             print(f'Issuer Verkey: {ANSII_GREEN}{issuer_verkey}{ANSII_RESET}')
             print('The issuer DID and Verkey must be registered on the ledger.')
-            print('Automated registration is currently unavailable')
-            automated_registration = False # console_yes_no(f'Attempt automated registration via {ANSII_GREEN}https://selfserve.sovrin.org{ANSII_RESET}', True)
-            if automated_registration:
-                url = 'https://selfserve.sovrin.org/nym'
-                payload = json.dumps({
-                    'network': 'stagingnet',
-                    'did': issuer_did,
-                    'verkey': issuer_verkey,
-                    'paymentaddr': ''
-                })
-                headers = {'Accept': 'application/json'}
-                response = requests.request('POST', url, headers=headers, data=payload)
-                if response.status_code != 200:
-                    print('Something went wrong with contactig Sovrin portal')
-                    print('Please add Issuer DID and Verkey to the ledger manually')
-                    console_input('Press ENTER when DID is on ledger')
-                else:
-                    print(f'Got response from Sovrin portal: {ANSII_GREEN}{response.text}{ANSII_RESET}')
-            else:
-                console_input('Press ENTER when DID is on ledger')
+            print('Please send your issuer DID and Verkey to support@evernym.com to add them to the ledger.')
+            console_input('Press ENTER when DID is on ledger')
             first_step.set_result(None)
         else:
             non_handled(f'Message name is not handled - {msg_name}')

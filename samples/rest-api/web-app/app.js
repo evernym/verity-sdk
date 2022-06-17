@@ -186,16 +186,6 @@ async function main () {
     }
   })
 
-  // This will register Issuer DID/Verkey as Endorser on Sovrin Staging Net via Sovrin portal
-  app.post('/registerDID', async (req, res) => {
-    try {
-      const response = await axios.post('https://selfserve.sovrin.org/nym', req.body)
-      res.status(200).send(response.data.body)
-    } catch (err) {
-      res.status(500).send(err)
-    }
-  })
-
   server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`)
   })

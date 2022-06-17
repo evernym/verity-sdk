@@ -35,14 +35,6 @@ import com.evernym.verity.sdk.protocols.writeschema.v0_6.WriteSchemaV0_6;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.ContextBuilder;
 import com.evernym.verity.sdk.wallet.WalletUtil;
-import net.glxn.qrgen.QRCode;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.json.JSONObject;
-
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -52,6 +44,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import net.glxn.qrgen.QRCode;
+import org.json.JSONObject;
+
 
 public class App extends Helper {
     Integer port = 4000;
@@ -67,6 +62,7 @@ public class App extends Helper {
         new App().execute();
     }
 
+    @Override
     public void example() throws IOException, VerityException, InterruptedException {
         setup();
 
@@ -165,49 +161,8 @@ public class App extends Helper {
         println("Issuer DID: " + ANSII_GREEN + issuerDID + ANSII_RESET);
         println("Issuer Verkey: " + ANSII_GREEN + issuerVerkey + ANSII_RESET);
         println("The issuer DID and Verkey must be on the ledger.");
-
-        boolean automatedRegistration = false; // consoleYesNo("Attempt automated registration via " + ANSII_GREEN + "https://selfserve.sovrin.org" + ANSII_RESET, true);
-        
-        if (automatedRegistration) {
-            CloseableHttpClient client = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost("https://selfserve.sovrin.org/nym");
-        
-            JSONObject payload_builder = new JSONObject();
-            payload_builder.accumulate("network", "stagingnet");
-            payload_builder.accumulate("did", issuerDID);
-            payload_builder.accumulate("verkey", issuerVerkey);
-            payload_builder.accumulate("paymentaddr", "");
-            String payload = payload_builder.toString();
-
-            StringEntity entity = new StringEntity(payload);
-            httpPost.setEntity(entity);
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-        
-            HttpResponse response = client.execute(httpPost);
-            int statusCode = response.getStatusLine().getStatusCode();
-
-            if (statusCode != 200) {
-                println("Something went wrong with contactig Sovrin portal");
-                println("Please add Issuer DID and Verkey to the ledger manually");
-                waitFor("Press ENTER when DID is on ledger");
-            } else {
-                BufferedReader bufReader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                StringBuilder builder = new StringBuilder();
-                String line;
-                while ((line = bufReader.readLine()) != null) {
-                    builder.append(line);
-                    builder.append(System.lineSeparator());
-                }
-                println("Got response from Sovrin portal: " + ANSII_GREEN + builder + ANSII_RESET);
-            }        
-            client.close();
-        }
-        else {
-            println("Automated registration is currently unavailable");
-            println("Please add Issuer DID and Verkey to the ledger manually");
-            waitFor("Press ENTER when DID is on ledger");
-        }
+        println("Please send Issuer DID and Verkey to support@evernym.com to add them to the ledger");
+        waitFor("Press ENTER when DID is on ledger");
     }
 
     private void setupIssuerHandler(IssuerSetupV0_6 newIssuerSetup, AtomicBoolean setupComplete) {

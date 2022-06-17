@@ -5,7 +5,6 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 })
-const request = require('request-promise-native')
 const { v4: uuidv4 } = require('uuid')
 const QR = require('qrcode')
 
@@ -127,32 +126,12 @@ async function setupIssuerKeys (context) {
 }
 
 // In order to issue credentials Issuer DID and public key (Verkey) need to be written to the ledger
-// This function writes Issuer DID/Verkey to the Sovrin Staging Net using Sovrin SelfServe portal
-async function writeIssuerKeysOnLedger (issuerDID, issuerVerkey) {
+// You need to send your issuer DID and Verkey to support@evernym.com to write them to the Sovrin Staging Net
+async function writeIssuerKeysOnLedger () {
   console.log('The issuer DID and Verkey must be registered on the ledger.')
-  const automatedRegistration = await readlineYesNo(`Attempt automated registration via ${ANSII_GREEN}https://selfserve.sovrin.org${ANSII_RESET}`, true)
-  if (automatedRegistration) {
-    const res = await request.post({
-      uri: 'https://selfserve.sovrin.org/nym',
-      json: {
-        network: 'stagingnet',
-        did: issuerDID,
-        verkey: issuerVerkey,
-        paymentaddr: ''
-      }
-    })
-    if (res.statusCode !== 200) {
-      console.log('Something went wrong with contactig Sovrin portal')
-      console.log('Please add Issuer DID and Verkey to the ledger manually')
-      await readlineInput('Press ENTER when DID is on ledger')
-    } else {
-      console.log(`Got response from Sovrin portal: ${ANSII_GREEN}${res.body}${ANSII_RESET}`)
-    }
-  } else {
     console.log('Please add Issuer DID and Verkey to the ledger manually')
     await readlineInput('Press ENTER when DID is on ledger')
   }
-}
 
 // Writes schema on the ledger
 async function writeLedgerSchema () {
@@ -239,6 +218,7 @@ async function provisionVerifier () {
   // The ConnectMe app uses the "public_did" field from the connection invitation to check if it already has the connection with the Inviter
   // If this step is skipped (i.e. Issuer DID is not created) it would be possible to establish multiple connections with the Verifier in ConnectMe app
   const [issuerDID, issuerVerkey] = await setupIssuerKeys(verifierContext)
+  
 
   fs.writeFileSync(VERIFIER_CONFIG_FILE, JSON.stringify(verifierContext.getConfig()))
   console.log('Verifier provisioning completed')

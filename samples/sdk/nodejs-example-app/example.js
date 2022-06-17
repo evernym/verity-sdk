@@ -31,7 +31,7 @@ let context
 let issuerDID
 let issuerVerkey
 
-async function example () {
+async function example() {
   await setup()
   const schemaId = await writeLedgerSchema()
   const defId = await writeLedgerCredDef(schemaId)
@@ -49,7 +49,7 @@ async function example () {
 //* ***********************
 //       RELATIONSHIP
 //* ***********************
-async function createRelationship () {
+async function createRelationship() {
   // Relationship protocol has two steps
   // 1. create relationship key
   // 2. create invitation
@@ -129,7 +129,7 @@ async function createRelationship () {
 //* ***********************
 //       CONNECTION
 //* ***********************
-async function createConnection () {
+async function createConnection() {
   // Connecting protocol is started from the Holder's side (ConnectMe)
   // by scanning the QR code containing connection invitation
   // Connection is established when the Holder accepts the connection on the device
@@ -181,7 +181,7 @@ async function createConnection () {
 //* ***********************
 //        QUESTION
 //* ***********************
-async function askQuestion (forDID) {
+async function askQuestion(forDID) {
   const questionText = 'Hi Alice, how are you today?'
   const questionDetail = 'Checking up on you today.'
   const validAnswers = ['Great!', 'Not so good.']
@@ -212,7 +212,7 @@ async function askQuestion (forDID) {
 //* ***********************
 //        SCHEMA
 //* ***********************
-async function writeLedgerSchema () {
+async function writeLedgerSchema() {
   // input parameters for schema
   const schemaName = 'Diploma ' + uuidv4().substring(0, 8)
   const schemaVersion = '0.1'
@@ -256,7 +256,7 @@ async function writeLedgerSchema () {
 //* ***********************
 //        CRED DEF
 //* ***********************
-async function writeLedgerCredDef (schemaId) {
+async function writeLedgerCredDef(schemaId) {
   // input parameters for cred definition
   const credDefName = 'Trinity College Diplomas'
   const credDefTag = 'latest'
@@ -299,7 +299,7 @@ async function writeLedgerCredDef (schemaId) {
 //* ***********************
 //         ISSUE
 //* ***********************
-async function issueCredential (relDID, defId) {
+async function issueCredential(relDID, defId) {
   // input parameters for issue credential
   const credentialName = 'Degree'
   const credentialData = {
@@ -358,7 +358,7 @@ async function issueCredential (relDID, defId) {
 //* ***********************
 //         PROOF
 //* ***********************
-async function requestProof (relDID) {
+async function requestProof(relDID) {
   // input parameters for request proof
   const proofName = 'Proof of Degree'
   const proofAttrs = [
@@ -402,7 +402,7 @@ async function requestProof (relDID) {
 //* ***********************
 //         SETUP
 //* ***********************
-async function setup () {
+async function setup() {
   let config = ''
   if (fs.existsSync(CONFIG_PATH)) {
     if (await readlineYesNo('Reuse Verity Context (in ' + CONFIG_PATH + ')', true)) {
@@ -445,7 +445,7 @@ async function setup () {
   }
 }
 
-async function provisionAgent () {
+async function provisionAgent() {
   let token = null
   if (await readlineYesNo('Provide Provision Token', true)) {
     token = await readlineInput('Token', process.env.TOKEN)
@@ -480,7 +480,7 @@ async function provisionAgent () {
   }
 }
 
-async function updateWebhookEndpoint () {
+async function updateWebhookEndpoint() {
   const webhookFromCtx = context.endpointUrl
 
   let webhook = await readlineInput(`Ngrok endpoint for port(${LISTENING_PORT})[${webhookFromCtx}]`, process.env.WEBHOOK_URL)
@@ -495,12 +495,12 @@ async function updateWebhookEndpoint () {
   await new sdk.protocols.UpdateEndpoint().update(context)
 }
 
-async function updateConfigs () {
+async function updateConfigs() {
   const updateConfigs = new sdk.protocols.UpdateConfigs(INSTITUTION_NAME, LOGO_URL)
   await updateConfigs.update(context)
 }
 
-async function setupIssuer () {
+async function setupIssuer() {
   // constructor for the Issuer Setup protocol
   const issuerSetup = new sdk.protocols.IssuerSetup()
   const spinner = new Spinner('Waiting for setup to complete ... %s').setSpinnerDelay(450) // Console spinner
@@ -517,29 +517,9 @@ async function setupIssuer () {
           console.log(`Issuer DID:  ${ANSII_GREEN}${issuerDID}${ANSII_RESET}`)
           console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
           console.log('The issuer DID and Verkey must be registered on the ledger.')
-          const automatedRegistration = false// await readlineYesNo(`Attempt automated registration via ${ANSII_GREEN}https://selfserve.sovrin.org${ANSII_RESET}`, true)
-          if (automatedRegistration) {
-            const res = await request.post({
-              uri: 'https://selfserve.sovrin.org/nym',
-              json: {
-                network: 'stagingnet',
-                did: issuerDID,
-                verkey: issuerVerkey,
-                paymentaddr: ''
-              }
-            })
-            if (res.statusCode !== 200) {
-              console.log('Something went wrong with contactig Sovrin portal')
-              console.log('Please add Issuer DID and Verkey to the ledger manually')
-              await readlineInput('Press ENTER when DID is on ledger')
-            } else {
-              console.log(`Got response from Sovrin portal: ${ANSII_GREEN}${res.body}${ANSII_RESET}`)
-            }
-          } else {
-            console.log('Automated registration is currently unavailable')
-            console.log('Please add Issuer DID and Verkey to the ledger manually')
-            await readlineInput('Press ENTER when DID is on ledger')
-          }
+          console.log('Automated registration is currently unavailable')
+          console.log('Please send Issuer DID and Verkey to support@evernym.com to add them to the ledger')
+          await readlineInput('Press ENTER when DID is on ledger')
           resolve(null)
           break
         }
@@ -556,7 +536,7 @@ async function setupIssuer () {
   return step // wait for request to complete
 }
 
-async function issuerIdentifier () {
+async function issuerIdentifier() {
   // constructor for the Issuer Setup protocol
   const issuerSetup = new sdk.protocols.IssuerSetup()
   const spinner = new Spinner('Waiting for current issuer DID ... %s').setSpinnerDelay(450)
@@ -587,13 +567,13 @@ async function issuerIdentifier () {
 //* ***********************
 main()
 
-async function main () {
+async function main() {
   await start()
   await example()
   await end()
 }
 
-async function start () {
+async function start() {
   const app = express()
   app.use(express.text({
     type: function (_) {
@@ -610,7 +590,7 @@ async function start () {
   console.log(`Listening on port ${LISTENING_PORT}`)
 }
 
-async function end () {
+async function end() {
   listener.close()
   rl.close()
   process.exit(0)
@@ -622,7 +602,7 @@ async function end () {
 
 // Simple utility functions for the Example app.
 
-async function readlineInput (request, defaultValue) {
+async function readlineInput(request, defaultValue) {
   console.log()
 
   return new Promise((resolve) => {
@@ -636,7 +616,7 @@ async function readlineInput (request, defaultValue) {
   })
 }
 
-async function readlineYesNo (request, defaultYes) {
+async function readlineYesNo(request, defaultYes) {
   const yesNo = defaultYes ? '[y]/n' : 'y/n'
   const modifiedRequest = request + '? ' + yesNo + ': '
 
@@ -657,11 +637,11 @@ async function readlineYesNo (request, defaultYes) {
   })
 }
 
-function printMessage (msgName, msg) {
+function printMessage(msgName, msg) {
   printObject(msg, '<<<', `Incomming Message -- ${msgName}`)
 }
 
-function printObject (obj, prefix, preamble) {
+function printObject(obj, prefix, preamble) {
   console.log()
   console.log(prefix + '  ' + preamble)
   const lines = JSON.stringify(obj, null, 2).split('\n')
@@ -671,11 +651,11 @@ function printObject (obj, prefix, preamble) {
   console.log()
 }
 
-function nonHandle (msg) {
+function nonHandle(msg) {
   console.error(msg)
   process.exit(-1)
 }
 
-function sleep (ms) {
+function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }

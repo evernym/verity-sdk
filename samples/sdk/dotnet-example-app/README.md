@@ -26,5 +26,8 @@ dotnet build --configuration release
 ```  
 
 ### Run the example application
+```sh
+dotnet run
+```
 
 Follow the steps in the [Getting Started](../../../docs/getting-started/getting-started.md) tutorial.

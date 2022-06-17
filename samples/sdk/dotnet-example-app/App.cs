@@ -128,13 +128,14 @@ namespace VeritySDK.Sample
         {
             consoleOutput(prefix + "  " + preamble);
             String rawJson = obj.ToString();
-            var options = new JsonSerializerOptions() {
-              WriteIndented = true
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
             };
             var jsonElement = JsonSerializer.Deserialize<JsonElement>(rawJson);
             String prettyJson = JsonSerializer.Serialize(jsonElement, options);
 
-            var obj_lines = prettyJson.ToString().Split(new [] { '\r', '\n' });
+            var obj_lines = prettyJson.ToString().Split(new[] { '\r', '\n' });
             foreach (var line in obj_lines)
             {
                 consoleOutput(prefix + "  " + line);
@@ -207,7 +208,9 @@ namespace VeritySDK.Sample
 
             consolePrintMessage($"{msg} not handled.", message);
 
-            try { Thread.Sleep(250); } catch (Exception ignored) {
+            try { Thread.Sleep(250); }
+            catch (Exception ignored)
+            {
                 var s = ignored.Message; // Fix build warning
             }
 
@@ -284,7 +287,7 @@ namespace VeritySDK.Sample
 
         void DoSetup()
         {
-	     
+
             if (File.Exists(VERITY_CONTEXT_STORAGE))
             {
                 if (consoleYesNo("Reuse Verity Context (in verity-context.json)", true))
@@ -476,45 +479,8 @@ namespace VeritySDK.Sample
             App.coloredConsoleOutput(_issuerDID, "Issuer DID: ");
             App.coloredConsoleOutput(_issuerVerkey, "Issuer Verkey: ");
             App.consoleOutput("The issuer DID and Verkey must be on the ledger.");
-
-            bool automatedRegistration = false; // consoleYesNo("Attempt automated registration via https://selfserve.sovrin.org", true);
-
-            if (automatedRegistration)
-            {
-                HttpClient client = new HttpClient();
-
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://selfserve.sovrin.org/nym");
-
-                JsonObject payload_builder = new JsonObject();
-                payload_builder.Add("network", "stagingnet");
-                payload_builder.Add("did", _issuerDID);
-                payload_builder.Add("verkey", _issuerVerkey);
-                payload_builder.Add("paymentaddr", "");
-                string payload = payload_builder.ToString();
-
-                request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
-                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                var response = client.PostAsync(request.RequestUri, request.Content).GetAwaiter().GetResult();
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var data = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    App.coloredConsoleOutput(data, "Got response from Sovrin portal: ");
-                }
-                else
-                {
-                    App.consoleOutput("Something went wrong with contactig Sovrin portal");
-                    App.consoleOutput($"Please add DID ({_issuerDID}) and Verkey ({_issuerVerkey}) to ledger manually");
-
-                    WaitReturn("Press ENTER when DID is on ledger");
-                }
-            }
-            else
-            {
-                App.consoleOutput($"Please add DID ({_issuerDID}) and Verkey ({_issuerVerkey}) to ledger manually");
-
-                WaitReturn("Press ENTER when DID is on ledger");
-            }
+            App.consoleOutput($"Please send DID ({_issuerDID}) and Verkey ({_issuerVerkey}) to support@evernym.com to write them to the ledger.");
+            WaitReturn("Press ENTER when DID is on ledger");
         }
 
         void setupIssuerHandler(IssuerSetupV0_6 handler)
@@ -664,14 +630,14 @@ namespace VeritySDK.Sample
                                {
                                    if ("relationship-reused".Equals(msgName))
                                    {
-                                        Console.SetOut(App.console);
-                                        Console.WriteLine();
-                                        consolePrintMessage(msgName, message);
-                                        Console.WriteLine("The mobile wallet app signalled that it already has the connection with this example app agent");
-                                        Console.WriteLine("This example app does not support relationship-reuse since it does not store the data about previous relationships");
-                                        Console.WriteLine("Please delete existing connection in your mobile wallet and re-run this application");
-                                        Console.WriteLine("To learn how relationship-reuse can be used check out \"ssi-auth\" or \"out-of-band\" sample apps");
-                                        Environment.Exit(-1);
+                                       Console.SetOut(App.console);
+                                       Console.WriteLine();
+                                       consolePrintMessage(msgName, message);
+                                       Console.WriteLine("The mobile wallet app signalled that it already has the connection with this example app agent");
+                                       Console.WriteLine("This example app does not support relationship-reuse since it does not store the data about previous relationships");
+                                       Console.WriteLine("Please delete existing connection in your mobile wallet and re-run this application");
+                                       Console.WriteLine("To learn how relationship-reuse can be used check out \"ssi-auth\" or \"out-of-band\" sample apps");
+                                       Environment.Exit(-1);
                                    }
                                    else
                                    {

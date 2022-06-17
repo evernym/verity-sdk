@@ -227,11 +227,9 @@
                   >
                     <div class="info-icon"></div>
                     <p class="w3-small w3-margin-left">
-                      Clicking “Setup Issuer” will create issuer keys on VAS and
-                      will then register created DID/Verkey as Endorser on
-                      Staging Net using Sovrin SelfServe portal. Monitor webhook
-                      messages to check if DID/Verkey were successfully written
-                      to the ledger.
+                      Clicking “Setup Issuer” will create issuer keys on VAS. Since it is 
+                      no longer possible to use Sovrin SelfServe portal, please contact Evernym at support@evernym.com
+                      to endorse this transaction on Sovrin StagingNet. 
                     </p>
                   </div>
 
@@ -271,6 +269,14 @@
                         <b>{{issuerVerKey}}</b>
                       </p>
                     </div>
+                    <div class="w3-margin-top bg-info-gray w3-padding w3-padding-16 flex">
+                      <div class="info-icon"></div>
+                      <p class="w3-small w3-margin-left">
+                        To proceed with this app, please <a href="mailto:support@evernym.com">contact Evernym</a> to endorse your Issuer DID and Verkey. 
+                        Copy the values above and include them in your email. This has to be done only once. 
+                      </p>
+                    </div>
+                  <div>
                   </section>
                 </div>
               </section>
@@ -1506,18 +1512,6 @@
           },
           // Sends request to B/E to register Issuer DID/Verkey on Sovrin Staging Net via Sovrin SelfServe portal
           registerDID: async function (did, verkey) {
-            var response = await axios.post("/registerDID", {
-              network: "stagingnet",
-              did: did,
-              verkey: verkey,
-              paymentaddr: "",
-            });
-            this.messages.unshift({
-              content:
-                "Registration response from Sovrin portal:\n" +
-                JSON.stringify(response.data),
-              time: this.getTime(),
-            });
             this.issuerDID = did;
             this.issuerVerKey = verkey;
             this.spinners.setupIssuer = false;

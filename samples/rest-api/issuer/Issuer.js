@@ -3,6 +3,7 @@
 const fs = require('fs')
 const axios = require('axios')
 const express = require('express')
+const readline = require('readline')
 const QR = require('qrcode')
 const uuid4 = require('uuid4')
 const urljoin = require('url-join')
@@ -11,14 +12,32 @@ const ANSII_GREEN = '\u001b[32m'
 const ANSII_RESET = '\x1b[0m'
 const CRED_DEF_FILE = 'cred_def_id.txt'
 const PORT = 4000
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
 
 const verityUrl = '<< PUT VERITY APPLICATION SERVICE URL HERE >>' // address of Verity Application Service
 const domainDid = '<< PUT DOMAIN DID HERE >>' // your Domain DID on the multi-tenant Verity Application Service
 const xApiKey = '<< PUT X-API-KEY HERE >>' // REST API key associated with your Domain DID
 const webhookUrl = '<< PUT WEBHOOK URL HERE >>' // public URL for the webhook endpoint
 
+// Handles console input
+async function readlineInput(request, defaultValue) {
+  console.log()
+
+  return new Promise((resolve) => {
+    if (defaultValue) {
+      console.log(`${request}:`)
+      console.log(`${ANSII_GREEN}${defaultValue}${ANSII_RESET} is set via environment variable`)
+      rl.question('Press any key to continue', (response) => { resolve(defaultValue) })
+    } else {
+      rl.question(request + ': ', (response) => { resolve(response) })
+    }
+  })
+}
 // Sends a message to the Verity Application Service via the Verity REST API
-async function sendVerityRESTMessage (qualifier, msgFamily, msgFamilyVersion, msgName, message, threadId) {
+async function sendVerityRESTMessage(qualifier, msgFamily, msgFamilyVersion, msgName, message, threadId) {
   // qualifier - either 'BzCbsNYhMrjHiqZDTUASHg' for Aries community protocols or '123456789abcdefghi1234' for Evernym-specific protocols
   // msgFamily - message family (e.g. 'present-proof')
   // msgFamilyVersion - version of the message family (e.g. '1.0')
@@ -49,17 +68,6 @@ async function sendVerityRESTMessage (qualifier, msgFamily, msgFamilyVersion, ms
   })
 }
 
-// Registers issuer DID/Verkey as Endorser on Sovrin Staging Net
-async function registerDid (issuerDid, issuerVerkey) {
-  return axios.post('https://selfserve.sovrin.org/nym',
-    {
-      network: 'stagingnet',
-      did: issuerDid,
-      verkey: issuerVerkey,
-      paymentaddr: ''
-    })
-}
-
 // Maps containing promises for the started interactions - threadId is used as the map key
 // Update configs
 const updateConfigsMap = new Map()
@@ -82,7 +90,7 @@ const connectionAccepted = new Map()
 // Update webhook protocol is synchronous and does not support threadId
 let webhookResolve
 
-async function issuer () {
+async function issuer() {
   // STEP 1 - Update webhook endpoint
   const webhookMessage = {
     comMethod: {
@@ -96,10 +104,10 @@ async function issuer () {
   }
 
   const updateWebhook =
-  new Promise(function (resolve, reject) {
-    webhookResolve = resolve
-    sendVerityRESTMessage('123456789abcdefghi1234', 'configs', '0.6', 'UPDATE_COM_METHOD', webhookMessage)
-  })
+    new Promise(function (resolve, reject) {
+      webhookResolve = resolve
+      sendVerityRESTMessage('123456789abcdefghi1234', 'configs', '0.6', 'UPDATE_COM_METHOD', webhookMessage)
+    })
 
   await updateWebhook
 
@@ -119,9 +127,9 @@ async function issuer () {
 
   const updateConfigsThreadId = uuid4()
   const updateConfigs =
-  new Promise(function (resolve, reject) {
-    updateConfigsMap.set(updateConfigsThreadId, resolve)
-  })
+    new Promise(function (resolve, reject) {
+      updateConfigsMap.set(updateConfigsThreadId, resolve)
+    })
 
   await sendVerityRESTMessage('123456789abcdefghi1234', 'update-configs', '0.6', 'update', updateConfigMessage, updateConfigsThreadId)
 
@@ -136,9 +144,9 @@ async function issuer () {
   const getIssuerKeysThreadId = uuid4()
 
   const getIssuerKeys =
-  new Promise(function (resolve, reject) {
-    setupIssuerMap.set(getIssuerKeysThreadId, resolve)
-  })
+    new Promise(function (resolve, reject) {
+      setupIssuerMap.set(getIssuerKeysThreadId, resolve)
+    })
 
   await sendVerityRESTMessage('123456789abcdefghi1234', 'issuer-setup', '0.6', 'current-public-identifier', getIssuerKeysMsg, getIssuerKeysThreadId);
 
@@ -155,13 +163,12 @@ async function issuer () {
 
     await sendVerityRESTMessage('123456789abcdefghi1234', 'issuer-setup', '0.6', 'create', setupIssuerMsg, setupIssuerThreadId);
     [issuerDid, issuerVerkey] = await setupIssuer
-    console.log(`Issuer DID: ${ANSII_GREEN}${issuerDid}${ANSII_RESET}`)
-    console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
-
-    // Automatic registration of DID/Verkey as Endorser on the Sovrin Staging Net ledger using Sovrin SelfServe portal
-    const sovrinResponse = await registerDid(issuerDid, issuerVerkey)
-    console.log(`DID registration response from Sovrin SelfServe portal:\n${ANSII_GREEN}${sovrinResponse.data.body}${ANSII_RESET}`)
   }
+  console.log(`Issuer DID: ${ANSII_GREEN}${issuerDid}${ANSII_RESET}`)
+  console.log(`Issuer Verkey: ${ANSII_GREEN}${issuerVerkey}${ANSII_RESET}`)
+  console.log('The issuer DID and Verkey must be registered on the ledger.')
+  console.log('Please send Issuer DID and Verkey to support@evernym.com to add them to the ledger')
+  await readlineInput('Press ENTER when DID is on ledger')
 
   // STEP 4 - Create schema and credential definition that will be used for credentials
   let credDefId

@@ -9,7 +9,6 @@
     "express": "^4.17.1",
     "qrcode": "^1.4.4",
     "request": "^2.34",
-    "request-promise-native": "^1.0.8",
-    "verity-sdk": "^0.4.6"
+    "verity-sdk": "^0.6.1"
   }
 }
