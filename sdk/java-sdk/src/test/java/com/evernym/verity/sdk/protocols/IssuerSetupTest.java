@@ -3,7 +3,7 @@ package com.evernym.verity.sdk.protocols;
 import com.evernym.verity.sdk.TestHelpers;
 import com.evernym.verity.sdk.exceptions.VerityException;
 import com.evernym.verity.sdk.protocols.issuersetup.IssuerSetup;
-import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
+import com.evernym.verity.sdk.protocols.issuersetup.v0_7.IssuerSetupV0_7;
 import com.evernym.verity.sdk.utils.Context;
 import com.evernym.verity.sdk.utils.Util;
 import org.json.JSONObject;
@@ -18,7 +18,7 @@ public class IssuerSetupTest {
     public void testGetMessageType() {
         String msgName = "msg name";
 
-        IssuerSetupV0_6 t = IssuerSetup.v0_6();
+        IssuerSetupV0_7 t = IssuerSetup.v0_7();
 
         String expectedType = Util.getMessageType(
                 Util.EVERNYM_MSG_QUALIFIER,
@@ -31,18 +31,42 @@ public class IssuerSetupTest {
 
     @Test
     public void testGetThreadId() {
-        IssuerSetupV0_6 testProtocol = IssuerSetup.v0_6();
+        IssuerSetupV0_7 testProtocol = IssuerSetup.v0_7();
         assertNotNull(testProtocol.getThreadId());
     }
 
     @Test
     public void testCreateMessages() throws VerityException {
         Context context = TestHelpers.getContext();
-        IssuerSetupV0_6 p = IssuerSetup.v0_6();
-        JSONObject msg = p.createMsg(context);
+        IssuerSetupV0_7 p = IssuerSetup.v0_7();
+        JSONObject msg = p.createMsg(context, "did:indy:sovrin:builder");
         assertEquals(
-                Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.6/create",
+                Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.7/create",
                 msg.getString("@type")
+        );
+        asserEquals(
+                msg.getString('ledgerPrefix'),
+                "did:indy:sovrin:builder"
+        );
+        assertNotNull(msg.getString("@id"));
+    }
+
+    @Test
+    public void testCreateMessages() throws VerityException {
+        Context context = TestHelpers.getContext();
+        IssuerSetupV0_7 p = IssuerSetup.v0_7();
+        JSONObject msg = p.createMsg(context, "did:indy:sovrin:builder", "someEndorser");
+        assertEquals(
+                Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.7/create",
+                msg.getString("@type")
+        );
+        asserEquals(
+                msg.getString('ledgerPrefix'),
+                "did:indy:sovrin:builder"
+        );
+        asserEquals(
+                msg.getString(endorser),
+                "someEndorser"
         );
         assertNotNull(msg.getString("@id"));
     }
@@ -52,11 +76,11 @@ public class IssuerSetupTest {
         Context context = null;
         try {
             context = TestHelpers.getContext();
-            IssuerSetupV0_6 testProtocol = IssuerSetup.v0_6();
-            byte[] message = testProtocol.createMsgPacked(context);
+            IssuerSetupV0_7 testProtocol = IssuerSetup.v0_7();
+            byte[] message = testProtocol.createMsgPacked(context, "did:indy:sovrin:builder");
             JSONObject unpackedMessage = unpackForwardMessage(context, message);
             assertEquals(
-                    Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.6/create",
+                    Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.7/create",
                     unpackedMessage.getString("@type")
             );
 

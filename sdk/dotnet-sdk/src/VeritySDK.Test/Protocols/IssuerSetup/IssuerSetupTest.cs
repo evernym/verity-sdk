@@ -14,7 +14,7 @@ namespace VeritySDK.Test
         {
             string msgName = "msg name";
 
-            IssuerSetupV0_6 t = IssuerSetup.v0_6();
+            IssuerSetupV0_7 t = IssuerSetup.v0_7();
 
             string expectedType = Util.getMessageType(
                     Util.EVERNYM_MSG_QUALIFIER,
@@ -28,7 +28,7 @@ namespace VeritySDK.Test
         [TestMethod]
         public void testGetThreadId()
         {
-            IssuerSetupV0_6 testProtocol = IssuerSetup.v0_6();
+            IssuerSetupV0_7 testProtocol = IssuerSetup.v0_7();
             Assert.IsNotNull(testProtocol.getThreadId());
         }
 
@@ -36,12 +36,36 @@ namespace VeritySDK.Test
         public void testCreateMessages()
         {
             Context context = TestHelpers.getContext();
-            IssuerSetupV0_6 p = IssuerSetup.v0_6();
-            JsonObject msg = p.createMsg(context);
+            IssuerSetupV0_7 p = IssuerSetup.v0_7();
+            JsonObject msg = p.createMsg(context, "did:indy:sovrin:builder");
             Assert.AreEqual(
-                    Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.6/create",
+                    Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.7/create",
                     msg.getAsString("@type")
             );
+            Assert.AreEqual(
+                msg.getAsString("ledgerPrefix"),
+                "did:indy:sovrin:builder"
+            )
+            Assert.IsNotNull(msg.getAsString("@id"));
+        }
+
+        public void testCreateMessagesWithEndorser()
+        {
+            Context context = TestHelpers.getContext();
+            IssuerSetupV0_7 p = IssuerSetup.v0_7();
+            JsonObject msg = p.createMsg(context, "did:indy:sovrin:builder", "someEndorser");
+            Assert.AreEqual(
+                    Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.7/create",
+                    msg.getAsString("@type")
+            );
+            Assert.AreEqual(
+                msg.getAsString("ledgerPrefix"),
+                "did:indy:sovrin:builder"
+            )
+            Assert.AreEqual(
+                 msg.getAsString("endorser"),
+                 "someEndorser"
+             )
             Assert.IsNotNull(msg.getAsString("@id"));
         }
 
@@ -50,11 +74,11 @@ namespace VeritySDK.Test
         {
             withContext(context =>
             {
-                IssuerSetupV0_6 testProtocol = IssuerSetup.v0_6();
-                byte[] message = testProtocol.createMsgPacked(context);
+                IssuerSetupV0_7 testProtocol = IssuerSetup.v0_7();
+                byte[] message = testProtocol.createMsgPacked(context, "did:indy:sovrin:builder");
                 JsonObject unpackedMessage = TestHelpers.unpackForwardMessage(context, message);
                 Assert.AreEqual(
-                        Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.6/create",
+                        Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.7/create",
                         unpackedMessage.getAsString("@type"));
             });
         }

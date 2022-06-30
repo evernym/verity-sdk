@@ -1,6 +1,7 @@
 package com.evernym.verity.sdk.protocols.issuersetup;
 
 import com.evernym.verity.sdk.protocols.issuersetup.v0_6.IssuerSetupV0_6;
+import com.evernym.verity.sdk.protocols.issuersetup.v0_7.IssuerSetupV0_7;
 
 /**
  * Factory for the IssuerSetup protocol objects
@@ -22,5 +23,14 @@ public class IssuerSetup {
      */
     public static IssuerSetupV0_6 v0_6() {
         return new IssuerSetupImplV0_6();
+    }
+
+    /**
+     * Constructor for the 0.7 IssuerSetup object. This constructor creates an object that is ready to start the setup
+     * process of an issuer.
+     * @return 0.7 IssuerSetup object
+     */
+    public static IssuerSetupV0_7 v0_7() {
+        return new IssuerSetupImplV0_7();
     }
 }
