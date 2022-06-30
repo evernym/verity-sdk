@@ -45,7 +45,7 @@ namespace VeritySDK.Test
             Assert.AreEqual(
                 msg.getAsString("ledgerPrefix"),
                 "did:indy:sovrin:builder"
-            )
+            );
             Assert.IsNotNull(msg.getAsString("@id"));
         }
 
@@ -61,11 +61,11 @@ namespace VeritySDK.Test
             Assert.AreEqual(
                 msg.getAsString("ledgerPrefix"),
                 "did:indy:sovrin:builder"
-            )
+            );
             Assert.AreEqual(
                  msg.getAsString("endorser"),
                  "someEndorser"
-             )
+             );
             Assert.IsNotNull(msg.getAsString("@id"));
         }
 

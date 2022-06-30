@@ -48,5 +48,3 @@ async def test_create():
     assert msg['@id'] is not None
 
     await cleanup(context)
-
-
