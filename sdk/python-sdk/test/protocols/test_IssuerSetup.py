@@ -15,7 +15,7 @@ async def test_create():
     # test with no endorser
     context = await Context.create_with_config(await get_test_config())
     issuer_setup = IssuerSetup()
-    msg = issuer_setup.create_msg(context, "did:indy:sovrin:builder")
+    msg = issuer_setup.create_msg(context, 'did:indy:sovrin:builder')
 
     assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,
@@ -34,7 +34,7 @@ async def test_create():
     context = await Context.create_with_config(await get_test_config())
 
     issuer_setup = IssuerSetup()
-    msg = issuer_setup.create_msg(context, "did:indy:sovrin:builder", "someEndorser")
+    msg = issuer_setup.create_msg(context, 'did:indy:sovrin:builder', 'someEndorser')
 
     assert msg['@type'] == '{}/{}/{}/{}'.format(
         EVERNYM_MSG_QUALIFIER,

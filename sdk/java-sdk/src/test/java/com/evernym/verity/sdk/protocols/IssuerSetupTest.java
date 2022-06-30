@@ -44,15 +44,15 @@ public class IssuerSetupTest {
                 Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.7/create",
                 msg.getString("@type")
         );
-        asserEquals(
-                msg.getString('ledgerPrefix'),
+        assertEquals(
+                msg.getString("ledgerPrefix"),
                 "did:indy:sovrin:builder"
         );
         assertNotNull(msg.getString("@id"));
     }
 
     @Test
-    public void testCreateMessages() throws VerityException {
+    public void testCreateMessagesWithEndorser() throws VerityException {
         Context context = TestHelpers.getContext();
         IssuerSetupV0_7 p = IssuerSetup.v0_7();
         JSONObject msg = p.createMsg(context, "did:indy:sovrin:builder", "someEndorser");
@@ -60,12 +60,12 @@ public class IssuerSetupTest {
                 Util.EVERNYM_MSG_QUALIFIER + "/issuer-setup/0.7/create",
                 msg.getString("@type")
         );
-        asserEquals(
-                msg.getString('ledgerPrefix'),
+        assertEquals(
+                msg.getString("ledgerPrefix"),
                 "did:indy:sovrin:builder"
         );
-        asserEquals(
-                msg.getString(endorser),
+        assertEquals(
+                msg.getString("endorser"),
                 "someEndorser"
         );
         assertNotNull(msg.getString("@id"));

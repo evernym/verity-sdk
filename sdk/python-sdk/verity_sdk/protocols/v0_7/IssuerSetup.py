@@ -48,7 +48,8 @@ class IssuerSetup(Protocol):
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
             ledgerPrefix (String): an instance of the Context object initialized to a verity-application agent
-            endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
+            endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use
+            it's own endorser, otherwise it will return a transaction for manual endorsement
         """
         await self.send_message(context, await self.create_msg_packed(context, ledgerPrefix, endorser))
 
@@ -59,7 +60,8 @@ class IssuerSetup(Protocol):
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
             ledgerPrefix (String): an instance of the Context object initialized to a verity-application agent
-            endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
+            endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use
+            it's own endorser, otherwise it will return a transaction for manual endorsement
 
         Return:
             the constructed message (dict object)
@@ -78,7 +80,8 @@ class IssuerSetup(Protocol):
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
             ledgerPrefix (String): an instance of the Context object initialized to a verity-application agent
-            endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
+            endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use
+            it's own endorser, otherwise it will return a transaction for manual endorsement
         Return:
             the bytes ready for transport
         """

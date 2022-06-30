@@ -57,7 +57,7 @@ namespace VeritySDK.Protocols.IssuerSetup
         /// </summary>
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
         /// <param name="ledgerPrefix">a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]</param>
-        public void create(Context context, String ledgerPrefix)
+        public void create(Context context, string ledgerPrefix)
         {
             send(context, createMsg(context, ledgerPrefix));
         }
@@ -68,7 +68,7 @@ namespace VeritySDK.Protocols.IssuerSetup
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
         /// <param name="ledgerPrefix">a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]</param>
         /// <param name="endorser">Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement</param>
-        public void create(Context context, String ledgerPrefix, String endorser)
+        public void create(Context context, string ledgerPrefix, string endorser)
         {
             send(context, createMsg(context, ledgerPrefix, endorser));
         }
@@ -79,7 +79,7 @@ namespace VeritySDK.Protocols.IssuerSetup
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
         /// <param name="ledgerPrefix">a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]</param>
         /// <returns>the constructed message (JSON object)</returns>
-        public JsonObject createMsg(Context context, String ledgerPrefix)
+        public JsonObject createMsg(Context context, string ledgerPrefix)
         {
             JsonObject message = new JsonObject();
             message.Add("@type", messageType(CREATE));
@@ -96,7 +96,7 @@ namespace VeritySDK.Protocols.IssuerSetup
         /// <param name="ledgerPrefix">a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]</param>
         /// <param name="endorser">Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement</param>
         /// <returns>the constructed message (JSON object)</returns>
-        public JsonObject createMsg(Context context, String ledgerPrefix, String endorser)
+        public JsonObject createMsg(Context context, string ledgerPrefix, string endorser)
         {
             JsonObject message = new JsonObject();
             message.Add("@type", messageType(CREATE));
@@ -113,7 +113,7 @@ namespace VeritySDK.Protocols.IssuerSetup
         /// <param name="context">an instance of the Context object initialized to a verity-application agent</param>
         /// <param name="ledgerPrefix">a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]</param>
         /// <returns>the byte array ready for transport</returns>
-        public byte[] createMsgPacked(Context context, String ledgerPrefix)
+        public byte[] createMsgPacked(Context context, string ledgerPrefix)
         {
             return packMsg(context, createMsg(context, ledgerPrefix));
         }
@@ -125,7 +125,7 @@ namespace VeritySDK.Protocols.IssuerSetup
         /// <param name="ledgerPrefix">a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]</param>
         /// <param name="endorser">Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement</param>
         /// <returns>the byte array ready for transport</returns>
-        public byte[] createMsgPacked(Context context, String ledgerPrefix, String endorser)
+        public byte[] createMsgPacked(Context context, string ledgerPrefix, string endorser)
         {
             return packMsg(context, createMsg(context, ledgerPrefix, endorser));
         }

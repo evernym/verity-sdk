@@ -32,25 +32,24 @@ class IssuerSetup extends Protocol {
     this.msgNames.PUBLIC_IDENTIFIER_CREATED = 'public-identifier-created'
   }
 
-
-    /**
-       * Creates the control message without packaging and sending it.
-       * @param context an instance of the Context object initialized to a verity-application agent
-       * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
-       * @param endorser Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
-       * @return the constructed message (JSON object)
-       *
-       * @see #create
-       */
-    async createMsg (context, ledgerPrefix, endorser) {
-      let msg = this._getBaseMessage(this.msgNames.CREATE)
-      msg = this._addThread(msg)
-      msg.ledgerPrefix = ledgerPrefix
-      if (endorser) {
-        msg.endorser = endorser
-      }
-      return msg
+  /**
+     * Creates the control message without packaging and sending it.
+     * @param context an instance of the Context object initialized to a verity-application agent
+     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param endorser Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
+     * @return the constructed message (JSON object)
+     *
+     * @see #create
+     */
+  async createMsg (context, ledgerPrefix, endorser) {
+    let msg = this._getBaseMessage(this.msgNames.CREATE)
+    msg = this._addThread(msg)
+    msg.ledgerPrefix = ledgerPrefix
+    if (endorser) {
+      msg.endorser = endorser
     }
+    return msg
+  }
 
   /**
      * Creates and packages message without sending it.
