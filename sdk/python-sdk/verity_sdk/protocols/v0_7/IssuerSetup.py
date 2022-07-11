@@ -47,7 +47,8 @@ class IssuerSetup(Protocol):
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
-            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to.
+            Verity can publish to the following locations, indicated by the values in quotes:
                           [Sovrin Builder Net: "did:indy:sovrin:builder",
                           Sovrin Staging Net: "did:indy:sovrin:staging",
                           Sovrin Main Net: "did:indy:sovrin"]
@@ -63,7 +64,8 @@ class IssuerSetup(Protocol):
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
-            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to.
+            Verity can publish to the following locations, indicated by the values in quotes:
                           [Sovrin Builder Net: "did:indy:sovrin:builder",
                           Sovrin Staging Net: "did:indy:sovrin:staging",
                           Sovrin Main Net: "did:indy:sovrin"]
@@ -87,7 +89,8 @@ class IssuerSetup(Protocol):
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
-            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to.
+            Verity can publish to the following locations, indicated by the values in quotes:
                           [Sovrin Builder Net: "did:indy:sovrin:builder",
                           Sovrin Staging Net: "did:indy:sovrin:staging",
                           Sovrin Main Net: "did:indy:sovrin"]

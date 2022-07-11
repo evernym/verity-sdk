@@ -6,7 +6,7 @@ using VeritySDK.Utils;
 namespace VeritySDK.Test
 {
     [TestClass]
-    public class IssuerSetupTest : TestBase
+    public class IssuerSetupTest_0_6 : TestBase
     {
 
         [TestMethod]
