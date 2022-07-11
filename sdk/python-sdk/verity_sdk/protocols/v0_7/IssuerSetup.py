@@ -47,7 +47,11 @@ class IssuerSetup(Protocol):
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
-            ledgerPrefix (String): an instance of the Context object initialized to a verity-application agent
+            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+                          [Sovrin Builder Net: "did:indy:sovrin:builder",
+                          Sovrin Staging Net: "did:indy:sovrin:staging",
+                          Sovrin Main Net: "did:indy:sovrin"]
+                          The locations which are available to your Verity tenant will be configured based on your customer agreement.
             endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use
             it's own endorser, otherwise it will return a transaction for manual endorsement
         """
@@ -59,7 +63,11 @@ class IssuerSetup(Protocol):
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
-            ledgerPrefix (String): an instance of the Context object initialized to a verity-application agent
+            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+                          [Sovrin Builder Net: "did:indy:sovrin:builder",
+                          Sovrin Staging Net: "did:indy:sovrin:staging",
+                          Sovrin Main Net: "did:indy:sovrin"]
+                          The locations which are available to your Verity tenant will be configured based on your customer agreement.
             endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use
             it's own endorser, otherwise it will return a transaction for manual endorsement
 
@@ -79,7 +87,11 @@ class IssuerSetup(Protocol):
 
         Args:
             context (Context): an instance of the Context object initialized to a verity-application agent
-            ledgerPrefix (String): an instance of the Context object initialized to a verity-application agent
+            ledgerPrefix (String): a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+                          [Sovrin Builder Net: "did:indy:sovrin:builder",
+                          Sovrin Staging Net: "did:indy:sovrin:staging",
+                          Sovrin Main Net: "did:indy:sovrin"]
+                          The locations which are available to your Verity tenant will be configured based on your customer agreement.
             endorser (Optional: String): the desired endorser did. If left empty then Verity will attempt to use
             it's own endorser, otherwise it will return a transaction for manual endorsement
         Return:

@@ -2,15 +2,15 @@
 const utils = require('../../utils')
 const Protocol = require('../Protocol')
 /**
- * An interface for controlling a 0.6 IssuerSetup protocol.
+ * An interface for controlling a 0.7 IssuerSetup protocol.
  * @extends Protocol
  */
 class IssuerSetup extends Protocol {
   /**
-   * Constructor for the 0.6 IssuerSetup object. This constructor creates an object that is ready to start the setup
+   * Constructor for the 0.7 IssuerSetup object. This constructor creates an object that is ready to start the setup
    * process of an issuer.
    * @param threadId the thread id of the already started protocol
-   * @return 0.6 IssuerSetup object
+   * @return 0.7 IssuerSetup object
    *
    * @property {String} msgFamily - 'issuer-setup'
    * @property {String} msgFamilyVersion - '0.7'
@@ -35,7 +35,11 @@ class IssuerSetup extends Protocol {
   /**
      * Creates the control message without packaging and sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @param endorser Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
      * @return the constructed message (JSON object)
      *
@@ -54,7 +58,11 @@ class IssuerSetup extends Protocol {
   /**
      * Creates and packages message without sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @param endorser Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
      * @return the byte array ready for transport
      *
@@ -68,7 +76,11 @@ class IssuerSetup extends Protocol {
      * Directs verity-application to start and create an issuer identity and set it up
      *
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @param endorser Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
      */
   async create (context, ledgerPrefix, endorser = null) {

@@ -42,7 +42,11 @@ public interface IssuerSetupV0_7 extends Protocol {
      * Directs verity-application to start and create an issuer identity and set it up
      *
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws VerityException when wallet operations fails or given invalid context
      */
@@ -52,7 +56,11 @@ public interface IssuerSetupV0_7 extends Protocol {
      * Directs verity-application to start and create an issuer identity and set it up
      *
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @param endorser Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
      * @throws IOException when the HTTP library fails to post to the agency endpoint
      * @throws VerityException when wallet operations fails or given invalid context
@@ -62,7 +70,11 @@ public interface IssuerSetupV0_7 extends Protocol {
     /**
      * Creates the control message without packaging and sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @return the constructed message (JSON object)
      * @throws VerityException when given invalid context
      *
@@ -73,7 +85,11 @@ public interface IssuerSetupV0_7 extends Protocol {
     /**
      * Creates the control message without packaging and sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @param endorser Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
      * @return the constructed message (JSON object)
      * @throws VerityException when given invalid context
@@ -85,7 +101,11 @@ public interface IssuerSetupV0_7 extends Protocol {
     /**
      * Creates and packages message without sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @return the byte array ready for transport
      * @throws VerityException when wallet operations fails or given invalid context
      *
@@ -96,7 +116,11 @@ public interface IssuerSetupV0_7 extends Protocol {
     /**
      * Creates and packages message without sending it.
      * @param context an instance of the Context object initialized to a verity-application agent
-     * @param ledgerPrefix a string indicating the ledger that the issuer identifier should be created for. Currently supported values are ["did:sov", "did:indy:sovrin:builder", "did:indy:sovrin:staging", "did:indy:sovrin"]
+     * @param ledgerPrefix a string indicating the location that the issuer identifier should be published to. Verity can publish to the following locations, indicated by the values in quotes:
+     *                     [Sovrin Builder Net: "did:indy:sovrin:builder",
+     *                     Sovrin Staging Net: "did:indy:sovrin:staging",
+     *                     Sovrin Main Net: "did:indy:sovrin"]
+     *                     The locations which are available to your Verity tenant will be configured based on your customer agreement.
      * @param endorser Optional: the desired endorser did. If left empty then Verity will attempt to use it's own endorser, otherwise it will return a transaction for manual endorsement
      * @return the byte array ready for transport
      * @throws VerityException when wallet operations fails or given invalid context
