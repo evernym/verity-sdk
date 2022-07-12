@@ -23,9 +23,9 @@ namespace VeritySDK.Protocols.IssuerSetup
         }
 
         /// <summary>
-        /// Constructor for the 0.6 IssuerSetup object. This constructor creates an object that is ready to start the setup process of an issuer.
+        /// Constructor for the 0.7 IssuerSetup object. This constructor creates an object that is ready to start the setup process of an issuer.
         /// </summary>
-        /// <returns>0.6 IssuerSetup object</returns>
+        /// <returns>0.7 IssuerSetup object</returns>
         public static IssuerSetupV0_7 v0_7()
         {
             return new IssuerSetupV0_7();
