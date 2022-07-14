@@ -42,7 +42,7 @@ class UpdateConfigs extends Protocol {
      * @see #updateMsg
      */
   async updateMsg () {
-    var msg = this._getBaseMessage(this.msgNames.UPDATE_CONFIGS)
+    const msg = this._getBaseMessage(this.msgNames.UPDATE_CONFIGS)
     msg.configs = [
       { name: 'name', value: this.name },
       { name: 'logoUrl', value: this.logoUrl }
@@ -79,7 +79,7 @@ class UpdateConfigs extends Protocol {
      * @see #status
      */
   async statusMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.GET_STATUS)
+    const msg = this._getBaseMessage(this.msgNames.GET_STATUS)
     return msg
   }
 

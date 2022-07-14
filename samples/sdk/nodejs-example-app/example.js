@@ -103,9 +103,8 @@ async function createRelationship () {
 
           console.log()
           if (process.env.HTTP_SERVER_URL) {
-            console.log(
-              'Please copy and paste the inviteURL into an external QR code generator (e.g. https://www.qr-code-generator.com/) and scan the QR code from there to establish a connection'
-            )
+            console.log('Open the following URL in your browser and scan presented QR code')
+            console.log(`${ANSII_GREEN}https://chart.googleapis.com/chart?cht=qr&chs=512x512&chl=${encodeURI(inviteURL)}${ANSII_RESET}`)
           } else {
             console.log('QR code generated at: qrcode.png')
             console.log('Open this file and scan QR code to establish a connection')

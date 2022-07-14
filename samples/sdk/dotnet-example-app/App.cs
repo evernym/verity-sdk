@@ -605,7 +605,8 @@ namespace VeritySDK.Sample
 
                             if (!(Environment.GetEnvironmentVariable("HTTP_SERVER_URL") == null))
                             {
-                                App.consoleOutput("Please copy and paste the inviteURL into an external QR code generator (e.g. https://www.qr-code-generator.com/) and scan the QR code from there to establish a connection");
+                                App.consoleOutput("Open the following URL in your browser and scan presented QR code");
+                                App.coloredConsoleOutput("https://chart.googleapis.com/chart?cht=qr&chs=512x512&chl=" + Uri.EscapeDataString(inviteURL));
                             }
                             else
                             {
