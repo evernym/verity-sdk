@@ -60,7 +60,7 @@ class CommittedAnswer extends Protocol {
      * @see #ask
      */
   async askMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.ASK_QUESTION)
+    let msg = this._getBaseMessage(this.msgNames.ASK_QUESTION)
     msg = this._addThread(msg)
     msg['~for_relationship'] = this.forRelationship
     msg.text = this.question
@@ -100,7 +100,7 @@ class CommittedAnswer extends Protocol {
      * @see #answer
      */
   async answerMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.ANSWER_QUESTION)
+    let msg = this._getBaseMessage(this.msgNames.ANSWER_QUESTION)
     msg = this._addThread(msg)
     msg['~for_relationship'] = this.forRelationship
     msg.response = this.answerStr
@@ -137,7 +137,7 @@ class CommittedAnswer extends Protocol {
      * @see #status
      */
   async statusMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.GET_STATUS)
+    let msg = this._getBaseMessage(this.msgNames.GET_STATUS)
     msg = this._addThread(msg)
     msg['~for_relationship'] = this.forRelationship
     return msg
