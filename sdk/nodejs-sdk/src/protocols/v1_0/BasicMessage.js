@@ -47,7 +47,7 @@ class BasicMessage extends Protocol {
      * @see #message
      */
   async messageMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.BASIC_MESSAGE)
+    let msg = this._getBaseMessage(this.msgNames.BASIC_MESSAGE)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
 

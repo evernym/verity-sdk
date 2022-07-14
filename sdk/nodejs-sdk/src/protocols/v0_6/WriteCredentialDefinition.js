@@ -45,7 +45,7 @@ class WriteCredentialDefinition extends Protocol {
      * @see #write
      */
   async writeMsg (context, endorserDID = null) {
-    var msg = this._getBaseMessage(this.msgNames.WRITE_CRED_DEF)
+    let msg = this._getBaseMessage(this.msgNames.WRITE_CRED_DEF)
     msg.name = this.name
     msg.schemaId = this.schemaId
     msg.tag = this.tag
