@@ -20,12 +20,12 @@ Example: `Maven`
 <dependency>
   <groupId>com.evernym.verity</groupId>
   <artifactId>verity-sdk</artifactId>
-  <version>0.4.0</version>
+  <version>0.6.0</version>
 </dependency>
 ```
 ## Documentation
 **API Documentation (JavaDoc)**:
-* [0.4.0](https://developer.evernym.com/doc/java/0.4.0/index.html)
+* [0.6.0](https://developer.evernym.com/doc/java/0.6.0/index.html)
 
 ## Develop the Java Verity SDK
 
@@ -35,6 +35,15 @@ Example: `Maven`
 ### Build
 ```sh
 mvn install
+```
+
+#### Dealing with NullPointerException
+In some situations developers may run into nullPointerExceptions when using Verity-SDK. These can occur for the following reasons:
+
+1. The correct version of VDR Tools is not installed. Please ensure that you have the latest version of [libvdrtools](https://gitlab.com/evernym/verity/vdr-tools#installing) installed on your system.
+2. Your /tmp directory has been mounted noexec. To rectify this, change the exec command to
+```sh
+mvn exec:java -Djava.io.tmpdir=$PWD/target 
 ```
 
 
