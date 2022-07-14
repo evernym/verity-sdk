@@ -54,7 +54,7 @@ class Relationship extends Protocol {
      * @see #create
      */
   async createMsg (context) {
-    var msg = this._getBaseMessage(this.msgNames.CREATE)
+    let msg = this._getBaseMessage(this.msgNames.CREATE)
     msg = this._addThread(msg)
     if (this.label) {
       msg.label = this.label
@@ -94,7 +94,7 @@ class Relationship extends Protocol {
      * @see #connectionInvitation
      */
   async connectionInvitationMsg (context, shortInvite = null) {
-    var msg = this._getBaseMessage(this.msgNames.CONNECTION_INVITATION)
+    let msg = this._getBaseMessage(this.msgNames.CONNECTION_INVITATION)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     if (shortInvite != null) {
@@ -134,7 +134,7 @@ class Relationship extends Protocol {
      * @see #smsConnectionInvitation
      */
   async smsConnectionInvitationMsg (context, phoneNumber) {
-    var msg = this._getBaseMessage(this.msgNames.SMS_CONNECTION_INVITATION)
+    let msg = this._getBaseMessage(this.msgNames.SMS_CONNECTION_INVITATION)
     msg['~for_relationship'] = this.forRelationship
     msg.phoneNumber = phoneNumber
     msg = this._addThread(msg)
@@ -173,7 +173,7 @@ class Relationship extends Protocol {
    * @see #outOfBandInvitation
    */
   async outOfBandInvitationMsg (context, shortInvite = null, goal = null) {
-    var msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
+    let msg = this._getBaseMessage(this.msgNames.OUT_OF_BAND_INVITATION)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     if (shortInvite != null) {
@@ -221,7 +221,7 @@ class Relationship extends Protocol {
    * @see #smsOutOfBandInvitation
    */
   async smsOutOfBandInvitationMsg (context, phoneNumber, goal = null) {
-    var msg = this._getBaseMessage(this.msgNames.SMS_OUT_OF_BAND_INVITATION)
+    let msg = this._getBaseMessage(this.msgNames.SMS_OUT_OF_BAND_INVITATION)
     msg['~for_relationship'] = this.forRelationship
     msg.phoneNumber = phoneNumber
     msg = this._addThread(msg)

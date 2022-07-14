@@ -85,7 +85,7 @@ class PresentProofV1x0 extends Protocol {
     if (!this.created) {
       throw new utils.WrongSetupError('Unable to request presentation when NOT starting the interaction')
     }
-    var msg = this._getBaseMessage(this.msgNames.PROOF_REQUEST)
+    let msg = this._getBaseMessage(this.msgNames.PROOF_REQUEST)
     msg['~for_relationship'] = this.forRelationship
     msg.name = this.name
     if (this.attributes) {
@@ -127,7 +127,7 @@ class PresentProofV1x0 extends Protocol {
      * @see #status
      */
   statusMsg () {
-    var msg = this._getBaseMessage(this.msgNames.STATUS)
+    let msg = this._getBaseMessage(this.msgNames.STATUS)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     return msg
@@ -163,7 +163,7 @@ class PresentProofV1x0 extends Protocol {
      * @see #reject
      */
   acceptProposalMsg () {
-    var msg = this._getBaseMessage(this.msgNames.ACCEPT_PROPOSAL)
+    let msg = this._getBaseMessage(this.msgNames.ACCEPT_PROPOSAL)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     return msg
@@ -198,7 +198,7 @@ class PresentProofV1x0 extends Protocol {
      * @see #reject
      */
   rejectMsg (reason) {
-    var msg = this._getBaseMessage(this.msgNames.REJECT)
+    let msg = this._getBaseMessage(this.msgNames.REJECT)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     if (reason) {

@@ -20,8 +20,8 @@ RUN apt-get update && \
         unzip \
         vim && \
         # Install libvdrtools
-        curl https://gitlab.com/evernym/verity/vdr-tools/-/package_files/19878647/download --output libvdrtools_0.8.0-bionic_amd64.deb && \
-        apt-get install -y ./libvdrtools_0.8.0-bionic_amd64.deb && \
+        curl https://gitlab.com/evernym/verity/vdr-tools/-/package_files/27311920/download --output libvdrtools_0.8.4-bionic_amd64.deb && \
+        apt-get install -y ./libvdrtools_0.8.4-bionic_amd64.deb && \
         # Install NodeJS
         curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
         echo "deb https://deb.nodesource.com/node_12.x bionic main\ndeb-src https://deb.nodesource.com/node_12.x bionic main" > /etc/apt/sources.list.d/nodesource.list && \
