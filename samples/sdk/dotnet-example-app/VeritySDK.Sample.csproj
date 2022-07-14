@@ -17,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Evernym.Verity.SDK" Version="0.4.8" />
+    <PackageReference Include="Evernym.Verity.SDK" Version="0.6.1" />
     <PackageReference Include="QRCoder" Version="1.3.9" />
-    <PackageReference Include="vdr-tools" Version="0.8.0" />
+    <PackageReference Include="vdr-tools" Version="0.8.4" />
   </ItemGroup>
 
 </Project>
