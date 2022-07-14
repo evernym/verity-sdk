@@ -17,9 +17,9 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
-const verityUrl  = '<< PUT VERITY APPLICATION SERVICE URL HERE >>' // address of Verity Application Service
-const domainDid  = '<< PUT DOMAIN DID HERE >>' // your Domain DID on the multi-tenant Verity Application Service
-const xApiKey    = '<< PUT X-API-KEY HERE >>' // REST API key associated with your Domain DID
+const verityUrl = '<< PUT VERITY APPLICATION SERVICE URL HERE >>' // address of Verity Application Service
+const domainDid = '<< PUT DOMAIN DID HERE >>' // your Domain DID on the multi-tenant Verity Application Service
+const xApiKey = '<< PUT X-API-KEY HERE >>' // REST API key associated with your Domain DID
 const webhookUrl = '<< PUT WEBHOOK URL HERE >>' // public URL for the webhook endpoint
 
 // Handles console input
