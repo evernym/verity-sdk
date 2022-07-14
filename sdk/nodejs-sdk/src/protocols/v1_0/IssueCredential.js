@@ -97,7 +97,7 @@ class IssueCredentialV10 extends Protocol {
       throw new utils.WrongSetupError('Unable to offer credentials when NOT starting the interaction')
     }
 
-    var msg = this._getBaseMessage(this.msgNames.OFFER_CREDENTIAL)
+    let msg = this._getBaseMessage(this.msgNames.OFFER_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
     msg.comment = this.comment
@@ -141,7 +141,7 @@ class IssueCredentialV10 extends Protocol {
       throw new utils.WrongSetupError('Unable to propose credentials when NOT starting the interaction')
     }
 
-    var msg = this._getBaseMessage(this.msgNames.PROPOSE_CREDENTIAL)
+    let msg = this._getBaseMessage(this.msgNames.PROPOSE_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
     msg.comment = this.comment
@@ -179,7 +179,7 @@ class IssueCredentialV10 extends Protocol {
      * @see #requestCredential
      */
   requestCredentialMsg () {
-    var msg = this._getBaseMessage(this.msgNames.REQUEST_CREDENTIAL)
+    let msg = this._getBaseMessage(this.msgNames.REQUEST_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.cred_def_id = this.credDefId
     msg.comment = this.comment
@@ -216,7 +216,7 @@ class IssueCredentialV10 extends Protocol {
      * @see #issueCredential
      */
   issueCredentialMsg () {
-    var msg = this._getBaseMessage(this.msgNames.ISSUE_CREDENTIAL)
+    let msg = this._getBaseMessage(this.msgNames.ISSUE_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.comment = this.comment
     msg = this._addThread(msg)
@@ -251,7 +251,7 @@ class IssueCredentialV10 extends Protocol {
      * @see #reject
      */
   rejectMsg () {
-    var msg = this._getBaseMessage(this.msgNames.REJECT_CREDENTIAL)
+    let msg = this._getBaseMessage(this.msgNames.REJECT_CREDENTIAL)
     msg['~for_relationship'] = this.forRelationship
     msg.comment = this.comment
     msg = this._addThread(msg)
@@ -287,7 +287,7 @@ class IssueCredentialV10 extends Protocol {
      * @see #status
      */
   statusMsg () {
-    var msg = this._getBaseMessage(this.msgNames.CREDENTIAL_STATUS)
+    let msg = this._getBaseMessage(this.msgNames.CREDENTIAL_STATUS)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     return msg

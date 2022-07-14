@@ -70,7 +70,7 @@ class ConnectingV10 extends Protocol {
      * @see #accept
      */
   acceptMsg () {
-    var msg = this._getBaseMessage(this.msgNames.SEND_ACCEPT_INVITE)
+    let msg = this._getBaseMessage(this.msgNames.SEND_ACCEPT_INVITE)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     msg.label = this.label
@@ -105,7 +105,7 @@ class ConnectingV10 extends Protocol {
      * @see #status
      */
   statusMsg () {
-    var msg = this._getBaseMessage(this.msgNames.GET_STATUS)
+    let msg = this._getBaseMessage(this.msgNames.GET_STATUS)
     msg['~for_relationship'] = this.forRelationship
     msg = this._addThread(msg)
     return msg

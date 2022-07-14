@@ -20,3 +20,6 @@ mvn compile
 ```sh
 mvn exec:java
 ```
+
+#### Dealing with NullPointerException
+If you run into a NullPointerException while trying to run the sample app, see [Dealing with NullPointerException](../../../sdk/java-sdk/README.md)
