@@ -20,7 +20,8 @@ module.exports = {
       WriteSchema: require('./protocols/v0_6/WriteSchema')
     },
     v0_7: {
-      Provision: require('./protocols/v0_7/Provision')
+      Provision: require('./protocols/v0_7/Provision'),
+      IssuerSetup: require('./protocols/v0_7/IssuerSetup')
     },
     v1_0: {
       Connecting: require('./protocols/v1_0/Connecting'),
