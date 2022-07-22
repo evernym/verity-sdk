@@ -25,6 +25,7 @@
     <Compile Remove="Protocols\Conecting\v1_0\ConnectionsV1_0_Impl.cs" />
     <Compile Remove="Protocols\IssueCredential\v1_0\IssueCredentialImplV1_0.cs" />
     <Compile Remove="Protocols\IssuerSetup\v0_6\IssuerSetupImplV0_6.cs" />
+    <Compile Remove="Protocols\IssuerSetup\v0_7\IssuerSetupImplV0_7.cs" />
     <Compile Remove="Protocols\OutOfBand\v1_0\OutOfBandImplV1_0.cs" />
     <Compile Remove="Protocols\PresentProof\v1_0\PresentProofImplV1_0.cs" />
     <Compile Remove="Protocols\Provision\v0_7\ProvisionImplV0_7.cs" />
