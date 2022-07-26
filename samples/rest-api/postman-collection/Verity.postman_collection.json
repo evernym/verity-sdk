@@ -1,0 +1,542 @@
+{
+	"info": {
+		"_postman_id": "83806a19-b6ae-492e-b5f5-0809b71cab39",
+		"name": "Verity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Update Endpoint",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"comMethod\": {\n        \"id\": \"webhook\",\n        \"type\": 2,\n        \"value\": \"{{Webhook}}\",\n        \"packaging\": {\n            \"pkgType\": \"plain\"\n        }\n    },\n    \"@type\": \"did:sov:123456789abcdefghi1234;spec/configs/0.6/UPDATE_COM_METHOD\",\n    \"@id\": \"{{$guid}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/configs/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"configs",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Configs",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"configs\": [\n        {\n            \"name\": \"logoUrl\",\n            \"value\": \"http://example.com/logo.png\"\n        },\n        {\n            \"name\": \"name\",\n            \"value\": \"Example Name\"\n        }\n    ],\n    \"@type\": \"did:sov:123456789abcdefghi1234;spec/update-configs/0.6/update\",\n    \"@id\": \"{{$guid}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/update-configs/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"update-configs",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Setup Issuer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@type\": \"did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/create\",\n    \"@id\": \"{{$guid}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/issuer-setup/0.6/{{$guid}} ",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"issuer-setup",
+						"0.6",
+						"{{$guid}} "
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Relationship",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@type\": \"did:sov:123456789abcdefghi1234;spec/relationship/1.0/create\",\n    \"@id\": \"{{$guid}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/relationship/1.0/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"relationship",
+						"1.0",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Relationship Invitation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"@type\": \"did:sov:123456789abcdefghi1234;spec/relationship/1.0/connection-invitation\",\n  \"@id\": \"{{$guid}}\",\n   \"~for_relationship\": \"THE_SAME_RELATIONSHIP_DID_AS_IN_CREATE_RELATIONSHIP\",\n   \"~thread\": { \"thid\": \"THE_SAME_THREAD_ID_AS_IN_CREATE_RELATIONSHIP\"}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/relationship/1.0/THE_SAME_THREAD_ID_AS_IN_CREATE_RELATIONSHIP",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"relationship",
+						"1.0",
+						"THE_SAME_THREAD_ID_AS_IN_CREATE_RELATIONSHIP"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Commited Answer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"@type\": \"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/committedanswer/1.0/ask-question\",\n  \"@id\": \"{{$guid}}\",\n  \"~for_relationship\": \"Hfc1fK3gkfwxUZHsGBXvhQ\",\n  \"text\": \"Rate Connect.Me\",\n  \"detail\": \"Help developers improve this app\",\n  \"valid_responses\": [\n    \"5\",\n    \"4\",\n    \"3\",\n    \"2\",\n    \"1\"\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/committedanswer/1.0/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"committedanswer",
+						"1.0",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Issuer Setup – Current Public Identifier",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{$guid}}\",\n    \"@type\": \"did:sov:123456789abcdefghi1234;spec/issuer-setup/0.6/current-public-identifier\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/issuer-setup/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"issuer-setup",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Write Schema",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"@type\": \"did:sov:123456789abcdefghi1234;spec/write-schema/0.6/write\",\n  \"@id\": \"{{$guid}}\",\n  \"name\": \"YOUR_SCHEMA_NAME\",\n  \"version\": \"1.0.0\",\n  \"attrNames\": [\"firstName\", \"lastName\", \"age\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/write-schema/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"write-schema",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Write CredDef",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"COVID-19 Test Result\",\n  \"schemaId\": \"SCHEMA_ID\",\n  \"@type\": \"did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/write\",\n  \"tag\": \"latest\",\n  \"revocationDetails\": {\n    \"support_revocation\": false,\n    \"tails_file\": \"string\",\n    \"max_creds\": 0\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/write-cred-def/0.6/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"write-cred-def",
+						"0.6",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Write CredDef",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test Result\",\n  \"schemaId\": \"DmNBB8FCjhEhFJFJUdiAaG:2:COVID-19 Test Result:1.0\",\n  \"@type\": \"did:sov:123456789abcdefghi1234;spec/write-cred-def/0.6/write\",\n  \"tag\": \"latest\",\n  \"revocationDetails\": {\n    \"support_revocation\": false,\n    \"tails_file\": \"string\",\n    \"max_creds\": 0\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/write-cred-def/0.6/{{$guid}}",
+							"protocol": "https",
+							"host": [
+								"vas",
+								"pps",
+								"evernym",
+								"com"
+							],
+							"path": [
+								"api",
+								"{{DomainDID}}",
+								"write-cred-def",
+								"0.6",
+								"{{$guid}}"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Present Proof",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@id\": \"{{$guid}}\",\n    \"@type\": \"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request\",\n    \"~for_relationship\": \"RELATIONSHIP_DID\",\n    \"name\": \"Travel Pass Id\",\n    \"proof_attrs\": [\n    {\n      \"name\": \"firstName\",\n      \"self_attest_allowed\": false\n    },\n    {\n    \"name\": \"lastName\",\n    \"self_attest_allowed\": false\n    },\n    {\n    \"name\": \"age\",\n    \"self_attest_allowed\": false\n    }\n  ],\n  \"proof_predicates\": [],\n  \"by_invitation\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/present-proof/1.0/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"present-proof",
+						"1.0",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Present Proof Out-Of-Band",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"@type\": \"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/present-proof/1.0/request\",\n  \"@id\": \"{{$guid}}\",\n  \"~for_relationship\": \"RELATIONSHIP_DID\",\n  \"name\": \"Travel Pass Id\",\n  \"proof_attrs\": [\n    {\n      \"name\": \"City\",\n      \"restrictions\": [],\n      \"self_attest_allowed\": false\n    }\n  ],\n  \"proof_predicates\": [],\n  \"by_invitation\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/present-proof/1.0/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"present-proof",
+						"1.0",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Issue Credential",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@id\": \"{{$guid}}\",\n    \"@type\": \"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/offer\",\n    \"~for_relationship\": \"RELATIONSHIP_DID\",\n    \"cred_def_id\": \"XtkqMfFcyUY5Pk2t1LveGF:3:CL:293626:latest\", // Please use the cred_def_id connected to your Issuer DID\n    \"credential_values\": {\n        \"First Name\": \"Alice\",\n        \"Last Name\": \"Jones\",\n        \"Date of Birth\": \"1990-05-12\",\n        \"License Number\": \"Y7342123\",\n        \"Issuing Authority\": \"California DMV\",\n        \"Issuing Country\": \"United States\",\n        \"City\": \"San Diego, CA\",\n        \"Issuing Date\": \"2022-03-31\",\n        \"Gender\": \"F\",\n        \"Place of Birth\": \"San Diego, CA\",\n        \"Country\": \"United States\",\n        \"Address Line\": \"1242 Front St, San Diego, CA 92101\",\n        \"Expiry Date\": \"2027-03-31\",\n        \"Issuing Place\": \"San Diego, CA\",\n        \"Address ZipCode\": \"92101\"\n  },\n  \"by_invitation\": false,\n  \"auto_issue\": true,\n  \"price\": 0}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/issue-credential/1.0/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"issue-credential",
+						"1.0",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Issue Credential Out-Of-Band",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"@id\": \"{{$guid}}\",\n    \"@type\": \"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/offer\",\n    \"~for_relationship\": \"NEW RELATIONSHIP_DID\",\n    \"cred_def_id\": \"XtkqMfFcyUY5Pk2t1LveGF:3:CL:293626:latest\", // This is an example value. Please use the cred_def_id connected to your Issuer DID.\n    \"comment\": \"Driving License\",\n    \"credential_values\": {\n        \"First Name\": \"Alice\",\n        \"Last Name\": \"Jones\",\n        \"Date of Birth\": \"1990-05-12\",\n        \"License Number\": \"Y7342123\",\n        \"Issuing Authority\": \"California DMV\",\n        \"Issuing Country\": \"United States\",\n        \"City\": \"San Diego, CA\",\n        \"Issuing Date\": \"2022-03-31\",\n        \"Gender\": \"F\",\n        \"Place of Birth\": \"San Diego, CA\",\n        \"Country\": \"United States\",\n        \"Address Line\": \"1242 Front St, San Diego, CA 92101\",\n        \"Expiry Date\": \"2027-03-31\",\n        \"Issuing Place\": \"San Diego, CA\",\n        \"Address ZipCode\": \"92101\"\n  },\n  \"by_invitation\": true,\n  \"auto_issue\": true,\n  \"price\": 0}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vas.pps.evernym.com/api/{{DomainDID}}/issue-credential/1.0/{{$guid}}",
+					"protocol": "https",
+					"host": [
+						"vas",
+						"pps",
+						"evernym",
+						"com"
+					],
+					"path": [
+						"api",
+						"{{DomainDID}}",
+						"issue-credential",
+						"1.0",
+						"{{$guid}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-API-KEY",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "DomainDID",
+			"value": ""
+		},
+		{
+			"key": "Webhook",
+			"value": "https://41fd-104-129-198-54.ngrok.io"
+		},
+		{
+			"key": "LogoURLConfig",
+			"value": ""
+		},
+		{
+			"key": "IssuerNameConfig",
+			"value": ""
+		}
+	]
+}
