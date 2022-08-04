@@ -10,7 +10,7 @@
   "author": "Vladan Divac <vladan.divac@evernym.com>",
   "license": "",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "express": "^4.17.1",
     "qrcode": "^1.4.4",
     "url-join": "^4.0.1",
