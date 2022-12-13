@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "main": "example.js",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "qrcode": "^1.4.4",
     "request": "^2.34",
     "verity-sdk": "^0.6.1"
