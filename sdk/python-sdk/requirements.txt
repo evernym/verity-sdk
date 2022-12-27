@@ -4,7 +4,7 @@ base58==2.1.0
 
 # Development Dependencies (including testing)
 wheel==0.36.2
-setuptools==57.0.0
+setuptools==65.5.1
 pylint==2.8.3
 pylint-quotes==0.2.3
 pytest==6.2.4
