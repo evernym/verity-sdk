@@ -70,5 +70,3 @@ Example of the response for the `Setup Issuer` call:
     }
 }
 ```
-
-If you experience any issues following this document, please [contact support](mailto:support@evernym.com).

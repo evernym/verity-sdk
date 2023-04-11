@@ -30,7 +30,7 @@ Verity is currently hosted and managed by Evernym, while you are responsible for
 ### Getting started with Verity
 The best way to start with Verity is to go through the example app that will walk you through the installation of Verity SDK and through the main capabilities of the Verity. Communication with Verity is asynchronous and requires you to stand up an endpoint where Verity will send its response. The example app and other sample code uses ngrok as a temporary service to provide such an endpoint but for building your own code to use for pilot or production, we recommend standing up your own endpoint. 
 
-There are two general approaches to working with Verity: [**Verity SDK**](#verity-sdk) and [**Verity REST API**](#rest-api). Check out [this explanation](FAQ.md#verity-sdk-vs-rest-api) if you are wondering which approach suits your use case better. If you need more guidance in making your selection, please [reach out to us](mailto:support@evernym.com). 
+There are two general approaches to working with Verity: [**Verity SDK**](#verity-sdk) and [**Verity REST API**](#rest-api). Check out [this explanation](FAQ.md#verity-sdk-vs-rest-api) if you are wondering which approach suits your use case better.
 
 ### Verity SDK
 The goal of the Verity SDK is to provide easy application integration with the Verity server. With Verity SDK, you can enable issuing or verifying or both functions into your project and interact with individuals using Connect.Me or some other compatible digital wallet app. Verity SDK also provides methods for writing Schemas and Credential Definitions to the ledger.
@@ -59,7 +59,7 @@ These are the general steps for getting going with the Verity SDK:
 ##### 1. Provisioning an Agent on Evernym's Verity Application
 Verity SDK requires access to an agent running on Evernym's Verity Application. Contact Evernym to get a provisioning token that you'll need to provision an Agent on Verity Application Service.
 
-Provisioning token for Sandbox plan is valid for the Sovrin Staging Net. Token can only be used once and it expires after 30 days. If you require additional token, please contact Evernym support. 
+Provisioning token for Sandbox plan is valid for the Sovrin Staging Net. Token can only be used once and it expires after 30 days.
 
 ##### 2. Integrate the language-specific Verity SDK library
 The Verity SDK comes is several language-specific libraries. See the respective README documents to get the latest version, read the API documentation and other information:
@@ -121,10 +121,6 @@ More information about the data retention on Verity, the default configuration a
 
 ### Authentication Webhooks
 More information about authenticating webhooks can be found [here](docs/AuthenticatingWebhooks.md).
-
-### Improving documentation
-
-Can’t find what you are looking for, or have suggestions on what to include in the docs? [Drop us a line](mailto:support@evernym.com), we'd love to receive your ideas.
 
 ## Acknowledgements
 This effort is part of a project that has received funding from the European Union’s Horizon 2020 research and innovation program under grant agreement No 871932 delivered through our participation in the eSSIF-Lab, which aims to advance the broad adoption of self-sovereign identity for the benefit of all.
